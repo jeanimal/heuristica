@@ -19,7 +19,7 @@ Take the Best was originally proposed for two-alternative choice tasks, e.g. giv
 * FranklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a method like this.
 * RegModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
 
-## Citation
+## Citations
 These heuristics and simulation using them were described in:  
 Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press.  
 
