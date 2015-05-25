@@ -5,6 +5,9 @@
 # Private.  This is just an easy way to share parameter documentation.
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
+
+###  Take the Best (ttbModel) ###
+
 #' Take The Best
 #'
 #' An implementation of the Take The Best heuristic.
@@ -75,6 +78,60 @@ coef.ttbModel <- function(model) model$linear_coef
 # This is just because it was more convenient to code it that way in R.
 # The output is equivalent to the Take The Best model description.
 predict.ttbModel <- function(object, ...) {
+  args <- eval(substitute(alist(...)))
+  if (length(args)==0) {
+    return(object$fit_predictions)
+  } else if (length(args)==1) {
+    test_data <- eval(args[[1]])
+    return(predictWithWeights(test_data, object$cols_to_fit, object$linear_coef))
+  } else {
+    stop("Expected only one unevaluated argument (test_data) but got " +
+          length(args) + ":" + args)
+  }
+}
+
+
+### Dawes Model ###
+
+#' DawesModel, a unit-weight linear model
+#'
+#' DawesModel is a unit-weight linear model inspired by Robyn Dawes.
+#' Dawes Model assigns unit (+1 or -1) weights based on \code{\link{cueValidity}}.
+#'   \itemize{
+#'     \item A cue validity > 0.5 results in a weight of +1.
+#'     \item A cue validity < 0.5 results in a weight of -1.
+#'   }
+#' This version differs from others in that it uses a weight of 0 if cue validity is 0.5
+#' (rather than randomly assigning +1 or -1) to give faster convergence of average accuracy.
+#'
+#' @inheritParams heuristicaModel
+#'
+#' @return An object of \code{\link[base]{class}} dawesModel.  This is a list containing at least the following components:
+#'   \itemize{
+#'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+#'   }
+#'
+#' @seealso
+#' \code{\link{predict.dawesModel}} (via \code{\link[stats]{predict}}) for prediction.
+#' @seealso
+#' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
+#'
+#' @export
+dawesModel <- function(train_data, criterion_col, cols_to_fit) {
+  cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
+  unit_weights <- sapply(cue_validities, function(x) sign(x-0.5))
+  # Need to save fit_predictions in case user calls predict without test_data.
+  fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
+  fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 fit_predictions=fit_predictions, fit_accuracy=fit_accuracy,
+                 cue_validities=cue_validities, linear_coef=unit_weights), class="dawesModel")
+}
+
+coef.dawesModel <- function(model) model$linear_coef
+
+#' @export
+predict.dawesModel <- function(object, ...) {
   args <- eval(substitute(alist(...)))
   if (length(args)==0) {
     return(object$fit_predictions)
