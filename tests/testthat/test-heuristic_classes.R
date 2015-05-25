@@ -161,3 +161,70 @@ test_that("franklinModel 3x3 pos pos predict", {
 })
 
 
+### regModel ###
+
+test_that("regModel 2x2 fit pos slope", {
+  model <- regModel(matrix(c(5,4,1,0), 2, 2), 1, c(2))
+  expect_equal(4,  coef(model)[[1]])  # intercept
+  expect_equal(1,  coef(model)[[2]])  # slope
+  expect_equal(2, length(coef(model))) 
+})
+
+test_that("regModel 2x2 fit neg slope", {
+  model <- regModel(matrix(c(5,4,0,1), 2, 2), 1, c(2))
+  expect_equal(5,  coef(model)[[1]])  # intercept
+  expect_equal(-1,  coef(model)[[2]])  # slope
+})
+
+test_that("regModel 2x2 fit pos slope -- data.frame", {
+  model <- regModel(as.data.frame( matrix(c(5,4,1,0), 2, 2)), 1, c(2))
+  expect_equal(4,  coef(model)[[1]])  # intercept
+  expect_equal(1,  coef(model)[[2]])  # slope
+  expect_equal(2, length(coef(model))) 
+})
+
+test_that("lmWrapper 2x2 fit pos slope -- no intercept", {
+  model <- lmWrapper(matrix(c(5,4,1,0), 2, 2), 1, c(2),  include_intercept=FALSE)
+  expect_equal(5,  coef(model)[[1]])  # slope
+  expect_equal(1, length(coef(model))) 
+})
+
+test_that("regModel 2x3 fit 4.5,1,NA", {
+  model <- regModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  expect_equal(4,  coef(model)[[1]])  # intercept
+  expect_equal(1,  coef(model)[[2]])  # x1
+  expect_true( is.na(coef(model)[[3]]) )  # x2 excluded because too many columns
+})
+
+test_that("regModel 2x3 fit 4,1 (col 3 not fit)", {
+  model <- regModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2))
+  expect_equal(4,  coef(model)[[1]])  # intercept
+  expect_equal(1,  coef(model)[[2]])  # x1
+  expect_equal(2, length(coef(model))) 
+})
+
+test_that("regModel 2x3 fit 5,-1 (col 2 not fit)", {
+  model <- regModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(3))
+  expect_equal(5,  coef(model)[[1]])  # intercept
+  expect_equal(-1,  coef(model)[[2]])  # x1
+  expect_equal(2, length(coef(model))) 
+})
+
+test_that("regModel 3x3 fit positive negative", {
+  model <- regModel(matrix(c(5,4,3,1,0,0,0,0,1), 3, 3), 1, c(2,3))
+  expect_equal(4,  coef(model)[[1]])  # intercept
+  expect_equal(1,  coef(model)[[2]])  # V2
+  expect_equal(-1,  coef(model)[[3]])  # V3
+  expect_equal(3, length(coef(model))) 
+})
+
+test_that("regModel 3x3 fit positive mixed", {
+  model <- regModel(matrix(c(5,4,3,1,0,0,1,0,1), 3, 3), 1, c(2,3))
+  expect_equal(4,  coef(model)[[1]])  # intercept
+  expect_equal(2,  coef(model)[[2]])  # V2
+  expect_equal(-1, coef(model)[[3]])  # V3
+  expect_equal(3, length(coef(model)))  
+})
+
+
+### regNoIModel ##

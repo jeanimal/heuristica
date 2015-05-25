@@ -166,6 +166,7 @@ predict.dawesModel <- function(object, ...) {
 #' 
 #' Franklin's Model is a linear model with weights calculated by \code{\link{cueValidity}}.
 #' The name is because it was inspired by a method used by Ben Franklin.
+#'
 #' @inheritParams heuristicaModel
 #'
 #' @return An object of \code{\link[base]{class}} franklinModel.  This is a list containing at least the following components:
@@ -211,3 +212,83 @@ predict.franklinModel <- function(object, ...) {
 }
 
 
+### Wrappers for linear regression models ###
+
+#' Just to share documentation
+#'
+#' @param train_matrix A matrix (or data.frame) of data to train (fit) the model with.
+#' @param criterion_col The index of the criterion column-- “y” in the formula.
+#' @param cols_to_fit A vector of column indexes to fit-- the “x’s” in the formula.
+# Private
+regModelForDocumentation <- function(train_matrix, criterion_col, cols_to_fit) NULL
+
+#' A wrapper to create a lm model just specifying columns, generating a formula for you.
+#' 
+#' @inheritParams regModelForDocumentation 
+#' @param include_intercept A boolean of whether to include an intercept in the formula.
+#'
+#' @return An object of class lm.
+#'
+# Private because the exported versions are below.
+lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE) {
+  train_df = as.data.frame(train_matrix)
+  formula_str = paste(colnames(train_df)[criterion_col], "~",
+                            paste(colnames(train_df)[cols_to_fit], collapse = "+"),
+                        sep = "")
+   if (include_intercept == FALSE) {
+    formula_str = paste(formula_str, "-1", sep = "")
+  }
+  return(lm(as.formula(formula_str), data=train_df))
+}
+
+#' Linear regression wrapper for hueristica
+#'
+#' A wrapper to create a lm model just specifying columns, generating
+#' a model formula for you.  This makes it easier to run automated comparisons with
+#' other models in heuristica.
+#'
+#' This version assumes you always want to include the intercept.
+#' 
+#' @inheritParams regModelForDocumentation 
+#'
+#' @return An object of class regModel, which is a subclass of lm.
+#'
+#' @seealso
+#' \code{\link{regNoIModel}} for a version that excludes the intercept.
+#' @seealso
+#' \code{\link{predict.lm}} for prediction.
+#'
+#' @export
+regModel <- function(train_matrix, criterion_col, cols_to_fit) {
+  model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE)
+  class(model) <- c("regModel", class(model))
+  return(model)
+}
+
+#' Linear regression (no intercept) wrapper for hueristica
+#'
+#' A wrapper to create a lm model just specifying columns, generating
+#' a model formula for you __without and intercept__.  
+#' This makes it easier to run automated comparisons with
+#' other models in heuristica.
+#'
+#' This version assumes you do NOT want to include the intercept.
+#' Excluding the intercept typically has higher out-of-sample accuracy if the goal is
+#' predicting rank order because the intercept does not affect the ranking, but
+#' estimating it wastes a degree of freedom.
+#' 
+#' @inheritParams regModelForDocumentation 
+#'
+#' @return An object of class regNoIModel, which is a subclass of lm.
+#'
+#' @seealso
+#' \code{\link{regModel}} for a version that includes the intercept.
+#' @seealso
+#' \code{\link{predict.lm}} for prediction.
+#'
+#' @export
+regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
+  model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=FALSE)
+  class(model) <- c("regNoIModel", class(model))
+  return(model)
+}
