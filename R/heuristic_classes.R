@@ -37,7 +37,8 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit) {
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit, cue_validities=cue_validities, cue_ranks=cue_ranks, linear_coef=linear_coef), class="ttbModel")
 }
 
-# Private.  The external world should not know the implementation actual uses a linear model under the hood.
+# Private.  The external world need not know the implementation actual uses a linear model
+# under the hood.
 coef.ttbModel <- function(model) model$linear_coef
 
 #' Generates predictions for Take The Best
@@ -52,6 +53,9 @@ coef.ttbModel <- function(model) model$linear_coef
 #' @return An N x 1 matrix of predicted values, or a list if there was only one cue.
 #'  Only the sort order of these is relevant for Take The Best.
 #' 
+#' @seealso
+#' \code{\link{ttbModel}} for example code.
+#'
 #' @export
 # Under the hood, TTB is implemented as a linear prediction with exponentiall-decaying weights.
 # This is just because it was more convenient to code it that way in R.
@@ -62,4 +66,3 @@ predict.ttbModel <- function(object, ...) {
   test_data <- eval(args[[1]])
   predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
 }
-
