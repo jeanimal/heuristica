@@ -56,7 +56,7 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit) {
 
 # Private.  The external world need not know the implementation actual uses a linear model
 # under the hood.
-coef.ttbModel <- function(model) model$linear_coef
+coef.ttbModel <- function(object, ...) object$linear_coef
 
 #' Generates predictions for Take The Best
 #'
@@ -132,7 +132,7 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit) {
 }
 
 #' @export
-coef.dawesModel <- function(model) model$linear_coef
+coef.dawesModel <- function(object, ...) object$linear_coef
 
 #' Generates predictions for Dawes Model 
 #'
@@ -183,7 +183,7 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit) {
 }
 
 #' @export
-coef.franklinModel <- function(model) model$linear_coef
+coef.franklinModel <- function(object, ...) object$linear_coef
 
 #' Generates predictions for Franklin's Model 
 #'
