@@ -1,9 +1,22 @@
 # heuristica
-Heuristic functions implemented in R, such as Take The Best (TTB) and Dawes rule, a unit-weighted linear) model.
+Heuristic functions implemented in R, such as Take The Best (TTB) and Dawes rule, a unit-weighted linear model.
 
-These heuristics were described in:  
+## The Task
+
+These heuristics were originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a soccer team in order to infer the __criterion__, population size.
+
+## Helper functions
+* [Cue validity](http://en.wikipedia.org/wiki/Cue_validity): A number from 0 to 1 indicating how often the cue would correctly predict the criterion in a two-alternative choice task.
+* Predict with weights: Multiplies cues by cue weights to produce predictions, plus takes care of corner cases.
+
+## Heuristics
+* [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic): Sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+* DawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue has no variance-- every value is the same-- gets a weight of 0.)
+* RegModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
+
+## Citation
+These heuristics and simulation using them were described in:  
 Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press.
-
 
 
 
