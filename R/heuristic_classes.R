@@ -45,7 +45,8 @@ coef.ttbModel <- function(model) model$linear_coef
 #' Implementation of \code{\link[stats]{predict}} for ttbModel.
 #'
 #' @param object A ttbModel.
-#'  newdata is used to predict and can be a matrix or data.frame.  
+#' @param ... Normally this would be the test data. 
+#'  It is used to predict and can be a matrix or data.frame.  
 #'  It must have the same cols_to_fit indices as those used in train_data.
 #'
 #' @return An N x 1 matrix of predicted values, or a list if there was only one cue.

@@ -7,8 +7,10 @@
 \method{predict}{ttbModel}(object, ...)
 }
 \arguments{
-\item{object}{A ttbModel.
- newdata is used to predict and can be a matrix or data.frame.
+\item{object}{A ttbModel.}
+
+\item{...}{Normally this would be the test data.
+ It is used to predict and can be a matrix or data.frame.
  It must have the same cols_to_fit indices as those used in train_data.}
 }
 \value{
