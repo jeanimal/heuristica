@@ -11,7 +11,7 @@ ttbModel(train_data, criterion_col, cols_to_fit)
 
 \item{criterion_col}{The index of the colum in train_data that has the criterion.}
 
-\item{cols_to_fit}{A vector of column indices in train_data.}
+\item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 }
 \value{
 An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
@@ -25,6 +25,9 @@ An object of \code{\link[base]{class}} ttbModel.  This is a list containing at l
 An implementation of the Take The Best heuristic.
 It sorts cues in order of \code{\link{cueValidity}}, making a decision based on the first cue that
 discriminates (has differing values on the two objects).
+}
+\details{
+Developer TODO: Have TTB reverse a cue with validity < 0.5.
 }
 \examples{
 ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.

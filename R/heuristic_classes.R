@@ -1,3 +1,10 @@
+#' Heuristica Model
+#' @param train_data Training/fitting data as a matrix or data.frame.
+#' @param criterion_col The index of the colum in train_data that has the criterion.
+#' @param cols_to_fit A vector of column indices in train_data, used to fit the criterion.
+# Private.  This is just an easy way to share parameter documentation.
+heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
+
 #' Take The Best
 #'
 #' An implementation of the Take The Best heuristic.
@@ -6,9 +13,7 @@
 #'
 #' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
-#' @param train_data Training/fitting data as a matrix or data.frame.
-#' @param criterion_col The index of the colum in train_data that has the criterion.
-#' @param cols_to_fit A vector of column indices in train_data.
+#' @inheritParams heuristicaModel
 #'
 #' @return An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
 #'   \itemize{
