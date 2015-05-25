@@ -69,7 +69,13 @@ coef.ttbModel <- function(model) model$linear_coef
 # The output is equivalent to the Take The Best model description.
 predict.ttbModel <- function(object, ...) {
   args <- eval(substitute(alist(...)))
-  #TODO: Make this handle missing test_dta.
-  test_data <- eval(args[[1]])
-  predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
+  if (length(args)==0) {
+    return(object$fit_predictions)
+  } else if (length(args)==1) {
+    test_data <- eval(args[[1]])
+    return(predictWithWeights(test_data, object$cols_to_fit, object$linear_coef))
+  } else {
+    stop("Expected only one unevaluated argument (test_data) but got " +
+          length(args) + ":" + args)
+  }
 }
