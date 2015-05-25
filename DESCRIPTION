@@ -13,3 +13,5 @@ LazyData: true
 Imports:
   Hmisc
 URL: https://github.com/jeanimal/heuristica
+Suggests:
+    testthat
