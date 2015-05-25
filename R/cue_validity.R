@@ -29,7 +29,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #'         the criterion, which will always be 1.
 #' @export
 matrixCueValidity <- function(matrix, criterionColIndex, replaceNanWith=0.5,
-includeCriterionValidity=FALSE) {
+                              includeCriterionValidity=FALSE) {
   rawOut <- apply(matrix, 2, function(x) cueValidity(matrix[,criterionColIndex], x, replaceNanWith=replaceNanWith))
   if (includeCriterionValidity == TRUE) {
     return(rawOut)
