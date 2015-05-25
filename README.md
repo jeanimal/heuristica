@@ -14,10 +14,11 @@ Take the Best was originally proposed for two-alternative choice tasks, e.g. giv
 * Predict with weights: Multiplies cues by cue weights to produce predictions, plus takes care of corner cases.
 
 ## Heuristics
-* [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic): Sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
-* DawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
-* FranklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a method like this.
-* RegModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
+* ttbModel: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+* dawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
+* franklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a method like this.
+* regModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
+* regNoIModel: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
 
 ## Citations
 
