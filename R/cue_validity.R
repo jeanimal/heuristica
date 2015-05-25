@@ -24,9 +24,9 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #'
 #' @param matrix The matrix whose columns are treated as cues.
 #' @param criterionColIndex The index of the column used as criterion.
-#' @param replaceNanWith See cueValidity.
 #' @param includeCriterionValidity Whether to return the cue validity of
 #'         the criterion, which will always be 1.
+#' @inheritParams cueValidity
 #' @export
 matrixCueValidity <- function(matrix, criterionColIndex, replaceNanWith=0.5,
                               includeCriterionValidity=FALSE) {

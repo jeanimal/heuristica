@@ -12,7 +12,8 @@ matrixCueValidity(matrix, criterionColIndex, replaceNanWith = 0.5,
 
 \item{criterionColIndex}{The index of the column used as criterion.}
 
-\item{replaceNanWith}{See cueValidity.}
+\item{replaceNanWith}{The value to return as cue validity in case it
+cannot be calculated.}
 
 \item{includeCriterionValidity}{Whether to return the cue validity of
 the criterion, which will always be 1.}
