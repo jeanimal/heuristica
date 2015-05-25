@@ -9,6 +9,7 @@ require("Hmisc")
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
 #' @return The cue validity, a value in the range [0,1].
+#' @export
 cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   out <- rcorr.cens(criterion, cue, outx=TRUE)
   justDxy <- as.double(out["Dxy"])
@@ -26,6 +27,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' @param replaceNanWith See cueValidity.
 #' @param includeCriterionValidity Whether to return the cue validity of
 #'         the criterion, which will always be 1.
+#' @export
 matrixCueValidity <- function(matrix, criterionColIndex, replaceNanWith=0.5,
 includeCriterionValidity=FALSE) {
   rawOut <- apply(matrix, 2, function(x) cueValidity(matrix[,criterionColIndex], x, replaceNanWith=replaceNanWith))
