@@ -8,7 +8,7 @@ Description: Implements various heuristics like Take The Best and
   makes it easy to use with other R fit models.  In particular,
   they implement coef and predict.  Includes helper functions.
 Depends: R (>= 3.1.0)
-License: MIT
+License: MIT + file LICENSE
 LazyData: true
 Imports:
   Hmisc
