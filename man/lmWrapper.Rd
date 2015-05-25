@@ -9,9 +9,9 @@ lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept = TRUE)
 \arguments{
 \item{train_matrix}{A matrix (or data.frame) of data to train (fit) the model with.}
 
-\item{criterion_col}{The index of the criterion column-- “y” in the formula.}
+\item{criterion_col}{The index of the criterion column-- "y" in the formula.}
 
-\item{cols_to_fit}{A vector of column indexes to fit-- the “x’s” in the formula.}
+\item{cols_to_fit}{A vector of column indexes to fit-- the "x's" in the formula.}
 
 \item{include_intercept}{A boolean of whether to include an intercept in the formula.}
 }

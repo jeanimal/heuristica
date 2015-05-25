@@ -218,8 +218,8 @@ predict.franklinModel <- function(object, ...) {
 #' Just to share documentation
 #'
 #' @param train_matrix A matrix (or data.frame) of data to train (fit) the model with.
-#' @param criterion_col The index of the criterion column-- “y” in the formula.
-#' @param cols_to_fit A vector of column indexes to fit-- the “x’s” in the formula.
+#' @param criterion_col The index of the criterion column-- "y" in the formula.
+#' @param cols_to_fit A vector of column indexes to fit-- the "x's" in the formula.
 # Private
 regModelForDocumentation <- function(train_matrix, criterion_col, cols_to_fit) NULL
 
