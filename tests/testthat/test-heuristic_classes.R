@@ -127,3 +127,37 @@ test_that("dawesModel 3x3 pos pos predict", {
 })
 
 
+### franklinModel ###
+
+test_that("franklinModel 2x3 pos neg", {
+  model <- franklinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  expect_equal(c(1,0),  model$cue_validities) 
+  expect_equal(1,  coef(model)[[1]])  
+  expect_equal(0,  coef(model)[[2]])  
+  expect_equal(2, length(coef(model))) 
+})
+
+test_that("franklinModel 5x1 75", {
+  model <- franklinModel(matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2), 1, c(2))
+  expect_equal(c(0.75),  model$cue_validities) 
+  expect_equal(0.75,  coef(model)[[1]])
+  expect_equal(1, length(coef(model))) 
+})
+
+test_that("franklinModel 5x1 25", {
+  model <- franklinModel(matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2), 1, c(2))
+  expect_equal(c(0.25),  model$cue_validities) 
+  expect_equal(0.25,  coef(model)[[1]])
+  expect_equal(1, length(coef(model))) 
+})
+
+test_that("franklinModel 3x3 pos pos predict", {
+  model <- franklinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+  expect_equal(c(1,1),  coef(model)) 
+  good <- predict(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
+  expect_equal(matrix(c(2,1,0), 3, 1), good)
+  bad <- predict(model, matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
+  expect_equal(matrix(c(0,1,2), 3, 1), bad)
+})
+
+

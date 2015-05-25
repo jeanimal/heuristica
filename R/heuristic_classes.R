@@ -60,7 +60,8 @@ coef.ttbModel <- function(model) model$linear_coef
 
 #' Generates predictions for Take The Best
 #'
-#' Implementation of \code{\link[stats]{predict}} for ttbModel.
+#' Implementation of \code{\link[stats]{predict}} for ttbModel,
+#' Take The Best.
 #'
 #' @param object A ttbModel.
 #' @param ... Normally this would be the test data. 
@@ -109,6 +110,8 @@ predict.ttbModel <- function(object, ...) {
 #' @return An object of \code{\link[base]{class}} dawesModel.  This is a list containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+#'    \item "linear_coef": A list of linear model coefficents (-1 or +1)
+#'           for the cues in order of cols_to_fit.
 #'   }
 #'
 #' @seealso
@@ -128,8 +131,20 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit) {
                  cue_validities=cue_validities, linear_coef=linear_coef), class="dawesModel")
 }
 
+#' @export
 coef.dawesModel <- function(model) model$linear_coef
 
+#' Generates predictions for Dawes Model 
+#'
+#' Implementation of \code{\link[stats]{predict}} for dawesModel.
+#'
+#' @param object A dawesModel.
+#' @param ... Normally this would be the test data. 
+#'  It is used to predict and can be a matrix or data.frame.  
+#'  It must have the same cols_to_fit indices as those used in train_data.
+#'
+#' @return An N x 1 matrix of predicted values, or a list if there was only one cue.
+#' 
 #' @export
 predict.dawesModel <- function(object, ...) {
   args <- eval(substitute(alist(...)))
@@ -143,3 +158,56 @@ predict.dawesModel <- function(object, ...) {
           length(args) + ":" + args)
   }
 }
+
+
+### Franklin's Model ###
+
+#' Franklin's Model, a linear model weighted by cue validities
+#' 
+#' Franklin's Model is a linear model with weights calculated by \code{\link{cueValidity}}.
+#' The name is because it was inspired by a method used by Ben Franklin.
+#' @inheritParams heuristicaModel
+#'
+#' @return An object of \code{\link[base]{class}} franklinModel.  This is a list containing at least the following components:
+#'   \itemize{
+#'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+#'    \item "linear_coef": Same as cue validities for this model.
+#'   }
+#'
+#' @seealso
+#' \code{\link{predict.franklinModel}} (via \code{\link[stats]{predict}}) for prediction.
+#' @export 
+franklinModel <- function(train_data, criterion_col, cols_to_fit) {
+  cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit, cue_validities=cue_validities, linear_coef=cue_validities), class="franklinModel")
+}
+
+#' @export
+coef.franklinModel <- function(model) model$linear_coef
+
+#' Generates predictions for Franklin's Model 
+#'
+#' Implementation of \code{\link[stats]{predict}} for franklinModel.
+#'
+#' @param object A franklinModel.
+#' @param ... Normally this would be the test data. 
+#'  It is used to predict and can be a matrix or data.frame.  
+#'  It must have the same cols_to_fit indices as those used in train_data.
+#'
+#' @return An N x 1 matrix of predicted values, or a list if there was only one cue.
+#' 
+#' @export
+predict.franklinModel <- function(object, ...) {
+  args <- eval(substitute(alist(...)))
+  if (length(args)==0) {
+    return(object$fit_predictions)
+  } else if (length(args)==1) {
+    test_data <- eval(args[[1]])
+    return(predictWithWeights(test_data, object$cols_to_fit, object$linear_coef))
+  } else {
+    stop("Expected only one unevaluated argument (test_data) but got " +
+          length(args) + ":" + args)
+  }
+}
+
+
