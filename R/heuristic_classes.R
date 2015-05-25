@@ -3,6 +3,8 @@
 #' An implementation of the Take The Best heuristic.
 #' It sorts cues in order of \code{\link{cueValidity}}, making a decision based on the first cue that
 #' discriminates (has differing values on the two objects).
+#'
+#' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
 #' @param train_data Training/fitting data as a matrix or data.frame.
 #' @param criterion_col The index of the colum in train_data that has the criterion.
