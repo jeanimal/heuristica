@@ -20,4 +20,7 @@ An N x 1 matrix of predicted values, or a list if there was only one cue.
 \description{
 Implementation of \code{\link[stats]{predict}} for ttbModel.
 }
+\seealso{
+\code{\link{ttbModel}} for example code.
+}
 

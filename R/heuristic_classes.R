@@ -34,7 +34,14 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit) {
   cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
   cue_ranks <- rev(rank(cue_validities, ties.method="random"))
   linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit, cue_validities=cue_validities, cue_ranks=cue_ranks, linear_coef=linear_coef), class="ttbModel")
+  # Need to save fit_predictions in case user calls predict without test_data.
+  fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
+  fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 cue_validities=cue_validities, cue_ranks=cue_ranks,
+                 linear_coef=linear_coef, fit_predictions=fit_predictions,
+                 fit_accuracy=fit_accuracy), 
+            class="ttbModel")
 }
 
 # Private.  The external world need not know the implementation actual uses a linear model
