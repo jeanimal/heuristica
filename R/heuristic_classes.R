@@ -119,13 +119,13 @@ predict.ttbModel <- function(object, ...) {
 #' @export
 dawesModel <- function(train_data, criterion_col, cols_to_fit) {
   cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
-  unit_weights <- sapply(cue_validities, function(x) sign(x-0.5))
+  linear_coef <- sapply(cue_validities, function(x) sign(x-0.5))
   # Need to save fit_predictions in case user calls predict without test_data.
   fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
   fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  fit_predictions=fit_predictions, fit_accuracy=fit_accuracy,
-                 cue_validities=cue_validities, linear_coef=unit_weights), class="dawesModel")
+                 cue_validities=cue_validities, linear_coef=linear_coef), class="dawesModel")
 }
 
 coef.dawesModel <- function(model) model$linear_coef
