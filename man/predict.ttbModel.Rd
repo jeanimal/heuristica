@@ -4,7 +4,16 @@
 \alias{predict.ttbModel}
 \title{Generates predictions for Take The Best}
 \usage{
-\method{predict}{ttbModel}(model, test_df)
+\method{predict}{ttbModel}(model, ...)
+}
+\arguments{
+\item{model}{A ttbModel.
+ newdata is used to predict and can be a matrix or data.frame.
+ It must have the same cols_to_fit indices as those used in train_data.}
+}
+\value{
+An N x 1 matrix of predicted values, or a list if there was only one cue.
+ Only the sort order of these is relevant for Take The Best.
 }
 \description{
 Implementation of \code{\link[stats]{predict}} for ttbModel.
