@@ -2,3 +2,4 @@
 
 export(cueValidity)
 export(matrixCueValidity)
+export(predictWithWeights)
