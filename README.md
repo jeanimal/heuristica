@@ -20,7 +20,11 @@ Take the Best was originally proposed for two-alternative choice tasks, e.g. giv
 * RegModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
 
 ## Citations
-These heuristics and simulation using them were described in:  
+
+Take The Best was first described in:  
+Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal way: Models of bounded rationality". Psychological Review, 103, 650-669.  
+
+All of these heuristics were run on many data sets and analyzed in:  
 Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press.  
 
 The research was also inspried by:  
