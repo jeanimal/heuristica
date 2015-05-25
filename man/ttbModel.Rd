@@ -26,8 +26,13 @@ However, its implementation of the S3 predict generic function has to output val
 Do not take the actual values seriously-- only the sort order is guaranteed.
 }
 \examples{
-# Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
 ttb <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-predict(ttb, matrix(c(5,4,1,0,0,1), 2, 3))  # Only sort order of output guaranteed.
+## This outputs predicted values for the first and second values, but only the sort order is guaranteed.
+## so this is considered a "correct" prediction.
+predict(ttb, matrix(c(5,4,1,0,0,1), 2, 3))
+}
+\seealso{
+\code{\link{predict.ttbModel}} (via \code{\link[stats]{predict}}) for prediction.
 }
 
