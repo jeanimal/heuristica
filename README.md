@@ -1,5 +1,5 @@
 # heuristica
-Heuristic functions implemented in R, such as Take The Best (TTB) and Dawes rule, a unit-weighted linear model.
+Heuristic functions implemented in R, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB).
 
 ## Goal
 
