@@ -54,8 +54,9 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit) {
             class="ttbModel")
 }
 
-# Private.  The external world need not know the implementation actual uses a linear model
-# under the hood.
+# TODO: Make this private.  The external world need not know the implementation actual uses a linear model
+# under the hood.  However, for now I need it until I get predict working correctly for a named m_test input.
+#' @export
 coef.ttbModel <- function(object, ...) object$linear_coef
 
 #' Generates predictions for Take The Best
