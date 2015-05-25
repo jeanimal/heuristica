@@ -44,7 +44,7 @@ coef.ttbModel <- function(model) model$linear_coef
 #'
 #' Implementation of \code{\link[stats]{predict}} for ttbModel.
 #'
-#' @param model A ttbModel.
+#' @param object A ttbModel.
 #'  newdata is used to predict and can be a matrix or data.frame.  
 #'  It must have the same cols_to_fit indices as those used in train_data.
 #'
@@ -54,11 +54,11 @@ coef.ttbModel <- function(model) model$linear_coef
 #' @export
 # Under the hood, TTB is implemented as a linear prediction with exponentiall-decaying weights.
 # This is just because it was more convenient to code it that way in R.
-# The output is equivalent to the model description.
-predict.ttbModel <- function(model, ...) {
+# The output is equivalent to the Take The Best model description.
+predict.ttbModel <- function(object, ...) {
   args <- eval(substitute(alist(...)))
   #TODO: Make this handle missing test_dta.
   test_data <- eval(args[[1]])
-  predictWithWeights(test_data, model$cols_to_fit, model$linear_coef)
+  predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
 }
 

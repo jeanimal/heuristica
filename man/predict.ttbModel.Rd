@@ -4,10 +4,10 @@
 \alias{predict.ttbModel}
 \title{Generates predictions for Take The Best}
 \usage{
-\method{predict}{ttbModel}(model, ...)
+\method{predict}{ttbModel}(object, ...)
 }
 \arguments{
-\item{model}{A ttbModel.
+\item{object}{A ttbModel.
  newdata is used to predict and can be a matrix or data.frame.
  It must have the same cols_to_fit indices as those used in train_data.}
 }
