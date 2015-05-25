@@ -15,12 +15,13 @@ Take the Best was originally proposed for two-alternative choice tasks, e.g. giv
 
 ## Heuristics
 * [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic): Sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
-* DawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)
+* DawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
 * RegModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
 
 ## Citation
 These heuristics and simulation using them were described in:  
-Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press.
+Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press.  
 
-
+The research was also inspried by:  
+Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. doi:10.1037/0003-066X.34.7.571 [archived pdf](http://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
 
