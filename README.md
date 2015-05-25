@@ -11,7 +11,7 @@ These heuristics were originally proposed for two-alternative choice tasks, e.g.
 
 ## Heuristics
 * [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic): Sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
-* DawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue has no variance-- every value is the same-- gets a weight of 0.)
+* DawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)
 * RegModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
 
 ## Citation
