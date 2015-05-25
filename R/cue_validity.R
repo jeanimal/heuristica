@@ -1,5 +1,5 @@
 # install.packages("Hmisc")
-require("Hmisc")
+# require("Hmisc")
 
 #' Calculate the cue validity http://en.wikipedia.org/wiki/Cue_validity
 #'
