@@ -1,7 +1,7 @@
 # install.packages("Hmisc")
 # require("Hmisc")
 
-#' Calculate the cue validity http://en.wikipedia.org/wiki/Cue_validity
+#' Calculate the \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
 #'
 #' @param criterion A vector of values to be predicted.
 #' @param cue A vector of values to predict with.  Should have the same

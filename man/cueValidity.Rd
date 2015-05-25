@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{cueValidity}
 \alias{cueValidity}
-\title{Calculate the cue validity http://en.wikipedia.org/wiki/Cue_validity}
+\title{Calculate the \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}}
 \usage{
 cueValidity(criterion, cue, replaceNanWith = 0.5)
 }
@@ -19,6 +19,6 @@ cannot be calculated.}
 The cue validity, a value in the range [0,1].
 }
 \description{
-Calculate the cue validity http://en.wikipedia.org/wiki/Cue_validity
+Calculate the \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
 }
 
