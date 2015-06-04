@@ -130,7 +130,7 @@ In general, the models will have falled to about 65% accuracy (from 75%).  The r
 
 Below is a hacky but effective way to generate a lot of data for a variety of number of random cues.  You need 2 repetitions for 0 random cues because otherwise the summarize function complains.  Using 200 repetitions takes about a minute on my MacBook Air, while 2000 repetitions takes enough time to grab a coffee.
 ```{r}
-num_rep <- 200
+num_rep <- 400
 out <- data.frame()
 for (i in 1:2) { out <- rbind(out, multiPredict75(model_list, 0)) }
 for (i in 1:num_rep) { out <- rbind(out, multiPredict75(model_list, 1)) }
