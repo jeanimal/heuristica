@@ -1,0 +1,194 @@
+---
+title: "Using heuristica"
+author: "Jean Whitmore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Heuristica wraps up several inference heuristics in an easily-reused form. Heuristics are simple rules of thumb that do not try to maximize likelihood or minimize error when fitting, as for example linear regression does.  Nevertheless, heuristics can in some cases achieve lower predictive error than the methods that maximize or minimize.  This package can help you explore when and why this is the case.
+
+## Installation
+
+To get the github version of heuristica:
+
+```{r}
+# Uncomment and execute the line below if you do not have devtools.
+# install.packages("devtools") 
+devtools::install_github("jeanimal/heuristica")
+library("heuristica")
+```
+
+## The task
+
+The inference task in this package involves using several predictor variables, or cues, to infer a criterion value.  For example, consider a data set about Chicago high schools.  Given the cues of average math scores, average reading scores, percent of low-income students, and percent of non-White students, infer each school's dropout rate, the criterion.
+
+A variant of this task is two-alternative choice.  For example, given the above cues about two Chicago high school, infer which school has the higher dropout rates.  The criterion is binary, one of the two schools.  It is either correct or incorrect, and over many schools, we can calculate the percent of errors that were correct, which will range from 0 to 100%.
+
+Because of this task structure, all of the models will have the same basic fitting interface:
+* A data set-- as a matrix or data.frame
+* The index of the criterion column in the data set
+* A vector of indices of the cue columns in the data set
+
+## Take The Best
+
+ttbModel is an implementation of An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+
+Here is some fake data on high school drop-out rates to consider.
+```{r}
+rural_schools <- data.frame(School=c('Allen', 'Baker', 'Cooper'), Dropout_Rate=c(40, 30, 34), Low_Income=c(29, 22, 25), Math=c(83, 104, 101), Reading=c(99, 99, 94))
+rural_schools
+```
+
+Then we run Take The Best by giving it the data frame, specifying column 2 as the criterion and columns 3-5 as the predictor cues.  The output is the fitted take the best model.
+```{r}
+ttb <- ttbModel(rural_schools, 2, c(3:5))
+```
+
+If you are curious what is in ttb's fit, you can inspect the the cue validities it calculated (and you can read a detailed explanation of cue validity below).
+```{r}
+ttb$cue_validities
+```
+
+We can use this model to generate predictions by passing the predict function the model and some data to predict on.  It will assume the predictor cues are still in columns 2 through 5.  Let us first have it try to predict using the data it used to fit:
+```{r}
+ttbPredictions <- predict(ttb, rural_schools)
+cueValidity(rural_schools$Dropout_Rate, ttbPredictions)
+```
+
+Not bad.
+
+Now let us get data from another school distict and see how well it predicts there.
+```{r}
+more_rural_schools <- data.frame(School=c('Franklin', 'Greer', 'Houser'), Dropout_Rate=c(41, 31, 36), Low_Income=c(70, 66, 50), Math=c(83, 84, 82), Reading=c(90, 81, 84))
+more_rural_schools
+ttbPredictions <- predict(ttbModel, more_rural_schools)
+cueValidity(rural_schools$Dropout_Rate, ttbPredictions)
+```
+
+A key point here is that this prediciton is based on the cue validities fitted from the original schools, Allen, Baker, and Cooper.  This is an out-of-sample prediction, a generalization from one set of schools to another.  
+
+Fitting the same sample is a much easier task.  Here is the accuracy if TTB merely fitted Franklin, Greer, and Houser.
+```{r}
+ttb_more_rural_schools <- ttbModel(rural_schools, 1, c(2:5))
+predict(ttb_more_rural_schools, more_rural_schools)
+```
+
+
+## Regression
+
+In order to make comparison with regression easier, the package provides a wrapper that gives it the same interface as the heuristics: A data set, a criterion column, and a vector of cue columns.
+
+## Cue validity
+
+Several of the heuristics use cue validity, which is measured for the two-alternative choice task.  It gives the precent of correct inferences in that data set if that cue were the only cue, ranging from 0 to 100%.  
+
+### Two rows
+
+In the simplest case, there are only two rows in the data set, for example, a rural school district with only two schools, Allen and Baker, with these cue values:
+
+```{r}
+rural_schools <- data.frame(School=c('Allen', 'Baker'), Dropout_Rate=c(40, 34), Low_Income=c(29, 22), Math=c(83, 104), Reading=c(99, 99))
+rural_schools
+```
+
+* The higher math score, 104, is associated with the higher dropout rate, 40, so the cue validity of math score is 100%.
+
+```{r}
+cueValidity(rural_schools$Dropout_Rate, rural_schools$Math)
+```
+
+* The higher reading score, 99, is associated with the _lower_ dropout rate, so its cue validity is 0%.
+```{r}
+cueValidity(rural_schools$Dropout_Rate, rural_schools$Reading)
+```
+
+* Low_Income has equal values for both schools.  This would mean you would have to guess which school had a higher dropout rate, resulting in an average score of 50%.  By default, heuristica assigns this a cueValidity of 50% (0.5).
+```{r}
+cueValidity(rural_schools$Dropout_Rate, rural_schools$Low_Income)
+```
+
+Alternatively,  you can pass in the optional parameter replaceNanWith to have it return whatever you prefer, e.g. NaN.
+```{r}
+cueValidity(rural_schools$Dropout_Rate, rural_schools$Low_Income, replaceNaNWith=NaN)
+```
+
+### Three rows
+
+Of course, in most cases, the data will have more than two rows.  Then cue validity is calculated for all possible pairs of rows.  For example, suppose the rural school district opens a third school, Cooper.  Here is some data for Cooper:
+```{r}
+rural_schools <- rbind.data.frame(rural_schools, data.frame(School='Cooper', Dropout_Rate=22, Math=90, Reading=97, Low_Income=23))
+rural_schools
+```
+
+Now consider the cue validity of Math over alll the pairs:
+* Allen vs. Baker: correct
+* Allen vs. Cooper: correct
+* Baker vs. Cooper: incorrect
+
+As there are 2 correct out of 3 pairs, the cue validity is 2/3, or about 0.667.
+```{r}
+cueValidity(rural_schools$Dropout_Rate, rural_schools$Math)
+```
+
+### Cue validity < 0.5
+
+You may have wondered why we always assumed bigger cue values were associated with bigger criterion values.  For example, intuitively higher math scores should be associated with _lower_ drop-out rates.  Heuristics can be written to detect this and use the reverse relationship.
+
+### Discussion 
+
+The calculation of cue validity demonstrates a key feature of many heuristics: they ignore correlations among cues.
+
+
+## dawesModel: a unit-weight linear model
+
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+
+## Vignette Info
+
+Note the various macros within the `vignette` setion of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
