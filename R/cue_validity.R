@@ -30,7 +30,10 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #'
 #' @param data The matrix or data.frame whose columns are treated as cues.
 #' @param criterion_col The index of the column used as criterion.
-#' @inheritParams cueValidity
+#' @param cols_to_fit A vector of indexes of the columns to calculate cue
+#'   validity for
+#' @param replaceNanWith The value to return as cue validity in case it
+#'         cannot be calculated.
 #' @export
 matrixCueValidity <- function(data, criterion_col, cols_to_fit, 
                               replaceNanWith=0.5) {

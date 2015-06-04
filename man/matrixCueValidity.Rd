@@ -11,6 +11,9 @@ matrixCueValidity(data, criterion_col, cols_to_fit, replaceNanWith = 0.5)
 
 \item{criterion_col}{The index of the column used as criterion.}
 
+\item{cols_to_fit}{A vector of indexes of the columns to calculate cue
+validity for}
+
 \item{replaceNanWith}{The value to return as cue validity in case it
 cannot be calculated.}
 }
