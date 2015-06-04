@@ -39,17 +39,13 @@ ttbModel is an implementation of An implementation of [Take The Best](http://en.
 
 Here is some fake data on high school drop-out rates to consider.
 ```{r}
-rural_schools <- data.frame(School=c('Allen', 'Baker', 'Cooper'), Dropout_Rate=c(40, 30, 34), Low_Income=c(29, 22, 25), Math=c(83, 104, 101), Reading=c(99, 99, 94))
+rural_schools <- data.frame(School=c('Allen', 'Baker', 'Cooper'), Dropout_Rate=c(40, 34, 30), Low_Income=c(29, 25, 8), Math=c(83, 111, 110), Reading=c(99, 99, 98))
 rural_schools
 ```
 
-Then we run Take The Best by giving it the data frame, specifying column 2 as the criterion and columns 3-5 as the predictor cues.  The output is the fitted take the best model.
+Then we run Take The Best by giving it the data frame, specifying column 2 as the criterion and columns 3-5 as the predictor cues.  The output is the fitted take the best model.  We output the cue_validities so you can geta sense of what is involved in the fit.
 ```{r}
 ttb <- ttbModel(rural_schools, 2, c(3:5))
-```
-
-If you are curious what is in ttb's fit, you can inspect the the cue validities it calculated (and you can read a detailed explanation of cue validity below).
-```{r}
 ttb$cue_validities
 ```
 
@@ -61,20 +57,20 @@ cueValidity(rural_schools$Dropout_Rate, ttbPredictions)
 
 Not bad.
 
-Now let us get data from another school distict and see how well it predicts there.
+Now let us get data from another school district and see how well it predicts there.
 ```{r}
-more_rural_schools <- data.frame(School=c('Franklin', 'Greer', 'Houser'), Dropout_Rate=c(41, 31, 36), Low_Income=c(70, 66, 50), Math=c(83, 84, 82), Reading=c(90, 81, 84))
-more_rural_schools
-ttbPredictions <- predict(ttbModel, more_rural_schools)
-cueValidity(rural_schools$Dropout_Rate, ttbPredictions)
+# more_rural_schools <- data.frame(School=c('Franklin', 'Greer', 'Houser'), Dropout_Rate=c(41, 31, 36), Low_Income=c(70, 66, 50), Math=c(83, 84, 82), Reading=c(90, 81, 84))
+# more_rural_schools
+# ttbPredictions <- predict(ttb, more_rural_schools)
+# cueValidity(rural_schools$Dropout_Rate, ttbPredictions)
 ```
 
 A key point here is that this prediciton is based on the cue validities fitted from the original schools, Allen, Baker, and Cooper.  This is an out-of-sample prediction, a generalization from one set of schools to another.  
 
 Fitting the same sample is a much easier task.  Here is the accuracy if TTB merely fitted Franklin, Greer, and Houser.
 ```{r}
-ttb_more_rural_schools <- ttbModel(rural_schools, 1, c(2:5))
-predict(ttb_more_rural_schools, more_rural_schools)
+# ttb_more_rural_schools <- ttbModel(more_rural_schools, 1, c(2:5))
+# predict(ttb_more_rural_schools, more_rural_schools)
 ```
 
 
@@ -113,7 +109,7 @@ cueValidity(rural_schools$Dropout_Rate, rural_schools$Low_Income)
 
 Alternatively,  you can pass in the optional parameter replaceNanWith to have it return whatever you prefer, e.g. NaN.
 ```{r}
-cueValidity(rural_schools$Dropout_Rate, rural_schools$Low_Income, replaceNaNWith=NaN)
+# cueValidity(rural_schools$Dropout_Rate, rural_schools$Low_Income, replaceNaNWith=NaN)
 ```
 
 ### Three rows
