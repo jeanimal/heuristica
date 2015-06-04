@@ -1,7 +1,10 @@
 # install.packages("Hmisc")
 # require("Hmisc")
 
+#' Calculate the cue validity
+#'
 #' Calculate the \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
+#' for a pair of vectors.
 #'
 #' @param criterion A vector of values to be predicted.
 #' @param cue A vector of values to predict with.  Should have the same
@@ -20,21 +23,24 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-#' Calculate the cue validity for every column in the matrix.
+#' Calculate the cue validity for all specified columns
 #'
-#' @param matrix The matrix whose columns are treated as cues.
-#' @param criterionColIndex The index of the column used as criterion.
-#' @param includeCriterionValidity Whether to return the cue validity of
-#'         the criterion, which will always be 1.
+#' If you know you want cue validities for many columns in your data,
+#' this function makes it easy.  
+#'
+#' @param data The matrix or data.frame whose columns are treated as cues.
+#' @param criterion_col The index of the column used as criterion.
 #' @inheritParams cueValidity
 #' @export
-matrixCueValidity <- function(matrix, criterionColIndex, replaceNanWith=0.5,
-                              includeCriterionValidity=FALSE) {
-  rawOut <- apply(matrix, 2, function(x) cueValidity(matrix[,criterionColIndex], x, replaceNanWith=replaceNanWith))
-  if (includeCriterionValidity == TRUE) {
-    return(rawOut)
-  } else {
-    return(rawOut[-criterionColIndex])
+matrixCueValidity <- function(data, criterion_col, cols_to_fit, 
+                              replaceNanWith=0.5) {
+  out <- sapply(cols_to_fit, function(col) {
+    cueValidity(data[,criterion_col], data[,col], replaceNanWith=replaceNanWith)
+  })
+  out <- c(out)
+  if (length(names(data)) > 0) {
+    names(out) <- names(data)[cols_to_fit]
   }
+  return(out)
 }
 

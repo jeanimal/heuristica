@@ -2,23 +2,20 @@
 % Please edit documentation in R/cue_validity.R
 \name{matrixCueValidity}
 \alias{matrixCueValidity}
-\title{Calculate the cue validity for every column in the matrix.}
+\title{Calculate the cue validity for all specified columns}
 \usage{
-matrixCueValidity(matrix, criterionColIndex, replaceNanWith = 0.5,
-  includeCriterionValidity = FALSE)
+matrixCueValidity(data, criterion_col, cols_to_fit, replaceNanWith = 0.5)
 }
 \arguments{
-\item{matrix}{The matrix whose columns are treated as cues.}
+\item{data}{The matrix or data.frame whose columns are treated as cues.}
 
-\item{criterionColIndex}{The index of the column used as criterion.}
+\item{criterion_col}{The index of the column used as criterion.}
 
 \item{replaceNanWith}{The value to return as cue validity in case it
 cannot be calculated.}
-
-\item{includeCriterionValidity}{Whether to return the cue validity of
-the criterion, which will always be 1.}
 }
 \description{
-Calculate the cue validity for every column in the matrix.
+If you know you want cue validities for many columns in your data,
+this function makes it easy.
 }
 

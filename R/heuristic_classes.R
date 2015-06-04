@@ -41,7 +41,7 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #'
 #' @export
 ttbModel <- function(train_data, criterion_col, cols_to_fit) {
-  cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
+  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities) - rank(cue_validities, ties.method="random") + 1
   linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
@@ -123,7 +123,7 @@ predict.ttbModel <- function(object, ...) {
 #'
 #' @export
 dawesModel <- function(train_data, criterion_col, cols_to_fit) {
-  cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
+  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   linear_coef <- sapply(cue_validities, function(x) sign(x-0.5))
   # Need to save fit_predictions in case user calls predict without test_data.
   fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
@@ -181,7 +181,7 @@ predict.dawesModel <- function(object, ...) {
 #' \code{\link{predict.franklinModel}} (via \code{\link[stats]{predict}}) for prediction.
 #' @export 
 franklinModel <- function(train_data, criterion_col, cols_to_fit) {
-  cue_validities <- matrixCueValidity(train_data[,c(criterion_col,cols_to_fit)], criterion_col)
+  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit, cue_validities=cue_validities, linear_coef=cue_validities), class="franklinModel")
 }
 
