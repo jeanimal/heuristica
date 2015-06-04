@@ -37,9 +37,11 @@ Because of this task structure, all of the models will have the same basic fitti
 
 ttbModel is an implementation of An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
 
+TTB is currently only implemented for binary cues.
+
 Here is some fake data on high school drop-out rates to consider.
 ```{r}
-rural_schools <- data.frame(School=c('Allen', 'Baker', 'Cooper'), Dropout_Rate=c(40, 34, 30), Low_Income=c(29, 25, 8), Math=c(83, 111, 110), Reading=c(99, 99, 98))
+rural_schools <- data.frame(School=c('Allen', 'Baker', 'Cooper'), Dropout_Rate=c(40, 34, 30), Low_Income=c(1, 1, 0), Math=c(0, 1, 1), Reading=c(1, 0, 0))
 rural_schools
 ```
 
@@ -51,18 +53,18 @@ ttb$cue_validities
 
 We can use this model to generate predictions by passing the predict function the model and some data to predict on.  It will assume the predictor cues are still in columns 2 through 5.  Let us first have it try to predict using the data it used to fit:
 ```{r}
-ttbPredictions <- predict(ttb, rural_schools)
-cueValidity(rural_schools$Dropout_Rate, ttbPredictions)
+ttb_predictions <- predict(ttb, rural_schools)
+cueValidity(rural_schools$Dropout_Rate, ttb_predictions)
 ```
 
 Not bad.
 
 Now let us get data from another school district and see how well it predicts there.
 ```{r}
-more_rural_schools <- data.frame(School=c('Franklin', 'Greer', 'Houser'), Dropout_Rate=c(41, 31, 36), Low_Income=c(70, 66, 50), Math=c(83, 84, 82), Reading=c(90, 81, 84))
+more_rural_schools <- data.frame(School=c('Franklin', 'Greer', 'Houser'), Dropout_Rate=c(41, 31, 36), Low_Income=c(1, 0, 0), Math=c(0, 0, 0), Reading=c(0, 1, 1))
 more_rural_schools
-ttbPredictions <- predict(ttb, more_rural_schools)
-cueValidity(more_rural_schools$Dropout_Rate, ttbPredictions)
+ttb_predictions <- predict(ttb, more_rural_schools)
+cueValidity(more_rural_schools$Dropout_Rate, ttb_predictions)
 ```
 
 A key point here is that this prediciton is based on the cue validities fitted from the original schools, Allen, Baker, and Cooper.  This is an out-of-sample prediction, a generalization from one set of schools to another.  
@@ -70,14 +72,21 @@ A key point here is that this prediciton is based on the cue validities fitted f
 Fitting the same sample is a much easier task.  Here is the accuracy if TTB merely fitted Franklin, Greer, and Houser.
 ```{r}
 ttb_more_rural_schools <- ttbModel(more_rural_schools, 2, c(3:5))
-ttbPredictions <- predict(ttb_more_rural_schools, more_rural_schools)
-cueValidity(more_rural_schools$Dropout_Rate, ttbPredictions)
+ttb_predictions <- predict(ttb_more_rural_schools, more_rural_schools)
+cueValidity(more_rural_schools$Dropout_Rate, ttb_predictions)
 ```
 
 
 ## Regression
 
 In order to make comparison with regression easier, the package provides a wrapper that gives it the same interface as the heuristics: A data set, a criterion column, and a vector of cue columns.
+
+```{r}
+reg <- regModel(rural_schools, 2, c(3:5))
+reg_predictions <- predict(reg, more_rural_schools)
+cueValidity(more_rural_schools$Dropout_Rate, reg_predictions)
+```
+
 
 ## Cue validity
 
