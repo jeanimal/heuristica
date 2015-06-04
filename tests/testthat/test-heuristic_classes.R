@@ -72,10 +72,7 @@ test_that("ttbModel 4x3 reverses cue rank", {
   expect_equal(3, model$cue_ranks[2])
 })
 
-# Fails
-# This test really belongs in cue validity
 test_that("ttbModel 3x3 names shifted criterion", {
-  skip("I am working on this.  It does not affect numbers, AFAIK")
   df <- data.frame(matrix(c(99, 99, 99, 5,4,3,1,0,1), 3, 3))
   names(df) <- c('Garbage', 'Criterion', 'Cue')
   model <- ttbModel(df, 2, c(3))
