@@ -64,6 +64,27 @@ test_that("ttbModel 3x3 pos mixed", {
   expect_equal(2, length(coef(model)))  
 })
 
+test_that("ttbModel 4x3 reverses cue rank", {
+  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,0,1,1,1,0), 3, 4), 1, c(2:4))
+  expect_equal(c(1,0.5,1), model$cue_validities)
+  # The 1st and 3rd cue are tied, so only check the 2nd cue rank, 
+  # which should be last (3rd).
+  expect_equal(3, model$cue_ranks[2])
+})
+
+# Fails
+# This test really belongs in cue validity
+test_that("ttbModel 3x3 names shifted criterion", {
+  skip("I am working on this.  It does not affect numbers, AFAIK")
+  df <- data.frame(matrix(c(99, 99, 99, 5,4,3,1,0,1), 3, 3))
+  names(df) <- c('Garbage', 'Criterion', 'Cue')
+  model <- ttbModel(df, 2, c(3))
+  expect_equal(c(0.5), unname(model$cue_validities))
+  expect_equal(c('Cue'), names(model$cue_validities))
+})
+
+
+
 # Most testing of predict is with predictWithWeights, so here I am
 # just making sure it is correctly wired into the ttbModel.
 # ttb only guarantees the ordering of its predictions, not values, 
