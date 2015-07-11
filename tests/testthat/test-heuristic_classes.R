@@ -2,80 +2,80 @@ context("heuristic_classes")
 
 # require('testthat')
 
-### Take The Best (ttbModel) ###
+### Take The Best (ttbBinModel) ###
 
-test_that("ttbModel 2x2 pos", {
-  model <- ttbModel(matrix(c(5,4,1,0), 2, 2), 1, c(2))
+test_that("ttbBinModel 2x2 pos", {
+  model <- ttbBinModel(matrix(c(5,4,1,0), 2, 2), 1, c(2))
   expect_equal(c(1),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]]) 
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("ttbModel 2x2 neg", {
-  model <- ttbModel(matrix(c(5,4,0,1), 2, 2), 1, c(2))
+test_that("ttbBinModel 2x2 neg", {
+  model <- ttbBinModel(matrix(c(5,4,0,1), 2, 2), 1, c(2))
   expect_equal(c(0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("ttbModel 2x3 pos neg", {
-  model <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+test_that("ttbBinModel 2x3 pos neg", {
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]])  
   expect_equal(2, length(coef(model))) 
 })
 
-test_that("ttbModel 2x3 neg pos", {
-  model <- ttbModel(matrix(c(5,4,0,1,1,0), 2, 3), 1, c(2,3))
+test_that("ttbBinModel 2x3 neg pos", {
+  model <- ttbBinModel(matrix(c(5,4,0,1,1,0), 2, 3), 1, c(2,3))
   expect_equal(c(0,1),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(2,  coef(model)[[2]])  
   expect_equal(2, length(coef(model))) 
 })
 
-test_that("ttbModel 2x3 pos neg (col 3 not fit)", {
-  model <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2))
+test_that("ttbBinModel 2x3 pos neg (col 3 not fit)", {
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2))
   expect_equal(c(1),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("ttbModel 2x3 pos neg (col 2 not fit)", {
-  model <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(3))
+test_that("ttbBinModel 2x3 pos neg (col 2 not fit)", {
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(3))
   expect_equal(c(0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("ttbModel 3x3 pos neg", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,0,0,1), 3, 3), 1, c(2,3))
+test_that("ttbBinModel 3x3 pos neg", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,0,0,1), 3, 3), 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]]) 
   expect_equal(2, length(coef(model))) 
 })
 
-test_that("ttbModel 3x3 pos mixed", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,0,1), 3, 3), 1, c(2,3))
+test_that("ttbBinModel 3x3 pos mixed", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,0,1), 3, 3), 1, c(2,3))
   expect_equal(c(1,0.5),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]]) 
   expect_equal(2, length(coef(model)))  
 })
 
-test_that("ttbModel 4x3 reverses cue rank", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,0,1,1,1,0), 3, 4), 1, c(2:4))
+test_that("ttbBinModel 4x3 reverses cue rank", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,0,1,1,1,0), 3, 4), 1, c(2:4))
   expect_equal(c(1,0.5,1), model$cue_validities)
   # The 1st and 3rd cue are tied, so only check the 2nd cue rank, 
   # which should be last (3rd).
   expect_equal(3, model$cue_ranks[2])
 })
 
-test_that("ttbModel 3x3 names shifted criterion", {
+test_that("ttbBinModel 3x3 names shifted criterion", {
   df <- data.frame(matrix(c(99, 99, 99, 5,4,3,1,0,1), 3, 3))
   names(df) <- c('Garbage', 'Criterion', 'Cue')
-  model <- ttbModel(df, 2, c(3))
+  model <- ttbBinModel(df, 2, c(3))
   expect_equal(c(0.5), unname(model$cue_validities))
   expect_equal(c('Cue'), names(model$cue_validities))
 })
@@ -83,11 +83,11 @@ test_that("ttbModel 3x3 names shifted criterion", {
 
 
 # Most testing of predict is with predictWithWeights, so here I am
-# just making sure it is correctly wired into the ttbModel.
+# just making sure it is correctly wired into the ttbBinModel.
 # ttb only guarantees the ordering of its predictions, not values, 
 # so only the ordering is tested.
-test_that("ttbModel 3x3 pos pos predict", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+test_that("ttbBinModel 3x3 pos pos predict", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities) 
   good <- predict(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
   expect_more_than(good[1,1], good[2,1])
@@ -99,8 +99,8 @@ test_that("ttbModel 3x3 pos pos predict", {
   expect_equal(3, length(bad))
 })
 
-test_that("ttbModel 3x3 predict without test_data", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+test_that("ttbBinModel 3x3 predict without test_data", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities) 
   good <- predict(model)
   expect_more_than(good[1,1], good[2,1])

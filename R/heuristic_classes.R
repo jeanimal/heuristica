@@ -6,19 +6,21 @@
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
 
-###  Take the Best (ttbModel) ###
+###  Take the Best binary (ttbBinModel) ###
 
-#' Take The Best
+#' Take The Best for binary cues
 #'
-#' An implementation of the Take The Best heuristic.
+#' An implementation of the Take The Best heuristic for binary cues.
 #' It sorts cues in order of \code{\link{cueValidity}}, making a decision based on the first cue that
 #' discriminates (has differing values on the two objects).
+#' Accepting only binary cues allows it to implement the predict function.
+#' Warning: it will not error if you give it non-binary (real-valued) cues.
 #'
 #' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
 #' @inheritParams heuristicaModel
 #'
-#' @return An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
+#' @return An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
 #'    \item "cue_ranks": A list of integer ranks of the cues in order of cols_to_fit.
@@ -27,7 +29,7 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #'
 #' @examples
 #' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-#' ttb <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+#' ttb <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
 #' ## Outputs predicted values for the first and second values, but Take The Best
 #' ## is only trying to achieve sort order, so this makes a correct prediction. 
 #' predict(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
@@ -35,12 +37,12 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #' predict(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
 #'
 #' @seealso
-#' \code{\link{predict.ttbModel}} (via \code{\link[stats]{predict}}) for prediction.
+#' \code{\link{predict.ttbBinModel}} (via \code{\link[stats]{predict}}) for prediction.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
 #' @export
-ttbModel <- function(train_data, criterion_col, cols_to_fit) {
+ttbBinModel <- function(train_data, criterion_col, cols_to_fit) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities) - rank(cue_validities, ties.method="random") + 1
@@ -52,20 +54,20 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit) {
                  cue_validities=cue_validities, cue_ranks=cue_ranks,
                  linear_coef=linear_coef, fit_predictions=fit_predictions,
                  fit_accuracy=fit_accuracy), 
-            class="ttbModel")
+            class="ttbBinModel")
 }
 
 # TODO: Make this private.  The external world need not know the implementation actual uses a linear model
 # under the hood.  However, for now I need it until I get predict working correctly for a named m_test input.
 #' @export
-coef.ttbModel <- function(object, ...) object$linear_coef
+coef.ttbBinModel <- function(object, ...) object$linear_coef
 
 #' Generates predictions for Take The Best
 #'
-#' Implementation of \code{\link[stats]{predict}} for ttbModel,
+#' Implementation of \code{\link[stats]{predict}} for ttbBinModel,
 #' Take The Best.
 #'
-#' @param object A ttbModel.
+#' @param object A ttbBinModel.
 #' @param ... Normally this would be the test data. 
 #'  It is used to predict and can be a matrix or data.frame.  
 #'  It must have the same cols_to_fit indices as those used in train_data.
@@ -74,13 +76,13 @@ coef.ttbModel <- function(object, ...) object$linear_coef
 #'  Only the sort order of these is relevant for Take The Best.
 #' 
 #' @seealso
-#' \code{\link{ttbModel}} for example code.
+#' \code{\link{ttbBinModel}} for example code.
 #'
 #' @export
 # Under the hood, TTB is implemented as a linear prediction with exponentiall-decaying weights.
 # This is just because it was more convenient to code it that way in R.
 # The output is equivalent to the Take The Best model description.
-predict.ttbModel <- function(object, ...) {
+predict.ttbBinModel <- function(object, ...) {
   args <- eval(substitute(alist(...)))
   if (length(args)==0) {
     return(object$fit_predictions)

@@ -14,7 +14,8 @@ Take the Best was originally proposed for two-alternative choice tasks, e.g. giv
 * Predict with weights: Multiplies cues by cue weights to produce predictions, plus takes care of corner cases.
 
 ## Heuristics
-* ttbModel: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+* ttbBinModel: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).  This implementation is for binary cues only.
+* ttbModel: Take the Best for non-binary cues (coming soon).
 * dawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
 * franklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a method like this.
 * regModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
