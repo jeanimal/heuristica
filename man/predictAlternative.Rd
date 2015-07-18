@@ -4,7 +4,7 @@
 \alias{predictAlternative}
 \title{Generic function to use two sets of cues to predict which set has a higher criterion.}
 \usage{
-predictAlternative(x)
+predictAlternative(object, ...)
 }
 \description{
 Generic function to use two sets of cues to predict which set has a higher criterion.

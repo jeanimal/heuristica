@@ -6,12 +6,25 @@
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
 
-### New generics ###
+## New generics ##
 
 #' Generic function to use two sets of cues to predict which set has a higher criterion.
 #'
 #' @export
 predictAlternative <- function(object, ...) UseMethod("predictAlternative")
+
+## Shared helper functions ##
+
+# Private.
+inequalityToValue <- function(a,b) {
+  if (a > b) {
+    return(1)
+  } else if (b > a) {
+    return(-1)
+  } else {
+    return(0)
+  }
+}
 
 ###  Take the Best binary (ttbBinModel) ###
 
@@ -101,16 +114,6 @@ predict.ttbBinModel <- function(object, ...) {
   } else {
     stop("Expected only one unevaluated argument (test_data) but got " +
           length(args) + ":" + args)
-  }
-}
-
-inequalityToValue <- function(a,b) {
-  if (a > b) {
-    return(1)
-  } else if (b > a) {
-    return(-1)
-  } else {
-    return(0)
   }
 }
 

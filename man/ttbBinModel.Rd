@@ -41,6 +41,8 @@ predict(ttb, matrix(c(5,4,1,0,0,1), 2, 3))
 predict(ttb, matrix(c(5,4,0,1,0,1), 2, 3))
 }
 \seealso{
+\code{\link{predictAlternative.ttbBinModel}} (via \code{\link{predictAlternative}}) for prediction.
+
 \code{\link{predict.ttbBinModel}} (via \code{\link[stats]{predict}}) for prediction.
 
 Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.

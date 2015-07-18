@@ -89,6 +89,8 @@ test_that("ttbBinModel 3x3 names shifted criterion", {
 test_that("ttbBinModel 3x3 pos pos predict", {
   model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities) 
+  expect_equal(1, predictAlternative(model,
+    matrix(c(5,4,3,1,0,0,1,1,0), 3, 3)))
   good <- predict(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
   expect_more_than(good[1,1], good[2,1])
   expect_more_than(good[2,1], good[3,1])
