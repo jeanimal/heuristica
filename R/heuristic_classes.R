@@ -6,6 +6,13 @@
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
 
+### New generics ###
+
+#' Generic function to use two sets of cues to predict which set has a higher criterion.
+#'
+#' @export
+predictAlternative <- function(object, ...) UseMethod("predictAlternative")
+
 ###  Take the Best binary (ttbBinModel) ###
 
 #' Take The Best for binary cues
@@ -37,6 +44,8 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #' predict(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
 #'
 #' @seealso
+#' \code{\link{predictAlternative.ttbBinModel}} (via \code{\link{predictAlternative}}) for prediction.
+#' @seealso
 #' \code{\link{predict.ttbBinModel}} (via \code{\link[stats]{predict}}) for prediction.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
@@ -62,10 +71,10 @@ ttbBinModel <- function(train_data, criterion_col, cols_to_fit) {
 #' @export
 coef.ttbBinModel <- function(object, ...) object$linear_coef
 
-#' Generates predictions for Take The Best
+#' Generates predictions for Take The Best with binary cues
 #'
 #' Implementation of \code{\link[stats]{predict}} for ttbBinModel,
-#' Take The Best.
+#' Take The Best with binary cues.
 #'
 #' @param object A ttbBinModel.
 #' @param ... Normally this would be the test data. 
@@ -94,6 +103,49 @@ predict.ttbBinModel <- function(object, ...) {
           length(args) + ":" + args)
   }
 }
+
+inequalityToValue <- function(a,b) {
+  if (a > b) {
+    return(1)
+  } else if (b > a) {
+    return(-1)
+  } else {
+    return(0)
+  }
+}
+
+#' Predict which alternative has higher criterion for Take The Best with binary cues
+#'
+#' @param object A ttbBinModel.
+#' @param ... Normally this would be the test data.
+#'  It is used to predict and can be a matrix or data.frame.
+#'  It must have the same cols_to_fit indices as those used in train_data.
+#' TODO: User can pass in i, j for the rwos to compare, defaulting to 1 and 2.
+#'
+#' @return 1 if the first row is predicted greater,
+#'  -1 if the 2nd row is predicted greater,
+#'  0 if the rows are predicted to have equal criterion values.
+#'
+#' @seealso
+#' \code{\link{ttbBinModel}} for example code.
+#'
+#' @export
+predictAlternative.ttbBinModel <- function(object, ...) {
+  args <- eval(substitute(alist(...)))
+  i <- 1
+  j <- 2
+  if (length(args)==0) {
+    predictions <- object$fit_predictions
+  } else if (length(args)==1) {
+    test_data <- eval(args[[1]])
+    predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
+  } else {
+    stop("Expected only one unevaluated argument (test_data) but got " +
+          length(args) + ":" + args)
+  }
+  return(inequalityToValue(predictions[i], predictions[j]))
+}
+
 
 
 ### Dawes Model ###

@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristic_classes.R
 \name{predict.ttbBinModel}
 \alias{predict.ttbBinModel}
-\title{Generates predictions for Take The Best}
+\title{Generates predictions for Take The Best with binary cues}
 \usage{
 \method{predict}{ttbBinModel}(object, ...)
 }
@@ -19,7 +19,7 @@ An N x 1 matrix of predicted values, or a list if there was only one cue.
 }
 \description{
 Implementation of \code{\link[stats]{predict}} for ttbBinModel,
-Take The Best.
+Take The Best with binary cues.
 }
 \seealso{
 \code{\link{ttbBinModel}} for example code.
