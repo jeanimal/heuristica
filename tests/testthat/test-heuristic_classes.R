@@ -95,6 +95,8 @@ test_that("ttbBinModel 3x3 pos pos predict", {
   expect_more_than(good[1,1], good[2,1])
   expect_more_than(good[2,1], good[3,1])
   expect_equal(3, length(good))
+  expect_equal(-1, predictAlternative(model,
+    matrix(c(5,4,3,0,1,1,0,0,1), 3, 3)))
   bad <- predict(model, matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
   expect_less_than(bad[1,1], bad[2,1])
   expect_less_than(bad[2,1], bad[3,1])
