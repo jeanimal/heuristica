@@ -6,6 +6,17 @@
 \usage{
 predictAlternative(object, ...)
 }
+\arguments{
+\item{object}{The object that implements predictAlternative, e.g. a ttb model.
+The 2nd optional parameter is a list of pairs of column indices you want to have
+predicted.  If no list is given, it will auto-generate a list of all pairs.
+E.g. for 3 rows, it will use [[1,2],   [1,3],   [2,3]].
+Then the output appends a column with its prediction for each pair,
+e.g.                         [[1,2,1], [1,3,3], [2,3,2]].}
+}
+\value{
+A matrix with 3 columns: row1index, row2index, and the predicted greater index.
+}
 \description{
 Generic function to use two sets of cues to predict which set has a higher criterion.
 }

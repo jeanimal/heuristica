@@ -10,6 +10,13 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 
 #' Generic function to use two sets of cues to predict which set has a higher criterion.
 #'
+#' @param object The object that implements predictAlternative, e.g. a ttb model.
+#' @param ...    The 2nd optional parameter is a matrix of pairs of column indices
+#'  you want to have predicted.  If no list is given, it will use all pairs.
+#' E.g. for 3 rows, it will use [[1,2],   [1,3],   [2,3]].  
+#' Then the output appends a column with its prediction for each pair,
+#' e.g.                         [[1,2,1], [1,3,3], [2,3,2]].
+#' @return A matrix with 3 columns: row1index, row2index, and the predicted greater index.
 #' @export
 predictAlternative <- function(object, ...) UseMethod("predictAlternative")
 
@@ -20,6 +27,17 @@ inequalityToValue <- function(a,b) {
   if (a > b) {
     return(1)
   } else if (b > a) {
+    return(-1)
+  } else {
+    return(0)
+  }
+}
+
+# Private.
+pairToValue <- function(pair) {
+  if (pair[1] > pair[2]) {
+    return(1)
+  } else if (pair[2] > pair[1]) {
     return(-1)
   } else {
     return(0)
@@ -139,8 +157,10 @@ predictAlternative.ttbBinModel <- function(object, ...) {
   j <- 2
   if (length(args)==0) {
     predictions <- object$fit_predictions
+    pairsMatrix <- matrix(c(1,2), 1, 2)
   } else if (length(args)==1) {
     test_data <- eval(args[[1]])
+    pairsMatrix <- matrix(c(1,2), 1, 2)
     predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   } else {
     stop("Expected only one unevaluated argument (test_data) but got " +
