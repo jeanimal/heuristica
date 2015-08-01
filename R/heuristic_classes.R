@@ -15,7 +15,8 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #'  you want to have predicted.  If no list is given, it will use all pairs.
 #' E.g. for 3 rows, it will use [[1,2],   [1,3],   [2,3]].  
 #' Then the output appends a column with its prediction for each pair,
-#' e.g.                         [[1,2,1], [1,3,3], [2,3,2]].
+#' e.g.                         [[1,2,1], [1,3,-1], [2,3,1]].
+#' (1 means the first row is predicted bigger, -1 means the 2nd row.)
 #' @return A matrix with 3 columns: row1index, row2index, and the predicted greater index.
 #' @export
 predictAlternative <- function(object, ...) UseMethod("predictAlternative")
@@ -153,20 +154,29 @@ predict.ttbBinModel <- function(object, ...) {
 #' @export
 predictAlternative.ttbBinModel <- function(object, ...) {
   args <- eval(substitute(alist(...)))
-  i <- 1
-  j <- 2
   if (length(args)==0) {
     predictions <- object$fit_predictions
-    pairsMatrix <- matrix(c(1,2), 1, 2)
+    pairsMatrix <- t(combn(nrow(predictions), 2))
   } else if (length(args)==1) {
     test_data <- eval(args[[1]])
-    pairsMatrix <- matrix(c(1,2), 1, 2)
+    pairsMatrix <- t(combn(nrow(test_data), 2))
+    predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
+  } else if (length(args)==2) {
+    test_data <- eval(args[[1]])
+    pairsMatrix <- eval(args[[2]])
+    if (ncol(pairsMatrix) != 2) {
+      stop(paste("Second arg should be pairs matrix with two columns but got",
+           pairsMatrix))
+    }
     predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   } else {
-    stop("Expected only one unevaluated argument (test_data) but got " +
-          length(args) + ":" + args)
+    stop(paste("Expected at most two unevaluated arguments (test_data, pairsMatrix)",
+               "but got", length(args), "args: ", args))
   }
-  return(inequalityToValue(predictions[i], predictions[j]))
+  predictPairs <- t(apply(pairsMatrix, 1,
+    function(rowPair) predictions[rowPair,]))
+  predictDirection <- matrix(apply(predictPairs, 1, pairToValue))
+  return(cbind(pairsMatrix, predictDirection))
 }
 
 
