@@ -80,8 +80,7 @@ test_that("ttbBinModel 3x3 names shifted criterion", {
   expect_equal(c('Cue'), names(model$cue_validities))
 })
 
-
-test_that("ttbBinModel 3x3 pos pos predictAlternative", {
+test_that("ttbBinModel 3x3 pos pos predictAlternative forward", {
   model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
 
@@ -94,6 +93,11 @@ test_that("ttbBinModel 3x3 pos pos predictAlternative", {
   expect_equal(c(1,3,1), predictAltMat[2,])
   # prediction for row 2 vs. 3.
   expect_equal(c(2,3,1), predictAltMat[3,])
+})
+
+test_that("ttbBinModel 3x3 pos pos predictAlternative backward", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+  expect_equal(c(1,1),  model$cue_validities)
 
   # All cues are backwards.
   predictAltMat <- predictAlternative(model,
