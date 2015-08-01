@@ -90,6 +90,38 @@ test_that("ttbBinModel 2x3 predictAlternative forward", {
   expect_equal(1, nrow(predictAltMat))
 })
 
+test_that("ttbBinModel 2x3 predictAlternative backward cues", {
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  expect_equal(c(1,0), model$cue_validities)
+  predictAltMat <- predictAlternative(model,
+    matrix(c(5,4,0,1,1,0), 2, 3))
+  expect_equal(c(1,2,-1), predictAltMat[1,])
+  # no other rows
+  expect_equal(1, nrow(predictAltMat))
+})
+
+test_that("ttbBinModel 2x3 predictAlternative forward rowPairs", {
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  expect_equal(c(1,0), model$cue_validities)
+  predictAltMat <- predictAlternative(model,
+    matrix(c(5,4,1,0,0,1), 2, 3), matrix(c(1, 2), 1, 2))
+  expect_equal(c(1,2,1), predictAltMat[1,])
+  # no other rows
+  expect_equal(1, nrow(predictAltMat))
+})
+
+test_that("ttbBinModel 2x3 predictAlternative backward rowPairs", {
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  expect_equal(c(1,0), model$cue_validities)
+  predictAltMat <- predictAlternative(model,
+    matrix(c(5,4,1,0,0,1), 2, 3), matrix(c(2, 1), 1, 2))
+  expect_equal(c(1,2,-1), predictAltMat[1,])
+  # no other rows
+  expect_equal(1, nrow(predictAltMat))
+})
+
+#TODO(jean): Test invalid rowPairs.
+
 test_that("ttbBinModel 3x3 pos pos predictAlternative forward", {
   model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
@@ -107,7 +139,7 @@ test_that("ttbBinModel 3x3 pos pos predictAlternative forward", {
   expect_equal(3, nrow(predictAltMat))
 })
 
-test_that("ttbBinModel 3x3 pos pos predictAlternative backward", {
+test_that("ttbBinModel 3x3 pos pos predictAlternative backward cues", {
   model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
 
