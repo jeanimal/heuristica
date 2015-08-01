@@ -81,6 +81,30 @@ test_that("ttbBinModel 3x3 names shifted criterion", {
 })
 
 
+test_that("ttbBinModel 3x3 pos pos predictAlternative", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+  expect_equal(c(1,1),  model$cue_validities) 
+
+  # All cues in same direction.
+  predictAltMat <- predictAlternative(model,
+      matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
+  # prediction for row 1 vs. 2.
+  expect_equal(c(1,2,1), predictAltMat[1,])
+  # prediction for row 1 vs. 3.
+  expect_equal(c(1,3,1), predictAltMat[2,])
+  # prediction for row 2 vs. 3.
+  expect_equal(c(2,3,1), predictAltMat[3,])
+
+  # All cues are backwards.
+  predictAltMat <- predictAlternative(model,
+      matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
+  # prediction for row 1 vs. 2.
+  expect_equal(c(1,2,-1), predictAltMat[1,])
+  # prediction for row 1 vs. 3.
+  expect_equal(c(1,3,-1), predictAltMat[2,])
+  # prediction for row 2 vs. 3.
+  expect_equal(c(2,3,-1), predictAltMat[3,])
+})
 
 # Most testing of predict is with predictWithWeights, so here I am
 # just making sure it is correctly wired into the ttbBinModel.
