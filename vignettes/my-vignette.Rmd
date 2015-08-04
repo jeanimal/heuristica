@@ -47,7 +47,8 @@ rural_schools
 
 Then we run Take The Best by giving it the data frame, specifying column 2 as the criterion and columns 3-5 as the predictor cues.  The output is the fitted take the best model.  We output the cue_validities so you can geta sense of what is involved in the fit.
 ```{r}
-ttb <- ttbModel(rural_schools, 2, c(3:5))
+# ttb <- ttbModel(rural_schools, 2, c(3:5))
+ttb <- ttbBinModel(rural_schools, 2, c(3:5))
 ttb$cue_validities
 ```
 
@@ -71,7 +72,8 @@ A key point here is that this prediciton is based on the cue validities fitted f
 
 Fitting the same sample is a much easier task.  Here is the accuracy if TTB merely fitted Franklin, Greer, and Houser.
 ```{r}
-ttb_more_rural_schools <- ttbModel(more_rural_schools, 2, c(3:5))
+# ttb_more_rural_schools <- ttbModel(more_rural_schools, 2, c(3:5))
+ttb_more_rural_schools <- ttbBinModel(more_rural_schools, 2, c(3:5))
 ttb_predictions <- predict(ttb_more_rural_schools, more_rural_schools)
 cueValidity(more_rural_schools$Dropout_Rate, ttb_predictions)
 ```
