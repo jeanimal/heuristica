@@ -184,7 +184,13 @@ predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
   correctValues <- test_data[,fitted_heuristic$criterion_col]
   correctProbFirstRow <-  apply(rowPairs, 1,
                                 function(rowPair) pairToValue(correctValues[rowPair]))
-  return(cbind(predictMatrix, correctProbFirstRow))
+  extendedMatrix <- cbind(predictMatrix, correctProbFirstRow)
+  # Is there a more efficient way to do the lines below?
+  # This gave subscript out of bounds: m[,5] = m[,4]-m[,3]
+  extendedMatrix <- cbind(extendedMatrix,
+                          extendedMatrix[,4] - extendedMatrix[,3],
+                          abs(extendedMatrix[,4] - extendedMatrix[,3]))
+  return(extendedMatrix)
 }
 
 #' Do not use.  Still under development.
@@ -193,8 +199,10 @@ predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
 #' @return A numeric from 0 to 1 indicating the percent correct.
 #' @export
 pctCorrectOfPredictAlternative <- function(fitted_heuristic, test_data) {
-  predictWithCorrectMatrix <- predictWithCorrect(fitted_heuristic, test_data)
-  return(1)
+  predictWithCorrectMatrix <- predictAlternativeWithCorrect(fitted_heuristic, test_data)
+  sumError <- sum(predictWithCorrectMatrix[,6])
+  return((nrow(predictWithCorrectMatrix)-sumError)
+         /nrow(predictWithCorrectMatrix))
 }
 
 ### Dawes Model ###
