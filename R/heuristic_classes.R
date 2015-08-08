@@ -11,16 +11,24 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #' Generic function to use two sets of cues to predict which set has a higher criterion.
 #'
 #' @param object The object that implements predictAlternative, e.g. a ttb model.
-#' @param ...    The 2nd optional parameter is a matrix of pairs of column indices
-#'  you want to have predicted.  If no list is given, it will use all unique pairs.
-#' E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].  
-#' Then the output appends a column with its predicted probability for the first
-#' in the pair (a number from 0 to 1, inclusive)
-#' e.g.                         [[1,2,1], [1,3,0], [2,3,1]].
-#' (0 means the first row is predicted bigger, 1 means the 2nd row.)
+#' @param test_data The matrix of data to predict on.  As with predict, columns
+#'  must match those used for fitting.
+#' @param rowPairs The optionalrowPairs is a matrix of pairs of column indices
+#'  you want to have predicted.  By default (if no list is given), it will use
+#'  all unique pairs.
+#'  E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].  
 #' @return A matrix with 3 columns: row1index, row2index, and the predicted greater index.
+#'  The first two columns are the rowPairs (provided as input or all).
+#'  The 3rd column is the model's predicted probability (0 to 1) that the first
+#'  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
+#'  For example:
+#'                              [[1,2,1], [1,3,0], [2,3,1]].
+#'  Between row 1 and 2, there is probabily 1 that row 1 is bigger.
+#'  Between row 1 and 3, there is probabily 0 that row 1 is bigger.
+#'     (That is, it predicts that row 3 is bigger.)
+#' Between row 2 and 3, there is probabily 1 that row 2 is bigger.
 #' @export
-predictAlternative <- function(object, ...) UseMethod("predictAlternative")
+predictAlternative <- function(object, test_data, rowPairs=NULL) UseMethod("predictAlternative")
 
 ## Shared helper functions ##
 
@@ -140,39 +148,22 @@ predict.ttbBinModel <- function(object, ...) {
 #' Predict which alternative has higher criterion for Take The Best with binary cues
 #'
 #' @param object A ttbBinModel.
-#' @param ... Normally this would be the test data.
-#'  It is used to predict and can be a matrix or data.frame.
-#'  It must have the same cols_to_fit indices as those used in train_data.
-#' TODO: User can pass in i, j for the rwos to compare, defaulting to 1 and 2.
-#'
-#' @return 1 if the first row is predicted greater,
-#'  -1 if the 2nd row is predicted greater,
-#'  0 if the rows are predicted to have equal criterion values.
+#' @inheritParams predictAlternative
 #'
 #' @seealso
 #' \code{\link{ttbBinModel}} for example code.
 #'
 #' @export
-predictAlternative.ttbBinModel <- function(object, ...) {
-  args <- eval(substitute(alist(...)))
-  if (length(args)==0) {
-    predictions <- object$fit_predictions
+predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
+  predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
+  if (is.null(rowPairs)) {
     pairsMatrix <- t(combn(nrow(predictions), 2))
-  } else if (length(args)==1) {
-    test_data <- eval(args[[1]])
-    pairsMatrix <- t(combn(nrow(test_data), 2))
-    predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
-  } else if (length(args)==2) {
-    test_data <- eval(args[[1]])
-    pairsMatrix <- eval(args[[2]])
-    if (ncol(pairsMatrix) != 2) {
-      stop(paste("Second arg should be pairs matrix with two columns but got",
-           pairsMatrix))
-    }
-    predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   } else {
-    stop(paste("Expected at most two unevaluated arguments (test_data, pairsMatrix)",
-               "but got", length(args), "args: ", args))
+    if (ncol(rowPairs) != 2) {
+      stop(paste("rowPairs should be pairs matrix with two columns but got",
+                 rowPairs))
+    }
+    pairsMatrix <- rowPairs
   }
   predictPairs <- t(apply(pairsMatrix, 1,
     function(rowPair) predictions[rowPair,]))
