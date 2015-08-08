@@ -95,7 +95,7 @@ test_that("ttbBinModel 2x3 predictAlternative backward cues", {
   expect_equal(c(1,0), model$cue_validities)
   predictAltMat <- predictAlternative(model,
     matrix(c(5,4,0,1,1,0), 2, 3))
-  expect_equal(c(1,2,-1), predictAltMat[1,])
+  expect_equal(c(1,2,0), predictAltMat[1,])
   # no other rows
   expect_equal(1, nrow(predictAltMat))
 })
@@ -115,7 +115,7 @@ test_that("ttbBinModel 2x3 predictAlternative backward rowPairs", {
   expect_equal(c(1,0), model$cue_validities)
   predictAltMat <- predictAlternative(model,
     matrix(c(5,4,1,0,0,1), 2, 3), matrix(c(2, 1), 1, 2))
-  expect_equal(c(2,1,-1), predictAltMat[1,])
+  expect_equal(c(2,1,0), predictAltMat[1,])
   # no other rows
   expect_equal(1, nrow(predictAltMat))
 })
@@ -147,11 +147,11 @@ test_that("ttbBinModel 3x3 pos pos predictAlternative backward cues", {
   predictAltMat <- predictAlternative(model,
       matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
   # prediction for row 1 vs. 2.
-  expect_equal(c(1,2,-1), predictAltMat[1,])
+  expect_equal(c(1,2,0), predictAltMat[1,])
   # prediction for row 1 vs. 3.
-  expect_equal(c(1,3,-1), predictAltMat[2,])
+  expect_equal(c(1,3,0), predictAltMat[2,])
   # prediction for row 2 vs. 3.
-  expect_equal(c(2,3,-1), predictAltMat[3,])
+  expect_equal(c(2,3,0), predictAltMat[3,])
   # no other rows
   expect_equal(3, nrow(predictAltMat))
 })

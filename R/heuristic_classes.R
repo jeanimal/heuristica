@@ -12,11 +12,12 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #'
 #' @param object The object that implements predictAlternative, e.g. a ttb model.
 #' @param ...    The 2nd optional parameter is a matrix of pairs of column indices
-#'  you want to have predicted.  If no list is given, it will use all pairs.
-#' E.g. for 3 rows, it will use [[1,2],   [1,3],   [2,3]].  
-#' Then the output appends a column with its prediction for each pair,
-#' e.g.                         [[1,2,1], [1,3,-1], [2,3,1]].
-#' (1 means the first row is predicted bigger, -1 means the 2nd row.)
+#'  you want to have predicted.  If no list is given, it will use all unique pairs.
+#' E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].  
+#' Then the output appends a column with its predicted probability for the first
+#' in the pair (a number from 0 to 1, inclusive)
+#' e.g.                         [[1,2,1], [1,3,0], [2,3,1]].
+#' (0 means the first row is predicted bigger, 1 means the 2nd row.)
 #' @return A matrix with 3 columns: row1index, row2index, and the predicted greater index.
 #' @export
 predictAlternative <- function(object, ...) UseMethod("predictAlternative")
@@ -39,9 +40,9 @@ pairToValue <- function(pair) {
   if (pair[1] > pair[2]) {
     return(1)
   } else if (pair[2] > pair[1]) {
-    return(-1)
-  } else {
     return(0)
+  } else {
+    return(0.5)
   }
 }
 
