@@ -358,7 +358,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #' Linear regression (no intercept) wrapper for hueristica
 #'
 #' A wrapper to create a lm model just specifying columns, generating
-#' a model formula for you __without and intercept__.  
+#' a model formula for you __without an intercept__.
 #' This makes it easier to run automated comparisons with
 #' other models in heuristica.
 #'
