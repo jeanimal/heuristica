@@ -171,7 +171,23 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
   return(cbind(pairsMatrix, predictDirection))
 }
 
+#' Do not use.  Still under development.
+#' @export
+predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
+  rowPairs <- t(combn(nrow(test_data), 2))
+  predictMatrix <- predictAlternative(fitted_heuristic, test_data, rowPairs=rowPairs)
+  correctValues <- test_data[,fitted_heuristic$criterion_col]
+  correctProbFirstRow <-  apply(rowPairs, 1,
+                                function(rowPair) pairToValue(correctValues[rowPair]))
+  return(cbind(predictMatrix, correctProbFirstRow))
+}
 
+#' Do not use.  Still under development.
+#' @export
+pctCorrectOfPredictAlternative <- function(fitted_heuristic, test_data) {
+  predictWithCorrectMatrix <- predictWithCorrect(fitted_heuristic, test_data)
+  return(1)
+}
 
 ### Dawes Model ###
 
