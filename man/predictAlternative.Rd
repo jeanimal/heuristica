@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristic_classes.R
 \name{predictAlternative}
 \alias{predictAlternative}
-\title{Generic function to use two sets of cues to predict which set has a higher criterion.}
+\title{Generic function to use two rows of cues to predict which row has a higher criterion.}
 \usage{
 predictAlternative(object, test_data, rowPairs = NULL)
 }
@@ -30,6 +30,6 @@ A matrix with 3 columns: row1index, row2index, and the predicted greater index.
 Between row 2 and 3, there is probabily 1 that row 2 is bigger.
 }
 \description{
-Generic function to use two sets of cues to predict which set has a higher criterion.
+Generic function to use two rows of cues to predict which row has a higher criterion.
 }
 

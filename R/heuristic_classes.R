@@ -8,7 +8,7 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 
 ## New generics ##
 
-#' Generic function to use two sets of cues to predict which set has a higher criterion.
+#' Generic function to use two rows of cues to predict which row has a higher criterion.
 #'
 #' @param object The object that implements predictAlternative, e.g. a ttb model.
 #' @param test_data The matrix of data to predict on.  As with predict, columns
@@ -172,6 +172,11 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 }
 
 #' Do not use.  Still under development.
+#' @param fitted_heuristic A heuristic already fitted to data, e.g. ttbBinModel.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @return Same matrix as predictAlternative but with columns on correctness
+#' @seealso
+#' \code{\link{predictAlternative}}
 #' @export
 predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
   rowPairs <- t(combn(nrow(test_data), 2))
@@ -183,6 +188,9 @@ predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
 }
 
 #' Do not use.  Still under development.
+#' @param fitted_heuristic A heuristic already fitted to data, e.g. ttbBinModel.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @return A numeric from 0 to 1 indicating the percent correct.
 #' @export
 pctCorrectOfPredictAlternative <- function(fitted_heuristic, test_data) {
   predictWithCorrectMatrix <- predictWithCorrect(fitted_heuristic, test_data)
