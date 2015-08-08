@@ -18,7 +18,7 @@ An object of class regNoIModel, which is a subclass of lm.
 }
 \description{
 A wrapper to create a lm model just specifying columns, generating
-a model formula for you __without and intercept__.
+a model formula for you __without an intercept__.
 This makes it easier to run automated comparisons with
 other models in heuristica.
 }

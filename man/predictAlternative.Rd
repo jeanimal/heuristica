@@ -4,20 +4,30 @@
 \alias{predictAlternative}
 \title{Generic function to use two sets of cues to predict which set has a higher criterion.}
 \usage{
-predictAlternative(object, ...)
+predictAlternative(object, test_data, rowPairs = NULL)
 }
 \arguments{
 \item{object}{The object that implements predictAlternative, e.g. a ttb model.}
 
-\item{...}{The 2nd optional parameter is a matrix of pairs of column indices
- you want to have predicted.  If no list is given, it will use all pairs.
-E.g. for 3 rows, it will use [[1,2],   [1,3],   [2,3]].
-Then the output appends a column with its prediction for each pair,
-e.g.                         [[1,2,1], [1,3,-1], [2,3,1]].
-(1 means the first row is predicted bigger, -1 means the 2nd row.)}
+\item{test_data}{The matrix of data to predict on.  As with predict, columns
+must match those used for fitting.}
+
+\item{rowPairs}{The optionalrowPairs is a matrix of pairs of column indices
+you want to have predicted.  By default (if no list is given), it will use
+all unique pairs.
+E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].}
 }
 \value{
 A matrix with 3 columns: row1index, row2index, and the predicted greater index.
+ The first two columns are the rowPairs (provided as input or all).
+ The 3rd column is the model's predicted probability (0 to 1) that the first
+ row index has a larger criterion than the 2nd row index.  0.5 is a tie.
+ For example:
+                             [[1,2,1], [1,3,0], [2,3,1]].
+ Between row 1 and 2, there is probabily 1 that row 1 is bigger.
+ Between row 1 and 3, there is probabily 0 that row 1 is bigger.
+    (That is, it predicts that row 3 is bigger.)
+Between row 2 and 3, there is probabily 1 that row 2 is bigger.
 }
 \description{
 Generic function to use two sets of cues to predict which set has a higher criterion.

@@ -4,20 +4,18 @@
 \alias{predictAlternative.ttbBinModel}
 \title{Predict which alternative has higher criterion for Take The Best with binary cues}
 \usage{
-\method{predictAlternative}{ttbBinModel}(object, ...)
+\method{predictAlternative}{ttbBinModel}(object, test_data, rowPairs = NULL)
 }
 \arguments{
 \item{object}{A ttbBinModel.}
 
-\item{...}{Normally this would be the test data.
- It is used to predict and can be a matrix or data.frame.
- It must have the same cols_to_fit indices as those used in train_data.
-TODO: User can pass in i, j for the rwos to compare, defaulting to 1 and 2.}
-}
-\value{
-1 if the first row is predicted greater,
- -1 if the 2nd row is predicted greater,
- 0 if the rows are predicted to have equal criterion values.
+\item{test_data}{The matrix of data to predict on.  As with predict, columns
+must match those used for fitting.}
+
+\item{rowPairs}{The optionalrowPairs is a matrix of pairs of column indices
+you want to have predicted.  By default (if no list is given), it will use
+all unique pairs.
+E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].}
 }
 \description{
 Predict which alternative has higher criterion for Take The Best with binary cues
