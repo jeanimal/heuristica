@@ -19,29 +19,31 @@ test_that("ttbBinModel 2x2 neg", {
 })
 
 test_that("ttbBinModel 2x3 pos neg", {
-  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  m <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbBinModel(m, 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]])  
   expect_equal(2, length(coef(model))) 
 })
 
+test_that("ttbBinModel 2x3 pos neg data.frame", {
+  df <- data.frame(criterion=c(5,4), cue1=c(1,0), cue2=c(0,1))
+  model <- ttbBinModel(df, 1, c(2,3))
+  expect_equal(c(cue1=1, cue2=0), model$cue_validities)
+  # Below I test the inner implementation.  Maybe I shouldn't.
+  expect_equal(2,  coef(model)[["cue1"]])
+  expect_equal(1,  coef(model)[["cue2"]])
+  expect_equal(2, length(coef(model))) 
+})
+
 test_that("ttbBinModel 2x3 neg pos", {
-  model <- ttbBinModel(matrix(c(5,4,0,1,1,0), 2, 3), 1, c(2,3))
+  m <- matrix(c(5,4,0,1,1,0), 2, 3)
+  model <- ttbBinModel(m, 1, c(2,3))
   expect_equal(c(0,1),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(2,  coef(model)[[2]])  
   expect_equal(2, length(coef(model))) 
-})
-
-test_that("ttbBinModel data.frame 2x3 pos neg", {
-  df <- data.frame(criterion=c(5,4), cue1=c(1,0), cue2=c(0,1))
-  model <- ttbBinModel(df, 1, c(2,3))
-  expect_equal(c(cue1=1),  model$cue_validities["cue1"])
-  expect_equal(c(cue2=0),  model$cue_validities["cue2"]) 
-  #expect_equal(2,  coef(model)[[1]])  
-  #expect_equal(1,  coef(model)[[2]])  
-  #expect_equal(2, length(coef(model))) 
 })
 
 test_that("ttbBinModel 2x3 pos neg (col 3 not fit)", {
