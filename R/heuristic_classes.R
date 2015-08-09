@@ -21,8 +21,10 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #'  The first two columns are the rowPairs (provided as input or all).
 #'  The 3rd column is the model's predicted probability (0 to 1) that the first
 #'  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
+#'
 #'  For example:
 #'                              [[1,2,1], [1,3,0], [2,3,1]].
+#'  Means:
 #'  Between row 1 and 2, there is probabily 1 that row 1 is bigger.
 #'  Between row 1 and 3, there is probabily 0 that row 1 is bigger.
 #'     (That is, it predicts that row 3 is bigger.)
@@ -52,6 +54,41 @@ pairToValue <- function(pair) {
   } else {
     return(0.5)
   }
+}
+
+#' Generates a matrix of pairs of row indices for two-alternative choice.
+#'
+#' Generates all pairs, including repeating pairs in reverse order, but not a
+#' row with itself.  Output is sorted by Row1, then Row2.
+#'
+#' @param n is the number of rows.
+#' @return Returns a data.frame with (n x n-1) rows and 2 columns.  The column
+#' names are Row1 and Row2.  Rows are sorted by Row1, then Row2.
+#'
+#' @examples
+#' rowPairGenerator(2)
+#'# You should get:
+#'#  Row1 Row2
+#'#1    1    2
+#'#2    2    1
+#'
+#'rowPairGenerator(3)
+#'# You should get:
+#'#  Row1 Row2
+#'#1    1    2
+#'#2    1    3
+#'#3    2    1
+#'#4    2    3
+#'#5    3    1
+#'#6    3    2
+#'
+#' @export
+rowPairGenerator <- function(n) {
+  allPairs <- expand.grid(Row1=seq(n), Row2=seq(n))
+  allPairs <- allPairs[allPairs$Row1!=allPairs$Row2,]
+  allPairs <- allPairs[order(allPairs$Row1, allPairs$Row2),]
+  rownames(allPairs) <- NULL
+  return(allPairs)
 }
 
 ###  Take the Best binary (ttbBinModel) ###
@@ -157,7 +194,8 @@ predict.ttbBinModel <- function(object, ...) {
 predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
   predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   if (is.null(rowPairs)) {
-    pairsMatrix <- t(combn(nrow(predictions), 2))
+    n <- nrow(predictions)
+    pairsMatrix <- t(combn(n, 2))
   } else {
     if (ncol(rowPairs) != 2) {
       stop(paste("rowPairs should be pairs matrix with two columns but got",

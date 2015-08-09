@@ -22,8 +22,10 @@ A matrix with 3 columns: row1index, row2index, and the predicted greater index.
  The first two columns are the rowPairs (provided as input or all).
  The 3rd column is the model's predicted probability (0 to 1) that the first
  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
+
  For example:
                              [[1,2,1], [1,3,0], [2,3,1]].
+ Means:
  Between row 1 and 2, there is probabily 1 that row 1 is bigger.
  Between row 1 and 3, there is probabily 0 that row 1 is bigger.
     (That is, it predicts that row 3 is bigger.)
