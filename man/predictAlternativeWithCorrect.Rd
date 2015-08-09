@@ -4,12 +4,15 @@
 \alias{predictAlternativeWithCorrect}
 \title{Do not use.  Still under development.}
 \usage{
-predictAlternativeWithCorrect(fitted_heuristic, test_data)
+predictAlternativeWithCorrect(fitted_heuristic, test_data, rowPairs = NULL)
 }
 \arguments{
 \item{fitted_heuristic}{A heuristic already fitted to data, e.g. ttbBinModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
+
+\item{rowPairs}{An optional matrix where the first two columns are the pairs
+of row indices to use in the test_data.  If not set, all pairs will be used}
 }
 \value{
 Same matrix as predictAlternative but with columns on correctness

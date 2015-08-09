@@ -212,6 +212,8 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' Do not use.  Still under development.
 #' @param fitted_heuristic A heuristic already fitted to data, e.g. ttbBinModel.
 #' @param test_data Data to try to predict; must match columns in fit.
+#' @param rowPairs An optional matrix where the first two columns are the pairs
+#'  of row indices to use in the test_data.  If not set, all pairs will be used
 #' @return Same matrix as predictAlternative but with columns on correctness
 #' @seealso
 #' \code{\link{predictAlternative}}
