@@ -195,7 +195,7 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
   predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   if (is.null(rowPairs)) {
     n <- nrow(predictions)
-    pairsMatrix <- t(combn(n, 2))
+    pairsMatrix <- rowPairGenerator(n)
   } else {
     if (ncol(rowPairs) != 2) {
       stop(paste("rowPairs should be pairs matrix with two columns but got",
