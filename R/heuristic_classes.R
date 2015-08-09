@@ -216,19 +216,55 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' @seealso
 #' \code{\link{predictAlternative}}
 #' @export
-predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
-  rowPairs <- t(combn(nrow(test_data), 2))
-  predictMatrix <- predictAlternative(fitted_heuristic, test_data, rowPairs=rowPairs)
+predictAlternativeWithCorrect <- function(fitted_heuristic, test_data,
+                                          rowPairs=NULL) {
+  if (is.null(rowPairs)) {
+    n <- nrow(test_data)
+    rowPairs <- rowPairGenerator(n)
+  }
   correctValues <- test_data[,fitted_heuristic$criterion_col]
-  correctProbFirstRow <-  apply(rowPairs, 1,
-                                function(rowPair) pairToValue(correctValues[rowPair]))
-  extendedMatrix <- cbind(predictMatrix, correctProbFirstRow)
+  correctProb <-  apply(rowPairs, 1,
+                        function(rowPair) pairToValue(correctValues[rowPair]))
+  resultMatrix <- cbind(rowPairs, correctProb)
+  predictMatrix <- predictAlternative(fitted_heuristic, test_data, rowPairs=rowPairs)
+  extendedMatrix <- cbind(resultMatrix, model=predictMatrix[,ncol(predictMatrix)])
+  model_name <- class(model)[1]
+  names(extendedMatrix)[ncol(extendedMatrix)] = model_name
   # Is there a more efficient way to do the lines below?
   # This gave subscript out of bounds: m[,5] = m[,4]-m[,3]
-  extendedMatrix <- cbind(extendedMatrix,
-                          extendedMatrix[,4] - extendedMatrix[,3],
-                          abs(extendedMatrix[,4] - extendedMatrix[,3]))
+  #extendedMatrix <- cbind(extendedMatrix,
+  #                        extendedMatrix[,4] - extendedMatrix[,3],
+  #                        abs(extendedMatrix[,4] - extendedMatrix[,3]))
   return(extendedMatrix)
+}
+
+#' Do not use.  Still under development.
+#' @param df A dataframe to convert.  Assumes it has a column named correctProb
+#'  and predictions are in the last column. 
+#' @return A dataframe with the last column converted to:
+#'   0: if it matched correctProb
+#'   1: if it was wrong.
+#'   0.5: if it guessed or the true value was a guess and it wasn't a guess.
+#'  This is technically a measure of error.
+#'  TODO(jean): Make it work on all model columns, not just last column.
+#' @export
+createErrorsFromPredicts <- function(df) {
+  lastCol = ncol(df)
+  df[,lastCol] <- (df[,lastCol] -df$correctProb )
+  return(df)
+}
+
+#' Do not use.  Still under development.
+#' @param errors A dataframe of heuristic errors to calculate with 
+#' @return A dataframe with one row and the last column as a percent correct.
+#'  TODO(jean): Make it work on all model columns, not just last column.
+#' @export
+createPctCorrectsFromErrors <- function(errors) {
+  lastCol = ncol(errors)
+  sumError <- sum(abs(errors[,ncol(errors)]))
+  newDf <- data.frame((nrow(errors)-sumError) /nrow(errors))
+  names(newDf) <- names(errors)[[lastCol]]
+  return(newDf)
 }
 
 #' Do not use.  Still under development.
@@ -237,10 +273,9 @@ predictAlternativeWithCorrect <- function(fitted_heuristic, test_data) {
 #' @return A numeric from 0 to 1 indicating the percent correct.
 #' @export
 pctCorrectOfPredictAlternative <- function(fitted_heuristic, test_data) {
-  predictWithCorrectMatrix <- predictAlternativeWithCorrect(fitted_heuristic, test_data)
-  sumError <- sum(predictWithCorrectMatrix[,6])
-  return((nrow(predictWithCorrectMatrix)-sumError)
-         /nrow(predictWithCorrectMatrix))
+  predictions <- predictAlternativeWithCorrect(fitted_heuristic, test_data)
+  errors <- createErrorsFromPredicts(predictions)
+  return(createPctCorrectsFromErrors(errors))
 }
 
 ### Dawes Model ###
