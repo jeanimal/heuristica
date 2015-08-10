@@ -56,6 +56,15 @@ pairToValue <- function(pair) {
   }
 }
 
+#Private. for use by logistic regression
+logAccuracy<-function(fit_predictions){
+  prediction <- fit_predictions[fit_predictions!=0.5]
+  fit_accuracy <- length(prediction[prediction==1])/length(prediction)
+  if (is.nan(fit_accuracy)) fit_accuracy <- 0  
+  return(fit_accuracy)
+}
+
+
 #' Generates a matrix of pairs of row indices for two-alternative choice.
 #'
 #' Generates all pairs, including repeating pairs in reverse order, but not a
@@ -521,4 +530,39 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=FALSE)
   class(model) <- c("regNoIModel", class(model))
   return(model)
+}
+
+#' Logistic Regression model
+#'
+#' Create a logistic regression model by specifying columns and a dataset.
+#'
+#' This version assumes you always want to include the intercept.
+#' 
+#' @inheritParams heuristicaModel
+#' @return An object of class logRegModel.
+#'
+#' @export
+logRegModel <- function(train_data, criterion_col, cols_to_fit){
+  train_data <- as.data.frame(train_data)
+  train_data <- train_data[order(train_data[,criterion_col],decreasing=T),]
+  all.pairs <- t(combn(1:length(train_data[,1]),2))
+  all.pairs <-rbind(all.pairs,all.pairs[,c(2,1)])
+  predictors <- cbind(train_data[all.pairs[,1],cols_to_fit],train_data[all.pairs[,2],cols_to_fit])
+  data2 <- cbind(all.pairs,predictors)
+  dep.var <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
+  training_set <- cbind(dep.var,data2[,3:ncol(data2)])
+  training_set <- as.data.frame(training_set)
+  
+  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
+  model <- glm(formula,family=binomial,data=training_set)
+  col_weights <- coef(model)
+  
+  fit_predictions <- predictWithWeightsLog(train_data,cols_to_fit,criterion_col,col_weights)
+  fit_accuracy <- logAccuracy(fit_predictions)
+  
+  structure(list(criterion_col=criterion_col, cols_to_fit=2:ncol(training_set),
+                 linear_coef=col_weights, fit_predictions=fit_predictions,
+                 fit_accuracy=fit_accuracy), 
+            class="logRegModel")
+  
 }
