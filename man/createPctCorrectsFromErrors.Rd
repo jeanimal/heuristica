@@ -7,7 +7,8 @@
 createPctCorrectsFromErrors(errors)
 }
 \arguments{
-\item{errors}{A dataframe of heuristic errors to calculate with}
+\item{errors}{A dataframe of heuristic errors to calculate with.  Assumes data
+starts in column 4. (First 3 are Row1, Row2, and correct.)}
 }
 \value{
 A dataframe with one row and the last column as a percent correct.

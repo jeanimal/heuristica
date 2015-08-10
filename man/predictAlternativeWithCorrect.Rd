@@ -4,10 +4,12 @@
 \alias{predictAlternativeWithCorrect}
 \title{Do not use.  Still under development.}
 \usage{
-predictAlternativeWithCorrect(fitted_heuristic, test_data, rowPairs = NULL)
+predictAlternativeWithCorrect(fitted_heuristic_list, test_data,
+  rowPairs = NULL)
 }
 \arguments{
-\item{fitted_heuristic}{A heuristic already fitted to data, e.g. ttbBinModel.}
+\item{fitted_heuristic_list}{List of heuristics that implement the generic function
+predictAlternative, e.g. ttbBinModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 

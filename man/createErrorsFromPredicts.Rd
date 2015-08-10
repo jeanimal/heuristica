@@ -8,7 +8,8 @@ createErrorsFromPredicts(df)
 }
 \arguments{
 \item{df}{A dataframe to convert.  Assumes it has a column named correctProb
-and predictions are in the last column.}
+and predictions are in all but the first 3 columns.
+(First 3 are Row1, Row2, and correct.)}
 }
 \value{
 A dataframe with the last column converted to:

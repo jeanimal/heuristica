@@ -4,10 +4,10 @@
 \alias{pctCorrectOfPredictAlternative}
 \title{Do not use.  Still under development.}
 \usage{
-pctCorrectOfPredictAlternative(fitted_heuristic, test_data)
+pctCorrectOfPredictAlternative(fitted_heuristic_list, test_data)
 }
 \arguments{
-\item{fitted_heuristic}{A heuristic already fitted to data, e.g. ttbBinModel.}
+\item{fitted_heuristic_list}{A list of heuristics already fitted to data, e.g. ttbBinModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 }

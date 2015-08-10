@@ -182,16 +182,8 @@ predict.ttbBinModel <- function(object, ...) {
   }
 }
 
-#' Predict which alternative has higher criterion for Take The Best with binary cues
-#'
-#' @param object A ttbBinModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{ttbBinModel}} for example code.
-#'
-#' @export
-predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
+# private
+predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
   predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   if (is.null(rowPairs)) {
     n <- nrow(predictions)
@@ -204,9 +196,22 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
     pairsMatrix <- rowPairs
   }
   predictPairs <- t(apply(pairsMatrix, 1,
-    function(rowPair) predictions[rowPair,]))
+                          function(rowPair) predictions[rowPair,]))
   predictDirection <- matrix(apply(predictPairs, 1, pairToValue))
   return(cbind(pairsMatrix, predictDirection))
+}
+
+#' Predict which alternative has higher criterion for Take The Best with binary cues
+#'
+#' @param object A ttbBinModel.
+#' @inheritParams predictAlternative
+#'
+#' @seealso
+#' \code{\link{ttbBinModel}} for example code.
+#'
+#' @export
+predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, rowPairs))
 }
 
 #' Do not use.  Still under development.
