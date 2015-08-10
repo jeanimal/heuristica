@@ -201,7 +201,7 @@ predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
   return(cbind(pairsMatrix, predictDirection))
 }
 
-#' Predict which alternative has higher criterion for Take The Best with binary cues
+#' Predict which alternative has higher criterion for Take The Best with binary cues.
 #'
 #' @param object A ttbBinModel.
 #' @inheritParams predictAlternative
@@ -374,6 +374,19 @@ predict.dawesModel <- function(object, ...) {
     stop("Expected only one unevaluated argument (test_data) but got " +
           length(args) + ":" + args)
   }
+}
+
+#' Predict which alternative has higher criterion for Dawes model.
+#'
+#' @param object A dawesModel.
+#' @inheritParams predictAlternative
+#'
+#' @seealso
+#' \code{\link{dawesModel}} for example code.
+#'
+#' @export
+predictAlternative.dawesModel <- function(object, test_data, rowPairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, rowPairs))
 }
 
 
