@@ -62,7 +62,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit,criterion_col, col_weig
   criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
   test_set <- cbind(criterion,data2[,3:ncol(data2)])
   test_set<- test_set[1:(nrow(test_set)/2),2:ncol(test_set)]
-  test_set <- as.data.frame(test_set)
+  if(is.vector(test_set)!=TRUE) test_set <- as.data.frame(test_set)
   
   
   intercept <- 0
@@ -74,7 +74,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit,criterion_col, col_weig
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
   col_weights_clean[is.na(col_weights_clean)]<-0
-  if(length(col_weights_clean) == 1){
+  if(length(col_weights_clean) == 1 || is.vector(test_set)){
     fit.predictions.prob <- as.vector(1/(1+exp(-as.matrix(test_set)*as.numeric(col_weights_clean) + intercept) ))
   } else {
     fit.predictions.prob <- as.vector(1/(1+exp(-as.matrix(test_set)%*%as.numeric(col_weights_clean) + intercept) )) 
