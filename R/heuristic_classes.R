@@ -210,7 +210,8 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 }
 
 #' Do not use.  Still under development.
-#' @param fitted_heuristic A heuristic already fitted to data, e.g. ttbBinModel.
+#' @param fitted_heuristic_list List of heuristics that implement the generic function
+#'  predictAlternative, e.g. ttbBinModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @param rowPairs An optional matrix where the first two columns are the pairs
 #'  of row indices to use in the test_data.  If not set, all pairs will be used
@@ -218,20 +219,33 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' @seealso
 #' \code{\link{predictAlternative}}
 #' @export
-predictAlternativeWithCorrect <- function(fitted_heuristic, test_data,
+predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
                                           rowPairs=NULL) {
   if (is.null(rowPairs)) {
     n <- nrow(test_data)
     rowPairs <- rowPairGenerator(n)
   }
-  correctValues <- test_data[,fitted_heuristic$criterion_col]
+  if (length(fitted_heuristic_list) == 0) {
+    stop("No fitted heuristics.")
+    # We could allow this if we had a different way to specify criterion_col
+  }
+  criterion_col = fitted_heuristic_list[[1]]$criterion_col
+  #for (heuristic in fitted_heuristic_list) {
+  #  criterion_col = heuristic$criterion_col
+  #}
+  #TODO: make sure no heuristics disagree with that criterion_col
+  
+  correctValues <- test_data[,criterion_col]
   correctProb <-  apply(rowPairs, 1,
                         function(rowPair) pairToValue(correctValues[rowPair]))
   resultMatrix <- cbind(rowPairs, correctProb)
-  predictMatrix <- predictAlternative(fitted_heuristic, test_data, rowPairs=rowPairs)
-  extendedMatrix <- cbind(resultMatrix, model=predictMatrix[,ncol(predictMatrix)])
-  model_name <- class(model)[1]
-  names(extendedMatrix)[ncol(extendedMatrix)] = model_name
+  extendedMatrix <- resultMatrix
+  for (heuristic in fitted_heuristic_list) {
+    predictMatrix <- predictAlternative(heuristic, test_data, rowPairs=rowPairs)
+    extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
+    model_name <- class(model)[1]
+    names(extendedMatrix)[ncol(extendedMatrix)] = model_name
+  }
   # Is there a more efficient way to do the lines below?
   # This gave subscript out of bounds: m[,5] = m[,4]-m[,3]
   #extendedMatrix <- cbind(extendedMatrix,
@@ -242,7 +256,8 @@ predictAlternativeWithCorrect <- function(fitted_heuristic, test_data,
 
 #' Do not use.  Still under development.
 #' @param df A dataframe to convert.  Assumes it has a column named correctProb
-#'  and predictions are in the last column. 
+#'  and predictions are in all but the first 3 columns.
+#'  (First 3 are Row1, Row2, and correct.) 
 #' @return A dataframe with the last column converted to:
 #'   0: if it matched correctProb
 #'   1: if it was wrong.
@@ -251,31 +266,40 @@ predictAlternativeWithCorrect <- function(fitted_heuristic, test_data,
 #'  TODO(jean): Make it work on all model columns, not just last column.
 #' @export
 createErrorsFromPredicts <- function(df) {
-  lastCol = ncol(df)
-  df[,lastCol] <- (df[,lastCol] -df$correctProb )
+  for (col in 4:ncol(df)) {
+    df[,col] <- (df[,col] - df$correctProb )
+  }
   return(df)
 }
 
 #' Do not use.  Still under development.
-#' @param errors A dataframe of heuristic errors to calculate with 
+#' @param errors A dataframe of heuristic errors to calculate with.  Assumes data
+#'  starts in column 4. (First 3 are Row1, Row2, and correct.)
 #' @return A dataframe with one row and the last column as a percent correct.
 #'  TODO(jean): Make it work on all model columns, not just last column.
 #' @export
 createPctCorrectsFromErrors <- function(errors) {
-  lastCol = ncol(errors)
-  sumError <- sum(abs(errors[,ncol(errors)]))
-  newDf <- data.frame((nrow(errors)-sumError) /nrow(errors))
-  names(newDf) <- names(errors)[[lastCol]]
+  newDf <- NULL
+  startCol <- 4
+  for (col in startCol:ncol(errors)) {
+    sumError <- sum(abs(errors[,col]))
+    if (is.null(newDf)) {
+      newDf <- data.frame((nrow(errors)-sumError) /nrow(errors))
+    } else {
+      newDf <- cbind(newDf, (nrow(errors)-sumError) /nrow(errors))
+    }
+    names(newDf)[[ncol(newDf)]] <- names(errors)[[ncol(newDf)+startCol-1]]
+  }
   return(newDf)
 }
 
 #' Do not use.  Still under development.
-#' @param fitted_heuristic A heuristic already fitted to data, e.g. ttbBinModel.
+#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbBinModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @return A numeric from 0 to 1 indicating the percent correct.
 #' @export
-pctCorrectOfPredictAlternative <- function(fitted_heuristic, test_data) {
-  predictions <- predictAlternativeWithCorrect(fitted_heuristic, test_data)
+pctCorrectOfPredictAlternative <- function(fitted_heuristic_list, test_data) {
+  predictions <- predictAlternativeWithCorrect(fitted_heuristic_list, test_data)
   errors <- createErrorsFromPredicts(predictions)
   return(createPctCorrectsFromErrors(errors))
 }
