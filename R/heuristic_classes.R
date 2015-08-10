@@ -248,7 +248,7 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
   for (heuristic in fitted_heuristic_list) {
     predictMatrix <- predictAlternative(heuristic, test_data, rowPairs=rowPairs)
     extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
-    model_name <- class(model)[1]
+    model_name <- class(heuristic)[1]
     names(extendedMatrix)[ncol(extendedMatrix)] = model_name
   }
   # Is there a more efficient way to do the lines below?
