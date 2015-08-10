@@ -58,9 +58,12 @@ pairToValue <- function(pair) {
 
 #Private. for use by logistic regression
 logAccuracy<-function(fit_predictions){
+  if(all(fit_predictions)==0.5){
+  fit_accuracy <- 0.5 } else {  
   prediction <- fit_predictions[fit_predictions!=0.5]
   fit_accuracy <- length(prediction[prediction==1])/length(prediction)
-  if (is.nan(fit_accuracy)) fit_accuracy <- 0  
+  if (is.nan(fit_accuracy)) fit_accuracy <- 0
+  }
   return(fit_accuracy)
 }
 
