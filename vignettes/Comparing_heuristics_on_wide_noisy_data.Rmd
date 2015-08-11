@@ -50,11 +50,6 @@ predictAccuracy <- function(test_matrix, criterion_col, cols_to_fit, col_weights
   predictions <- predictWithWeights(test_matrix, cols_to_fit, col_weights)
   return( cueValidity(test_matrix[,criterion_col], predictions) )
 }
-
-predictAccuracy2 <- function(test_matrix, criterion_col, cols_to_fit, col_weights) {
-  predictions <- predictWithWeightsLog(test_matrix, cols_to_fit,criterion_col, col_weights)
-  return( logAccuracy(predictions) )
-}
 ```
 
 Now here is a function to generate data.  The first cue has a 75% validity.  Then we tell it to generate `num_random_cues` additional cues.  Then it measures predictive accuracy on this data for the list of models we gave it in `vec_of_models`.
@@ -71,11 +66,6 @@ multiPredict75 <- function(vec_of_models, num_rand_columns) {
   for (model_constructor in vec_of_models) {
     model <- model_constructor(m_train, criterion_col, cols_to_fit)
     predict_accuracy <- predictAccuracy(m_test, criterion_col, cols_to_fit, coef(model))
-    if(class(model)[1] == "logRegModel"){
-      predict_accuracy <- predictAccuracy2(m_test, criterion_col, cols_to_fit, model$linear_coef)
-    } else {
-      predict_accuracy <- predictAccuracy(m_test, criterion_col, cols_to_fit, coef(model))  
-    }
     model_name <- class(model)[1]  # Take first class, ignoring super-classes.
      df <- rbind(df, cbind.data.frame(model=model_name, num_rand_col=num_rand_columns, accuracy=predict_accuracy))
   }
@@ -136,12 +126,12 @@ require("ggplot2")
 
 For 0 random cues, the models should be 75% accurate.  Let's confirm that.
 ```{r}
-multiPredict75(c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel, logRegModel), 0)
+multiPredict75(c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel), 0)
 ```
 
 Now consider adding one random cue.  To be sure we are fair, we should run this several times, say 200 times, and take the average.
 ```{r}
-model_list <- c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel, logRegModel)
+model_list <- c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel)
 out <- data.frame()
 for (i in 1:200) { out <- rbind(out, multiPredict75(model_list, 1)) }
 out_summary <- summarySE(out, "accuracy", groupvars=c("model", "num_rand_col"))
