@@ -58,11 +58,13 @@ pairToValue <- function(pair) {
 
 #' Returns a correct proportion based on a vector of predictions.
 #'
+#' Intended for logistic regression.
 #' Assumes original data was sorted so that correct answers are all 1.
+#' This may need to be temporarily exported but will eventually be private.
 #'
 #' @param vector of predictions ranging from 0 to 1.
 #' @return Returns a single value ranging from 0 to 1.
-#' @export
+#'private
 logAccuracy <- function(fit_predictions) {
   if(all(fit_predictions==0.5)){
     fit_accuracy <- 0.5
