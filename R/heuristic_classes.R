@@ -56,13 +56,20 @@ pairToValue <- function(pair) {
   }
 }
 
-#Private. for use by logistic regression
-logAccuracy<-function(fit_predictions){
+#' Returns a correct proportion based on a vector of predictions.
+#'
+#' Assumes original data was sorted so that correct answers are all 1.
+#'
+#' @param vector of predictions ranging from 0 to 1.
+#' @return Returns a single value ranging from 0 to 1.
+#' @export
+logAccuracy <- function(fit_predictions) {
   if(all(fit_predictions==0.5)){
-  fit_accuracy <- 0.5 } else {  
-  prediction <- fit_predictions[fit_predictions!=0.5]
-  fit_accuracy <- length(prediction[prediction==1])/length(prediction)
-  if (is.nan(fit_accuracy)) fit_accuracy <- 0
+    fit_accuracy <- 0.5
+  } else {  
+    prediction <- fit_predictions[fit_predictions!=0.5]
+    fit_accuracy <- length(prediction[prediction==1])/length(prediction)
+    if (is.nan(fit_accuracy)) fit_accuracy <- 0
   }
   return(fit_accuracy)
 }
