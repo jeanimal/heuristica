@@ -126,12 +126,12 @@ require("ggplot2")
 
 For 0 random cues, the models should be 75% accurate.  Let's confirm that.
 ```{r}
-multiPredict75(c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel), 0)
+model_list <- c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel)
+multiPredict75(model_list, 0)
 ```
 
 Now consider adding one random cue.  To be sure we are fair, we should run this several times, say 200 times, and take the average.
 ```{r}
-model_list <- c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel)
 out <- data.frame()
 for (i in 1:200) { out <- rbind(out, multiPredict75(model_list, 1)) }
 out_summary <- summarySE(out, "accuracy", groupvars=c("model", "num_rand_col"))
