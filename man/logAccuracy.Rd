@@ -7,7 +7,7 @@
 logAccuracy(fit_predictions)
 }
 \arguments{
-\item{vector}{of predictions ranging from 0 to 1.}
+\item{fit_predictions}{A vector of predictions ranging from 0 to 1.}
 }
 \value{
 Returns a single value ranging from 0 to 1.

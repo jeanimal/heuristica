@@ -62,7 +62,7 @@ pairToValue <- function(pair) {
 #' Assumes original data was sorted so that correct answers are all 1.
 #' This may need to be temporarily exported but will eventually be private.
 #'
-#' @param vector of predictions ranging from 0 to 1.
+#' @param fit_predictions A vector of predictions ranging from 0 to 1.
 #' @return Returns a single value ranging from 0 to 1.
 #'private
 logAccuracy <- function(fit_predictions) {
