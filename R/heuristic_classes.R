@@ -576,3 +576,6 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit){
             class="logRegModel")
   
 }
+
+#' @export
+coef.logRegModel <- function(object, ...) object$linear_coef
