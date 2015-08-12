@@ -65,7 +65,7 @@ pairToValue <- function(pair) {
 #' @param fit_predictions A vector of predictions ranging from 0 to 1.
 #' @return Returns a single value ranging from 0 to 1.
 #'private
-logAccuracy <- function(fit_predictions,test_data,criterion_col) {
+logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit) {
   test_data <- test_data[order(test_data[,criterion_col],decreasing=T),]
   all.pairs <- t(combn(1:length(test_data[,1]),2))
   all.pairs <-rbind(all.pairs,all.pairs[,c(2,1)])
