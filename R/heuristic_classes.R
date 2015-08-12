@@ -65,14 +65,19 @@ pairToValue <- function(pair) {
 #' @param fit_predictions A vector of predictions ranging from 0 to 1.
 #' @return Returns a single value ranging from 0 to 1.
 #'private
-logAccuracy <- function(fit_predictions) {
-  if(all(fit_predictions==0.5)){
-    fit_accuracy <- 0.5
-  } else {  
-    prediction <- fit_predictions[fit_predictions!=0.5]
-    fit_accuracy <- length(prediction[prediction==1])/length(prediction)
-    if (is.nan(fit_accuracy)) fit_accuracy <- 0
-  }
+logAccuracy <- function(fit_predictions,test_data,criterion_col) {
+  test_data <- test_data[order(test_data[,criterion_col],decreasing=T),]
+  all.pairs <- t(combn(1:length(test_data[,1]),2))
+  all.pairs <-rbind(all.pairs,all.pairs[,c(2,1)])
+  predictors <- cbind(test_data[all.pairs[,1],cols_to_fit],test_data[all.pairs[,2],cols_to_fit])
+  data2 <- cbind(all.pairs,predictors)
+  criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
+  comp <- fit_predictions == criterion
+  comp <- ifelse(comp==TRUE,1,0)
+  comp <- matrix(comp,ncol=2)
+  comp <- rowSums(comp)
+  
+  fit_accuracy <- length(comp[comp==2])/length(comp[comp!=1])
   return(fit_accuracy)
 }
 
@@ -569,11 +574,11 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit){
   model <- glm(formula,family=binomial,data=training_set)
   col_weights <- coef(model)
   
-  fit_predictions <- predictWithWeightsLog(train_data,cols_to_fit,criterion_col,col_weights)
-  fit_accuracy <- logAccuracy(fit_predictions)
+  fit_predictions <- predictWithWeightsLog(train_data,cols_to_fit, criterion_col, col_weights)
+  fit_accuracy <- logAccuracy(fit_predictions,train_data,criterion_col)
   
-  structure(list(criterion_col=criterion_col, cols_to_fit=2:ncol(training_set),
-                 linear_coef=col_weights, fit_predictions=fit_predictions,
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 linear_coef=col_weights,model=model, fit_predictions=fit_predictions,
                  fit_accuracy=fit_accuracy), 
             class="logRegModel")
   
