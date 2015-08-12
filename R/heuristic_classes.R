@@ -63,6 +63,9 @@ pairToValue <- function(pair) {
 #' This may need to be temporarily exported but will eventually be private.
 #'
 #' @param fit_predictions A vector of predictions ranging from 0 to 1.
+#' @param test_data test data.
+#' @param criterion_col vector specifying criterion column
+#' @param cols_to_fit vector specifying columns to fit
 #' @return Returns a single value ranging from 0 to 1.
 #'private
 logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit) {
