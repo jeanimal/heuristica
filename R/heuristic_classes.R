@@ -75,6 +75,9 @@ logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit) {
   predictors <- cbind(test_data[all.pairs[,1],cols_to_fit],test_data[all.pairs[,2],cols_to_fit])
   data2 <- cbind(all.pairs,predictors)
   criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
+  if(all(fit_predictions==0.5)){
+    fit_accuracy <- 0.5
+  } else {
   ids <- which(fit_predictions!=0.5)
   fit_predictions <- fit_predictions[ids]
   #fit_predictions <- round(fit_predictions)
@@ -87,6 +90,7 @@ logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit) {
 #   comp <- rowSums(comp)
 #   
 #   fit_accuracy <- length(comp[comp==2 || 0])/length(comp[comp!=1])
+  }
   return(fit_accuracy)
 }
 
