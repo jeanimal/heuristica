@@ -221,7 +221,7 @@ predict.ttbBinModel <- function(object, ...) {
 predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
   predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
   if (is.null(rowPairs)) {
-    n <- nrow(predictions)
+    n <- length(predictions)
     pairsMatrix <- rowPairGenerator(n)
   } else {
     if (ncol(rowPairs) != 2) {
@@ -231,7 +231,7 @@ predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
     pairsMatrix <- rowPairs
   }
   predictPairs <- t(apply(pairsMatrix, 1,
-                          function(rowPair) predictions[rowPair,]))
+                          function(rowPair) predictions[rowPair]))
   predictDirection <- matrix(apply(predictPairs, 1, pairToValue))
   return(cbind(pairsMatrix, predictDirection))
 }
