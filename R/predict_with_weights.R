@@ -43,7 +43,8 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' @param cols_to_fit Vector of column indexes to use in test_data.
 #' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
 #' @param criterion_col Column index specifying the criterion.
-#' @return A vector (rows * (rows-1)) of predictions for each possible paired comparison. 
+#' @return A vector (rows * (rows-1)) of predictions for each possible paired comparison.
+#'   1 means the first row is bigger, 0 means the 2nd row, 0.5 is a guess. 
 #'  
 #' Special features:
 #' Treats a weight of NA as zero (useful for rank-deficient regression fits).
@@ -52,10 +53,10 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' @export
 predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_weights) {
   test_data <- test_data[order(test_data[,criterion_col],decreasing=T),]
-  all.pairs <- t(combn(1:length(test_data[,1]),2))
-  all.pairs <-rbind(all.pairs,all.pairs[,c(2,1)])
-  predictors <- cbind(test_data[all.pairs[,1],cols_to_fit],test_data[all.pairs[,2],cols_to_fit])
-  data2 <- cbind(all.pairs,predictors)
+  all_pairs <- t(combn(1:length(test_data[,1]),2))
+  all_pairs <-rbind(all_pairs,all_pairs[,c(2,1)])
+  predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
+  data2 <- cbind(all_pairs,predictors)
   criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
   test_set <- cbind(criterion,data2[,3:ncol(data2)])
   test_set <- test_set[,2:ncol(test_set)]

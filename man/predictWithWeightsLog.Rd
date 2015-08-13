@@ -17,6 +17,7 @@ predictWithWeightsLog(test_data, cols_to_fit, criterion_col, col_weights)
 }
 \value{
 A vector (rows * (rows-1)) of predictions for each possible paired comparison.
+  1 means the first row is bigger, 0 means the 2nd row, 0.5 is a guess.
 
 Special features:
 Treats a weight of NA as zero (useful for rank-deficient regression fits).
