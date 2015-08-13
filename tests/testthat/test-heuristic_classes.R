@@ -92,6 +92,8 @@ test_that("ttbBinModel 3x3 names shifted criterion", {
   expect_equal(c('Cue'), names(model$cue_validities))
 })
 
+# predictAlternative
+
 # getPrediction makes test code below more readable.
 getPrediction <- function(out, row1=NULL, row2=NULL) {
   if (is.null(row1) || is.null(row2)) {
@@ -181,6 +183,15 @@ test_that("ttbBinModel 3x3 pos pos predictAlternative backward cues", {
   expect_equal(1, getPrediction(out, row1=3, row2=2))
   # No other rows.
   expect_equal(6, nrow(out))
+})
+
+test_that("ttbBinModel 2x2,3x2 predictAlternative", {
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0), 2, 3), 1, c(2))
+  expect_equal(c(1), model$cue_validities)
+  out <- predictAlternative(model, matrix(c(5,4,3,1,0,0), 3, 2))
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(1, getPrediction(out, row1=1, row2=3))
+  expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=0.0001)
 })
 
 # Most testing of predict is with predictWithWeights, so here I am
