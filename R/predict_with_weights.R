@@ -43,8 +43,7 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' @param cols_to_fit Vector of column indexes to use in test_data.
 #' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
 #' @param criterion_col Column index specifying the criterion.
-#' @return A matrix (rows x1) of predictions, or a list if there was just one
-#'    column to fit. 
+#' @return A vector (rows * (rows-1)) of predictions for each possible paired comparison. 
 #'  
 #' Special features:
 #' Treats a weight of NA as zero (useful for rank-deficient regression fits).
@@ -75,12 +74,16 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     prediction <- test_set * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=1)
+    ids <- which(test_set[,1]==test_set[,2])
+    prediction[ids,]<-0.5
   } else {
     prediction <- as.matrix(test_set) %*% col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=1)
+    ids <- which(test_set[,1]==test_set[,2])
+    prediction[ids,]<-0.5
   }
-  
+  prediction[prediction!=0.5] <- round(prediction[prediction!=0.5])
   return(as.vector(prediction))
 }
 

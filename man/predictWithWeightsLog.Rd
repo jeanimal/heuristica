@@ -16,8 +16,7 @@ predictWithWeightsLog(test_data, cols_to_fit, criterion_col, col_weights)
 \item{col_weights}{Vector of weights to apply to the columns indicated by cols_to_fit.}
 }
 \value{
-A matrix (rows x1) of predictions, or a list if there was just one
-   column to fit.
+A vector (rows * (rows-1)) of predictions for each possible paired comparison.
 
 Special features:
 Treats a weight of NA as zero (useful for rank-deficient regression fits).
