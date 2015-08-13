@@ -75,6 +75,7 @@ logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit) {
   predictors <- cbind(test_data[all.pairs[,1],cols_to_fit],test_data[all.pairs[,2],cols_to_fit])
   data2 <- cbind(all.pairs,predictors)
   criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
+  fit_predictions<-fit_predictions[,3]
   if(all(fit_predictions==0.5)){
     fit_accuracy <- 0.5
   } else {
