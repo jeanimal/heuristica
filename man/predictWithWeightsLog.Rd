@@ -16,8 +16,12 @@ predictWithWeightsLog(test_data, cols_to_fit, criterion_col, col_weights)
 \item{col_weights}{Vector of weights to apply to the columns indicated by cols_to_fit.}
 }
 \value{
-A vector (rows * (rows-1)) of predictions for each possible paired comparison.
-  1 means the first row is bigger, 0 means the 2nd row, 0.5 is a guess.
+A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.
+  Description of each column:
+  Row1: The index of row1 of the comparison.
+  Row2: The index of row2 of the comparison.
+  Prob_Row1_Bigger: The prediction of the probability that row1 has the bigger criterion.
+    Specifically, 1 means the first row is bigger, 0 means the 2nd row, 0.5 is a guess.
 
 Special features:
 Treats a weight of NA as zero (useful for rank-deficient regression fits).
