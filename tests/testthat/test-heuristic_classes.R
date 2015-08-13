@@ -361,7 +361,7 @@ test_that("regModel 3x3 fit positive mixed", {
 
 ### logRegModel ###
 
-test_that("logRegModel predictWithWeightsLog 2x2 simple", {
+test_that("logRegModel predictWithWeightsLog 2x2 fit train_data", {
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   out <- predictWithWeightsLog(train_data, logr$cols_to_fit, 1, logr$linear_coef)
