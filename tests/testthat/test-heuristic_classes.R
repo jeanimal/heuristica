@@ -370,7 +370,7 @@ test_that("logRegModel predictWithWeightsLog 2x2 fit train_data", {
   expect_equal(2, nrow(out)) # No other rows.
 })
 
-test_that("logRegModel predictWithWeightsLog 2x2,2x3 all correct", {
+test_that("logRegModel predictWithWeightsLog 2x2,3x2 all correct", {
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   test_data <- matrix(c(5,4,3,1,0,0), 3, 2)
@@ -384,7 +384,7 @@ test_that("logRegModel predictWithWeightsLog 2x2,2x3 all correct", {
   expect_equal(6, nrow(out)) # No other rows.
 })
 
-test_that("logRegModel predictWithWeightsLog 2x2,2x3 all incorrect", {
+test_that("logRegModel predictWithWeightsLog 2x2,3x2 all incorrect", {
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   test_data <- matrix(c(5,4,3,0,1,1), 3, 2)
