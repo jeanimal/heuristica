@@ -32,6 +32,8 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 #' @export
 predictAlternative <- function(object, test_data, rowPairs=NULL) UseMethod("predictAlternative")
 
+# TODO(jean): Rename rowPairs to row_pairs everywhere.  Share documentation.
+
 ## Shared helper functions ##
 
 # Private.
@@ -259,7 +261,7 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #'  predictAlternative, e.g. ttbBinModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @param rowPairs An optional matrix where the first two columns are the pairs
-#'  of row indices to use in the test_data.  If not set, all pairs will be used
+#'  of row indices to use in the test_data.  If not set, all pairs will be used.
 #' @return Same matrix as predictAlternative but with columns on correctness
 #' @seealso
 #' \code{\link{predictAlternative}}
@@ -287,6 +289,7 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
   extendedMatrix <- resultMatrix
   for (heuristic in fitted_heuristic_list) {
     predictMatrix <- predictAlternative(heuristic, test_data, rowPairs=rowPairs)
+    # TODO(jean): This assumes rowPairs match up.  Is that a safe assumption?
     extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
     model_name <- class(heuristic)[1]
     names(extendedMatrix)[ncol(extendedMatrix)] = model_name
@@ -600,3 +603,9 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit){
 
 #' @export
 coef.logRegModel <- function(object, ...) object$linear_coef
+
+#' @export
+predictAlternative.logRegModel <- function(object, test_data, rowPairs = NULL) {
+  return(predictWithWeightsLog(test_data, object$cols_to_fit, object$criterion_col, 
+                        object$linear_coef, rowPairs))
+}
