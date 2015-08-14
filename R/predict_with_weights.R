@@ -1,5 +1,6 @@
 
 
+
 #' Linear prediction for use by heuristics.
 #'
 #' Applies the weights in col_weights to the columns cols_to_fit in test_data.
@@ -35,6 +36,14 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
   return(predictions)
 }
 
+rowPairGenerator <- function(n) {
+  allPairs <- expand.grid(Row1=seq(n), Row2=seq(n))
+  allPairs <- allPairs[allPairs$Row1!=allPairs$Row2,]
+  allPairs <- allPairs[order(allPairs$Row1, allPairs$Row2),]
+  rownames(allPairs) <- NULL
+  return(allPairs)
+}
+
 #' Logistic prediction for use by logistic regression.
 #'
 #' Applies the weights in col_weights to the columns cols_to_fit in test_data.
@@ -43,6 +52,7 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' @param cols_to_fit Vector of column indexes to use in test_data.
 #' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
 #' @param criterion_col Column index specifying the criterion.
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @return A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.
 #'   Description of each column:
 #'   Row1: The index of row1 of the comparison.
@@ -55,10 +65,14 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' If there is a column named "(Intercept)" in col_weights, it is added.
 #' In other words, there is no need to add an intercept column to test_matrix.
 #' @export
-predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_weights) {
-  test_data <- test_data[order(test_data[,criterion_col],decreasing=T),]
-  all_pairs <- t(combn(1:length(test_data[,1]),2))
-  all_pairs <-rbind(all_pairs,all_pairs[,c(2,1)])
+predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_weights,
+                                  row_pairs=NULL) {
+  if (is.null(row_pairs)) {
+    n <- nrow(test_data)
+    all_pairs <- rowPairGenerator(n)
+  } else {
+    all_pairs <- row_pairs
+  }
   predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
   data2 <- cbind(all_pairs,predictors)
   criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
