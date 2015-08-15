@@ -1,4 +1,21 @@
 
+#' Assuming you have a matrix with a columns row1 and row2,
+#' this helps you get the row which matches those columns.
+#' getPrediction makes code below more readable.
+#' @param df Data.frame to extra row from
+#' @param row1 The value in the row1 column to look for
+#' @param row2 The value in the row2 column to look for
+#' @return a row of the data frame.  (This could be multiple rows
+#'   if multiple rows match.)
+#' @export
+getPredictionRow <- function(df, row1=NULL, row2=NULL) {
+  if (is.null(row1) || is.null(row2)) {
+    stop("You must set both row1 and row2")
+  }
+  lastCol <- ncol(df)
+  return(df[(df$Row1==row1) & (df$Row2==row2),])
+}
+
 #' Generates a matrix of correct values an predictions among alternatives.
 #' 
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
