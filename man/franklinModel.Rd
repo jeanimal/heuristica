@@ -26,5 +26,7 @@ The name is because it was inspired by a method used by Ben Franklin.
 }
 \seealso{
 \code{\link{predict.franklinModel}} (via \code{\link[stats]{predict}}) for prediction.
+
+\code{\link{predictAlternative.franklinModel}} for predicting among alternatives.
 }
 

@@ -7,7 +7,7 @@
 \method{predict}{franklinModel}(object, ...)
 }
 \arguments{
-\item{object}{A franklinModel.}
+\item{object}{A fitted franklinModel.}
 
 \item{...}{Normally this would be the test data.
  It is used to predict and can be a matrix or data.frame.

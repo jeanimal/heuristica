@@ -32,5 +32,7 @@ estimating it wastes a degree of freedom.
 \code{\link{regModel}} for a version that includes the intercept.
 
 \code{\link{predict.lm}} for prediction.
+
+\code{\link{predictAlternative.regNoIModel}} for predicting among alternatives.
 }
 
