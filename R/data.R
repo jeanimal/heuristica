@@ -5,7 +5,7 @@
 #'
 #' The data is based on:
 #'
-#'  Morton, Felicia B. (1995). Charting a School¹s Course. Chicago.
+#'  Morton, Felicia B. (1995). Charting a School's Course. Chicago.
 #'     February, pp. 86-95.
 #'
 #'  Rodkin, Dennis. (1995). 10 Keys for Creating Top High Schools.

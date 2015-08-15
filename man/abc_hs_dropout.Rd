@@ -4,11 +4,7 @@
 \name{abc_hs_dropout}
 \alias{abc_hs_dropout}
 \title{Chicago high school dropout rates.}
-\format{A data frame.
-\describe{
-  \item{Name_of_School}{Name of school}
-  ...
-}}
+\format{A data frame.}
 \usage{
 abc_hs_dropout
 }
