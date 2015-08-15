@@ -371,6 +371,16 @@ test_that("logRegModel predictWithWeightsLog 2x2 fit train_data", {
   expect_equal(2, nrow(out)) # No other rows.
 })
 
+test_that("logRegModel predictWithWeightsLog 2x2 fit train_data reverse cue", {
+  train_data <- matrix(c(5,4,0,1), 2, 2)
+  model <- logRegModel(train_data, 1, c(2))
+  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
+                               model$linear_coef)
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
 test_that("logRegModel predictWithWeightsLog 2x2,3x2 all correct", {
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
@@ -401,3 +411,32 @@ test_that("logRegModel predictWithWeightsLog 2x2,3x2 all incorrect", {
   expect_equal(6, nrow(out)) # No other rows.
 })
 
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data", {
+  train_data <- matrix(c(5,4,1,0,1,0), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
+                               model$linear_coef)
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue useless", {
+  train_data <- matrix(c(5,4,1,0,1,1), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
+                               model$linear_coef)
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue reverse", {
+  train_data <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
+                               model$linear_coef)
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  expect_equal(2, nrow(out)) # No other rows.
+})
