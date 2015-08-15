@@ -18,8 +18,4 @@
 #' and Cognition) research group.
 #'
 #' @format A data frame.
-#' \describe{
-#'   \item{Name_of_School}{Name of school}
-#'   ...
-#' }
 "abc_hs_dropout"
