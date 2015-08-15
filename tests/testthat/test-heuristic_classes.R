@@ -194,6 +194,25 @@ test_that("ttbBinModel 2x2,3x2 predictAlternative", {
   expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=0.0001)
 })
 
+test_that("ttbBinModel 4x4 predictAlternative first cue dominates", {
+  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
+  # How this data looks:
+  # > train_data
+  #       [,1] [,2] [,3] [,4]
+  # [1,]    9    1    1    1
+  # [2,]    8    1    1    1
+  # [3,]    7    1    0    0
+  # [4,]    6    0    1    1
+  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
+  # Cue one predicts Row 3 > Row 4.
+  # But if you sum cue weights, predict Row 4 > Row 3
+  model <- ttbBinModel(train_data, 1, c(2:4))
+  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=3, row2=4))
+  expect_equal(0, getPrediction(out, row1=4, row2=3))
+})
+
 # Most testing of predict is with predictWithWeights, so here I am
 # just making sure it is correctly wired into the ttbBinModel.
 # ttb only guarantees the ordering of its predictions, not values, 
@@ -221,7 +240,26 @@ test_that("ttbBinModel 3x3 predict without test_data", {
   expect_equal(model$fit_predictions, good)
 })
 
+### ttbModel ###
 
+test_that("ttbModel 4x4 predictAlternative first cue dominates", {
+  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
+  # How this data looks:
+  # > train_data
+  #       [,1] [,2] [,3] [,4]
+  # [1,]    9    1    1    1
+  # [2,]    8    1    1    1
+  # [3,]    7    1    0    0
+  # [4,]    6    0    1    1
+  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
+  # Cue one predicts Row 3 > Row 4.
+  # But if you sum cue weights, predict Row 4 > Row 3
+  model <- ttbModel(train_data, 1, c(2:4))
+  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=3, row2=4))
+  expect_equal(0, getPrediction(out, row1=4, row2=3))
+})
 
 ### dawesModel ###
 
