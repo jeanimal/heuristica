@@ -365,8 +365,7 @@ test_that("logRegModel predictWithWeightsLog 2x2 fit train_data", {
   tol <- 0.0001
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, train_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
@@ -376,8 +375,7 @@ test_that("logRegModel predictWithWeightsLog 2x2 fit train_data reverse cue", {
   tol <- 0.0001
   train_data <- matrix(c(5,4,0,1), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, train_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
@@ -388,8 +386,7 @@ test_that("logRegModel predictWithWeightsLog 2x2,3x2 all correct", {
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   test_data <- matrix(c(5,4,3,1,0,0), 3, 2)
-  out <- predictWithWeightsLog(test_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, test_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(1, getPrediction(out, row1=1, row2=3), tolerance=tol)
@@ -404,8 +401,7 @@ test_that("logRegModel predictWithWeightsLog 2x2,3x2 all incorrect", {
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   test_data <- matrix(c(5,4,3,0,1,1), 3, 2)
-  out <- predictWithWeightsLog(test_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, test_data)
   expect_equal(0, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(1, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=1, row2=3), tolerance=tol)
@@ -419,8 +415,7 @@ test_that("logRegModel predictWithWeightsLog 2x3 fit train_data", {
   tol <- 0.0001
   train_data <- matrix(c(5,4,1,0,1,0), 2, 3)
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, train_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
@@ -430,8 +425,7 @@ test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue useless"
   tol <- 0.0001
   train_data <- matrix(c(5,4,1,0,1,1), 2, 3)
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, train_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
@@ -441,8 +435,7 @@ test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue reverse"
   tol <- 0.0001
   train_data <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, train_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
@@ -452,8 +445,7 @@ test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 1st cue useless"
   tol <- 0.0001
   train_data <- matrix(c(5,4,0,0,1,0), 2, 3)
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
+  out <- predictAlternative(model, train_data)
   expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
