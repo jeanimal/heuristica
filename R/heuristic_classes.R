@@ -226,7 +226,13 @@ predict.ttbBinModel <- function(object, ...) {
 
 # private
 predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
-  predictions <- predictWithWeights(test_data, object$cols_to_fit, object$linear_coef)
+  return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, object$linear_coef,
+                                        rowPairs))
+}
+
+# private.  TODO: Move to predict_with_weights and export.
+predictAlternativeWithWeights2 <- function(test_data, cols_to_fit, weights, rowPairs=NULL) {
+  predictions <- predictWithWeights(test_data, cols_to_fit, weights)
   if (is.null(rowPairs)) {
     n <- length(predictions)
     pairsMatrix <- rowPairGenerator(n)
