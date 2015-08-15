@@ -440,3 +440,13 @@ test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue reverse"
   expect_equal(0, getPrediction(out, row1=2, row2=1))
   expect_equal(2, nrow(out)) # No other rows.
 })
+
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 1st cue useless", {
+  train_data <- matrix(c(5,4,0,0,1,0), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
+                               model$linear_coef)
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  expect_equal(2, nrow(out)) # No other rows.
+})
