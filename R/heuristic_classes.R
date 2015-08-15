@@ -276,7 +276,7 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' 
 #' @inheritParams heuristicaModel
 #'
-#' @return An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
+#' @return An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
 #'    \item "cue_ranks": A list of integer ranks of the cues in order of cols_to_fit.
@@ -291,7 +291,7 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' predictAlternative(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
 #'
 #' @seealso
-#' \code{\link{predict.ttbModel}} (via \code{\link[stats]{predict}}) for prediction.
+#' \code{\link{predictAlternative.ttbModel}} (via \code{\link{predictAlternative}}) for prediction.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'

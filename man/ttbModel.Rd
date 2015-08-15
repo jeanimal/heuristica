@@ -14,7 +14,7 @@ ttbModel(train_data, criterion_col, cols_to_fit)
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 }
 \value{
-An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
+An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
   \itemize{
    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
    \item "cue_ranks": A list of integer ranks of the cues in order of cols_to_fit.
@@ -38,7 +38,7 @@ predictAlternative(ttb, matrix(c(5,4,1,0,0,1), 2, 3))
 predictAlternative(ttb, matrix(c(5,4,0,1,0,1), 2, 3))
 }
 \seealso{
-\code{\link{predict.ttbModel}} (via \code{\link[stats]{predict}}) for prediction.
+\code{\link{predictAlternative.ttbModel}} (via \code{\link{predictAlternative}}) for prediction.
 
 Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 }
