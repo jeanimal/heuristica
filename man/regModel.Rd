@@ -28,5 +28,7 @@ This version assumes you always want to include the intercept.
 \code{\link{regNoIModel}} for a version that excludes the intercept.
 
 \code{\link{predict.lm}} for prediction.
+
+\code{\link{predictAlternative.regModel}} for predicting among alternatives.
 }
 

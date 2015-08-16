@@ -194,6 +194,25 @@ test_that("ttbBinModel 2x2,3x2 predictAlternative", {
   expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=0.0001)
 })
 
+test_that("ttbBinModel 4x4 predictAlternative first cue dominates", {
+  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
+  # How this data looks:
+  # > train_data
+  #       [,1] [,2] [,3] [,4]
+  # [1,]    9    1    1    1
+  # [2,]    8    1    1    1
+  # [3,]    7    1    0    0
+  # [4,]    6    0    1    1
+  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
+  # Cue one predicts Row 3 > Row 4.
+  # But if you sum cue weights, predict Row 4 > Row 3
+  model <- ttbBinModel(train_data, 1, c(2:4))
+  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=3, row2=4))
+  expect_equal(0, getPrediction(out, row1=4, row2=3))
+})
+
 # Most testing of predict is with predictWithWeights, so here I am
 # just making sure it is correctly wired into the ttbBinModel.
 # ttb only guarantees the ordering of its predictions, not values, 
@@ -221,7 +240,26 @@ test_that("ttbBinModel 3x3 predict without test_data", {
   expect_equal(model$fit_predictions, good)
 })
 
+### ttbModel ###
 
+test_that("ttbModel 4x4 predictAlternative first cue dominates", {
+  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
+  # How this data looks:
+  # > train_data
+  #       [,1] [,2] [,3] [,4]
+  # [1,]    9    1    1    1
+  # [2,]    8    1    1    1
+  # [3,]    7    1    0    0
+  # [4,]    6    0    1    1
+  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
+  # Cue one predicts Row 3 > Row 4.
+  # But if you sum cue weights, predict Row 4 > Row 3
+  model <- ttbModel(train_data, 1, c(2:4))
+  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=3, row2=4))
+  expect_equal(0, getPrediction(out, row1=4, row2=3))
+})
 
 ### dawesModel ###
 
@@ -362,42 +400,91 @@ test_that("regModel 3x3 fit positive mixed", {
 ### logRegModel ###
 
 test_that("logRegModel predictWithWeightsLog 2x2 fit train_data", {
+  tol <- 0.0001
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
-  out <- predictWithWeightsLog(train_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
-  expect_equal(1, getPrediction(out, row1=1, row2=2))
-  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
+test_that("logRegModel predictWithWeightsLog 2x2 fit train_data reverse cue", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,0,1), 2, 2)
+  model <- logRegModel(train_data, 1, c(2))
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
 })
 
 test_that("logRegModel predictWithWeightsLog 2x2,3x2 all correct", {
+  tol <- 0.0001
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   test_data <- matrix(c(5,4,3,1,0,0), 3, 2)
-  out <- predictWithWeightsLog(test_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
-  expect_equal(1, getPrediction(out, row1=1, row2=2))
-  expect_equal(0, getPrediction(out, row1=2, row2=1))
-  expect_equal(1, getPrediction(out, row1=1, row2=3))
-  expect_equal(0, getPrediction(out, row1=3, row2=1))
-  expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=0.0001)
-  expect_equal(0.5, getPrediction(out, row1=3, row2=2), tolerance=0.0001)
+  out <- predictAlternative(model, test_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(1, getPrediction(out, row1=1, row2=3), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=3, row2=1), tolerance=tol)
+  expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=tol)
+  expect_equal(0.5, getPrediction(out, row1=3, row2=2), tolerance=tol)
   expect_equal(6, nrow(out)) # No other rows.
 })
 
 test_that("logRegModel predictWithWeightsLog 2x2,3x2 all incorrect", {
+  tol <- 0.0001
   train_data <- matrix(c(5,4,1,0), 2, 2)
   model <- logRegModel(train_data, 1, c(2))
   test_data <- matrix(c(5,4,3,0,1,1), 3, 2)
-  out <- predictWithWeightsLog(test_data, model$cols_to_fit, model$criterion_col,
-                               model$linear_coef)
-  expect_equal(0, getPrediction(out, row1=1, row2=2))
-  expect_equal(1, getPrediction(out, row1=2, row2=1))
-  expect_equal(0, getPrediction(out, row1=1, row2=3))
-  expect_equal(1, getPrediction(out, row1=3, row2=1))
-  expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=0.0001)
-  expect_equal(0.5, getPrediction(out, row1=3, row2=2), tolerance=0.0001)
+  out <- predictAlternative(model, test_data)
+  expect_equal(0, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(1, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=1, row2=3), tolerance=tol)
+  expect_equal(1, getPrediction(out, row1=3, row2=1), tolerance=tol)
+  expect_equal(0.5, getPrediction(out, row1=2, row2=3), tolerance=tol)
+  expect_equal(0.5, getPrediction(out, row1=3, row2=2), tolerance=tol)
   expect_equal(6, nrow(out)) # No other rows.
 })
 
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0,1,0), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue useless", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0,1,1), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 2nd cue reverse", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(2, nrow(out)) # No other rows.
+})
+
+test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 1st cue useless", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,0,0,1,0), 2, 3)
+  model <- logRegModel(train_data, 1, c(2,3))
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(2, nrow(out)) # No other rows.
+})

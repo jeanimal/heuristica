@@ -34,6 +34,8 @@ This version differs from others in that it uses a weight of 0 if cue validity i
 \seealso{
 \code{\link{predict.dawesModel}} (via \code{\link[stats]{predict}}) for prediction.
 
+\code{\link{predictAlternative.dawesModel}} for predicting among alternatives.
+
 Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 }
 
