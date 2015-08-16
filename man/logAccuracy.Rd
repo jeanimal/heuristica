@@ -15,6 +15,8 @@ logAccuracy(fit_predictions, test_data, criterion_col, cols_to_fit,
 \item{criterion_col}{vector specifying criterion column}
 
 \item{cols_to_fit}{vector specifying columns to fit}
+
+\item{row_pairs}{Optional matrix.  TODO(jean): share documentation.}
 }
 \value{
 Returns a single value ranging from 0 to 1.
