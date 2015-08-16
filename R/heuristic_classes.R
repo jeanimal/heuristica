@@ -68,6 +68,7 @@ pairToValue <- function(pair) {
 #' @param test_data test data.
 #' @param criterion_col vector specifying criterion column
 #' @param cols_to_fit vector specifying columns to fit
+#'@param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @return Returns a single value ranging from 0 to 1.
 #'private
 logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit,row_pairs=NULL) {
@@ -594,7 +595,7 @@ predictAlternative.regNoIModel <- function(object, test_data, rowPairs=NULL) {
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
-#'
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL){
   

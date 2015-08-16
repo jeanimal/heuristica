@@ -93,7 +93,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     prediction <- test_set * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    
+    ids <- sapply(1:nrow(test_set),function(x) all(test_set[x,]==1) ||all(test_set[x,]== 0))
     ids <- which(ids==TRUE)
     prediction[ids,]<-0.5
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
@@ -101,6 +101,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     prediction <- as.matrix(test_set) %*% col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
+    ids <- sapply(1:nrow(test_set),function(x) all(test_set[x,]==1) ||all(test_set[x,]== 0))
     ids <- which(ids==TRUE)
     prediction[ids,]<-0.5
     prediction<-ifelse(prediction>0.50,1,ifelse(prediction == 0.50,0.5,0 ))
