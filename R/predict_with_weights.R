@@ -93,19 +93,24 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   if (length(col_weights_clean) == 1) {
     prediction <- test_set * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
-    prediction <- round(prediction,digits=1)
-    ids <- sapply(1:nrow(test_set),function(x) all(test_set[x,]==1) ||all(test_set[x,]== 0))
+    prediction <- round(prediction,digits=2)
+    ids <-rowSums(test_set[,1:(ncol(test_set)/2)])==rowSums(test_set[,((ncol(test_set)/2)+1):ncol(test_set)])
     ids <- which(ids==TRUE)
     prediction[ids,]<-0.5
+    prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   } else {
     prediction <- as.matrix(test_set) %*% col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
-    prediction <- round(prediction,digits=1)
-    ids <- sapply(1:nrow(test_set),function(x) all(test_set[x,]==1) ||all(test_set[x,]== 0))
+    prediction <- round(prediction,digits=2)
+    if(ncol(test_set)>2){
+    ids <-rowSums(test_set[,1:(ncol(test_set)/2)])==rowSums(test_set[,((ncol(test_set)/2)+1):ncol(test_set)])
+    } else{
+    ids <-(test_set[,1:(ncol(test_set)/2)])==(test_set[,((ncol(test_set)/2)+1):ncol(test_set)])
+    }
     ids <- which(ids==TRUE)
     prediction[ids,]<-0.5
+    prediction<-ifelse(prediction>0.50,1,ifelse(prediction == 0.50,0.5,0 ))
   }
-  prediction[prediction!=0.5] <- round(prediction[prediction!=0.5])
   out_df <- data.frame(cbind(all_pairs, prediction))
   names(out_df) <- c("Row1", "Row2", "Prob_Row1_Bigger")
   return(out_df)

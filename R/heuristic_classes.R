@@ -70,31 +70,31 @@ pairToValue <- function(pair) {
 #' @param cols_to_fit vector specifying columns to fit
 #' @return Returns a single value ranging from 0 to 1.
 #'private
-logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit) {
-  test_data <- test_data[order(test_data[,criterion_col],decreasing=T),]
-  all.pairs <- t(combn(1:length(test_data[,1]),2))
-  all.pairs <-rbind(all.pairs,all.pairs[,c(2,1)])
-  predictors <- cbind(test_data[all.pairs[,1],cols_to_fit],test_data[all.pairs[,2],cols_to_fit])
-  data2 <- cbind(all.pairs,predictors)
-  criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
+logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit,row_pairs=NULL) {
+  
+  if (is.null(row_pairs)) {
+    n <- nrow(test_data)
+    all_pairs <- rowPairGenerator(n)
+  } else {
+    all_pairs <- row_pairs
+  }
+
+  predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
+  data2 <- cbind(all_pairs,predictors)
+  criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col],0.5,0 ))
   fit_predictions<-fit_predictions[,3]
   if(all(fit_predictions==0.5)){
     fit_accuracy <- 0.5
   } else {
   ids <- which(fit_predictions!=0.5)
   fit_predictions <- fit_predictions[ids]
-  #fit_predictions <- round(fit_predictions)
   criterion <- criterion[ids]
                                 
   comp <- fit_predictions == criterion
   fit_accuracy <- length(comp[comp==TRUE])/length(comp)
-#   comp <- ifelse(comp==TRUE,1,0)
-#   comp <- matrix(comp,ncol=2)
-#   comp <- rowSums(comp)
-#   
-#   fit_accuracy <- length(comp[comp==2 || 0])/length(comp[comp!=1])
   }
   return(fit_accuracy)
+  
 }
 
 
@@ -576,13 +576,19 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #' @return An object of class logRegModel.
 #'
 #' @export
-logRegModel <- function(train_data, criterion_col, cols_to_fit){
-  train_data <- as.data.frame(train_data)
-  train_data <- train_data[order(train_data[,criterion_col],decreasing=T),]
-  all.pairs <- t(combn(1:length(train_data[,1]),2))
-  all.pairs <-rbind(all.pairs,all.pairs[,c(2,1)])
-  predictors <- cbind(train_data[all.pairs[,1],cols_to_fit],train_data[all.pairs[,2],cols_to_fit])
-  data2 <- cbind(all.pairs,predictors)
+logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL){
+  
+   if (is.null(row_pairs)) {
+    n <- nrow(train_data)
+    all_pairs <- rowPairGenerator(n)
+  } else {
+    all_pairs <- row_pairs
+  }
+  
+  all_pairs<-as.data.frame(all_pairs)
+  predictors <- cbind(train_data[all_pairs[,1],cols_to_fit],train_data[all_pairs[,2],cols_to_fit])
+  predictors <- as.data.frame(predictors)
+  data2 <- cbind(all_pairs,predictors)
   dep.var <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
   training_set <- cbind(dep.var,data2[,3:ncol(data2)])
   training_set <- as.data.frame(training_set)
