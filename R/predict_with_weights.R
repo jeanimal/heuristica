@@ -75,10 +75,9 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   }
   predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
   data2 <- cbind(all_pairs,predictors)
-  criterion <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
+  criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col+1],0.5,0 ))
   test_set <- cbind(criterion,data2[,3:ncol(data2)])
   test_set <- test_set[,2:ncol(test_set)]
-  #col_weights<-coef(model)
   if(is.vector(test_set)!=TRUE) test_set <- as.data.frame(test_set)
   
   intercept <- 0
@@ -94,7 +93,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     prediction <- test_set * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    ids <-rowSums(test_set[,1:(ncol(test_set)/2)])==rowSums(test_set[,((ncol(test_set)/2)+1):ncol(test_set)])
+    
     ids <- which(ids==TRUE)
     prediction[ids,]<-0.5
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
@@ -102,11 +101,6 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     prediction <- as.matrix(test_set) %*% col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    if(ncol(test_set)>2){
-    ids <-rowSums(test_set[,1:(ncol(test_set)/2)])==rowSums(test_set[,((ncol(test_set)/2)+1):ncol(test_set)])
-    } else{
-    ids <-(test_set[,1:(ncol(test_set)/2)])==(test_set[,((ncol(test_set)/2)+1):ncol(test_set)])
-    }
     ids <- which(ids==TRUE)
     prediction[ids,]<-0.5
     prediction<-ifelse(prediction>0.50,1,ifelse(prediction == 0.50,0.5,0 ))
