@@ -4,7 +4,7 @@
 \alias{logRegModel}
 \title{Logistic Regression model}
 \usage{
-logRegModel(train_data, criterion_col, cols_to_fit)
+logRegModel(train_data, criterion_col, cols_to_fit, row_pairs = NULL)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}

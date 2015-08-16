@@ -4,7 +4,8 @@
 \alias{logAccuracy}
 \title{Returns a correct proportion based on a vector of predictions.}
 \usage{
-logAccuracy(fit_predictions, test_data, criterion_col, cols_to_fit)
+logAccuracy(fit_predictions, test_data, criterion_col, cols_to_fit,
+  row_pairs = NULL)
 }
 \arguments{
 \item{fit_predictions}{A vector of predictions ranging from 0 to 1.}
