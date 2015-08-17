@@ -18,7 +18,7 @@
 #' \describe{
 #'   \item{Name_of_School}{Name of School}
 #'   \item{Running_Number}{Running Number}
-#'   \item{Included_in_web_and_web_corrected}{Included_in_web_and_web_corrected}
+#'   \item{Included_in_web_and_web_corrected}{If 1, then this row was accidentally omitted in the ABC studies from 1993}
 #'   \item{Dropout_Rate}{Dropout rate in percent, from 0 to 100, counting all students in grades 9 through 12 who left school permanently during the 1993-4 school year}
 #'   \item{completeness_of_data}{completeness_of_data}
 #'   \item{Enrollment}{Enrollment as of September 30, 1993}
