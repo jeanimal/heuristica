@@ -41,3 +41,34 @@
 #'   \item{Writing}{Writing score on IGAP}
 #' }
 "abc_hs_dropout"
+
+
+#' Population size of the 83 largest German cities. 
+#'
+#' Population size of 83 largest German cities and additional variables 
+#' indicating whether they have a soccer team, intercity trainline, University, etc.
+#'
+#' The data is based on:
+#'
+#'  Fischer Welt Almanach [Fischer World Almanac]. (1993).  Frankfurt, Germany: Fischer.
+#'
+#'
+#' This is the data set used in simulations by the ABC (Adaptive Behavior
+#' and Cognition) research group.
+#'
+#' @format A data frame.
+#' \describe{
+#'   \item{Name_of_City}{Name of city}
+#'   \item{Running_Number}{Running Number}
+#'   \item{Population}{Population size}
+#'   \item{Soccer_Team}{1 indicates that the city has a soccer team, 0 indicates that it does not.}
+#'   \item{State_Capital}{1 indicates that the city is a state capital, 0 indicates that it is not.}
+#'   \item{Former_East_Germany}{1 indicates that the city belongs to former East Germany, 0 that is does not.}
+#'   \item{Industrial_Belt}{1 indicates that the city is an industrial belt, 0 that it is not.}
+#'   \item{Licence_plate}{1 indicates that the city has a licence plate, 0 that it does not.}
+#'   \item{Intercity_trainline}{1 indicates that an intercity trainline crosses the city, 0 that it does not.}
+#'   \item{Exposition_Site}{1 indicates that the city is an exposition size, 0 that it is not.}
+#'   \item{National_Capital}{1 indicates that the city is the national capital, 0 that it is not.}
+#'   \item{University}{1 indicates that the city has a University, 0 that it does not.}
+#' }
+"city"
