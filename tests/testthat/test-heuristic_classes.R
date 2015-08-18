@@ -488,3 +488,11 @@ test_that("logRegModel predictWithWeightsLog 2x3 fit train_data 1st cue useless"
   expect_equal(0, getPrediction(out, row1=2, row2=1), tolerance=tol)
   expect_equal(2, nrow(out)) # No other rows.
 })
+test_that("logRegModel predictWithWeightsLog 3x2 fit train_data 1st cue useless", {
+  tol <- 0.0001
+  train_data <- cbind(c(5:1), c(1,1,1,0,1))
+  model <- logRegModel(train_data, 1, 2)
+  fit_predictions <- predictWithWeightsLog(train_data,2,1,model$linear_coef)
+  fit_accuracy <- logAccuracy(fit_predictions,train_data,1,2)
+  expect_equal(0.6, fit_accuracy, tolerance=tol)
+})
