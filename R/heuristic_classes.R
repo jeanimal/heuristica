@@ -87,12 +87,16 @@ logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit,row_
   if(all(fit_predictions==0.5)){
     fit_accuracy <- 0.5
   } else {
-  ids <- which(fit_predictions!=0.5)
-  fit_predictions <- fit_predictions[ids]
-  criterion <- criterion[ids]
+  errors <- criterion - fit_predictions
+  errors <- abs(errors)
+  fit_accuracy <- (length(errors)-sum(errors)) /length(errors)
+  
+  #ids <- which(fit_predictions!=0.5)
+  #fit_predictions <- fit_predictions[ids]
+  #criterion <- criterion[ids]
                                 
-  comp <- fit_predictions == criterion
-  fit_accuracy <- length(comp[comp==TRUE])/length(comp)
+  #comp <- fit_predictions == criterion
+  #fit_accuracy <- length(comp[comp==TRUE])/length(comp)
   }
   return(fit_accuracy)
   
