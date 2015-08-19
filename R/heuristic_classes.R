@@ -89,7 +89,7 @@ logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit,row_
   } else {
   errors <- criterion - fit_predictions
   errors <- abs(errors)
-  fit_accuracy <- (length(errors)-sum(errors)) /length(errors)
+  fit_accuracy  <- (length(errors)-sum(errors)) /length(errors)
   
   #ids <- which(fit_predictions!=0.5)
   #fit_predictions <- fit_predictions[ids]
@@ -622,14 +622,16 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL){
   model <- glm(formula,family=binomial,data=training_set)
   col_weights <- coef(model)
   
-  fit_predictions <- predictWithWeightsLog(train_data,cols_to_fit, criterion_col, col_weights)
-  fit_accuracy <- logAccuracy(fit_predictions,train_data,criterion_col)
+  #fit_predictions <- predictWithWeightsLog(train_data,cols_to_fit, criterion_col, col_weights)
+  #fit_accuracy <- logAccuracy(fit_predictions,train_data,criterion_col)
   
+  #structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+  #               linear_coef=col_weights,model=model, fit_predictions=fit_predictions,
+  #               fit_accuracy=fit_accuracy), 
+  #          class="logRegModel")
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 linear_coef=col_weights,model=model, fit_predictions=fit_predictions,
-                 fit_accuracy=fit_accuracy), 
-            class="logRegModel")
-  
+               linear_coef=col_weights,model=model), 
+          class="logRegModel")
 }
 
 #' @export
