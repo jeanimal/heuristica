@@ -35,7 +35,7 @@ set.seed(3)
 
 **Helper functions**
 
-First let's load the heuristica package to get the heuristics we will compare.  (The package is only on github for now.)
+First let's load the heuristica package to get the heuristics we will compare.  It also includes functions to calculate accuracy.  (The package is only on github for now.)
 
 ```{r}
 # Uncomment and execute if you do not already have devtools.
@@ -44,15 +44,16 @@ devtools::install_github("jeanimal/heuristica")
 library("heuristica")
 ```
 
-Now here is a function to measure prediction accuracy.
+
+Now here is a function to generate data.  The first cue has a 75% validity.  Then we tell it to generate `num_random_cues` additional cues.  Then it measures predictive accuracy on this data for the list of models we gave it in `vec_of_models`, which is a list of the model types (i.e. "constructors");
+
 ```{r}
-predictAccuracy <- function(test_matrix, criterion_col, cols_to_fit, col_weights) {
-  predictions <- predictWithWeights(test_matrix, cols_to_fit, col_weights)
-  return( cueValidity(test_matrix[,criterion_col], predictions) )
-}
+# If you do not have reshape2 installed yet, uncomment the install line the first time.
+# install.packages("reshape2") 
+require("reshape2")
 ```
 
-Now here is a function to generate data.  The first cue has a 75% validity.  Then we tell it to generate `num_random_cues` additional cues.  Then it measures predictive accuracy on this data for the list of models we gave it in `vec_of_models`.
+
 ```{r}
 multiPredict75 <- function(vec_of_models, num_rand_columns) {
   num_rows <- 5  # adding 0.75 validity vector below hard-codes 5 rows
@@ -63,12 +64,18 @@ multiPredict75 <- function(vec_of_models, num_rand_columns) {
   criterion_col <- 1
   cols_to_fit <- c(2:(num_rand_columns+2))
   df <- data.frame()
+  list_of_fitted_models <- list()
   for (model_constructor in vec_of_models) {
-    model <- model_constructor(m_train, criterion_col, cols_to_fit)
-    predict_accuracy <- predictAccuracy(m_test, criterion_col, cols_to_fit, coef(model))
-    model_name <- class(model)[1]  # Take first class, ignoring super-classes.
-     df <- rbind(df, cbind.data.frame(model=model_name, num_rand_col=num_rand_columns, accuracy=predict_accuracy))
+    fitted_model <- model_constructor(m_train, criterion_col, cols_to_fit)
+    list_of_fitted_models[[length(list_of_fitted_models)+1]] <- fitted_model
+    # predict_accuracy <- predictAccuracy(m_test, criterion_col, cols_to_fit, coef(model))
+    # model_name <- class(model)[1]  # Take first class, ignoring super-classes.
+    # df <- rbind(df, cbind.data.frame(model=model_name, num_rand_col=num_rand_columns, accuracy=predict_accuracy))
   }
+  pctCorrect <- pctCorrectOfPredictAlternative(list_of_fitted_models, m_test)
+  pctCorrect <- cbind.data.frame(num_rand_col=num_rand_columns, pctCorrect)
+  df <- melt(pctCorrect, id.vars=c("num_rand_col"))
+  names(df) <- c("num_rand_col", "model", "accuracy")
   return(df)
 }
 ```
@@ -117,7 +124,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
 
 Also load the ggplot2 library so we will be able to plot results.
 ```{r}
-# If you do not have ggplot2 installed yet, uncomment the line below.
+# If you do not have ggplot2 installed yet, uncomment the install line the first time.
 # install.packages("ggplot2") 
 require("ggplot2")
 ```
@@ -126,7 +133,8 @@ require("ggplot2")
 
 For 0 random cues, the models should be 75% accurate.  Let's confirm that.
 ```{r}
-model_list <- c(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel)
+#model_list <- list(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel)
+model_list <- list(dawesModel, franklinModel, ttbBinModel, logRegModel)
 multiPredict75(model_list, 0)
 ```
 
