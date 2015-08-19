@@ -75,7 +75,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   }
   predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
   data2 <- cbind(all_pairs,predictors)
-  criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col+1],0.5,0 ))
+  criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col],0.5,0 ))
   test_set <- cbind(criterion,data2[,3:ncol(data2)])
   test_set <- test_set[,2:ncol(test_set)]
   if(is.vector(test_set)!=TRUE) test_set <- as.data.frame(test_set)

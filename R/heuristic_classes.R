@@ -80,8 +80,8 @@ logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit,row_
     all_pairs <- row_pairs
   }
 
-  predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
-  data2 <- cbind(all_pairs,predictors)
+  #predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
+  #data2 <- cbind(all_pairs,predictors)
   criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col],0.5,0 ))
   fit_predictions<-fit_predictions[,3]
   if(all(fit_predictions==0.5)){
