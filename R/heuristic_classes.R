@@ -625,7 +625,8 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL){
   training_set <- as.data.frame(training_set)
   
   formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
-  model <- glm(formula,family=binomial,data=training_set)
+  # TODO(Daniel): Give user the option to see warnings.
+  model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
   col_weights <- coef(model)
   
   #fit_predictions <- predictWithWeightsLog(train_data,cols_to_fit, criterion_col, col_weights)
