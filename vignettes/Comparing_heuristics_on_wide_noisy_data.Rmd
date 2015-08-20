@@ -68,9 +68,6 @@ multiPredict75 <- function(vec_of_models, num_rand_columns) {
   for (model_constructor in vec_of_models) {
     fitted_model <- model_constructor(m_train, criterion_col, cols_to_fit)
     list_of_fitted_models[[length(list_of_fitted_models)+1]] <- fitted_model
-    # predict_accuracy <- predictAccuracy(m_test, criterion_col, cols_to_fit, coef(model))
-    # model_name <- class(model)[1]  # Take first class, ignoring super-classes.
-    # df <- rbind(df, cbind.data.frame(model=model_name, num_rand_col=num_rand_columns, accuracy=predict_accuracy))
   }
   pctCorrect <- pctCorrectOfPredictAlternative(list_of_fitted_models, m_test)
   pctCorrect <- cbind.data.frame(num_rand_col=num_rand_columns, pctCorrect)
@@ -133,8 +130,7 @@ require("ggplot2")
 
 For 0 random cues, the models should be 75% accurate.  Let's confirm that.
 ```{r}
-#model_list <- list(dawesModel, franklinModel, ttbBinModel, regNoIModel, regModel)
-model_list <- list(dawesModel, franklinModel, ttbBinModel, logRegModel)
+model_list <- list(dawesModel, franklinModel, ttbBinModel, logRegModel, regNoIModel, regModel)
 multiPredict75(model_list, 0)
 ```
 

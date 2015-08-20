@@ -232,7 +232,7 @@ predict.ttbBinModel <- function(object, ...) {
 
 # private
 predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
-  return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, object$linear_coef,
+  return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, coef(object),
                                         rowPairs))
 }
 
@@ -531,6 +531,9 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE)
   class(model) <- c("regModel", class(model))
+  # Functions in this package assume all models track criterion_col and cols_to_fit.
+  model$criterion_col <- criterion_col
+  model$cols_to_fit <- cols_to_fit
   return(model)
 }
 
@@ -574,6 +577,9 @@ predictAlternative.regModel <- function(object, test_data, rowPairs=NULL) {
 regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=FALSE)
   class(model) <- c("regNoIModel", class(model))
+  # Functions in this package assume all models track criterion_col and cols_to_fit.
+  model$criterion_col <- criterion_col
+  model$cols_to_fit <- cols_to_fit
   return(model)
 }
 
