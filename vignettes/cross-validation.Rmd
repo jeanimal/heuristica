@@ -1,0 +1,94 @@
+---
+title: "Comparing the predictive performance of models in the heuristica package"
+author: "Daniel Barkoczi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Comparing the predictive performance of models in the heuristica package
+========================================================
+
+This document provides a simple example of how to compare the predictive performance of different models in the heuristica package. It uses cross-validation on the German cities dataset and measures model performance by the percentage of correct predictions.
+
+**Replication**
+
+```{r}
+# Use this seed to exactly replicate my tables and graphs below.
+set.seed(3)
+# Remove it to see a new sampling-- and whether my overall conclusions still
+# hold.
+
+```
+**Helper functions**
+
+First let's load the heuristica package to get the heuristics we will compare.  It also includes functions to calculate accuracy.  (The package is only on github for now.)
+
+```{r}
+# Uncomment and execute if you do not already have devtools.
+# install.packages("devtools") 
+devtools::install_github("jeanimal/heuristica")
+library("heuristica")
+```
+
+Now we can load the German cities dataset which is included in the heuristica package.
+
+```{r}
+data(city)
+```
+
+We remove the first and second columns which contain data that we do not need for the models.
+Then we store the position of the criterion values and the predictor variables.
+```{r}
+city <- city[,-c(1,2)]
+criterion_col <- 1
+cols_to_fit <- 2:ncol(city)
+```
+Let's enter the models we want to test:
+```{r}
+vec_of_models <-c(ttbBinModel,dawesModel,franklinModel,logRegModel)
+```
+Next we define the size of the training and test sets. Here we split the data in half.
+```{r}
+trainSize <- round(nrow(city)*0.5)
+testSize <- nrow(city)-trainSize
+testRowPairs <- rowPairGenerator(testSize-1)
+```
+Here's a function that does cross-validation taking the dataset, the vector of models and the number of repetitions as input:
+```{r}
+crossV <- function(vec_of_models,x,reps){
+results <- vector()
+for ( i in 1:reps){
+  
+test <- sample(1:nrow(x),testSize)
+train <- setdiff(1:nrow(x),trainSize)
+
+training_set <- x[train,]
+test_set <- x[test,]
+
+models<-list()
+i=0
+for (mod in vec_of_models){ #fit the models to the training_set
+i=i+1
+models[[i]] <- mod(training_set,criterion_col,cols_to_fit)  
+}  
+
+#calculate percentage of correct predictions
+
+df <- predictAlternativeWithCorrect(models,test_set,rowPairs=testRowPairs)
+errors <- createErrorsFromPredicts(df)
+pctCorr <- createPctCorrectsFromErrors(errors)
+results <- rbind(results,pctCorr)
+}
+
+return (colMeans(results))  
+}  
+```
+Then we can just run this function to calculate predictive accuracy:
+```{r}
+accuracy <- crossV(vec_of_models,city,3)
+```
+
