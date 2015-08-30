@@ -310,11 +310,28 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit) {
 #'
 #' @export
 predictAlternative.ttbModel <- function(object, test_data, rowPairs = NULL) {
-  base <- max(max(test_data[,object$cols_to_fit]),2)
-  #print(paste("base is", base))
-  linear_coef <- sapply(object$cue_ranks, function(n) base^(length(object$cue_ranks)-n) )
-  return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, linear_coef,
-                                        rowPairs))
+  if (is.null(rowPairs)) {
+    n <- nrow(test_data)
+    pairsMatrix <- rowPairGenerator(n)
+  } else {
+    if (ncol(rowPairs) != 2) {
+      stop(paste("rowPairs should be pairs matrix with two columns but got",
+                 rowPairs))
+    }
+    pairsMatrix <- rowPairs
+  }
+  # TODO(jeanimal): Re-order cues by validity.
+  all_cue_sign <- t(apply(pairsMatrix, 1,
+      function(row_pair) sign(test_data[row_pair[1],object$cols_to_fit]
+                              -test_data[row_pair[2],object$cols_to_fit])  ))
+  # Add NA as a "stopper" in case a row is all zeroes.
+  all_cue_sign_NA <- cbind(all_cue_sign, NA)
+  # Use first non-zero value as prediction.
+  first_cue_sign <- apply(all_cue_sign_NA, 1, function(x) head(x[x!=0],1))
+  final_predict <- 0.5 * first_cue_sign + 0.5
+  # Normal override of NA is 0.5 (but could be otherwise).
+  final_predict[is.na(final_predict)] <- 0.5
+  return(cbind(pairsMatrix, all_cue_sign, first_cue_sign, final_predict))
 }
 
 
