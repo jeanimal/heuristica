@@ -37,17 +37,6 @@ predictAlternative <- function(object, test_data, rowPairs=NULL) UseMethod("pred
 ## Shared helper functions ##
 
 # Private.
-inequalityToValue <- function(a,b) {
-  if (a > b) {
-    return(1)
-  } else if (b > a) {
-    return(-1)
-  } else {
-    return(0)
-  }
-}
-
-# Private.
 pairToValue <- function(pair) {
   if (pair[1] > pair[2]) {
     return(1)
