@@ -326,7 +326,7 @@ predictAlternative.ttbModel <- function(object, test_data, rowPairs = NULL) {
   all_cue_sign <- t(apply(pairsMatrix, 1,
       function(row_pair) sign(test_data[row_pair[1],cue_cols]
                               -test_data[row_pair[2],cue_cols])  ))
-  # Add NA as a "stopper" in case a row is all zeroes.
+  # Add NA as the first non-zero in case a row is all zeroes.
   all_cue_sign_NA <- cbind(all_cue_sign, NA)
   # Use first non-zero value as prediction.
   first_cue_sign <- apply(all_cue_sign_NA, 1, function(x) head(x[x!=0],1))
