@@ -320,10 +320,12 @@ predictAlternative.ttbModel <- function(object, test_data, rowPairs = NULL) {
     }
     pairsMatrix <- rowPairs
   }
-  # TODO(jeanimal): Re-order cues by validity.
+  # Get cue columns sorted by cue validity.
+  m <- cbind(object$cols_to_fit, object$cue_validities)
+  cue_cols <-  m[order(m[,2], decreasing=TRUE)]
   all_cue_sign <- t(apply(pairsMatrix, 1,
-      function(row_pair) sign(test_data[row_pair[1],object$cols_to_fit]
-                              -test_data[row_pair[2],object$cols_to_fit])  ))
+      function(row_pair) sign(test_data[row_pair[1],cue_cols]
+                              -test_data[row_pair[2],cue_cols])  ))
   # Add NA as a "stopper" in case a row is all zeroes.
   all_cue_sign_NA <- cbind(all_cue_sign, NA)
   # Use first non-zero value as prediction.

@@ -269,7 +269,7 @@ test_that("ttbModel 4x4 predictAlternative first cue dominates non-binary", {
   # [1,]    9   0.1    1    1
   # [2,]    8   0.1    1    1
   # [3,]    7   0.1    0    0
-  # [4,]    6    0    1    1
+  # [4,]    6     0    1    1
   # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
   # Cue one predicts Row 3 > Row 4.
   # But if you sum cue weights, predict Row 4 > Row 3
@@ -279,6 +279,27 @@ test_that("ttbModel 4x4 predictAlternative first cue dominates non-binary", {
   expect_equal(1, getPrediction(out, row1=3, row2=4))
   expect_equal(0, getPrediction(out, row1=4, row2=3))
 })
+
+test_that("ttbModel 4x4 predictAlternative 3nd cue dominates non-binary", {
+  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0.1,0.1,0.1,0), 4, 4)
+  # How this data looks:
+  # > train_data
+  #      [,1] [,2] [,3] [,4]
+  # [1,]    9    1    1  0.1
+  # [2,]    8    1    1  0.1
+  # [3,]    7    0    0  0.1
+  # [4,]    6    1    1  0.0
+  # Cue 1 and 2 have validity 2/3, cue 1 has validity validity 1.0.
+  # Cue 3 predicts Row 3 > Row 4.
+  # But if you sum cue weights, predict Row 4 > Row 3
+  model <- ttbModel(train_data, 1, c(2:4))
+  expect_equal(c(0.667, 0.667, 1), model$cue_validities, tolerance=0.002)
+  out <- predictAlternative(model, train_data)
+  expect_equal(1, getPrediction(out, row1=3, row2=4))
+  expect_equal(0, getPrediction(out, row1=4, row2=3))
+})
+
+#TODO(jean): Get ttbModel to work with a data.frame.
 
 ### dawesModel ###
 
