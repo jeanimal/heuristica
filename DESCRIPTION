@@ -1,6 +1,6 @@
 Package: heuristica
 Title: Heuristics including Take The Best and unit-weight linear 
-Version: 0.0.1.0000
+Version: 0.1.0.0000
 Authors@R: person("Jean", "imal", email = "jeanimal@gmail.com",
                   role = c("aut", "cre"))
 Description: Implements various heuristics like Take The Best and
