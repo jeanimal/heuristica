@@ -39,8 +39,8 @@ ttbModel is an implementation of An implementation of [Take The Best](http://en.
 
 Let us focus on just a few high schools and variables from the drop-out rates data set.
 ```{r}
-schools <- abc_hs_dropout[which(abc_hs_dropout$Name_of_School %in% c("Bowen", "Collins", "Young")),]
-schools <- schools[, c("Name_of_School", "Dropout_Rate", "Low_Income_Students", "Limited_English_Students", "percent_black_students")]
+schools <- highschool_dropout[which(highschool_dropout$Name_of_School %in% c("Bowen", "Collins", "Young")),]
+schools <- schools[, c("Name_of_School", "Dropout_Rate", "Low_Income_Students", "Limited_English_Students", "Percent_Black_Students")]
 schools
 ```
 
@@ -59,8 +59,8 @@ Not bad.
 
 Now let us get data from other schools and see how well it predicts there.
 ```{r}
-more_schools <- abc_hs_dropout[which(abc_hs_dropout$Name_of_School %in% c('Fenger', 'Juarez', 'Kenwood')),]
-more_schools <- more_schools[, c("Name_of_School", "Dropout_Rate", "Low_Income_Students", "Limited_English_Students", "percent_black_students")]
+more_schools <- highschool_dropout[which(highschool_dropout$Name_of_School %in% c('Fenger', 'Juarez', 'Kenwood')),]
+more_schools <- more_schools[, c("Name_of_School", "Dropout_Rate", "Low_Income_Students", "Limited_English_Students", "Percent_Black_Students")]
 more_schools
 pctCorrectOfPredictAlternative(list(ttb), more_schools)
 ```
