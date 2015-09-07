@@ -29,7 +29,7 @@ First let's load the heuristica package to get the heuristics we will compare.  
 
 ```{r}
 # Uncomment and execute if you do not already have devtools.
-# install.packages("devtools") 
+install.packages("devtools") 
 devtools::install_github("jeanimal/heuristica")
 library("heuristica")
 ```
@@ -37,15 +37,15 @@ library("heuristica")
 Now we can load the German cities dataset which is included in the heuristica package.
 
 ```{r}
-data(city)
+data(city_population)
 ```
 
 We remove the first and second columns which contain data that we do not need for the models.
 Then we store the position of the criterion values and the predictor variables.
 ```{r}
-city <- city[,-c(1,2)]
+city_population <- city_population[,-c(1,2)]
 criterion_col <- 1
-cols_to_fit <- 2:ncol(city)
+cols_to_fit <- 2:ncol(city_population)
 ```
 Let's enter the models we want to test:
 ```{r}
@@ -53,8 +53,8 @@ vec_of_models <-c(ttbBinModel,dawesModel,franklinModel,logRegModel)
 ```
 Next we define the size of the training and test sets. Here we split the data in half.
 ```{r}
-trainSize <- round(nrow(city)*0.5)
-testSize <- nrow(city)-trainSize
+trainSize <- round(nrow(city_population)*0.5)
+testSize <- nrow(city_population)-trainSize
 testRowPairs <- rowPairGenerator(testSize-1)
 ```
 Here's a function that does cross-validation taking the dataset, the vector of models and the number of repetitions as input:
@@ -89,6 +89,6 @@ return (colMeans(results))
 ```
 Then we can just run this function to calculate predictive accuracy:
 ```{r}
-accuracy <- crossV(vec_of_models,city,3)
+accuracy <- crossV(vec_of_models,city_population,3)
 ```
 
