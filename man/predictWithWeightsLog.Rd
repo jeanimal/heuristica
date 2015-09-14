@@ -29,7 +29,8 @@ A data.frame (rows * (rows-1)) of predictions for each possible paired compariso
 Special features:
 Treats a weight of NA as zero (useful for rank-deficient regression fits).
 If there is a column named "(Intercept)" in col_weights, it is added.
-In other words, there is no need to add an intercept column to test_matrix.
+In other words, there
+is no need to add an intercept column to test_matrix.
 }
 \description{
 Applies the weights in col_weights to the columns cols_to_fit in test_data.
