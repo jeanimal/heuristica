@@ -49,7 +49,7 @@ cols_to_fit <- 2:ncol(city_population)
 ```
 Let's enter the models we want to test:
 ```{r}
-vec_of_models <-c(ttbBinModel,dawesModel,franklinModel,logRegModel)
+vec_of_models <-c(ttbBinModel,dawesModel,franklinModel,regModel,logRegModel)
 ```
 Next we define the size of the training and test sets. Here we split the data in half.
 ```{r}
@@ -64,16 +64,16 @@ results <- vector()
 for ( i in 1:reps){
   
 test <- sample(1:nrow(x),testSize)
-train <- setdiff(1:nrow(x),trainSize)
+train <- setdiff(1:nrow(x),test)
 
 training_set <- x[train,]
 test_set <- x[test,]
 
 models<-list()
-i=0
+y=0
 for (mod in vec_of_models){ #fit the models to the training_set
-i=i+1
-models[[i]] <- mod(training_set,criterion_col,cols_to_fit)  
+y=y+1
+models[[y]] <- mod(training_set,criterion_col,cols_to_fit)  
 }  
 
 #calculate percentage of correct predictions
@@ -89,6 +89,6 @@ return (colMeans(results))
 ```
 Then we can just run this function to calculate predictive accuracy:
 ```{r}
-accuracy <- crossV(vec_of_models,city_population,3)
+accuracy <- crossV(vec_of_models,city_population,300)
 ```
 
