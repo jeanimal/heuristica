@@ -89,6 +89,6 @@ return (colMeans(results))
 ```
 Then we can just run this function to calculate predictive accuracy:
 ```{r}
-accuracy <- crossV(vec_of_models,city_population,300)
+accuracy <- crossV(vec_of_models,city_population,3)
 ```
 
