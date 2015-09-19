@@ -140,6 +140,10 @@ rowPairGenerator <- function(n) {
 #' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
 #' @inheritParams heuristicaModel
+#' @param reverse_cues optional parameter to reverse cues as needed.  By default, 
+#' ttbBinModel will reverse the cue values for cues with cue validity < 0.5, so a cue
+#' with validity 0 becomes a cue with validity 1.
+#' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
 #'
 #' @return An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
 #'   \itemize{
@@ -163,12 +167,21 @@ rowPairGenerator <- function(n) {
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
 #' @export
-ttbBinModel <- function(train_data, criterion_col, cols_to_fit) {
+ttbBinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
-  raw_ranks <- rank(cue_validities, ties.method="random")
+  if (reverse_cues) {
+    # TODO(jean): Extract the lines below into a testable function.
+    cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
+    cue_directions <- sign(cue_validities - 0.5)
+  } else {
+    cue_validities_with_reverse <- cue_validities
+    cue_directions <- rep(1, length(cue_validities_with_reverse))
+  }
+  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
   # Reverse ranks so first is last.
-  cue_ranks <- length(cue_validities) - raw_ranks + 1
+  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
   linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  linear_coef <- cue_directions * linear_coef
   # Need to save fit_predictions in case user calls predict without test_data.
   fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
   fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)

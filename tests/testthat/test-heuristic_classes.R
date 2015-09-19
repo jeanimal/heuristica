@@ -12,7 +12,7 @@ test_that("ttbBinModel 2x2 pos", {
 })
 
 test_that("ttbBinModel 2x2 neg", {
-  model <- ttbBinModel(matrix(c(5,4,0,1), 2, 2), 1, c(2))
+  model <- ttbBinModel(matrix(c(5,4,0,1), 2, 2), 1, c(2), reverse_cues=FALSE)
   expect_equal(c(0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(1, length(coef(model))) 
@@ -20,7 +20,7 @@ test_that("ttbBinModel 2x2 neg", {
 
 test_that("ttbBinModel 2x3 pos neg", {
   m <- matrix(c(5,4,1,0,0,1), 2, 3)
-  model <- ttbBinModel(m, 1, c(2,3))
+  model <- ttbBinModel(m, 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]])  
@@ -29,7 +29,7 @@ test_that("ttbBinModel 2x3 pos neg", {
 
 test_that("ttbBinModel 2x3 pos neg data.frame", {
   df <- data.frame(criterion=c(5,4), cue1=c(1,0), cue2=c(0,1))
-  model <- ttbBinModel(df, 1, c(2,3))
+  model <- ttbBinModel(df, 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(cue1=1, cue2=0), model$cue_validities)
   # Below I test the inner implementation.  Maybe I shouldn't.
   expect_equal(2,  coef(model)[["cue1"]])
@@ -39,7 +39,7 @@ test_that("ttbBinModel 2x3 pos neg data.frame", {
 
 test_that("ttbBinModel 2x3 neg pos", {
   m <- matrix(c(5,4,0,1,1,0), 2, 3)
-  model <- ttbBinModel(m, 1, c(2,3))
+  model <- ttbBinModel(m, 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(0,1),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(2,  coef(model)[[2]])  
@@ -54,14 +54,14 @@ test_that("ttbBinModel 2x3 pos neg (col 3 not fit)", {
 })
 
 test_that("ttbBinModel 2x3 pos neg (col 2 not fit)", {
-  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(3))
+  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(3), reverse_cues=FALSE)
   expect_equal(c(0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(1, length(coef(model))) 
 })
 
 test_that("ttbBinModel 3x3 pos neg", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,0,0,1), 3, 3), 1, c(2,3))
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,0,0,1), 3, 3), 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]]) 
@@ -69,7 +69,7 @@ test_that("ttbBinModel 3x3 pos neg", {
 })
 
 test_that("ttbBinModel 3x3 pos mixed", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,0,1), 3, 3), 1, c(2,3))
+  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,0,1), 3, 3), 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(1,0.5),  model$cue_validities) 
   expect_equal(2,  coef(model)[[1]])  
   expect_equal(1,  coef(model)[[2]]) 
@@ -116,6 +116,32 @@ test_that("ttbBinModel 2x3 predictAlternative backward cues", {
   # No other rows.
   expect_equal(2, nrow(out))
 })
+
+test_that("ttbBinModel 2x2 predictAlternative cue_reversal", {
+  train_matrix <- matrix(c(5,4,0,1), 2, 2)
+  model <- ttbBinModel(train_matrix, 1, c(2))
+  expect_equal(c(0), model$cue_validities)
+  out <- predictAlternative(model, train_matrix)
+  expect_equal(1, getPrediction(out, row1=1, row2=2))
+  expect_equal(0, getPrediction(out, row1=2, row2=1))
+  # No other rows.
+  expect_equal(2, nrow(out))
+})
+
+test_that("ttbBinModel 3x3 predictAlternative cue_reversal", {
+  train_matrix <- matrix(c(5,4,3,1,0,1,0,0,1), 3, 3)
+  model <- ttbBinModel(train_matrix, 1, c(2,3))
+  expect_equal(c(0.5, 0), model$cue_validities)
+  out <- predictAlternative(model, train_matrix)
+  # First cue discriminates but has 0.5 validity.
+  # 2nd cue does not discriminate.
+  # So it's a guess = 0.5.
+  expect_equal(0.5, getPrediction(out, row1=1, row2=2))
+  # Revers2 the 2nd cue, and it discriminates to get these right.
+  expect_equal(1, getPrediction(out, row1=1, row2=3))
+  expect_equal(1, getPrediction(out, row1=1, row2=3))
+})
+
 
 test_that("ttbBinModel 2x3 predictAlternative forward rowPairs", {
   model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
