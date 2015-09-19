@@ -144,8 +144,6 @@ rowPairGenerator <- function(n) {
 #' @return An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
-#'    \item "cue_ranks": A list of integer ranks of the cues in order of cols_to_fit.
-#'                       The cue ranked 1 will be used first, then 2, etc.
 #'   }
 #'
 #' @examples
@@ -175,7 +173,7 @@ ttbBinModel <- function(train_data, criterion_col, cols_to_fit) {
   fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
   fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cue_validities, cue_ranks=cue_ranks,
+                 cue_validities=cue_validities,
                  linear_coef=linear_coef, fit_predictions=fit_predictions,
                  fit_accuracy=fit_accuracy), 
             class="ttbBinModel")
