@@ -76,14 +76,6 @@ test_that("ttbBinModel 3x3 pos mixed", {
   expect_equal(2, length(coef(model)))  
 })
 
-test_that("ttbBinModel 4x3 reverses cue rank", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,0,1,1,1,0), 3, 4), 1, c(2:4))
-  expect_equal(c(1,0.5,1), model$cue_validities)
-  # The 1st and 3rd cue are tied, so only check the 2nd cue rank, 
-  # which should be last (3rd).
-  expect_equal(3, model$cue_ranks[2])
-})
-
 test_that("ttbBinModel 3x3 names shifted criterion", {
   df <- data.frame(matrix(c(99, 99, 99, 5,4,3,1,0,1), 3, 3))
   names(df) <- c('Garbage', 'Criterion', 'Cue')

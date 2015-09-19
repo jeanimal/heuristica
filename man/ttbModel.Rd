@@ -17,8 +17,6 @@ ttbModel(train_data, criterion_col, cols_to_fit)
 An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
   \itemize{
    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
-   \item "cue_ranks": A list of integer ranks of the cues in order of cols_to_fit.
-                      The cue ranked 1 will be used first, then 2, etc.
   }
 }
 \description{
