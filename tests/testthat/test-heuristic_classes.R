@@ -96,9 +96,10 @@ getPrediction <- function(out, row1=NULL, row2=NULL) {
 }
 
 test_that("ttbBinModel 2x3 predictAlternative forward", {
-  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbBinModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
-  out <- predictAlternative(model, matrix(c(5,4,1,0,0,1), 2, 3))
+  out <- predictAlternative(model, train_matrix)
   expect_equal(1, getPrediction(out, row1=1, row2=2))
   expect_equal(0, getPrediction(out, row1=2, row2=1))
   # No other rows.
