@@ -289,7 +289,6 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' discriminates (has differing values on the two objects).
 #'
 #' It does NOT implement predict on purpose.
-#' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
