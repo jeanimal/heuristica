@@ -136,7 +136,7 @@ rowPairGenerator <- function(n) {
 
 ### TTB helper functions ###
 
-# Private for now. Will export when I settle on a name.
+# Private for now. Will export and test when I settle on a name.
 reverseAsNeeded <- function(cue_validities) {
   cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
   cue_directions <- sign(cue_validities - 0.5)
