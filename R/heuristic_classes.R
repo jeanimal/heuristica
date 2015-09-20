@@ -353,8 +353,8 @@ predictAlternative.ttbModel <- function(object, test_data, rowPairs = NULL) {
   #print(all_cue_sign)
   # Get cue columns sorted by cue validity.
   m <- cbind(seq(length(object$cols_to_fit)), object$cue_validities_with_reverse)
-  sorted_cue_cols <-  m[order(m[,2], decreasing=TRUE)]
-  all_cue_sign <- all_cue_sign[, c(-1,-2)] # TODO(jean): Remove this hack to drop Row1, Row2.
+  # Plus 2 below shifts over the columns to avoid Row1, Row2
+  sorted_cue_cols <-  m[order(m[,2], decreasing=TRUE)] + 2
   all_cue_sign <- all_cue_sign[,sorted_cue_cols]
   #print(all_cue_sign)
   # Add NA as the first non-zero in case a row is all zeroes.
