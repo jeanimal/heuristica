@@ -5,6 +5,13 @@
 # Private.  This is just an easy way to share parameter documentation.
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
+#' Reversing Model
+#' @param reverse_cues Optional parameter to reverse cues as needed.  By default, 
+#' the model will reverse the cue values for cues with cue validity < 0.5, so a cue
+#' with validity 0 becomes a cue with validity 1.
+#' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
+# Private.  This is just an easy way to share parameter documentation.
+reversingModel <- function(reverse_cues=TRUE) NULL
 
 ## New generics ##
 
@@ -127,6 +134,16 @@ rowPairGenerator <- function(n) {
   return(allPairs)
 }
 
+### TTB helper functions ###
+
+# Private for now. Will export when I settle on a name.
+reverseAsNeeded <- function(cue_validities) {
+  cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
+  cue_directions <- sign(cue_validities - 0.5)
+  structure(list(cue_validities_with_reverse=cue_validities_with_reverse,
+                 cue_directions=cue_directions))
+}
+
 ###  Take the Best binary (ttbBinModel) ###
 
 #' Take The Best for binary cues
@@ -136,14 +153,9 @@ rowPairGenerator <- function(n) {
 #' discriminates (has differing values on the two objects).
 #' Accepting only binary cues allows it to implement the predict function.
 #' Warning: it will not error if you give it non-binary (real-valued) cues.
-#'
-#' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
 #' @inheritParams heuristicaModel
-#' @param reverse_cues optional parameter to reverse cues as needed.  By default, 
-#' ttbBinModel will reverse the cue values for cues with cue validity < 0.5, so a cue
-#' with validity 0 becomes a cue with validity 1.
-#' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
+#' @inheritParams reversingModel
 #'
 #' @return An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
 #'   \itemize{
@@ -170,9 +182,9 @@ rowPairGenerator <- function(n) {
 ttbBinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
-    # TODO(jean): Extract the lines below into a testable function.
-    cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
-    cue_directions <- sign(cue_validities - 0.5)
+    reverse_info = reverseAsNeeded(cue_validities)
+    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+    cue_directions <- reverse_info$cue_directions
   } else {
     cue_validities_with_reverse <- cue_validities
     cue_directions <- rep(1, length(cue_validities_with_reverse))
@@ -280,6 +292,7 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' Developer TODO: Have TTB reverse a cue with validity < 0.5.
 #' 
 #' @inheritParams heuristicaModel
+#' @inheritParams reversingModel
 #'
 #' @return An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
 #'   \itemize{
@@ -299,13 +312,19 @@ predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
 #' @export
-ttbModel <- function(train_data, criterion_col, cols_to_fit) {
+ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
-  raw_ranks <- rank(cue_validities, ties.method="random")
-  # Reverse ranks so first is last.
-  cue_ranks <- length(cue_validities) - raw_ranks + 1
+  if (reverse_cues) {
+    reverse_info = reverseAsNeeded(cue_validities)
+    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+    cue_directions <- reverse_info$cue_directions
+  } else {
+    cue_validities_with_reverse <- cue_validities
+    cue_directions <- rep(1, length(cue_validities_with_reverse))
+  }
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cue_validities),
+                 cue_validities=cue_validities, cue_validities_with_reverse=cue_validities_with_reverse,
+                 cue_directions=cue_directions),
             class="ttbModel")
 }
 
@@ -329,14 +348,15 @@ predictAlternative.ttbModel <- function(object, test_data, rowPairs = NULL) {
     }
     pairsMatrix <- rowPairs
   }
-  # Get cue columns sorted by cue validity.
-  m <- cbind(object$cols_to_fit, object$cue_validities)
-  cue_cols <-  m[order(m[,2], decreasing=TRUE)]
   all_cue_sign <- plyr::mdply(pairsMatrix,
-      function(Row1, Row2) sign(test_data[Row1,cue_cols]
-                              -test_data[Row2,cue_cols]) )
+      function(Row1, Row2) sign(object$cue_directions*test_data[Row1,object$cols_to_fit]
+                              -object$cue_directions*test_data[Row2,object$cols_to_fit]) )
   #print(all_cue_sign)
-  all_cue_sign <- all_cue_sign[, c(-1,-2)] # TODO(jean): Remove this hack.
+  # Get cue columns sorted by cue validity.
+  m <- cbind(seq(length(object$cols_to_fit)), object$cue_validities_with_reverse)
+  sorted_cue_cols <-  m[order(m[,2], decreasing=TRUE)]
+  all_cue_sign <- all_cue_sign[, c(-1,-2)] # TODO(jean): Remove this hack to drop Row1, Row2.
+  all_cue_sign <- all_cue_sign[,sorted_cue_cols]
   #print(all_cue_sign)
   # Add NA as the first non-zero in case a row is all zeroes.
   all_cue_sign_NA <- cbind(all_cue_sign, NA)
