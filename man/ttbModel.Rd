@@ -31,7 +31,6 @@ discriminates (has differing values on the two objects).
 }
 \details{
 It does NOT implement predict on purpose.
-Developer TODO: Have TTB reverse a cue with validity < 0.5.
 }
 \examples{
 ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
