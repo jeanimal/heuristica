@@ -327,9 +327,11 @@ test_that("ttbModel 4x4 predictAlternative 3nd cue dominates non-binary reverse 
   # [2,]    8    1    1  0.0
   # [3,]    7    0    0  0.0
   # [4,]    6    1    1  0.1
-  # Cue 1 and 2 have validity 2/3, cue 1 has validity validity 1.0 when reversed.
+  # Column 1 is the criterion column.  Cues follow.
+  # Cue 1 and 2 have validity 2/3, cue 3 has validity validity 0,
+  # but that validity is 1.0 when reversed.
   # Cue 3 predicts Row 3 > Row 4.
-  # But if you sum cue weights, predict Row 4 > Row 3
+  # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(0.667, 0.667, 0), model$cue_validities, tolerance=0.002)
   out <- predictAlternative(model, train_data)
@@ -337,7 +339,29 @@ test_that("ttbModel 4x4 predictAlternative 3nd cue dominates non-binary reverse 
   expect_equal(0, getPrediction(out, row1=4, row2=3))
 })
 
-#TODO(jean): Get ttbModel to work with a data.frame.
+test_that("ttbModel 4x4 predictAlternative 3nd cue dominates non-binary reverse cue data.frame", {
+  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0,0,0,0.1), 4, 4)
+  train_df <- data.frame(train_data)
+  names(train_df) <- c("criterion", "a", "b", "c")
+  # How this data looks:
+  # > train_df
+  #   criterion a b   c
+  # 1         9 1 1 0.0
+  # 2         8 1 1 0.0
+  # 3         7 0 0 0.0
+  # 4         6 1 1 0.1
+  # Cue 1 and 2 have validity 2/3, cue 3 has validity validity 0,
+  # but that validity is 1.0 when reversed.
+  # Cue c predicts Row 3 > Row 4.
+  # But if you sum all cue weights, predict Row 4 > Row 3
+  model <- ttbModel(train_df, 1, c(2:4))
+  expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=1, b=1, c=-1), model$cue_directions, tolerance=0.002)
+  out <- predictAlternative(model, train_df)
+  expect_equal(1, getPrediction(out, row1=3, row2=4))
+  expect_equal(0, getPrediction(out, row1=4, row2=3))
+})
 
 ### dawesModel ###
 
