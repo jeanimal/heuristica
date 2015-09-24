@@ -76,9 +76,6 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   }
   predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
   data2 <- cbind(all_pairs,predictors)
-  #criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col],0.5,0 ))
-  #test_set <- cbind(criterion,data2[,3:ncol(data2)])
-  #test_set <- test_set[,2:ncol(test_set)]
   test_set <- data2[,3:ncol(data2)]
   if(is.vector(test_set)!=TRUE) test_set <- as.data.frame(test_set)
   
@@ -95,18 +92,22 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     prediction <- test_set * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    ids <- sapply(1:nrow(test_set),function(x) all(test_set[x,]==1) ||all(test_set[x,]== 0))
-    ids <- which(ids==TRUE)
-    prediction[ids,]<-0.5
+    ids <- as.vector(rowSums(test_set[,1:ncol(test_set)]))
+    ids1 <- which(ids == 0 )
+    ids2 <- which(ids == length(1:ncol(test_set)))
+    prediction[ids1,]<-0.5
+    prediction[ids2,]<-0.5
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   } else {
     prediction <- as.matrix(test_set) %*% col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    ids <- sapply(1:nrow(test_set),function(x) all(test_set[x,]==1) ||all(test_set[x,]== 0))
-    ids <- which(ids==TRUE)
-    prediction[ids,]<-0.5
-    prediction<-ifelse(prediction>0.50,1,ifelse(prediction == 0.50,0.5,0 ))
+    ids <- as.vector(rowSums(test_set[,1:ncol(test_set)]))
+    ids1 <- which(ids == 0 )
+    ids2 <- which(ids == length(1:ncol(test_set)))
+    prediction[ids1,]<-0.5
+    prediction[ids2,]<-0.5
+    prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   }
   out_df <- data.frame(cbind(all_pairs, prediction))
   names(out_df) <- c("Row1", "Row2", "Prob_Row1_Bigger")
