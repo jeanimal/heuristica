@@ -21,4 +21,10 @@ Combines other functons to
 3. Calculate overall percent correct for each heuristic.
 Assumes the heuristics passed in have already been fitted to train_data.
 }
+\details{
+Each of the 3 steps above can be output if you call the helper functions directly:
+1. predictAlternativeWithCorrect
+2. createErrorsFromPredicts
+3. createPctCorrectsFromErrors
+}
 

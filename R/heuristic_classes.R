@@ -638,7 +638,8 @@ predictAlternative.regNoIModel <- function(object, test_data, rowPairs=NULL) {
 
 #' Logistic Regression model
 #'
-#' Create a logistic regression model by specifying columns and a dataset.
+#' Create a logistic regression model by specifying columns and a dataset.  It fits the model
+#' with R's glm function.
 #'
 #' This version assumes you always want to include the intercept.
 #' 

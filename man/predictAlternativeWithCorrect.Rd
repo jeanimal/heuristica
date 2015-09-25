@@ -9,7 +9,7 @@ predictAlternativeWithCorrect(fitted_heuristic_list, test_data,
 }
 \arguments{
 \item{fitted_heuristic_list}{List of heuristics that implement the generic function
-predictAlternative, e.g. ttbBinModel.}
+predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 

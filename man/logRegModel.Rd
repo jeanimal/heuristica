@@ -22,7 +22,8 @@ logRegModel(train_data, criterion_col, cols_to_fit, row_pairs = NULL,
 An object of class logRegModel.
 }
 \description{
-Create a logistic regression model by specifying columns and a dataset.
+Create a logistic regression model by specifying columns and a dataset.  It fits the model
+with R's glm function.
 }
 \details{
 This version assumes you always want to include the intercept.

@@ -9,17 +9,18 @@ Heuristic functions implemented in R, such as a unit-weighted linear model and G
 
 Take the Best was originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a soccer team in order to infer the __criterion__, population size.  
 
-## Helper functions
+## Key helper functions
 * [Cue validity](http://en.wikipedia.org/wiki/Cue_validity): A number from 0 to 1 indicating how often the cue would correctly predict the criterion in a two-alternative choice task.
-* Predict with weights: Multiplies cues by cue weights to produce predictions, plus takes care of corner cases.
+* pctCorrectOfPredictAlternative: Given a list of fitted heuristics and test data, returns a row with percent correct for each heuristic. 
 
 ## Heuristics
 * ttbModel: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
 * ttbBinModel: Take the Best for only binary cues.  (We might remove this model.)
 * dawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
 * franklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a method like this.
-* regModel: A wrapper around R's lm to make it easier to use for multiple simulations.  It generates a regression formula for you based on the matrix and column indices you give it.
+* regModel: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.
 * regNoIModel: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
+* logRegModel: A logistic regression model, a wrapper around R's glm.
 
 ## Citations
 
