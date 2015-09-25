@@ -30,8 +30,8 @@ First let's load the heuristica package to get the heuristics we will compare.  
 ```{r}
 # Uncomment and execute if you do not already have devtools.
 #install.packages("devtools") 
-#devtools::install_github("jeanimal/heuristica")
-library("heuristica")
+devtools::install_github("jeanimal/heuristica")
+#library("heuristica")
 ```
 
 Now we can load the German cities dataset which is included in the heuristica package.
@@ -51,15 +51,15 @@ Let's enter the models we want to test:
 ```{r}
 vec_of_models <-c(ttbBinModel,dawesModel,franklinModel,regModel,logRegModel)
 ```
-Next we define the size of the training and test sets. Here we split the data in half.
+Next we define the size of the training and test sets.
 ```{r}
-trainSize <- round(nrow(city_population)*0.5)
-testSize <- nrow(city_population)-trainSize
-testRowPairs <- rowPairGenerator(testSize-1)
+trainVec <- seq(0.1,0.9,0.1)
+trainS <- round(nrow(city_population)*trainVec)
+testS <- nrow(city_population)-trainS
 ```
 Here's a function that does cross-validation taking the dataset, the vector of models and the number of repetitions as input:
 ```{r}
-crossV <- function(vec_of_models,x,reps){
+crossV <- function(vec_of_models,x,testRowPairs,reps){
 results <- vector()
 for ( i in 1:reps){
   
@@ -89,6 +89,27 @@ return (colMeans(results))
 ```
 Then we can just run this function to calculate predictive accuracy:
 ```{r}
-accuracy <- crossV(vec_of_models,city_population,3)
+accuracy<-vector()
+for (s in 1:length(trainS)){
+trainSize <- trainS[s]
+testSize <- testS[s]
+testRowPairs <- rowPairGenerator(testSize)
+accuracy <- rbind(accuracy,crossV(vec_of_models,city_population,testRowPairs,0))
+}
 ```
+Finally, let's plot the results:
+```{r}
+library(reshape)
+library(ggplot2)
 
+p <- melt(accuracy)
+p$X1 <- rep(seq(10,90,10),ncol(accuracy))
+colnames(p)<-c("size","model","value")
+
+ggplot(p, aes(x=size, y=value, colour=model)) + 
+     geom_line() +
+     geom_point() + xlab("Size of training set") + ylab("Percent correct")+
+     scale_x_continuous(limits=c(10,90),breaks=seq(10,90,10),expand=c(0.01,0.01)) +
+     scale_y_continuous(limits=c(0.6,0.8),breaks=seq(0.6,0.8, 0.1),expand=c(0.01,0.01))
+
+```

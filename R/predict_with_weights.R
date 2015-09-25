@@ -52,7 +52,7 @@ rowPairGenerator <- function(n) {
 #' @param cols_to_fit Vector of column indexes to use in test_data.
 #' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
 #' @param criterion_col Column index specifying the criterion.
-#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
+#' @param rowPairs Optional matrix.  TODO(jean): share documentation.
 #' @return A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.
 #'   Description of each column:
 #'   Row1: The index of row1 of the comparison.
@@ -67,12 +67,12 @@ rowPairGenerator <- function(n) {
 #' is no need to add an intercept column to test_matrix.
 #' @export
 predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_weights,
-                                  row_pairs=NULL) {
-  if (is.null(row_pairs)) {
+                                  rowPairs=NULL) {
+  if (is.null(rowPairs)) {
     n <- nrow(test_data)
     all_pairs <- rowPairGenerator(n)
   } else {
-    all_pairs <- row_pairs
+    all_pairs <- rowPairs
   }
   predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
   data2 <- cbind(all_pairs,predictors)

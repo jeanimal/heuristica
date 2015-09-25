@@ -645,16 +645,16 @@ predictAlternative.regNoIModel <- function(object, test_data, rowPairs=NULL) {
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
-#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
+#' @param rowPairs Optional matrix.  TODO(jean): share documentation.
 #' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
 #' @export
-logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
+logRegModel <- function(train_data, criterion_col, cols_to_fit,rowPairs=NULL,suppress_warnings=NULL){
   
-   if (is.null(row_pairs)) {
+   if (is.null(rowPairs)) {
     n <- nrow(train_data)
     all_pairs <- rowPairGenerator(n)
   } else {
-    all_pairs <- row_pairs
+    all_pairs <- rowPairs
   }
   
   all_pairs<-as.data.frame(all_pairs)

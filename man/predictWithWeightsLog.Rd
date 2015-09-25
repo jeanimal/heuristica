@@ -5,7 +5,7 @@
 \title{Logistic prediction for use by logistic regression.}
 \usage{
 predictWithWeightsLog(test_data, cols_to_fit, criterion_col, col_weights,
-  row_pairs = NULL)
+  rowPairs = NULL)
 }
 \arguments{
 \item{test_data}{Data to predict for, as either a matrix or a data.frame.}
@@ -16,7 +16,7 @@ predictWithWeightsLog(test_data, cols_to_fit, criterion_col, col_weights,
 
 \item{col_weights}{Vector of weights to apply to the columns indicated by cols_to_fit.}
 
-\item{row_pairs}{Optional matrix.  TODO(jean): share documentation.}
+\item{rowPairs}{Optional matrix.  TODO(jean): share documentation.}
 }
 \value{
 A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.
