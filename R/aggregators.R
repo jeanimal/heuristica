@@ -112,7 +112,7 @@ createPctCorrectsFromErrors <- function(errors) {
 #' 1. predictAlternativeWithCorrect
 #' 2. createErrorsFromPredicts
 #' 3. createPctCorrectsFromErrors
-#'  
+#'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbBinModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.

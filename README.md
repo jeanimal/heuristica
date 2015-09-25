@@ -7,7 +7,9 @@ Heuristic functions implemented in R, such as a unit-weighted linear model and G
 
 ## The Task
 
-Take the Best was originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a soccer team in order to infer the __criterion__, population size.  
+Take the Best was originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a soccer team in order to infer the __criterion__, population size.
+
+Because of the nature of this task, the key function heuristics must implement is __predictAlternative__ rather than the __predict__ function R users are more famliar with.  PredictAlternative compares a pair of rows in the data set, indicating which row will be higher on the criterion, e.g. which of two cities has a greater population.  See the vignettes for more details.  
 
 ## Key helper functions
 * [Cue validity](http://en.wikipedia.org/wiki/Cue_validity): A number from 0 to 1 indicating how often the cue would correctly predict the criterion in a two-alternative choice task.
