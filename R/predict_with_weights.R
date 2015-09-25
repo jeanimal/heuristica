@@ -1,5 +1,38 @@
 
-
+#' Generates a matrix of pairs of row indices for two-alternative choice.
+#'
+#' Generates all pairs, including repeating pairs in reverse order, but not a
+#' row with itself.  Output is sorted by Row1, then Row2.
+#'
+#' @param n is the number of rows.
+#' @return Returns a data.frame with (n x n-1) rows and 2 columns.  The column
+#' names are Row1 and Row2.  Rows are sorted by Row1, then Row2.
+#'
+#' @examples
+#' rowPairGenerator(2)
+#'# You should get:
+#'#  Row1 Row2
+#'#1    1    2
+#'#2    2    1
+#'
+#'rowPairGenerator(3)
+#'# You should get:
+#'#  Row1 Row2
+#'#1    1    2
+#'#2    1    3
+#'#3    2    1
+#'#4    2    3
+#'#5    3    1
+#'#6    3    2
+#'
+#' @export
+rowPairGenerator <- function(n) {
+  allPairs <- expand.grid(Row1=seq(n), Row2=seq(n))
+  allPairs <- allPairs[allPairs$Row1!=allPairs$Row2,]
+  allPairs <- allPairs[order(allPairs$Row1, allPairs$Row2),]
+  rownames(allPairs) <- NULL
+  return(allPairs)
+}
 
 #' Linear prediction for use by heuristics.
 #'
@@ -34,14 +67,6 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
     predictions <- test_matrix[,cols_to_fit] %*% col_weights_clean + intercept
   }
   return(predictions)
-}
-
-rowPairGenerator <- function(n) {
-  allPairs <- expand.grid(Row1=seq(n), Row2=seq(n))
-  allPairs <- allPairs[allPairs$Row1!=allPairs$Row2,]
-  allPairs <- allPairs[order(allPairs$Row1, allPairs$Row2),]
-  rownames(allPairs) <- NULL
-  return(allPairs)
 }
 
 #' Logistic prediction for use by logistic regression.
@@ -114,3 +139,27 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   return(out_df)
 }
 
+# private
+predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
+  return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, coef(object),
+                                        rowPairs))
+}
+
+# private.  TODO: Move to predict_with_weights and export.
+predictAlternativeWithWeights2 <- function(test_data, cols_to_fit, weights, rowPairs=NULL) {
+  predictions <- predictWithWeights(test_data, cols_to_fit, weights)
+  if (is.null(rowPairs)) {
+    n <- length(predictions)
+    pairsMatrix <- rowPairGenerator(n)
+  } else {
+    if (ncol(rowPairs) != 2) {
+      stop(paste("rowPairs should be pairs matrix with two columns but got",
+                 rowPairs))
+    }
+    pairsMatrix <- rowPairs
+  }
+  predictPairs <- t(apply(pairsMatrix, 1,
+                          function(rowPair) predictions[rowPair]))
+  predictDirection <- matrix(apply(predictPairs, 1, pairToValue))
+  return(cbind(pairsMatrix, predictDirection))
+}
