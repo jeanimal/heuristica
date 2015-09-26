@@ -78,7 +78,7 @@ models[[y]] <- mod(training_set,criterion_col,cols_to_fit)
 
 #calculate percentage of correct predictions
 
-df <- predictAlternativeWithCorrect(models,test_set,rowPairs=testRowPairs)
+df <- predictAlternativeWithCorrect(models,test_set,row_pairs=testRowPairs)
 errors <- createErrorsFromPredicts(df)
 pctCorr <- createPctCorrectsFromErrors(errors)
 results <- rbind(results,pctCorr)
