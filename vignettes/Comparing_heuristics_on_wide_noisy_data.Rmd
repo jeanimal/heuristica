@@ -50,7 +50,7 @@ Now here is a function to generate data.  The first cue has a 75% validity.  The
 ```{r}
 # If you do not have reshape2 installed yet, uncomment the install line the first time.
 # install.packages("reshape2") 
-require("reshape2")
+library("reshape2")
 ```
 
 
@@ -123,7 +123,7 @@ Also load the ggplot2 library so we will be able to plot results.
 ```{r}
 # If you do not have ggplot2 installed yet, uncomment the install line the first time.
 # install.packages("ggplot2") 
-require("ggplot2")
+library("ggplot2")
 ```
 
 **Generating data**

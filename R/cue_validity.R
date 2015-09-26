@@ -1,5 +1,5 @@
 # install.packages("Hmisc")
-# require("Hmisc")
+# library("Hmisc")
 
 #' Calculate the cue validity
 #'
