@@ -77,7 +77,7 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' @param cols_to_fit Vector of column indexes to use in test_data.
 #' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
 #' @param criterion_col Column index specifying the criterion.
-#' @param rowPairs Optional matrix.  TODO(jean): share documentation.
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @return A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.
 #'   Description of each column:
 #'   Row1: The index of row1 of the comparison.
@@ -92,12 +92,12 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
 #' is no need to add an intercept column to test_matrix.
 #' @export
 predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_weights,
-                                  rowPairs=NULL) {
-  if (is.null(rowPairs)) {
+                                  row_pairs=NULL) {
+  if (is.null(row_pairs)) {
     n <- nrow(test_data)
     all_pairs <- rowPairGenerator(n)
   } else {
-    all_pairs <- rowPairs
+    all_pairs <- row_pairs
   }
   predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
   data2 <- cbind(all_pairs,predictors)
@@ -140,23 +140,23 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
 }
 
 # private
-predictAlternativeWithWeights <- function(object, test_data, rowPairs=NULL) {
+predictAlternativeWithWeights <- function(object, test_data, row_pairs=NULL) {
   return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, coef(object),
-                                        rowPairs))
+                                        row_pairs))
 }
 
 # private.  TODO: Move to predict_with_weights and export.
-predictAlternativeWithWeights2 <- function(test_data, cols_to_fit, weights, rowPairs=NULL) {
+predictAlternativeWithWeights2 <- function(test_data, cols_to_fit, weights, row_pairs=NULL) {
   predictions <- predictWithWeights(test_data, cols_to_fit, weights)
-  if (is.null(rowPairs)) {
+  if (is.null(row_pairs)) {
     n <- length(predictions)
     pairsMatrix <- rowPairGenerator(n)
   } else {
-    if (ncol(rowPairs) != 2) {
-      stop(paste("rowPairs should be pairs matrix with two columns but got",
-                 rowPairs))
+    if (ncol(row_pairs) != 2) {
+      stop(paste("row_pairs should be pairs matrix with two columns but got",
+                 row_pairs))
     }
-    pairsMatrix <- rowPairs
+    pairsMatrix <- row_pairs
   }
   predictPairs <- t(apply(pairsMatrix, 1,
                           function(rowPair) predictions[rowPair]))

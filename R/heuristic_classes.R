@@ -20,12 +20,12 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 #' @param object The object that implements predictAlternative, e.g. a ttb model.
 #' @param test_data The matrix of data to predict on.  As with predict, columns
 #'  must match those used for fitting.
-#' @param rowPairs The optionalrowPairs is a matrix of pairs of column indices
+#' @param row_pairs The optionalrow_pairs is a matrix of pairs of column indices
 #'  you want to have predicted.  By default (if no list is given), it will use
 #'  all unique pairs.
 #'  E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].  
 #' @return A matrix with 3 columns: row1index, row2index, and the predicted greater index.
-#'  The first two columns are the rowPairs (provided as input or all).
+#'  The first two columns are the row_pairs (provided as input or all).
 #'  The 3rd column is the model's predicted probability (0 to 1) that the first
 #'  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
 #'
@@ -37,9 +37,9 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 #'     (That is, it predicts that row 3 is bigger.)
 #' Between row 2 and 3, there is probabily 1 that row 2 is bigger.
 #' @export
-predictAlternative <- function(object, test_data, rowPairs=NULL) UseMethod("predictAlternative")
+predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("predictAlternative")
 
-# TODO(jean): Rename rowPairs to row_pairs everywhere.  Share documentation.
+# TODO(jean): Rename row_pairs to row_pairs everywhere.  Share documentation.
 
 ## Shared helper functions ##
 
@@ -216,8 +216,8 @@ predict.ttbBinModel <- function(object, ...) {
 #' \code{\link{ttbBinModel}} for example code.
 #'
 #' @export
-predictAlternative.ttbBinModel <- function(object, test_data, rowPairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, rowPairs))
+predictAlternative.ttbBinModel <- function(object, test_data, row_pairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 ### Take The Best ###
@@ -276,16 +276,16 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #' \code{\link{ttbModel}} for example code.
 #'
 #' @export
-predictAlternative.ttbModel <- function(object, test_data, rowPairs = NULL) {
-  if (is.null(rowPairs)) {
+predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
+  if (is.null(row_pairs)) {
     n <- nrow(test_data)
     pairsMatrix <- rowPairGenerator(n)
   } else {
-    if (ncol(rowPairs) != 2) {
-      stop(paste("rowPairs should be pairs matrix with two columns but got",
-                 rowPairs))
+    if (ncol(row_pairs) != 2) {
+      stop(paste("row_pairs should be pairs matrix with two columns but got",
+                 row_pairs))
     }
-    pairsMatrix <- rowPairs
+    pairsMatrix <- row_pairs
   }
   all_cue_sign <- plyr::mdply(pairsMatrix,
       function(Row1, Row2) sign(object$cue_directions*test_data[Row1,object$cols_to_fit]
@@ -386,8 +386,8 @@ predict.dawesModel <- function(object, ...) {
 #' \code{\link{dawesModel}} for example code.
 #'
 #' @export
-predictAlternative.dawesModel <- function(object, test_data, rowPairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, rowPairs))
+predictAlternative.dawesModel <- function(object, test_data, row_pairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 
@@ -453,8 +453,8 @@ predict.franklinModel <- function(object, ...) {
 #' \code{\link{franklinModel}} for example code.
 #'
 #' @export
-predictAlternative.franklinModel <- function(object, test_data, rowPairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, rowPairs))
+predictAlternative.franklinModel <- function(object, test_data, row_pairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 
@@ -525,8 +525,8 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #' \code{\link{franklinModel}} for example code.
 #'
 #' @export
-predictAlternative.regModel <- function(object, test_data, rowPairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, rowPairs))
+predictAlternative.regModel <- function(object, test_data, row_pairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 #' Linear regression (no intercept) wrapper for hueristica
@@ -571,8 +571,8 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #' \code{\link{regNoIModel}} for example code.
 #'
 #' @export
-predictAlternative.regNoIModel <- function(object, test_data, rowPairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, rowPairs))
+predictAlternative.regNoIModel <- function(object, test_data, row_pairs=NULL) {
+  return(predictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 
@@ -585,16 +585,16 @@ predictAlternative.regNoIModel <- function(object, test_data, rowPairs=NULL) {
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
-#' @param rowPairs Optional matrix.  TODO(jean): share documentation.
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
 #' @export
-logRegModel <- function(train_data, criterion_col, cols_to_fit,rowPairs=NULL,suppress_warnings=NULL){
+logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
   
-   if (is.null(rowPairs)) {
+   if (is.null(row_pairs)) {
     n <- nrow(train_data)
     all_pairs <- rowPairGenerator(n)
   } else {
-    all_pairs <- rowPairs
+    all_pairs <- row_pairs
   }
   
   all_pairs<-as.data.frame(all_pairs)
@@ -624,7 +624,7 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,rowPairs=NULL,sup
 coef.logRegModel <- function(object, ...) object$linear_coef
 
 #' @export
-predictAlternative.logRegModel <- function(object, test_data, rowPairs = NULL) {
+predictAlternative.logRegModel <- function(object, test_data, row_pairs = NULL) {
   return(predictWithWeightsLog(test_data, object$cols_to_fit, object$criterion_col, 
-                        object$linear_coef, rowPairs))
+                        object$linear_coef, row_pairs))
 }

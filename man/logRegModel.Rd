@@ -4,7 +4,7 @@
 \alias{logRegModel}
 \title{Logistic Regression model}
 \usage{
-logRegModel(train_data, criterion_col, cols_to_fit, rowPairs = NULL,
+logRegModel(train_data, criterion_col, cols_to_fit, row_pairs = NULL,
   suppress_warnings = NULL)
 }
 \arguments{
@@ -14,7 +14,7 @@ logRegModel(train_data, criterion_col, cols_to_fit, rowPairs = NULL,
 
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 
-\item{rowPairs}{Optional matrix.  TODO(jean): share documentation.}
+\item{row_pairs}{Optional matrix.  TODO(jean): share documentation.}
 
 \item{suppress_warnings}{Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.}
 }

@@ -5,7 +5,7 @@
 \title{Generates a matrix of correct values an predictions among alternatives.}
 \usage{
 predictAlternativeWithCorrect(fitted_heuristic_list, test_data,
-  rowPairs = NULL)
+  row_pairs = NULL)
 }
 \arguments{
 \item{fitted_heuristic_list}{List of heuristics that implement the generic function
@@ -13,7 +13,7 @@ predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterio
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 
-\item{rowPairs}{An optional matrix where the first two columns are the pairs
+\item{row_pairs}{An optional matrix where the first two columns are the pairs
 of row indices to use in the test_data.  If not set, all pairs will be used.}
 }
 \value{

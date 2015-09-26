@@ -143,30 +143,30 @@ test_that("ttbBinModel 3x3 predictAlternative cue_reversal", {
 })
 
 
-test_that("ttbBinModel 2x3 predictAlternative forward rowPairs", {
+test_that("ttbBinModel 2x3 predictAlternative forward row_pairs", {
   model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
-  rowPairs <- data.frame(Row1=c(1), Row2=c(2))
+  row_pairs <- data.frame(Row1=c(1), Row2=c(2))
   out <- predictAlternative(model, matrix(c(5,4,1,0,0,1), 2, 3),
-                            rowPairs=rowPairs)
+                            row_pairs=row_pairs)
   expect_equal(1, getPrediction(out, row1=1, row2=2))
   # No other rows.
   expect_equal(1, nrow(out))
 })
 
-test_that("ttbBinModel 2x3 predictAlternative backward rowPairs", {
+test_that("ttbBinModel 2x3 predictAlternative backward row_pairs", {
   model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
-  # The rowPairs below are reversed relative to those above.
-  rowPairs <- data.frame(Row1=c(2), Row2=c(1))
+  # The row_pairs below are reversed relative to those above.
+  row_pairs <- data.frame(Row1=c(2), Row2=c(1))
   out <- predictAlternative(model, matrix(c(5,4,1,0,0,1), 2, 3),
-                            rowPairs=rowPairs)
+                            row_pairs=row_pairs)
   expect_equal(0, getPrediction(out, row1=2, row2=1))
   # No other rows.
   expect_equal(1, nrow(out))
 })
 
-#TODO(jean): Test invalid rowPairs.
+#TODO(jean): Test invalid row_pairs.
 
 test_that("ttbBinModel 3x3 pos pos predictAlternative forward", {
   model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))

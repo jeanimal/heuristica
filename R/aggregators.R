@@ -21,17 +21,17 @@ getPredictionRow <- function(df, row1=NULL, row2=NULL) {
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
 #'  predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.
 #' @param test_data Data to try to predict; must match columns in fit.
-#' @param rowPairs An optional matrix where the first two columns are the pairs
+#' @param row_pairs An optional matrix where the first two columns are the pairs
 #'  of row indices to use in the test_data.  If not set, all pairs will be used.
 #' @return Same matrix as predictAlternative but with columns on correctness
 #' @seealso
 #' \code{\link{predictAlternative}}
 #' @export
 predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
-                                          rowPairs=NULL) {
-  if (is.null(rowPairs)) {
+                                          row_pairs=NULL) {
+  if (is.null(row_pairs)) {
     n <- nrow(test_data)
-    rowPairs <- rowPairGenerator(n)
+    row_pairs <- rowPairGenerator(n)
   }
   if (length(fitted_heuristic_list) == 0) {
     stop("No fitted heuristics.")
@@ -44,13 +44,13 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
   #TODO: make sure no heuristics disagree with that criterion_col
   
   correctValues <- test_data[,criterion_col]
-  correctProb <-  apply(rowPairs, 1,
+  correctProb <-  apply(row_pairs, 1,
                         function(rowPair) pairToValue(correctValues[rowPair]))
-  resultMatrix <- cbind(rowPairs, correctProb)
+  resultMatrix <- cbind(row_pairs, correctProb)
   extendedMatrix <- resultMatrix
   for (heuristic in fitted_heuristic_list) {
-    predictMatrix <- predictAlternative(heuristic, test_data, rowPairs=rowPairs)
-    # TODO(jean): This assumes rowPairs match up.  Is that a safe assumption?
+    predictMatrix <- predictAlternative(heuristic, test_data, row_pairs=row_pairs)
+    # TODO(jean): This assumes row_pairs match up.  Is that a safe assumption?
     extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
     model_name <- class(heuristic)[1]
     names(extendedMatrix)[ncol(extendedMatrix)] = model_name

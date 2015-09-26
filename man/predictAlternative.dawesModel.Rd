@@ -4,7 +4,7 @@
 \alias{predictAlternative.dawesModel}
 \title{Predict which alternative has higher criterion for Dawes model.}
 \usage{
-\method{predictAlternative}{dawesModel}(object, test_data, rowPairs = NULL)
+\method{predictAlternative}{dawesModel}(object, test_data, row_pairs = NULL)
 }
 \arguments{
 \item{object}{A dawesModel.}
@@ -12,7 +12,7 @@
 \item{test_data}{The matrix of data to predict on.  As with predict, columns
 must match those used for fitting.}
 
-\item{rowPairs}{The optionalrowPairs is a matrix of pairs of column indices
+\item{row_pairs}{The optionalrow_pairs is a matrix of pairs of column indices
 you want to have predicted.  By default (if no list is given), it will use
 all unique pairs.
 E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].}
