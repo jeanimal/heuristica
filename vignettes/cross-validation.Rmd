@@ -31,7 +31,7 @@ First let's load the heuristica package to get the heuristics we will compare.  
 # Uncomment and execute if you do not already have devtools.
 #install.packages("devtools") 
 devtools::install_github("jeanimal/heuristica")
-#library("heuristica")
+library("heuristica")
 ```
 
 Now we can load the German cities dataset which is included in the heuristica package.
