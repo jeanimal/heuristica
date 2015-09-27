@@ -1,15 +1,15 @@
 # heuristica
-Heuristic functions implemented in R, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB).
+Heuristic decision models implemented in R, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB).  Also wraps competitors like regression and logistic regression in the same interface for easy comparison.  The models perform two-alternative choice tasks, e.g. which city is larger given that one has a university and the other does not.
 
 ## Goal
 
-[Heuristics](http://en.wikipedia.org/wiki/Heuristic) are simple ways to solve problems.  Statisticians tend to focus on optimal ways to do things, fitting by minimizing error or maximizing likelihood.  But sometimes simple rules of thumb, a.k.a. heuristics, work just as well.  The goal of this package is to make it easy to try out heuristic methods and compare their accuracy and robustness to more common statistical models, like R's `lm` linear regression model.
+[Heuristics](http://en.wikipedia.org/wiki/Heuristic) are simple rules for inference.  Statisticians tend to focus on optimal ways to do things, minimizing error or maximizing likelihood.  But in some situations, simply summing all the positive evidence will work just as well.  The goal of this package is to make it easy to try heuristic models and compare their accuracy and robustness (out-of-sample accuracy) to more common statistical models like linear regression.
 
 ## The Task
 
-Take the Best was originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a soccer team in order to infer the __criterion__, population size.
+Take the Best was originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a university or a soccer team in order to infer the __criterion__, population size.
 
-Because of the nature of this task, the key function heuristics must implement is __predictAlternative__ rather than the __predict__ function R users are more famliar with.  PredictAlternative compares a pair of rows in the data set, indicating which row will be higher on the criterion, e.g. which of two cities has a greater population.  See the vignettes for more details.  
+The key function heuristics must implement is __predictAlternative__ rather than the __predict__ function R users are more famliar with.  PredictAlternative compares a pair of rows in the data set, indicating which row will be higher on the criterion, e.g. which of two cities has a greater population.  See the vignettes for more details.  
 
 ## Key helper functions
 * [Cue validity](http://en.wikipedia.org/wiki/Cue_validity): A number from 0 to 1 indicating how often the cue would correctly predict the criterion in a two-alternative choice task.
@@ -17,9 +17,9 @@ Because of the nature of this task, the key function heuristics must implement i
 
 ## Heuristics
 * ttbModel: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
-* ttbBinModel: Take the Best for only binary cues.  (We might remove this model.)
+* ttbBinModel: Take the Best for only binary cues, which is faster than the more general TTB.
 * dawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
-* franklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a method like this.
+* franklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a weighted decision method similar to this.
 * regModel: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.
 * regNoIModel: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
 * logRegModel: A logistic regression model, a wrapper around R's glm.
