@@ -1,5 +1,5 @@
 # heuristica
-Heuristic decision models implemented in R, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB).  Also wraps more well-known models like regression and logistic regression in the same interface for easy comparison in outcomes and accuracy.  The models perform two-alternative choice tasks, e.g. which city is larger given that one has a university and the other does not.
+This R package implements heuristic decision models, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB), which uses just one cue to make its inference.  The models are designed for two-alternative choice tasks, such as which of two cities has a greater population given that one has a university and the other does not.  It also wraps more well-known models like regression and logistic regression into the two-alternative choice framework for easy comparison.  It provides functions to measure accuracy and robustness (out-of-sample accuracy).
 
 ## Goal
 
