@@ -1,5 +1,5 @@
 # heuristica
-Heuristic decision models implemented in R, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB).  Also wraps competitors like regression and logistic regression in the same interface for easy comparison.  The models perform two-alternative choice tasks, e.g. which city is larger given that one has a university and the other does not.
+Heuristic decision models implemented in R, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB).  Also wraps more well-known models like regression and logistic regression in the same interface for easy comparison in outcomes and accuracy.  The models perform two-alternative choice tasks, e.g. which city is larger given that one has a university and the other does not.
 
 ## Goal
 
@@ -13,16 +13,25 @@ The key function heuristics must implement is __predictAlternative__ rather than
 
 ## Key helper functions
 * [Cue validity](http://en.wikipedia.org/wiki/Cue_validity): A number from 0 to 1 indicating how often the cue would correctly predict the criterion in a two-alternative choice task.
-* pctCorrectOfPredictAlternative: Given a list of fitted heuristics and test data, returns a row with percent correct for each heuristic. 
+* pctCorrectOfPredictAlternative: Given a list of fitted models (which implement predictAlternative) and test data, returns a row with percent correct for each heuristic. 
 
-## Heuristics
-* ttbModel: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
-* ttbBinModel: Take the Best for only binary cues, which is faster than the more general TTB.
-* dawesModel: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
-* franklinModel: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a weighted decision method similar to this.
-* regModel: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.
-* regNoIModel: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
-* logRegModel: A logistic regression model, a wrapper around R's glm.
+## Models
+The package comes with the following models that implement predictAlternative. 
+* __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+* __ttbBinModel__: Take the Best for only binary cues, which is faster than the more general TTB.
+* __dawesModel__: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
+* __franklinModel__: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a weighted decision method similar to this.
+* __regModel__: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.
+* __regNoIModel__: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
+* __logRegModel__: A logistic regression model, a wrapper around R's glm.
+
+You can add your own models by also implementing __predictAlternative__.
+
+## Data
+
+The package comes with two data sets used in Simple heuristics that make us smart:
+* city_population (all binary cues)
+* highschool_dropout 
 
 ## Citations
 
