@@ -87,7 +87,7 @@ results <- rbind(results,pctCorr)
 return (colMeans(results))  
 }  
 ```
-Then we can just run this function to calculate predictive accuracy:
+Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 accuracy<-vector()
 for (s in 1:length(trainS)){
