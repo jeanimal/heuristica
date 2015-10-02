@@ -84,7 +84,7 @@ pctCorr <- createPctCorrectsFromErrors(errors)
 results <- rbind(results,pctCorr)
 }
 
-return (colMeans(results))  
+return (colMeans(results,na.rm=T))  
 }  
 ```
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
