@@ -15,6 +15,7 @@ Imports:
   plyr
 URL: https://github.com/jeanimal/heuristica
 Suggests: 
+  devtools,
   ggplot2,
   knitr,
   reshape,
