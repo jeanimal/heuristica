@@ -107,6 +107,6 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
      geom_line() +
      geom_point() + xlab("Size of training set") + ylab("Percent correct")+
      scale_x_continuous(limits=c(10,90),breaks=seq(10,90,10),expand=c(0.01,0.01)) +
-     scale_y_continuous(limits=c(0.6,0.8),breaks=seq(0.6,0.8, 0.1),expand=c(0.01,0.01))
+     scale_y_continuous(limits=c(min(accuracy)-0.01, max(accuracy)+0.01),breaks=seq(0.6,0.8, 0.1),expand=c(0.01,0.01))
 
 ```
