@@ -590,7 +590,7 @@ predictAlternative.regNoIModel <- function(object, test_data, row_pairs=NULL) {
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
   
-   if (is.null(row_pairs)) {
+  if (is.null(row_pairs)) {
     n <- nrow(train_data)
     all_pairs <- rowPairGenerator(n)
   } else {
@@ -609,9 +609,9 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   
   
   if(is.null(suppress_warnings)){
-  model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
+    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
   } else { 
-  model <- glm(formula,family=binomial,data=training_set)  
+    model <- glm(formula,family=binomial,data=training_set)  
   }
   col_weights <- coef(model)
   
