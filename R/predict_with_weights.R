@@ -140,13 +140,29 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
 }
 
 # private
-predictAlternativeWithWeights <- function(object, test_data, row_pairs=NULL) {
-  return(predictAlternativeWithWeights2(test_data, object$cols_to_fit, coef(object),
-                                        row_pairs))
+modelPredictAlternativeWithWeights <- function(object, test_data, row_pairs=NULL) {
+  return(predictAlternativeWithWeights(test_data, object$cols_to_fit, coef(object),
+                                       row_pairs))
 }
 
-# private.  TODO: Move to predict_with_weights and export.
-predictAlternativeWithWeights2 <- function(test_data, cols_to_fit, weights, row_pairs=NULL) {
+#' Predict alternative for each pair of row, assigning weights to each row.
+#'
+#' Applies the weights in col_weights to the columns cols_to_fit in test_data, then
+#' uses the row-level predictions to predict alternatives.
+#'
+#' @param test_data Data to predict for, as either a matrix or a data.frame.
+#' @param cols_to_fit Vector of column indexes to use in test_data.
+#' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
+#' @return A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.
+#'   Description of each column:
+#'   Row1: The index of row1 of the comparison.
+#'   Row2: The index of row2 of the comparison.
+#'   predictDirection (Prob_Row1_Bigger): The prediction of the probability that row1 has the bigger criterion.
+#'     Specifically, 1 means the first row is bigger, 0 means the 2nd row, 0.5 is a guess.
+#'
+#' @export
+predictAlternativeWithWeights <- function(test_data, cols_to_fit, weights, row_pairs=NULL) {
   predictions <- predictWithWeights(test_data, cols_to_fit, weights)
   if (is.null(row_pairs)) {
     n <- length(predictions)

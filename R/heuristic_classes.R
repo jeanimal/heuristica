@@ -217,7 +217,7 @@ predict.ttbBinModel <- function(object, ...) {
 #'
 #' @export
 predictAlternative.ttbBinModel <- function(object, test_data, row_pairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, row_pairs))
+  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 ### Take The Best ###
@@ -387,7 +387,7 @@ predict.dawesModel <- function(object, ...) {
 #'
 #' @export
 predictAlternative.dawesModel <- function(object, test_data, row_pairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, row_pairs))
+  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 
@@ -454,7 +454,7 @@ predict.franklinModel <- function(object, ...) {
 #'
 #' @export
 predictAlternative.franklinModel <- function(object, test_data, row_pairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, row_pairs))
+  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 
@@ -526,7 +526,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #'
 #' @export
 predictAlternative.regModel <- function(object, test_data, row_pairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, row_pairs))
+  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 #' Linear regression (no intercept) wrapper for hueristica
@@ -572,7 +572,7 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #'
 #' @export
 predictAlternative.regNoIModel <- function(object, test_data, row_pairs=NULL) {
-  return(predictAlternativeWithWeights(object, test_data, row_pairs))
+  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 
