@@ -163,7 +163,7 @@ modelPredictAlternativeWithWeights <- function(object, test_data, row_pairs=NULL
 #'
 #' @export
 predictAlternativeWithWeights <- function(test_data, cols_to_fit, col_weights, row_pairs=NULL) {
-  predictions <- predictWithWeights(test_data, cols_to_fit, weights)
+  predictions <- predictWithWeights(test_data, cols_to_fit, col_weights)
   if (is.null(row_pairs)) {
     n <- length(predictions)
     pairsMatrix <- rowPairGenerator(n)
