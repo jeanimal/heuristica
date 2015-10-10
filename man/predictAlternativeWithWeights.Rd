@@ -4,7 +4,7 @@
 \alias{predictAlternativeWithWeights}
 \title{Predict alternative for each pair of row, assigning weights to each row.}
 \usage{
-predictAlternativeWithWeights(test_data, cols_to_fit, weights,
+predictAlternativeWithWeights(test_data, cols_to_fit, col_weights,
   row_pairs = NULL)
 }
 \arguments{
@@ -12,9 +12,9 @@ predictAlternativeWithWeights(test_data, cols_to_fit, weights,
 
 \item{cols_to_fit}{Vector of column indexes to use in test_data.}
 
-\item{row_pairs}{Optional matrix.  TODO(jean): share documentation.}
-
 \item{col_weights}{Vector of weights to apply to the columns indicated by cols_to_fit.}
+
+\item{row_pairs}{Optional matrix.  TODO(jean): share documentation.}
 }
 \value{
 A data.frame (rows * (rows-1)) of predictions for each possible paired comparison.

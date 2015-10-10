@@ -162,7 +162,7 @@ modelPredictAlternativeWithWeights <- function(object, test_data, row_pairs=NULL
 #'     Specifically, 1 means the first row is bigger, 0 means the 2nd row, 0.5 is a guess.
 #'
 #' @export
-predictAlternativeWithWeights <- function(test_data, cols_to_fit, weights, row_pairs=NULL) {
+predictAlternativeWithWeights <- function(test_data, cols_to_fit, col_weights, row_pairs=NULL) {
   predictions <- predictWithWeights(test_data, cols_to_fit, weights)
   if (is.null(row_pairs)) {
     n <- length(predictions)
