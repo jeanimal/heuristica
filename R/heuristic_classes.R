@@ -39,7 +39,7 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 #' @export
 predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("predictAlternative")
 
-# TODO(jean): Rename row_pairs to row_pairs everywhere.  Share documentation.
+# TODO(jean): Share row_pairs documentation.
 
 ## Shared helper functions ##
 
