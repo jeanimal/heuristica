@@ -28,8 +28,8 @@
 #' @export
 rowPairGenerator <- function(n) {
   allPairs <- expand.grid(Row1=seq(n), Row2=seq(n))
-  allPairs <- allPairs[allPairs$Row1!=allPairs$Row2,]
-  allPairs <- allPairs[order(allPairs$Row1, allPairs$Row2),]
+  allPairs <- allPairs[allPairs$Row1!=allPairs$Row2,,drop = FALSE]
+  allPairs <- allPairs[order(allPairs$Row1, allPairs$Row2),,drop = FALSE]
   rownames(allPairs) <- NULL
   return(allPairs)
 }
@@ -172,10 +172,12 @@ predictAlternativeWithWeights <- function(test_data, cols_to_fit, weights, row_p
       stop(paste("row_pairs should be pairs matrix with two columns but got",
                  row_pairs))
     }
-    pairsMatrix <- row_pairs
+    pairsMatrix <- as.data.frame(row_pairs)
   }
   predictPairs <- t(apply(pairsMatrix, 1,
                           function(rowPair) predictions[rowPair]))
   predictDirection <- matrix(apply(predictPairs, 1, pairToValue))
-  return(cbind(pairsMatrix, predictDirection))
+  out <- cbind(pairsMatrix, predictDirection)
+  colnames(out)[3] <- "predictDirection"
+  return(out)
 }

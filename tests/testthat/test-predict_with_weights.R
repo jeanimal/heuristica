@@ -42,15 +42,14 @@ test_that("predictAlternativeWithWeights 2x2 up-down 2nd cue only", {
   expect_equal(0, out[(out$Row1==2) & (out$Row2==1),]$predictDirection)
 })
 
-# TODO(jean): Fix that final column gets no name in this case.
-#test_that("predictAlternativeWithWeights 2x2 up-down row_pairs", {
-#  data <-cbind(a=c(1,2), b=c(2,1))
-#  row_pairs <- cbind(Row1=c(1,2), Row2=c(1,2))
-#  out <- predictAlternativeWithWeights(data, c(1,2), c(1,1), row_pairs=row_pairs)
-#  expect_equal(0.5, out[(out$Row1==1) & (out$Row2==1),]$predictDirection, tolerance=0.001)
-#  expect_equal(0.5, out[(out$Row1==2) & (out$Row2==2),]$predictDirection, tolerance=0.001)
-#  expect_equal(2, nrow(out))
-#})
+test_that("predictAlternativeWithWeights 2x2 up-down row_pairs", {
+  data <-cbind(a=c(1,2), b=c(2,1))
+  row_pairs <- cbind(Row1=c(1,2), Row2=c(1,2))
+  out <- predictAlternativeWithWeights(data, c(1,2), c(1,1), row_pairs=row_pairs)
+  expect_equal(0.5, out[(out$Row1==1) & (out$Row2==1),]$predictDirection, tolerance=0.001)
+  expect_equal(0.5, out[(out$Row1==2) & (out$Row2==2),]$predictDirection, tolerance=0.001)
+  expect_equal(2, nrow(out))
+})
 
 test_that("rowPairGenerator 2", {
   row_pairs <- rowPairGenerator(2)
