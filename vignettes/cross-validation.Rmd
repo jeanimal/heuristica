@@ -40,9 +40,8 @@ data(city_population)
 We remove the first and second columns which contain data that we do not need for the models.
 Then we store the position of the criterion values and the predictor variables.
 ```{r}
-city_population <- city_population[,-c(1,2)]
-criterion_col <- 1
-cols_to_fit <- 2:ncol(city_population)
+criterion_col <- 3
+cols_to_fit <- 4:ncol(city_population)
 ```
 Let's enter the models we want to test:
 ```{r}
