@@ -301,7 +301,7 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
   predictions <- predictWithWeights(all_cue_sign, c(3:length(all_cue_sign)), linear_coef)
   # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
   out <- cbind(pairsMatrix, (sign(predictions)+1)*0.5)
-  names(out) <- c("Row1", "Row2", "predictDirection")
+  names(out) <- c("Row1", "Row2", "probFirstRowGreater")
   return(out)
 }
 
