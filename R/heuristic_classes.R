@@ -291,20 +291,18 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
       function(Row1, Row2) sign(object$cue_directions*test_data[Row1,object$cols_to_fit]
                               -object$cue_directions*test_data[Row2,object$cols_to_fit]) )
   #print(all_cue_sign)
-  # Get cue columns sorted by cue validity.
-  m <- cbind(seq(length(object$cols_to_fit)), object$cue_validities_with_reverse)
-  # Plus 2 below shifts over the columns to avoid Row1, Row2
-  sorted_cue_cols <-  m[order(m[,2], decreasing=TRUE)] + 2
-  all_cue_sign <- all_cue_sign[,sorted_cue_cols]
-  #print(all_cue_sign)
-  # Add NA as the first non-zero in case a row is all zeroes.
-  all_cue_sign_NA <- cbind(all_cue_sign, NA)
-  # Use first non-zero value as prediction.
-  first_cue_sign <- apply(all_cue_sign_NA, 1, function(x) head(x[x!=0],1))
-  final_predict <- 0.5 * first_cue_sign + 0.5
-  # Normal override of NA is 0.5 (but could be otherwise).
-  final_predict[is.na(final_predict)] <- 0.5
-  return(cbind(pairsMatrix, all_cue_sign, first_cue_sign, final_predict))
+
+  raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
+  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+
+  #print(linear_coef)
+  predictions <- predictWithWeights(all_cue_sign, c(3:length(all_cue_sign)), linear_coef)
+  # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
+  out <- cbind(pairsMatrix, (sign(predictions)+1)*0.5)
+  names(out) <- c("Row1", "Row2", "predictDirection")
+  return(out)
 }
 
 
