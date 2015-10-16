@@ -112,7 +112,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     intercept_index <- which(names(col_weights_clean)=="(Intercept)")
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
-  col_weights_clean <- col_weights_clean[c(cols_to_fit,(length(col_weights_clean)/2)+cols_to_fit ) -1]
+  #col_weights_clean <- col_weights_clean[c(cols_to_fit,(length(col_weights_clean)/2)+cols_to_fit ) -1]
   if (length(col_weights_clean) == 1) {
     prediction <- test_set * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
