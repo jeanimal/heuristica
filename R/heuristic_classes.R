@@ -287,9 +287,10 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
     }
     pairsMatrix <- row_pairs
   }
+  test_directed_matrix <- object$cue_directions*test_data[,object$cols_to_fit]
   all_cue_sign <- plyr::mdply(pairsMatrix,
-      function(Row1, Row2) sign(object$cue_directions*test_data[Row1,object$cols_to_fit]
-                              -object$cue_directions*test_data[Row2,object$cols_to_fit]) )
+      function(Row1, Row2) sign(test_directed_matrix[Row1,]
+                              -test_directed_matrix[Row2,]) )
   #print(all_cue_sign)
 
   raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
@@ -304,7 +305,6 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
   names(out) <- c("Row1", "Row2", "probFirstRowGreater")
   return(out)
 }
-
 
 ### Dawes Model ###
 
