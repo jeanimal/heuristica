@@ -287,7 +287,7 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
     }
     pairsMatrix <- row_pairs
   }
-  test_directed_matrix <- object$cue_directions*test_data[,object$cols_to_fit]
+  test_directed_matrix <- as.matrix(object$cue_directions*test_data[,object$cols_to_fit])
   all_cue_sign <- plyr::mdply(pairsMatrix,
       function(Row1, Row2) sign(test_directed_matrix[Row1,]
                               -test_directed_matrix[Row2,]) )
