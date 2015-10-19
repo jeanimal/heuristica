@@ -24,7 +24,7 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 #'  you want to have predicted.  By default (if no list is given), it will use
 #'  all unique pairs.
 #'  E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].  
-#' @return A matrix with 3 columns: row1index, row2index, and the predicted greater index.
+#' @return A matrix with 3 columns: row1index, row2index, and the prob row1 greater.
 #'  The first two columns are the row_pairs (provided as input or all).
 #'  The 3rd column is the model's predicted probability (0 to 1) that the first
 #'  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
@@ -38,6 +38,18 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 #' Between row 2 and 3, there is probabily 1 that row 2 is bigger.
 #' @export
 predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("predictAlternative")
+
+#' Generic function to predict which of a pair of rows has a higher criterion.
+#' EXPERIMENTAL and not meant for general use yet.
+#'
+#' @param object The object that implements predictAlternative, e.g. a ttb model.
+#' @param test_data The matrix of data to predict on.  As with predict, columns
+#'  must match those used for fitting.
+#' @param subset Vector of row indices-- all pairs of these will be predicted.  
+#' @return A vector of probabilities that the first row has a greater criterion.
+#' @export
+predictPair <- function(object, test_data, subset=NULL) UseMethod("predictPair")
+
 
 # TODO(jean): Share row_pairs documentation.
 
@@ -303,6 +315,48 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
   # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
   out <- cbind(pairsMatrix, (sign(predictions)+1)*0.5)
   names(out) <- c("Row1", "Row2", "probFirstRowGreater")
+  return(out)
+}
+
+#' Predict which of a pair of rows has higher criterion, using Take The Best.
+#' This is a lightning-fast, non-debuggable version of predictAlternative.
+#'
+#' @param object A fitted ttbModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{ttbModel}} for example code.
+#'
+#' @export
+predictPair.ttbModel <- function(object, test_data, subset=NULL) {
+  # Subset by rows and columns and flip cue values as needed.
+  if (is.null(subset)) {
+    directed_matrix <- as.matrix(object$cue_directions *
+                                   test_data[,object$cols_to_fit])
+  } else {
+    directed_matrix <- as.matrix(object$cue_directions * 
+                                   test_data[subset, object$cols_to_fit])  
+  }
+  # print(head(directed_matrix))
+  # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
+  pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
+                                              -directed_matrix[index_pair[2],])
+  pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
+  # print("combn finished with this many rows and columns:")
+  # print(nrow(pair_signs))
+  # print(ncol(pair_signs))
+  
+  raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
+  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  
+  predictions <- predictWithWeights(pair_signs,
+                                    c(1:ncol(pair_signs)), linear_coef)
+  # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
+  out <- (sign(predictions)+1)*0.5
+  #out <- cbind(pairs_with_signs[c(1:2),], (sign(predictions)+1)*0.5)
+  #names(out) <- c("Row1", "Row2", "probFirstRowGreater")
   return(out)
 }
 

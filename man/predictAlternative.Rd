@@ -18,7 +18,7 @@ all unique pairs.
 E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].}
 }
 \value{
-A matrix with 3 columns: row1index, row2index, and the predicted greater index.
+A matrix with 3 columns: row1index, row2index, and the prob row1 greater.
  The first two columns are the row_pairs (provided as input or all).
  The 3rd column is the model's predicted probability (0 to 1) that the first
  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
