@@ -5,7 +5,8 @@
 \title{Predict which of a pair of rows has higher criterion, using Take The Best.
 This is a lightning-fast, non-debuggable version of predictAlternative.}
 \usage{
-\method{predictPair}{ttbModel}(object, test_data, subset = NULL)
+\method{predictPair}{ttbModel}(object, test_data, subset_rows = NULL,
+  verbose_output = TRUE)
 }
 \arguments{
 \item{object}{A fitted ttbModel.}
@@ -13,7 +14,11 @@ This is a lightning-fast, non-debuggable version of predictAlternative.}
 \item{test_data}{The matrix of data to predict on.  As with predict, columns
 must match those used for fitting.}
 
-\item{subset}{Vector of row indices-- all pairs of these will be predicted.}
+\item{subset_rows}{Vector of row indices-- all pairs of these will be predicted.}
+
+\item{verbose_output}{Controls how much output is generated, which may slow down
+computations and use more memory.  When automating, set to FALSE, which will turn
+off outputs preced by verbose_.}
 }
 \description{
 Predict which of a pair of rows has higher criterion, using Take The Best.

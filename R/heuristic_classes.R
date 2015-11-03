@@ -13,6 +13,8 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 # Private.  This is just an easy way to share parameter documentation.
 reversingModel <- function(reverse_cues=TRUE) NULL
 
+# TODO(jean): Share row_pairs documentation... or subset_rows if that's what I switch to.
+
 ## New generics ##
 
 #' Generic function to use two rows of cues to predict which row has a higher criterion.
@@ -45,13 +47,24 @@ predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("pre
 #' @param object The object that implements predictAlternative, e.g. a ttb model.
 #' @param test_data The matrix of data to predict on.  As with predict, columns
 #'  must match those used for fitting.
-#' @param subset Vector of row indices-- all pairs of these will be predicted.  
-#' @return A vector of probabilities that the first row has a greater criterion.
+#' @param subset_rows Vector of row indices-- all pairs of these will be predicted.
+#' @param verbose_output Controls how much output is generated, which may slow down
+#'  computations and use more memory.  When automating, set to FALSE, which will turn
+#'  off outputs preced by verbose_.
+#' @return A structure of a a list of
+#'  1) predictions: A vector of probabilities that the first row has a greater criterion.
+#'  2) subset_rows: Echoes the input to help you parse predictions (can be NULL).
+#'  3) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
+#'     and (2) in an easily-read form.  Only output if verbose_output = TRUE.
 #' @export
-predictPair <- function(object, test_data, subset=NULL) UseMethod("predictPair")
+predictPair <- function(object, test_data, subset_rows=NULL,
+                        verbose_output=TRUE) UseMethod("predictPair")
 
+#' @export
+pairPredictionDFo <- function(object) UseMethod("pairPredictionDFo")
 
-# TODO(jean): Share row_pairs documentation.
+#' @export
+getPredictiono <- function(object, row1=NULL, row2=NULL) UseMethod("getPredictiono")
 
 ## Shared helper functions ##
 
@@ -65,6 +78,102 @@ pairToValue <- function(pair) {
     return(0.5)
   }
 }
+
+
+# Example: inferNumOriginalRows(nrow(out$predictions))
+#' @export
+inferNumOriginalRows <- function(num_combo_rows) {
+  guess <- ceiling(sqrt(num_combo_rows * 2))
+  # Validate the guess worked.
+  if (guess * (guess-1) / 2 != num_combo_rows) {
+    stop(paste("Cannot guess number of original rows for", num_combo_rows))
+  }
+  return(guess)
+}
+
+# If subset_rows is NULL, assume predictions were all rows from 1 to some N,
+# and it will back out N.
+#' @export
+pairPredictionMatrix <- function(predictions, subset_rows=NULL) {
+  #if (nrow(predictions) == 0) { # It dies here, not with my stop message.
+  #  stop("Cannot generate matrix with zero data")
+  #}
+  if (is.null(subset_rows)) {
+    num_original_rows <- inferNumOriginalRows(nrow(predictions))
+    row_pairs <- t(combn(num_original_rows, 2))
+  } else {
+    row_index_fetcher <- function(index_pair) c(subset_rows[index_pair[1]],
+                                                subset_rows[index_pair[2]])
+    row_pairs <- t(combn(length(subset_rows), 2, row_index_fetcher))
+  }
+  # Columns are Row1, Row2, and ProbRow1Greater
+  out <- cbind(row_pairs, predictions)
+  return(out) 
+}
+
+#' @export
+pairPredictionDF<- function(predictions, subset_rows=NULL) {
+  out <- as.data.frame(pairPredictionMatrix(predictions, subset_rows))
+  names(out) <- c("Row1", "Row2", "ProbRow1Greater")
+  return(out)
+}
+
+#' @export
+pairPredictionDFo.pairPredictor <- function(object) {
+  return(pairPredictionDF(object$predictions, object$subset_rows))
+}
+
+# Returns just one number.  Assumes you want just the last column.
+#' @export
+getPrediction_raw <- function(prediction_matrix, row_pair) {
+  if (length(row_pair) != 2) {
+    stop("row_pair should be length 2 (row1, row2) but got length "
+         + length(row_pair))
+  }
+  # Comparing a row with itself is undefined.  I assign it 0.5.
+  if (row_pair[1] == row_pair[2]) {
+    stop(paste("Comparing row", row_pair[1], "with itself."))
+  }
+  min_index <- min(row_pair)
+  max_index <- max(row_pair)
+  #print(min_index)
+  #print(max_index)
+  mat <- prediction_matrix
+  #print(head(mat))
+  last_col <- ncol(mat)
+  #print(last_col)
+  val <- mat[(mat[,1]==min_index) & (mat[,2]==max_index),][[last_col]]
+  if (min_index == row_pair[1]) {
+    return(val)
+  } else {
+    return(1-val)
+  }
+}
+
+#' @export
+getPredictiono <- function(object, row1=NULL, row2=NULL) {
+  if (is.null(row1) || is.null(row2)) {
+    stop("You must set both row1 and row2")
+  }
+  row_pair <- c(row1, row2)
+  #TODO(jeanw): Does this perform a copy?  If so, then shorten it.
+  if (is.null(object$verbose_predictions)) {
+    prediction_matrix <- pairPredictionMatrix(object$predictions, object$subset_rows)
+  } else {
+    prediction_matrix <- object$verbose_predictions
+  }
+  return(getPrediction_raw(prediction_matrix, row_pair))
+}
+
+
+# getPrediction makes test code more readable.
+#getPrediction <- function(out, row1=NULL, row2=NULL) {
+#  if (is.null(row1) || is.null(row2)) {
+#    stop("You must set both row1 and row2")
+#  }
+#  lastCol <- ncol(out)
+#  return(out[(out$Row1==row1) & (out$Row2==row2),][[lastCol]])
+#}
 
 #' Returns a correct proportion based on a vector of predictions.
 #'
@@ -328,36 +437,46 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
 #' \code{\link{ttbModel}} for example code.
 #'
 #' @export
-predictPair.ttbModel <- function(object, test_data, subset=NULL) {
+predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
+                                 verbose_output=TRUE) {
   # Subset by rows and columns and flip cue values as needed.
-  if (is.null(subset)) {
-    directed_matrix <- as.matrix(object$cue_directions *
-                                   test_data[,object$cols_to_fit])
+  if (is.null(subset_rows)) {
+    sorted_subset_rows <- NULL
+    directed_matrix <- as.matrix(sweep(test_data[,object$cols_to_fit, drop=FALSE],
+                                       MARGIN=2, object$cue_directions, `*`
+                                   ))
   } else {
-    directed_matrix <- as.matrix(object$cue_directions * 
-                                   test_data[subset, object$cols_to_fit])  
+    sorted_subset_rows <- sort(subset_rows)
+    directed_matrix <- as.matrix(sweep(test_data[sorted_subset_rows, object$cols_to_fit],
+                                       MARGIN=2, object$cue_directions, `*`
+    ))
   }
-  # print(head(directed_matrix))
+  #print(head(directed_matrix))
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
   pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
                                               -directed_matrix[index_pair[2],])
   pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
+  #print(head(pair_signs))
   # print("combn finished with this many rows and columns:")
-  # print(nrow(pair_signs))
-  # print(ncol(pair_signs))
   
   raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
   # Reverse ranks so first is last.
   cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
   linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
   
-  predictions <- predictWithWeights(pair_signs,
-                                    c(1:ncol(pair_signs)), linear_coef)
+  predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
+                                            c(1:ncol(pair_signs)), linear_coef))
+  #print(head(predictions_neg_pos))
   # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
-  out <- (sign(predictions)+1)*0.5
-  #out <- cbind(pairs_with_signs[c(1:2),], (sign(predictions)+1)*0.5)
-  #names(out) <- c("Row1", "Row2", "probFirstRowGreater")
-  return(out)
+  predictions_0_1 <- (sign(predictions_neg_pos)+1)*0.5
+  if (verbose_output) {
+    verbose_predictions <- pairPredictionDF(predictions_0_1, sorted_subset_rows)
+  } else {
+    verbose_predictions <- "Set verbose_output=True to get this output"
+  }
+
+  return(structure(list(predictions=predictions_0_1, subset_rows=sorted_subset_rows,
+                        verbose_predictions=verbose_predictions), class="pairPredictor"))
 }
 
 ### Dawes Model ###

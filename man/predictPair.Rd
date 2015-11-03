@@ -5,7 +5,7 @@
 \title{Generic function to predict which of a pair of rows has a higher criterion.
 EXPERIMENTAL and not meant for general use yet.}
 \usage{
-predictPair(object, test_data, subset = NULL)
+predictPair(object, test_data, subset_rows = NULL, verbose_output = TRUE)
 }
 \arguments{
 \item{object}{The object that implements predictAlternative, e.g. a ttb model.}
@@ -13,10 +13,18 @@ predictPair(object, test_data, subset = NULL)
 \item{test_data}{The matrix of data to predict on.  As with predict, columns
 must match those used for fitting.}
 
-\item{subset}{Vector of row indices-- all pairs of these will be predicted.}
+\item{subset_rows}{Vector of row indices-- all pairs of these will be predicted.}
+
+\item{verbose_output}{Controls how much output is generated, which may slow down
+computations and use more memory.  When automating, set to FALSE, which will turn
+off outputs preced by verbose_.}
 }
 \value{
-A vector of probabilities that the first row has a greater criterion.
+A structure of a a list of
+ 1) predictions: A vector of probabilities that the first row has a greater criterion.
+ 2) subset_rows: Echoes the input to help you parse predictions.
+ 3) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
+    and (2) in an easily-read form.  Only output if verbose_output = TRUE.
 }
 \description{
 Generic function to predict which of a pair of rows has a higher criterion.
