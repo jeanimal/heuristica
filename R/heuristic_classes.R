@@ -768,12 +768,14 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
     all_pairs <- row_pairs
   }
   
-  all_pairs<-as.data.frame(all_pairs)
-  predictors <- cbind(train_data[all_pairs[,1],cols_to_fit],train_data[all_pairs[,2],cols_to_fit])
-  predictors <- as.data.frame(predictors)
-  data2 <- cbind(all_pairs,predictors)
-  dep.var <- ifelse(data2[,criterion_col] < data2[,criterion_col+1],1,ifelse(data2[,criterion_col] == data2[,criterion_col+1],0.5,0 ))
-  training_set <- cbind(dep.var,data2[,3:ncol(data2)])
+  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  
+  criterion <- transform[,1]
+  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
+  
+  predictors <- transform[,2:ncol(transform)]
+  
+  training_set <- cbind(criterion,predictors)
   training_set <- as.data.frame(training_set)
   
   formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
@@ -784,12 +786,14 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   } else { 
     model <- glm(formula,family=binomial,data=training_set)  
   }
+  
   col_weights <- coef(model)
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-               linear_coef=col_weights,model=model), 
-          class="logRegModel")
+                 linear_coef=col_weights,model=model), 
+            class="logRegModel")
 }
+
 
 #' @export
 coef.logRegModel <- function(object, ...) object$linear_coef

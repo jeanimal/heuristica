@@ -99,10 +99,13 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   } else {
     all_pairs <- row_pairs
   }
-  predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
-  data2 <- cbind(all_pairs,predictors)
-  test_set <- data2[,3:ncol(data2)]
-  if(is.vector(test_set)!=TRUE) test_set <- as.data.frame(test_set)
+  
+  
+  transform <- test_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - test_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  
+  predictors <- transform[,2:ncol(transform)]
+  
+  #if(is.vector(test_d)!=TRUE) test_set <- as.data.frame(test_set)
   
   intercept <- 0
   col_weights_clean <- col_weights
@@ -112,26 +115,15 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
     intercept_index <- which(names(col_weights_clean)=="(Intercept)")
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
-  #col_weights_clean <- col_weights_clean[c(cols_to_fit,(length(col_weights_clean)/2)+cols_to_fit ) -1]
   if (length(col_weights_clean) == 1) {
-    prediction <- test_set * col_weights_clean + intercept
+    prediction <- predictors * col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    ids <- as.vector(rowSums(test_set[,1:ncol(test_set)]))
-    ids1 <- which(ids == 0 )
-    ids2 <- which(ids == length(1:ncol(test_set)))
-    prediction[ids1,]<-0.5
-    prediction[ids2,]<-0.5
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   } else {
-    prediction <- as.matrix(test_set) %*% col_weights_clean + intercept
+    prediction <- as.matrix(predictors) %*% col_weights_clean + intercept
     prediction <- exp(prediction)/(1+exp(prediction))
     prediction <- round(prediction,digits=2)
-    ids <- as.vector(rowSums(test_set[,1:ncol(test_set)]))
-    ids1 <- which(ids == 0 )
-    ids2 <- which(ids == length(1:ncol(test_set)))
-    prediction[ids1,]<-0.5
-    prediction[ids2,]<-0.5
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   }
   out_df <- data.frame(cbind(all_pairs, prediction))
