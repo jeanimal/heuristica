@@ -382,9 +382,15 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
     cue_validities_with_reverse <- cue_validities
     cue_directions <- rep(1, length(cue_validities_with_reverse))
   }
+  
+  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
+  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cue_validities, cue_validities_with_reverse=cue_validities_with_reverse,
-                 cue_directions=cue_directions),
+                 cue_directions=cue_directions, predict_pair_weights=linear_coef),
             class="ttbModel")
 }
 
@@ -427,17 +433,7 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
   return(out)
 }
 
-#' Predict which of a pair of rows has higher criterion, using Take The Best.
-#' This is a lightning-fast, non-debuggable version of predictAlternative.
-#'
-#' @param object A fitted ttbModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{ttbModel}} for example code.
-#'
-#' @export
-predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
+predictPairWithWeights <- function(object, weights, test_data, subset_rows=NULL,
                                  verbose_output=TRUE) {
   # Subset by rows and columns and flip cue values as needed.
   if (is.null(subset_rows)) {
@@ -459,10 +455,7 @@ predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
   #print(head(pair_signs))
   # print("combn finished with this many rows and columns:")
   
-  raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
-  # Reverse ranks so first is last.
-  cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
-  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  linear_coef <- weights
   
   predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
                                             c(1:ncol(pair_signs)), linear_coef))
@@ -477,6 +470,21 @@ predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
 
   return(structure(list(predictions=predictions_0_1, subset_rows=sorted_subset_rows,
                         verbose_predictions=verbose_predictions), class="pairPredictor"))
+}
+
+#' Predict which of a pair of rows has higher criterion, using Take The Best.
+#' This is a lightning-fast, non-debuggable version of predictAlternative.
+#'
+#' @param object A fitted ttbModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{ttbModel}} for example code.
+#'
+#' @export
+predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
+                                 verbose_output=TRUE) {
+  predictPairWithWeights(object, object$predict_pair_weights, test_data, subset_rows, verbose_output)
 }
 
 ### Dawes Model ###
@@ -504,7 +512,7 @@ predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
 #' @seealso
 #' \code{\link{predict.dawesModel}} (via \code{\link[stats]{predict}}) for prediction.
 #' @seealso
-#' \code{\link{predictAlternative.dawesModel}} for predicting among alternatives.
+#' \code{\link{predictPair.dawesModel}} for predicting among a pair of alternatives.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 #'
@@ -546,6 +554,19 @@ predict.dawesModel <- function(object, ...) {
     stop("Expected only one unevaluated argument (test_data) but got " +
           length(args) + ":" + args)
   }
+}
+
+#' Predict which of a pair of rows has higher criterion, using Dawes' Model.
+#'
+#' @param object A fitted dawesModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{dawesModel}} for example code.
+#'
+#' @export
+predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
+                                 verbose_output=TRUE) {
 }
 
 #' Predict which alternative has higher criterion for Dawes model.
