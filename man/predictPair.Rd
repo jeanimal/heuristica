@@ -22,7 +22,7 @@ off outputs preced by verbose_.}
 \value{
 A structure of a a list of
  1) predictions: A vector of probabilities that the first row has a greater criterion.
- 2) subset_rows: Echoes the input to help you parse predictions.
+ 2) subset_rows: Echoes the input to help you parse predictions (NULL means all rows used).
  3) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
     and (2) in an easily-read form.  Only output if verbose_output = TRUE.
 }
