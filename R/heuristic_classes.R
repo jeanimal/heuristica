@@ -390,7 +390,7 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cue_validities, cue_validities_with_reverse=cue_validities_with_reverse,
-                 cue_directions=cue_directions, predict_pair_weights=linear_coef),
+                 cue_directions=cue_directions, linear_coef=linear_coef),
             class="ttbModel")
 }
 
@@ -433,7 +433,7 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
   return(out)
 }
 
-predictPairWithWeights <- function(object, weights, test_data, subset_rows=NULL,
+predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
                                  verbose_output=TRUE) {
   # Subset by rows and columns and flip cue values as needed.
   if (is.null(subset_rows)) {
@@ -455,7 +455,7 @@ predictPairWithWeights <- function(object, weights, test_data, subset_rows=NULL,
   #print(head(pair_signs))
   # print("combn finished with this many rows and columns:")
   
-  linear_coef <- weights
+  linear_coef <- object$linear_coef
   
   predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
                                             c(1:ncol(pair_signs)), linear_coef))
@@ -472,7 +472,7 @@ predictPairWithWeights <- function(object, weights, test_data, subset_rows=NULL,
                         verbose_predictions=verbose_predictions), class="pairPredictor"))
 }
 
-#' Predict which of a pair of rows has higher criterion, using Take The Best.
+#' Predict which of a pair of rows has a higher criterion, using Take The Best.
 #' This is a lightning-fast, non-debuggable version of predictAlternative.
 #'
 #' @param object A fitted ttbModel.
@@ -484,7 +484,7 @@ predictPairWithWeights <- function(object, weights, test_data, subset_rows=NULL,
 #' @export
 predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
                                  verbose_output=TRUE) {
-  predictPairWithWeights(object, object$predict_pair_weights, test_data, subset_rows, verbose_output)
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
 }
 
 ### Dawes Model ###
@@ -556,19 +556,6 @@ predict.dawesModel <- function(object, ...) {
   }
 }
 
-#' Predict which of a pair of rows has higher criterion, using Dawes' Model.
-#'
-#' @param object A fitted dawesModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{dawesModel}} for example code.
-#'
-#' @export
-predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
-                                 verbose_output=TRUE) {
-}
-
 #' Predict which alternative has higher criterion for Dawes model.
 #'
 #' @param object A dawesModel.
@@ -582,6 +569,19 @@ predictAlternative.dawesModel <- function(object, test_data, row_pairs=NULL) {
   return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
+#' Predict which of a pair of rows has a higher criterion, using Dawes' Model.
+#'
+#' @param object A fitted dawesModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{dawesModel}} for example code.
+#'
+#' @export
+predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
+                                   verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+}
 
 ### Franklin's Model ###
 
@@ -649,6 +649,19 @@ predictAlternative.franklinModel <- function(object, test_data, row_pairs=NULL) 
   return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
+#' Predict which of a pair of rows has a higher criterion, using Franklin's Model.
+#'
+#' @param object A fitted franklinModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{franklinModel}} for example code.
+#'
+#' @export
+predictPair.franklinModel <- function(object, test_data, subset_rows=NULL,
+                                   verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+}
 
 ### Wrappers for linear regression models ###
 
