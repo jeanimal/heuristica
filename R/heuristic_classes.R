@@ -388,7 +388,8 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
   unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
   # Now give negative signs for cues pointing the other way.
-  linear_coef <- as.vector(unsigned_linear_coef) * as.vector(cue_directions)
+  #linear_coef <- as.vector(unsigned_linear_coef) * as.vector(cue_directions)
+  linear_coef <- cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cue_validities, cue_validities_with_reverse=cue_validities_with_reverse,

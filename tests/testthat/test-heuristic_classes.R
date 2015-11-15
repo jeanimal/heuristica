@@ -472,7 +472,6 @@ test_that("ttbModel 4x4 predictAlternative 3nd cue dominates non-binary reverse 
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  #expect_equal(c(a=1, b=1, c=-1), model$cue_directions, tolerance=0.002)
   out <- predictAlternative(model, train_df)
   expect_equal(1, getPredictionT(out, row1=3, row2=4))
   expect_equal(0, getPredictionT(out, row1=4, row2=3))
@@ -496,7 +495,8 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue dat
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  #expect_equal(c(a=1, b=1, c=-1), model$cue_directions, tolerance=0.002)
+  # The coefficient for column c should be negative.
+  expect_equal(c(c=-1), sign(model$linear_coef["c"]), tolerance=0.002)
   out <- predictPair(model, train_df)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
   expect_equal(0, getPredictiono(out, row1=4, row2=3))
