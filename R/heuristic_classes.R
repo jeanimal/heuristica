@@ -386,11 +386,13 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
   raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
-  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  # Now give negative signs for cues pointing the other way.
+  linear_coef <- as.vector(unsigned_linear_coef) * as.vector(cue_directions)
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cue_validities, cue_validities_with_reverse=cue_validities_with_reverse,
-                 cue_directions=cue_directions, linear_coef=linear_coef),
+                 linear_coef=linear_coef),
             class="ttbModel")
 }
 
@@ -414,7 +416,8 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
     }
     pairsMatrix <- row_pairs
   }
-  test_directed_matrix <- as.matrix(object$cue_directions*test_data[,object$cols_to_fit])
+  cue_directions <- sign(object$linear_coef)
+  test_directed_matrix <- as.matrix(cue_directions*test_data[,object$cols_to_fit])
   all_cue_sign <- plyr::mdply(pairsMatrix,
       function(Row1, Row2) sign(test_directed_matrix[Row1,]
                               -test_directed_matrix[Row2,]) )
@@ -438,14 +441,10 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
   # Subset by rows and columns and flip cue values as needed.
   if (is.null(subset_rows)) {
     sorted_subset_rows <- NULL
-    directed_matrix <- as.matrix(sweep(test_data[,object$cols_to_fit, drop=FALSE],
-                                       MARGIN=2, object$cue_directions, `*`
-                                   ))
+    directed_matrix <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
   } else {
     sorted_subset_rows <- sort(subset_rows)
-    directed_matrix <- as.matrix(sweep(test_data[sorted_subset_rows, object$cols_to_fit],
-                                       MARGIN=2, object$cue_directions, `*`
-    ))
+    directed_matrix <- as.matrix(test_data[sorted_subset_rows,object$cols_to_fit, drop=FALSE])
   }
   #print(head(directed_matrix))
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
