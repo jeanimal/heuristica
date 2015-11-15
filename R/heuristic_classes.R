@@ -447,19 +447,19 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
     sorted_subset_rows <- sort(subset_rows)
     directed_matrix <- as.matrix(test_data[sorted_subset_rows,object$cols_to_fit, drop=FALSE])
   }
-  #print(head(directed_matrix))
+  # print(head(directed_matrix))
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
   pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
                                               -directed_matrix[index_pair[2],])
   pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
-  #print(head(pair_signs))
+  # print(head(pair_signs))
   # print("combn finished with this many rows and columns:")
   
   linear_coef <- object$linear_coef
   
   predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
                                             c(1:ncol(pair_signs)), linear_coef))
-  #print(head(predictions_neg_pos))
+  # print(head(predictions_neg_pos))
   # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
   predictions_0_1 <- (sign(predictions_neg_pos)+1)*0.5
   if (verbose_output) {
@@ -473,7 +473,6 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
 }
 
 #' Predict which of a pair of rows has a higher criterion, using Take The Best.
-#' This is a lightning-fast, non-debuggable version of predictAlternative.
 #'
 #' @param object A fitted ttbModel.
 #' @inheritParams predictPair
@@ -734,6 +733,20 @@ predictAlternative.regModel <- function(object, test_data, row_pairs=NULL) {
   return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
+#' Predict which of a pair of rows has a higher criterion, using regression.
+#'
+#' @param object A fitted regModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{regModel}} for example code.
+#'
+#' @export
+predictPair.regModel <- function(object, test_data, subset_rows=NULL,
+                                 verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+}
+
 #' Linear regression (no intercept) wrapper for hueristica
 #'
 #' A wrapper to create a lm model just specifying columns, generating
@@ -780,6 +793,20 @@ predictAlternative.regNoIModel <- function(object, test_data, row_pairs=NULL) {
   return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
+#' Predict which of a pair of rows has a higher criterion, using regression no intercept.
+#'
+#' @param object A fitted regNoIModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{regNoIModel}} for example code.
+#'
+#' @export
+predictPair.regNoIModel <- function(object, test_data, subset_rows=NULL,
+                                 verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+}
+
 
 #' Logistic Regression model
 #'
@@ -813,7 +840,8 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   training_set <- as.data.frame(training_set)
   
   formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
-  
+  # Do not fit intercept by default.
+  formula <- paste(formula, "-1")
   
   if(is.null(suppress_warnings)){
     model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
@@ -836,4 +864,18 @@ coef.logRegModel <- function(object, ...) object$linear_coef
 predictAlternative.logRegModel <- function(object, test_data, row_pairs = NULL) {
   return(predictWithWeightsLog(test_data, object$cols_to_fit, object$criterion_col, 
                         object$linear_coef, row_pairs))
+}
+
+#' Predict which of a pair of rows has a higher criterion, using logistic regression.
+#'
+#' @param object A fitted logRegModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{logRegModel}} for example code.
+#'
+#' @export
+predictPair.logRegModel <- function(object, test_data, subset_rows=NULL,
+                                    verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
 }

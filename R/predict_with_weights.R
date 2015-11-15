@@ -55,6 +55,7 @@ predictWithWeights <- function(test_data, cols_to_fit, col_weights) {
   test_matrix <- data.matrix(test_data)
   intercept <- 0
   col_weights_clean <- col_weights
+  # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
   if ("(Intercept)" %in% names(col_weights_clean)) {
     intercept <- col_weights_clean["(Intercept)"]
