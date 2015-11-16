@@ -559,25 +559,47 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
 ### franklinModel ###
 
 test_that("franklinModel 2x3 pos neg", {
-  model <- franklinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- franklinModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(0,  coef(model)[[2]])  
-  expect_equal(2, length(coef(model))) 
+  expect_equal(2, length(coef(model)))
+  out1 <- predictAlternative(model, train_matrix)
+  expect_equal(1, getPredictionT(out1, row1=1, row2=2), tolerance=0.002)
+  out2 <- predictPair(model, train_matrix)
+  expect_equal(1, getPredictiono(out2, row1=1, row2=2), tolerance=0.002)
 })
 
 test_that("franklinModel 5x1 75", {
-  model <- franklinModel(matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2), 1, c(2))
+  train_matrix <- matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2)
+  model <- franklinModel(train_matrix, 1, c(2))
   expect_equal(c(0.75),  model$cue_validities) 
   expect_equal(0.75,  coef(model)[[1]])
-  expect_equal(1, length(coef(model))) 
+  expect_equal(1, length(coef(model)))
+  out <- predictPair(model, train_matrix)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
+  expect_equal(1, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
+  expect_equal(0, getPredictiono(out, row1=4, row2=5), tolerance=0.002)
 })
 
 test_that("franklinModel 5x1 25", {
-  model <- franklinModel(matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2), 1, c(2))
-  expect_equal(c(0.25),  model$cue_validities) 
+  train_matrix <- matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2)
+  model <- franklinModel(train_matrix, 1, c(2))
+  expect_equal(c(0.25),  model$cue_validities)
+  # Cue reversal will change below to -0.75.
   expect_equal(0.25,  coef(model)[[1]])
-  expect_equal(1, length(coef(model))) 
+  expect_equal(1, length(coef(model)))
+  out <- predictPair(model, train_matrix)
+  # Cue reversal with change below to 0.
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
+  # Cue reversal with change below to 1.
+  expect_equal(1, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
 })
 
 test_that("franklinModel 3x3 pos pos predict", {

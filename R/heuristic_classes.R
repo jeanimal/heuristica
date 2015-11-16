@@ -604,6 +604,7 @@ predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
 #' @export 
 franklinModel <- function(train_data, criterion_col, cols_to_fit) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  #TODO(jean): Reverse cue weights that are pointed the wrong way.
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit, cue_validities=cue_validities, linear_coef=cue_validities), class="franklinModel")
 }
 
