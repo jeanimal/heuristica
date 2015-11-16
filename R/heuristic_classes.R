@@ -567,6 +567,7 @@ predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
 #' The name is because it was inspired by a method used by Ben Franklin.
 #'
 #' @inheritParams heuristicaModel
+#' @inheritParams reversingModel
 #'
 #' @return An object of \code{\link[base]{class}} franklinModel.  This is a list containing at least the following components:
 #'   \itemize{
@@ -579,10 +580,21 @@ predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
 #' @seealso
 #' \code{\link{predictAlternative.franklinModel}} for predicting among alternatives.
 #' @export 
-franklinModel <- function(train_data, criterion_col, cols_to_fit) {
+franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
-  #TODO(jean): Reverse cue weights that are pointed the wrong way.
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit, cue_validities=cue_validities, linear_coef=cue_validities), class="franklinModel")
+  if (reverse_cues) {
+    reverse_info = reverseAsNeeded(cue_validities)
+    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+    cue_directions <- reverse_info$cue_directions
+  } else {
+    cue_validities_with_reverse <- cue_validities
+    cue_directions <- rep(1, length(cue_validities_with_reverse))
+  }
+  structure(list(criterion_col = criterion_col, cols_to_fit = cols_to_fit,
+                 cue_validities = cue_validities,
+                 cue_validities_with_reverse = cue_validities_with_reverse,
+                 linear_coef = cue_validities_with_reverse),
+            class="franklinModel")
 }
 
 #' @export

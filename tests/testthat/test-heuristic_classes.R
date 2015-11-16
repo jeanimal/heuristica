@@ -565,7 +565,7 @@ test_that("dawesModel 4x4 predictPair 3nd cue dominates non-binary reverse cue",
 
 test_that("franklinModel 2x3 pos neg", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
-  model <- franklinModel(train_matrix, 1, c(2,3))
+  model <- franklinModel(train_matrix, 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(0,  coef(model)[[2]])  
@@ -592,7 +592,7 @@ test_that("franklinModel 5x1 75", {
 
 test_that("franklinModel 5x1 25", {
   train_matrix <- matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2)
-  model <- franklinModel(train_matrix, 1, c(2))
+  model <- franklinModel(train_matrix, 1, c(2), reverse_cues=FALSE)
   expect_equal(c(0.25),  model$cue_validities)
   # Cue reversal will change below to -0.75.
   expect_equal(0.25,  coef(model)[[1]])
@@ -632,7 +632,7 @@ test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cu
   # but that validity is 1.0 when reversed.
   # Cue c predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
-  model <- franklinModel(train_df, 1, c(2:4))
+  model <- franklinModel(train_df, 1, c(2:4), reverse_cues=FALSE)
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
   # Soon: Linear coef will include reversing the cue pointed the wrong way.
   expect_equal(c(a=0.667, b=0.667, c=0), model$linear_coef, tolerance=0.002)
@@ -657,7 +657,7 @@ test_that("franklinModel 4x4 predictAlternative 3nd cue dominates non-binary rev
   # but that validity is 1.0 when reversed.
   # Cue c predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
-  model <- franklinModel(train_df, 1, c(2:4))
+  model <- franklinModel(train_df, 1, c(2:4), reverse_cues=FALSE)
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
   # Soon: Linear coef will include reversing the cue pointed the wrong way.
   expect_equal(c(a=0.667, b=0.667, c=0), model$linear_coef, tolerance=0.002)
