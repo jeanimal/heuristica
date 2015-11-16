@@ -593,13 +593,13 @@ test_that("franklinModel 5x1 25", {
   expect_equal(0.25,  coef(model)[[1]])
   expect_equal(1, length(coef(model)))
   out <- predictPair(model, train_matrix)
-  # Cue reversal with change below to 0.
+  # Cue reversal will change below to 0.
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
   expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
   expect_equal(0.5, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
   expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
-  # Cue reversal with change below to 1.
-  expect_equal(1, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
+  # Cue reversal will change below to 1.
+  expect_equal(0, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
 })
 
 test_that("franklinModel 3x3 pos pos predict", {
