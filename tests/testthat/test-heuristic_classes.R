@@ -641,6 +641,31 @@ test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cu
   expect_equal(1, getPredictiono(out, row1=4, row2=3))
 })
 
+test_that("franklinModel 4x4 predictAlternative 3nd cue dominates non-binary reverse cue", {
+  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0,0,0,0.1), 4, 4)
+  train_df <- as.data.frame(train_data)
+  names(train_df) <- c("Y", "a", "b", "c")
+  # How this data looks:
+  # > train_df
+  #   Y a b   c
+  # 1 9 1 1 0.0
+  # 2 8 1 1 0.0
+  # 3 7 0 0 0.0
+  # 4 6 1 1 0.1
+  # Column Y is the criterion column.  Cues follow.
+  # Cue a and b have validity 2/3, cue c has validity validity 0,
+  # but that validity is 1.0 when reversed.
+  # Cue c predicts Row 3 > Row 4.
+  # But if you sum all cue weights, predict Row 4 > Row 3
+  model <- franklinModel(train_df, 1, c(2:4))
+  expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
+  # Soon: Linear coef will include reversing the cue pointed the wrong way.
+  expect_equal(c(a=0.667, b=0.667, c=0), model$linear_coef, tolerance=0.002)
+  out <- predictAlternative(model, train_df)
+  expect_equal(0, getPredictionT(out, row1=3, row2=4))
+  expect_equal(1, getPredictionT(out, row1=4, row2=3))
+})
+
 ### regModel ###
 
 test_that("regModel 2x2 fit pos slope", {
