@@ -51,7 +51,7 @@ predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("pre
 #' @param verbose_output Controls how much output is generated, which may slow down
 #'  computations and use more memory.  When automating, set to FALSE, which will turn
 #'  off outputs preced by verbose_.
-#' @return A structure of a a list of
+#' @return A pairPredictor, which is a structure of a list of
 #'  1) predictions: A vector of probabilities that the first row has a greater criterion.
 #'  2) subset_rows: Echoes the input to help you parse predictions (NULL means all rows used).
 #'  3) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
@@ -60,9 +60,14 @@ predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("pre
 predictPair <- function(object, test_data, subset_rows=NULL,
                         verbose_output=TRUE) UseMethod("predictPair")
 
-#' @export
 pairPredictionDFo <- function(object) UseMethod("pairPredictionDFo")
 
+#' Extract prediction from output of predictPair for {row1, row2}.
+#' 
+#' @param object a pairPredictor class
+#' @param row1 The index of row1 of the test_data that was predicted
+#' @param row2 The index of row2 of the test_data that was predicted
+#' @return The probability that row1 is greater
 #' @export
 getPredictiono <- function(object, row1=NULL, row2=NULL) UseMethod("getPredictiono")
 
@@ -81,7 +86,6 @@ pairToValue <- function(pair) {
 
 
 # Example: inferNumOriginalRows(nrow(out$predictions))
-#' @export
 inferNumOriginalRows <- function(num_combo_rows) {
   guess <- ceiling(sqrt(num_combo_rows * 2))
   # Validate the guess worked.
@@ -91,9 +95,12 @@ inferNumOriginalRows <- function(num_combo_rows) {
   return(guess)
 }
 
+#
+# TODO(jean): Delete unused experimental functions.
+#
+
 # If subset_rows is NULL, assume predictions were all rows from 1 to some N,
 # and it will back out N.
-#' @export
 pairPredictionMatrix <- function(predictions, subset_rows=NULL) {
   #if (nrow(predictions) == 0) { # It dies here, not with my stop message.
   #  stop("Cannot generate matrix with zero data")
@@ -111,20 +118,17 @@ pairPredictionMatrix <- function(predictions, subset_rows=NULL) {
   return(out) 
 }
 
-#' @export
 pairPredictionDF<- function(predictions, subset_rows=NULL) {
   out <- as.data.frame(pairPredictionMatrix(predictions, subset_rows))
   names(out) <- c("Row1", "Row2", "ProbRow1Greater")
   return(out)
 }
 
-#' @export
 pairPredictionDFo.pairPredictor <- function(object) {
   return(pairPredictionDF(object$predictions, object$subset_rows))
 }
 
 # Returns just one number.  Assumes you want just the last column.
-#' @export
 getPrediction_raw <- function(prediction_matrix, row_pair) {
   if (length(row_pair) != 2) {
     stop("row_pair should be length 2 (row1, row2) but got length "
@@ -397,6 +401,14 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
             class="ttbModel")
 }
 
+#' Linear weights that can be used to compare pairs of cue directions.
+#'
+#' Do NOT apply these directly to raw data.
+#'
+#' @param object A fitted ttbModel.
+#' @export
+coef.ttbModel <- function(object, ...) object$linear_coef
+
 #' Predict which alternative has higher criterion for Take The Best.
 #'
 #' @param object A ttbModel.
@@ -455,7 +467,7 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
   # print(head(pair_signs))
   # print("combn finished with this many rows and columns:")
   
-  linear_coef <- object$linear_coef
+  linear_coef <- coef(object)
   
   predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
                                             c(1:ncol(pair_signs)), linear_coef))

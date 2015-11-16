@@ -615,10 +615,13 @@ test_that("franklinModel 3x3 pos pos predict", {
 ### regModel ###
 
 test_that("regModel 2x2 fit pos slope", {
-  model <- regModel(matrix(c(5,4,1,0), 2, 2), 1, c(2))
+  train_matrix <- matrix(c(5,4,1,0), 2, 2)
+  model <- regModel(train_matrix, 1, c(2))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
-  expect_equal(2, length(coef(model))) 
+  expect_equal(2, length(coef(model)))
+  out <- predictPair(model, train_matrix)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
 })
 
 test_that("regModel 2x2 fit neg slope", {
