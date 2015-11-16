@@ -45,7 +45,7 @@ cols_to_fit <- 4:ncol(city_population)
 ```
 Let's enter the models we want to test:
 ```{r}
-vec_of_models <-c(ttbBinModel,dawesModel,franklinModel,regModel,logRegModel)
+vec_of_models <-c(ttbBinModel, dawesModel, franklinModel, regModel, logRegModel)
 ```
 Next we define the size of the training and test sets.
 ```{r}
@@ -53,44 +53,43 @@ trainVec <- seq(0.1,0.9,0.1)
 trainS <- round(nrow(city_population)*trainVec)
 testS <- nrow(city_population)-trainS
 ```
-Here's a function that does cross-validation taking the dataset, the vector of models and the number of repetitions as input:
+Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
-crossV <- function(vec_of_models,x,testRowPairs,reps){
+crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, reps) {
   results <- vector()
   for ( i in 1:reps) {
   
-    test <- sample(1:nrow(x),testSize)
-    train <- setdiff(1:nrow(x),test)
+    train <- sample(1:nrow(x),train_size)
+    test <- setdiff(1:nrow(x),train)
 
     training_set <- x[train,]
     test_set <- x[test,]
 
     models<-list()
     y=0
-    for (mod in vec_of_models){ #fit the models to the training_set
+    for (mod in vec_of_models) { #fit the models to the training_set
       y=y+1
-      models[[y]] <- mod(training_set,criterion_col,cols_to_fit)
+      models[[y]] <- mod(training_set, criterion_col, cols_to_fit)
     }
 
     #calculate percentage of correct predictions
 
-    df <- predictAlternativeWithCorrect(models,test_set,row_pairs=testRowPairs)
+    df <- predictAlternativeWithCorrect(models, test_set)
     errors <- createErrorsFromPredicts(df)
     pctCorr <- createPctCorrectsFromErrors(errors)
     results <- rbind(results,pctCorr)
   }
 
-return (colMeans(results,na.rm=T))  
+  return (colMeans(results,na.rm=T))
 }  
 ```
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 accuracy<-vector()
 for (s in 1:length(trainS)){
-trainSize <- trainS[s]
-testSize <- testS[s]
-testRowPairs <- rowPairGenerator(testSize)
-accuracy <- rbind(accuracy,crossV(vec_of_models,city_population,testRowPairs,5))
+  train_size <- trainS[s]
+  reps <- 5
+  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps))
 }
 ```
 Finally, let's plot the results:
