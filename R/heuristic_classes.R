@@ -449,41 +449,6 @@ predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
   return(out)
 }
 
-predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
-                                 verbose_output=TRUE) {
-  # Subset by rows and columns and flip cue values as needed.
-  if (is.null(subset_rows)) {
-    sorted_subset_rows <- NULL
-    directed_matrix <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
-  } else {
-    sorted_subset_rows <- sort(subset_rows)
-    directed_matrix <- as.matrix(test_data[sorted_subset_rows,object$cols_to_fit, drop=FALSE])
-  }
-  # print(head(directed_matrix))
-  # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
-  pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
-                                              -directed_matrix[index_pair[2],])
-  pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
-  # print(head(pair_signs))
-  # print("combn finished with this many rows and columns:")
-  
-  linear_coef <- coef(object)
-  
-  predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
-                                            c(1:ncol(pair_signs)), linear_coef))
-  # print(head(predictions_neg_pos))
-  # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
-  predictions_0_1 <- (sign(predictions_neg_pos)+1)*0.5
-  if (verbose_output) {
-    verbose_predictions <- pairPredictionDF(predictions_0_1, sorted_subset_rows)
-  } else {
-    verbose_predictions <- "Set verbose_output=True to get this output"
-  }
-
-  return(structure(list(predictions=predictions_0_1, subset_rows=sorted_subset_rows,
-                        verbose_predictions=verbose_predictions), class="pairPredictor"))
-}
-
 #' Predict which of a pair of rows has a higher criterion, using Take The Best.
 #'
 #' @param object A fitted ttbModel.
