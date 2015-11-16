@@ -56,29 +56,29 @@ testS <- nrow(city_population)-trainS
 Here's a function that does cross-validation taking the dataset, the vector of models and the number of repetitions as input:
 ```{r}
 crossV <- function(vec_of_models,x,testRowPairs,reps){
-results <- vector()
-for ( i in 1:reps){
+  results <- vector()
+  for ( i in 1:reps) {
   
-test <- sample(1:nrow(x),testSize)
-train <- setdiff(1:nrow(x),test)
+    test <- sample(1:nrow(x),testSize)
+    train <- setdiff(1:nrow(x),test)
 
-training_set <- x[train,]
-test_set <- x[test,]
+    training_set <- x[train,]
+    test_set <- x[test,]
 
-models<-list()
-y=0
-for (mod in vec_of_models){ #fit the models to the training_set
-y=y+1
-models[[y]] <- mod(training_set,criterion_col,cols_to_fit)  
-}  
+    models<-list()
+    y=0
+    for (mod in vec_of_models){ #fit the models to the training_set
+      y=y+1
+      models[[y]] <- mod(training_set,criterion_col,cols_to_fit)
+    }
 
-#calculate percentage of correct predictions
+    #calculate percentage of correct predictions
 
-df <- predictAlternativeWithCorrect(models,test_set,row_pairs=testRowPairs)
-errors <- createErrorsFromPredicts(df)
-pctCorr <- createPctCorrectsFromErrors(errors)
-results <- rbind(results,pctCorr)
-}
+    df <- predictAlternativeWithCorrect(models,test_set,row_pairs=testRowPairs)
+    errors <- createErrorsFromPredicts(df)
+    pctCorr <- createPctCorrectsFromErrors(errors)
+    results <- rbind(results,pctCorr)
+  }
 
 return (colMeans(results,na.rm=T))  
 }  
