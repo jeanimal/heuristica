@@ -405,7 +405,6 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #'
 #' Do NOT apply these directly to raw data.
 #'
-#' @param object A fitted ttbModel.
 #' @export
 coef.ttbModel <- function(object, ...) object$linear_coef
 
