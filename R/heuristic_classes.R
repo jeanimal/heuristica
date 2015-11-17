@@ -590,10 +590,11 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=T
     cue_validities_with_reverse <- cue_validities
     cue_directions <- rep(1, length(cue_validities_with_reverse))
   }
+  linear_coef <- cue_directions * cue_validities_with_reverse
   structure(list(criterion_col = criterion_col, cols_to_fit = cols_to_fit,
                  cue_validities = cue_validities,
                  cue_validities_with_reverse = cue_validities_with_reverse,
-                 linear_coef = cue_validities_with_reverse),
+                 linear_coef = linear_coef),
             class="franklinModel")
 }
 

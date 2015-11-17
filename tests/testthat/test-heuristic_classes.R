@@ -580,8 +580,7 @@ test_that("franklinModel 5x1 75", {
   train_matrix <- matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2)
   model <- franklinModel(train_matrix, 1, c(2))
   expect_equal(c(0.75),  model$cue_validities) 
-  expect_equal(0.75,  coef(model)[[1]])
-  expect_equal(1, length(coef(model)))
+  expect_equal(c(0.75),  coef(model))
   out <- predictPair(model, train_matrix)
   expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
   expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
@@ -590,13 +589,14 @@ test_that("franklinModel 5x1 75", {
   expect_equal(0, getPredictiono(out, row1=4, row2=5), tolerance=0.002)
 })
 
-test_that("franklinModel 5x1 25", {
+test_that("franklinModel 5x1 25 reverse_cues FALSE", {
   train_matrix <- matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2)
   model <- franklinModel(train_matrix, 1, c(2), reverse_cues=FALSE)
   expect_equal(c(0.25),  model$cue_validities)
-  # Cue reversal will change below to -0.75.
-  expect_equal(0.25,  coef(model)[[1]])
-  expect_equal(1, length(coef(model)))
+  # No cue reversal means cue_validities_with_reversal is NULL.
+  expect_true(is.null(model$cue_validities_with_reversal))
+  # No cue reversal means coefficients are same as cue validities.
+  expect_equal(c(0.25),  coef(model))
   out <- predictPair(model, train_matrix)
   # Cue reversal will change below to 0.
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
@@ -606,6 +606,26 @@ test_that("franklinModel 5x1 25", {
   # Cue reversal will change below to 1.
   expect_equal(0, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
 })
+
+test_that("franklinModel 5x1 25", {
+  train_matrix <- matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2)
+  # By default, reverse_cues is TRUE
+  model <- franklinModel(train_matrix, 1, c(2))
+  expect_equal(c(0.25),  model$cue_validities)
+  # Cue reversal changes validity 0.25 to 0.75.
+  expect_equal(c(0.75),  model$cue_validities_with_reverse)
+  # Cue reversal changes coefficient from 0.75 to -0.75.
+  expect_equal(c(-0.75),  coef(model))
+  out <- predictPair(model, train_matrix)
+  # Cue reversal will change below to 0.
+  expect_equal(0, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
+  # Cue reversal will change below to 1.
+  expect_equal(1, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
+})
+
 
 test_that("franklinModel 3x3 pos pos predict", {
   model <- franklinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
