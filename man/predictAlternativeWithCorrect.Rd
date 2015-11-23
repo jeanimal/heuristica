@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{predictAlternativeWithCorrect}
 \alias{predictAlternativeWithCorrect}
-\title{Generates a matrix of correct values an predictions among alternatives.}
+\title{Generates a matrix of predictAlternative predictions}
 \usage{
 predictAlternativeWithCorrect(fitted_heuristic_list, test_data,
   row_pairs = NULL)
@@ -20,7 +20,9 @@ of row indices to use in the test_data.  If not set, all pairs will be used.}
 Same matrix as predictAlternative but with columns on correctness
 }
 \description{
-Generates a matrix of correct values an predictions among alternatives.
+This geneartes a column of correct output (whether row 1 or row 2 is greater) from
+the test matrix, then runs all the heuristics in order, generating a column of
+predictions for each, naming each column from the heuristic class.
 }
 \seealso{
 \code{\link{predictAlternative}}

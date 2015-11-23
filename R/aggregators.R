@@ -16,7 +16,11 @@ getPredictionRow <- function(df, row1=NULL, row2=NULL) {
   return(df[(df$Row1==row1) & (df$Row2==row2),])
 }
 
-#' Generates a matrix of correct values an predictions among alternatives.
+#' Generates a matrix of predictAlternative predictions 
+#' 
+#' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
+#' the test matrix, then runs all the heuristics in order, generating a column of
+#' predictions for each, naming each column from the heuristic class.
 #' 
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
 #'  predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.
