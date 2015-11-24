@@ -117,7 +117,7 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows
   extendedMatrix <- data.frame(resultMatrix)
   #TODO(jean): Make this work for matrix, not just data.frame.
   for (heuristic in fitted_heuristic_list) {
-    predictMatrix <- predictPair(heuristic, test_data, subset_rows=subset_rows, verbose=FALSE)$predictions
+    predictMatrix <- predictPair(heuristic, test_data, subset_rows=subset_rows, verbose_output=FALSE)$predictions
     # TODO(jean): This assumes row_pairs match up.  Is that a safe assumption?
     model_name <- class(heuristic)[1]
     extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
