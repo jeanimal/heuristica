@@ -12,8 +12,8 @@ predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterio
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 
-\item{row_pairs}{An optional matrix where the first two columns are the pairs
-of row indices to use in the test_data.  If not set, all pairs will be used.}
+\item{subset_rows}{An optional vector of row indices to use in the test_data.  If not
+set, all pairs will be used.  TODO(jean): Implement this!}
 }
 \value{
 Same matrix as predictAlternative but with columns on correctness

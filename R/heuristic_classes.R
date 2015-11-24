@@ -405,6 +405,7 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #'
 #' Do NOT apply these directly to raw data.
 #'
+#' @inheritParams stats::coef
 #' @export
 coef.ttbModel <- function(object, ...) object$linear_coef
 
@@ -503,6 +504,7 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit) {
                  cue_validities=cue_validities, linear_coef=linear_coef), class="dawesModel")
 }
 
+#' @inheritParams stats::coef
 #' @export
 coef.dawesModel <- function(object, ...) object$linear_coef
 
@@ -597,6 +599,7 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=T
             class="franklinModel")
 }
 
+#' @inheritParams stats::coef
 #' @export
 coef.franklinModel <- function(object, ...) object$linear_coef
 

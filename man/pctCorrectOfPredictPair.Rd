@@ -2,6 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{pctCorrectOfPredictPair}
 \alias{pctCorrectOfPredictPair}
+\title{Runs predictPair for fitted heuristics to get percent correct on test.}
 \usage{
 pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }
@@ -12,5 +13,12 @@ pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }
 \value{
 A one-row matrix of numbers from 0 to 1 indicating the percent correct.
+}
+\description{
+Combines other functons to
+1. Create predictions of alternatives for all the heuristics in the list.
+2. Get errors of those predictions.
+3. Calculate overall percent correct for each heuristic.
+Assumes the heuristics passed in have already been fitted to train_data.
 }
 

@@ -6,6 +6,12 @@
 \usage{
 \method{coef}{ttbModel}(object, ...)
 }
+\arguments{
+\item{object}{an object for which the extraction of model coefficients is
+    meaningful.}
+
+\item{...}{other arguments.}
+}
 \description{
 Do NOT apply these directly to raw data.
 }
