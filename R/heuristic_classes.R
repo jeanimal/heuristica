@@ -812,6 +812,8 @@ predictPair.regNoIModel <- function(object, test_data, subset_rows=NULL,
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
   
+  if(nrow(train_data)>1){
+  
   if (is.null(row_pairs)) {
     n <- nrow(train_data)
     all_pairs <- rowPairGenerator(n)
@@ -838,7 +840,13 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   } else { 
     model <- glm(formula,family=binomial,data=training_set)  
   }
-  
+  } else{
+    formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
+    # Do not fit intercept by default.
+    formula <- paste(formula, "-1")
+    model <- suppressWarnings(glm(formula,family=binomial,data=train_data))
+    
+  }
   col_weights <- coef(model)
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,

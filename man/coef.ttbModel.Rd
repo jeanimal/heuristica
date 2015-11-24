@@ -6,9 +6,6 @@
 \usage{
 \method{coef}{ttbModel}(object, ...)
 }
-\arguments{
-\item{object}{A fitted ttbModel.}
-}
 \description{
 Do NOT apply these directly to raw data.
 }
