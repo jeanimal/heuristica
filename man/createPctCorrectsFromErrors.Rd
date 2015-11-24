@@ -4,7 +4,7 @@
 \alias{createPctCorrectsFromErrors}
 \title{Converts output of createErrorsFromPredicts to percent correct for each column.}
 \usage{
-createPctCorrectsFromErrors(errors)
+createPctCorrectsFromErrors(errors_raw)
 }
 \arguments{
 \item{errors}{A dataframe of heuristic errors to calculate with.  Assumes data

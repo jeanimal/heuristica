@@ -16,12 +16,31 @@ getPredictionRow <- function(df, row1=NULL, row2=NULL) {
   return(df[(df$Row1==row1) & (df$Row2==row2),])
 }
 
-#' Generates a matrix of predictAlternative predictions 
-#' 
+#' Assuming you have a matrix with a columns row1 and row2,
+#' this helps you get the row which matches those columns.
+#' getPrediction makes code below more readable.
+#' @param df Data.frame to extra row from
+#' @param row1 The value in the row1 column to look for
+#' @param row2 The value in the row2 column to look for
+#' @return a row of the data frame.  (This could be multiple rows
+#'   if multiple rows match.)
+#' @export
+getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
+  if (is.null(row1) || is.null(row2)) {
+    stop("You must set both row1 and row2")
+  }
+  lastCol <- ncol(df)
+  #TODO(jean): Share this code with getPredictiono?
+  #TODO(jean): Do sorting so it works even if row2 index < row1 index.
+  return(df[(df$row1==row1) & (df$row2==row2),])
+}
+
+#' Generates a matrix of predictAlternative predictions.
+#'
 #' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
 #' the test matrix, then runs all the heuristics in order, generating a column of
 #' predictions for each, naming each column from the heuristic class.
-#' 
+#'
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
 #'  predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.
 #' @param test_data Data to try to predict; must match columns in fit.
@@ -62,6 +81,52 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
   return(extendedMatrix)
 }
 
+#' Generates a matrix of predictPair predictions.
+#'
+#' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
+#' the test matrix, then runs all the heuristics in order, generating a column of
+#' predictions for each, naming each column from the heuristic class.
+#'
+#' @param fitted_heuristic_list List of heuristics that implement the generic function
+#'  predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @param row_pairs An optional matrix where the first two columns are the pairs
+#'  of row indices to use in the test_data.  If not set, all pairs will be used.
+#' @return Same matrix as predictAlternative but with columns on correctness
+#' @seealso
+#' \code{\link{predictAlternative}}
+#' @export
+predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows=NULL) {
+  if (length(fitted_heuristic_list) == 0) {
+    stop("No fitted heuristics.")
+    # We could allow this if we had a different way to specify criterion_col
+  }
+  criterion_col = fitted_heuristic_list[[1]]$criterion_col
+  #for (heuristic in fitted_heuristic_list) {
+  #  criterion_col = heuristic$criterion_col
+  #}
+  #TODO: make sure no heuristics disagree with that criterion_col
+  
+  row_1_bigger_function <- function(row_pair) sign(test_data[row_pair[[1]]] - test_data[row_pair[[2]]]) 
+  #TODO: Use subset_rows
+  correctProb <- as.vector(combn(nrow(test_data), 2, row_1_bigger_function ))
+  #TODO: Only verbose will include a matrix with row_pairs
+  row_pairs <- t(combn(nrow(test_data), 2))
+  resultMatrix <- cbind(row_pairs, correctProb)
+  extendedMatrix <- data.frame(resultMatrix)
+  #TODO(jean): Make this work for matrix, not just data.frame.
+  for (heuristic in fitted_heuristic_list) {
+    predictMatrix <- predictPair(heuristic, test_data, subset_rows=subset_rows, verbose=FALSE)$predictions
+    # TODO(jean): This assumes row_pairs match up.  Is that a safe assumption?
+    model_name <- class(heuristic)[1]
+    extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
+    names(extendedMatrix)[ncol(extendedMatrix)] <- model_name
+  }
+  names(extendedMatrix)[1] <- "row1"
+  names(extendedMatrix)[2] <- "row2"
+  return(extendedMatrix)
+}
+
 #' Creates an error matrix from a matrix of predictions.
 #' 
 #' Given a matrix where the first 3 columns are basic info and the others are
@@ -78,7 +143,8 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
 #' @export
 createErrorsFromPredicts <- function(df) {
   for (col in 4:ncol(df)) {
-    df[,col] <- (df[,col] - df$correctProb )
+    df[,col] <- (df[,col] - df[,3] )
+    #df[,col] <- (df[,col] - df$correctProb )
   }
   return(df)
 }
@@ -89,7 +155,9 @@ createErrorsFromPredicts <- function(df) {
 #'  starts in column 4. (First 3 are Row1, Row2, and correct.)
 #' @return A dataframe with one row and the last column as a percent correct.
 #' @export
-createPctCorrectsFromErrors <- function(errors) {
+createPctCorrectsFromErrors <- function(errors_raw) {
+  #TODO: Make this work without a data.frame
+  errors <- data.frame(errors_raw)
   newDf <- NULL
   startCol <- 4
   for (col in startCol:ncol(errors)) {
@@ -125,4 +193,15 @@ pctCorrectOfPredictAlternative <- function(fitted_heuristic_list, test_data) {
   predictions <- predictAlternativeWithCorrect(fitted_heuristic_list, test_data)
   errors <- createErrorsFromPredicts(predictions)
   return(createPctCorrectsFromErrors(errors))
+}
+
+#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbBinModel.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
+#' @export
+pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
+  predictions <- predictPairWithCorrect(fitted_heuristic_list, test_data)
+  errors <- createErrorsFromPredicts(predictions)
+  df <- createPctCorrectsFromErrors(errors)
+  return(df)
 }
