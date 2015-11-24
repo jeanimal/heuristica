@@ -88,7 +88,7 @@ Then we can just run this function to calculate predictive accuracy for differen
 accuracy<-vector()
 for (s in 1:length(trainS)){
   train_size <- trainS[s]
-  reps <- 200
+  reps <- 5
   accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps))
 }
 ```
