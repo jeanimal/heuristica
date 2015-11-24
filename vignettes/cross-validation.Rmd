@@ -27,7 +27,7 @@ First let's load the heuristica package to get the heuristics we will compare.  
 ```{r}
 # Uncomment and execute if you do not already have devtools.
 #install.packages("devtools") 
-devtools::install_github("jeanimal/heuristica")
+#devtools::install_github("jeanimal/heuristica")
 library("heuristica")
 ```
 
@@ -88,7 +88,7 @@ Then we can just run this function to calculate predictive accuracy for differen
 accuracy<-vector()
 for (s in 1:length(trainS)){
   train_size <- trainS[s]
-  reps <- 5
+  reps <- 200
   accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps))
 }
 ```

@@ -840,11 +840,11 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   } else { 
     model <- glm(formula,family=binomial,data=training_set)  
   }
+    
+  col_weights <- coef(model)
   } else{
     print("Training set consists of only a single row")
   }
-  col_weights <- coef(model)
-  
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  linear_coef=col_weights,model=model), 
             class="logRegModel")
