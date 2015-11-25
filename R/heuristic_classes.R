@@ -846,7 +846,7 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
     
   col_weights <- coef(model)
   } else{
-    print("Training set consists of only a single row")
+    stop("Training set consists of only a single row")
   }
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  linear_coef=col_weights,model=model), 

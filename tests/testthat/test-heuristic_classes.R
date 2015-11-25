@@ -900,8 +900,13 @@ test_that("logRegModel predictPair 2x3 fit train_data 1st cue useless", {
 test_that("logRegModel predictWithWeightsLog 3x2 fit train_data 1st cue useless", {
   tol <- 0.0001
   train_data <- cbind(c(5:1), c(1,1,1,0,1))
-  model <- logRegModel(train_data, 1, 2)
+  model <- logRegModel(train_data, 1, c(2))
   fit_predictions <- predictWithWeightsLog(train_data,2,1,model$linear_coef)
   fit_accuracy <- logAccuracy(fit_predictions,train_data,1,2)
   expect_equal(0.6, fit_accuracy, tolerance=tol)
+})
+
+test_that("logRegModel error when train_data one row", {
+  train_data <- data.frame(y=c(5), x1=c(1), x2=c(0))
+  expect_error(logRegModel(train_data, 1, c(2,3)), "Training set consists of only a single row")
 })
