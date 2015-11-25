@@ -95,7 +95,6 @@ inferNumOriginalRows <- function(num_combo_rows) {
   return(guess)
 }
 
-# TODO(jean): Use this in all heuristic models.
 # private
 stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   if (nrow(train_data) == 0) {
@@ -388,6 +387,7 @@ predictAlternative.ttbBinModel <- function(object, test_data, row_pairs=NULL) {
 #'
 #' @export
 ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
@@ -505,6 +505,7 @@ predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
 #'
 #' @export
 dawesModel <- function(train_data, criterion_col, cols_to_fit) {
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   linear_coef <- sapply(cue_validities, function(x) sign(x-0.5))
   # Need to save fit_predictions in case user calls predict without test_data.
@@ -593,6 +594,7 @@ predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
 #' \code{\link{predictAlternative.franklinModel}} for predicting among alternatives.
 #' @export 
 franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
@@ -716,6 +718,7 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #'
 #' @export
 regModel <- function(train_matrix, criterion_col, cols_to_fit) {
+  stopIfTrainingSetHasLessThanTwoRows(train_matrix)
   model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE)
   class(model) <- c("regModel", class(model))
   # Functions in this package assume all models track criterion_col and cols_to_fit.
