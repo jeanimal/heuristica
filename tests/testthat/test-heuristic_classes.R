@@ -906,7 +906,14 @@ test_that("logRegModel predictWithWeightsLog 3x2 fit train_data 1st cue useless"
   expect_equal(0.6, fit_accuracy, tolerance=tol)
 })
 
+test_that("logRegModel error when train_data zero rows", {
+  train_data <- data.frame(y=c(), x1=c(), x2=c())
+  expect_error(logRegModel(train_data, 1, c(2,3)),
+               "Training set must have at least 2 rows but had 0 rows")
+})
+
 test_that("logRegModel error when train_data one row", {
   train_data <- data.frame(y=c(5), x1=c(1), x2=c(0))
-  expect_error(logRegModel(train_data, 1, c(2,3)), "Training set consists of only a single row")
+  expect_error(logRegModel(train_data, 1, c(2,3)),
+               "Training set must have at least 2 rows but had 1 row")
 })

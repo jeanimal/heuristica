@@ -95,6 +95,17 @@ inferNumOriginalRows <- function(num_combo_rows) {
   return(guess)
 }
 
+# TODO(jean): Use this in all heuristic models.
+# private
+stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
+  if (nrow(train_data) == 0) {
+    stop("Training set must have at least 2 rows but had 0 rows")
+  }
+  if (nrow(train_data) == 1) {
+    stop("Training set must have at least 2 rows but had 1 row")
+  }
+}
+
 #
 # TODO(jean): Delete unused experimental functions.
 #
@@ -800,7 +811,6 @@ predictPair.regNoIModel <- function(object, test_data, subset_rows=NULL,
   predictPairWithWeights(object, test_data, subset_rows, verbose_output)
 }
 
-
 #' Logistic Regression model
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
@@ -814,9 +824,7 @@ predictPair.regNoIModel <- function(object, test_data, subset_rows=NULL,
 #' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
-  
-  if(nrow(train_data)>1){
-  
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
   if (is.null(row_pairs)) {
     n <- nrow(train_data)
     all_pairs <- rowPairGenerator(n)
@@ -845,9 +853,7 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   }
     
   col_weights <- coef(model)
-  } else{
-    stop("Training set consists of only a single row")
-  }
+  
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  linear_coef=col_weights,model=model), 
             class="logRegModel")
