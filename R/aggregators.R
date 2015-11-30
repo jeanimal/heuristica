@@ -1,3 +1,13 @@
+fitAllModels <- function(vec_of_models, training_set, criterion_col, cols_to_fit) {
+  models<-list()
+  y=0
+  for (mod in vec_of_models) {
+    y=y+1
+    models[[y]] <- mod(training_set, criterion_col, cols_to_fit)
+  }
+  return(models)
+}
+
 
 #' Assuming you have a matrix with a columns row1 and row2,
 #' this helps you get the row which matches those columns.
@@ -108,7 +118,9 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows
   #TODO: make sure no heuristics disagree with that criterion_col
   
   #TODO(Jean): This is the nth time I wrote this function.
-  row_1_bigger_function <- function(row_pair) sign(test_data[row_pair[[1]]] - test_data[row_pair[[2]]]) 
+  correct_values <- test_data[,criterion_col]
+  row_1_bigger_function <- function(row_pair) sign(correct_values[row_pair[[1]]]
+                                                   - correct_values[row_pair[[2]]])
   #TODO: Use subset_rows
   correctProb <- as.vector(combn(nrow(test_data), 2, row_1_bigger_function ))
   #TODO: Only verbose will include a matrix with row_pairs
