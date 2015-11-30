@@ -85,9 +85,9 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 accuracy<-vector()
+reps <- 5
 for (s in 1:length(trainS)){
   train_size <- trainS[s]
-  reps <- 5
   accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps))
 }
 ```
