@@ -118,12 +118,14 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   }
   if (length(col_weights_clean) == 1) {
     prediction <- predictors * col_weights_clean + intercept
-    prediction <- exp(prediction)/(1+exp(prediction))
+    #prediction <- exp(prediction)/(1+exp(prediction))
+    prediction <- plogis(prediction)
     prediction <- round(prediction,digits=2)
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   } else {
     prediction <- as.matrix(predictors) %*% col_weights_clean + intercept
-    prediction <- exp(prediction)/(1+exp(prediction))
+    #prediction <- exp(prediction)/(1+exp(prediction))
+    prediction <- plogis(prediction)
     prediction <- round(prediction,digits=2)
     prediction<-ifelse(prediction>0.5,1,ifelse(prediction == 0.5,0.5,0 ))
   }

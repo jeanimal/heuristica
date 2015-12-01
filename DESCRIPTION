@@ -1,24 +1,26 @@
 Package: heuristica
-Title: Heuristics including Take The Best and unit-weight linear 
+Title: Heuristics including Take The Best and unit-weight linear
 Version: 1.0.0.0000
 Authors@R: person("Jean", "imal", email = "jeanimal@gmail.com",
                   role = c("aut", "cre"))
 Description: Implements various heuristics like Take The Best and
-  unit-weight linear, called Dawes' model here, in a format that
-  makes it easy to use with other R fit models.  In particular,
-  they implement coef and predict.  Includes helper functions.
-Depends: R (>= 3.1.0)
+    unit-weight linear, called Dawes' model here, in a format that
+    makes it easy to use with other R fit models.  In particular,
+    they implement coef and predict.  Includes helper functions.
+Depends:
+    R (>= 3.1.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports: 
-  Hmisc,
-  plyr
+Imports:
+    Hmisc,
+    plyr
 URL: https://github.com/jeanimal/heuristica
-Suggests: 
-  devtools,
-  ggplot2,
-  knitr,
-  reshape,
-  reshape2,
-  testthat
+Suggests:
+    devtools,
+    ggplot2,
+    knitr,
+    reshape,
+    reshape2,
+    testthat
 VignetteBuilder: knitr
+RoxygenNote: 5.0.0
