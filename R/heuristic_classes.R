@@ -74,13 +74,24 @@ getPredictiono <- function(object, row1=NULL, row2=NULL) UseMethod("getPredictio
 ## Shared helper functions ##
 
 # Private.
-pairToValue <- function(pair) {
+pairToValue <- function(pair,na.replace=FALSE) {
+  if(na.replace==TRUE ){
+  pair[which(is.na(pair))] <- 0.5 
   if (pair[1] > pair[2]) {
     return(1)
   } else if (pair[2] > pair[1]) {
     return(0)
   } else {
     return(0.5)
+  }
+  } else {
+  if (pair[1] > pair[2]) {
+    return(1)
+  } else if (pair[2] > pair[1]) {
+    return(0)
+  } else {
+    return(0.5)
+  }
   }
 }
 
@@ -397,7 +408,6 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
     cue_validities_with_reverse <- cue_validities
     cue_directions <- rep(1, length(cue_validities_with_reverse))
   }
-  
   raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
@@ -503,10 +513,18 @@ predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 #'
+#' @param reverse_cues Optional parameter to reverse cues as needed.
 #' @export
-dawesModel <- function(train_data, criterion_col, cols_to_fit) {
+dawesModel <- function(train_data, criterion_col, cols_to_fit,reverse_cues=FALSE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  
+  if (reverse_cues == TRUE){ 
+  reverse_info = reverseAsNeeded(cue_validities)  
+  cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+  cue_directions <- reverse_info$cue_directions
+  }
+  
   linear_coef <- sapply(cue_validities, function(x) sign(x-0.5))
   # Need to save fit_predictions in case user calls predict without test_data.
   fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
@@ -885,3 +903,116 @@ predictPair.logRegModel <- function(object, test_data, subset_rows=NULL,
                                     verbose_output=TRUE) {
   predictPairWithWeights(object, test_data, subset_rows, verbose_output)
 }
+
+
+
+#' Single Cue Model
+#'
+#' Create a single cue model by specifying columns and a dataset.  
+#'
+#' This version assumes you always want to include the intercept.
+#' 
+#' @inheritParams heuristicaModel
+#' @inheritParams reversingModel
+#' @param reverse_cues Optional parameter to reverse cues as needed.
+#' @return An object of class singleCueModel.
+#' @export
+#' @seealso
+#' \code{\link{predictAlternative.singleCueModel}} (via \code{\link{predictAlternative}}) for prediction.
+#' @seealso
+#'
+#' @export
+singleCueModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
+  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  if (reverse_cues) {
+    reverse_info = reverseAsNeeded(cue_validities)
+    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+    cue_directions <- reverse_info$cue_directions
+  } else {
+    cue_validities_with_reverse <- cue_validities
+    cue_directions <- rep(1, length(cue_validities_with_reverse))
+  }
+  #raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  #cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
+  #unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  #unsigned_linear_coef <- cue_ranks
+  #unsigned_linear_coef[unsigned_linear_coef!=max(unsigned_linear_coef)] <-0
+  # Now give negative signs for cues pointing the other way.
+  linear_coef <- sapply(cue_validities, function(v) if (v==max(cue_validities)) 1 else 0)
+  #linear_coef <- cue_directions * unsigned_linear_coef
+  
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 cue_validities=cue_validities,
+                 cue_validities_with_reverse=cue_validities_with_reverse,
+                 linear_coef=linear_coef),
+            class="singleCueModel")
+}
+
+#' Linear weights that can be used to compare pairs of cue directions.
+#'
+#' Do NOT apply these directly to raw data.
+#'
+#' @inheritParams stats::coef
+#' @export
+coef.singleCueModel <- function(object, ...) object$linear_coef
+
+#' Predict which alternative has higher criterion for Single Cue Model.
+#'
+#' @param object A singleCueModel.
+#' @inheritParams predictAlternative
+#'
+#' @seealso
+#' \code{\link{singleCueModel}} for example code.
+#'
+#' @export
+predictAlternative.singleCueModel <- function(object, test_data, row_pairs = NULL) {
+  if (is.null(row_pairs)) {
+    n <- nrow(test_data)
+    pairsMatrix <- rowPairGenerator(n)
+  } else {
+    if (ncol(row_pairs) != 2) {
+      stop(paste("row_pairs should be pairs matrix with two columns but got",
+                 row_pairs))
+    }
+    pairsMatrix <- row_pairs
+  }
+  cue_directions <- sign(object$linear_coef)
+  test_directed_matrix <- as.matrix(cue_directions*test_data[,object$cols_to_fit])
+  all_cue_sign <- plyr::mdply(pairsMatrix,
+                              function(Row1, Row2) sign(test_directed_matrix[Row1,]
+                                                        -test_directed_matrix[Row2,]) )
+  #print(all_cue_sign)
+  
+  #raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  #cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
+  
+  linear_coef <- sapply(object$cue_validities, function(v) if (v==max(object$cue_validities)) 1 else 0)
+  
+  #linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  
+  #print(linear_coef)
+  predictions <- predictWithWeights(all_cue_sign, c(3:length(all_cue_sign)), linear_coef)
+  # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
+  out <- cbind(pairsMatrix, (sign(predictions)+1)*0.5)
+  names(out) <- c("Row1", "Row2", "probFirstRowGreater")
+  return(out)
+}
+
+#' Predict which of a pair of rows has a higher criterion, using Single Cue Model.
+#'
+#' @param object A fitted singleCueModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{singleCueModel}} for example code.
+#'
+#' @export
+predictPair.singleCueModel <- function(object, test_data, subset_rows=NULL,
+                                 verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+}
+
+
