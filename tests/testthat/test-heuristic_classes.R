@@ -1063,6 +1063,7 @@ test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
 ########################################
 # These will replace some, but not all, of the above tests.
 
+# This test is named by the cue validities of the two cues, 1.0 and 0.6.
 test_10_06 <- function(model, expected, has_cv=TRUE) {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))
 #    criterion   a  b
@@ -1095,6 +1096,8 @@ test_that("test_10_06 logReg",   {test_10_06(logRegModel,    0, has_cv=FALSE)})
 
 
 
+# This test is named by the cue validities of the two cues, 1.0 and 0.6,
+# and "rc" means "reversed criterion."
 test_00_04_rc <- function(model, expected, has_cv=TRUE) {
   train_df <- data.frame(criterion=c(6,7,8,9), a=c(101,101,2,2), b=c(59,58,5,59))
   #    criterion   a  b
