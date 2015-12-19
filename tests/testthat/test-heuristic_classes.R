@@ -1126,6 +1126,7 @@ test_that("test_00_04_rc regNoI",   {test_00_04_rc(regNoIModel,    1, has_cv=FAL
 test_that("test_00_04_rc logReg",   {test_10_06(logRegModel,       0, has_cv=FALSE)})
 
 
+
 test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,80,70,10))

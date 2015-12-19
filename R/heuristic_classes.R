@@ -498,12 +498,13 @@ predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
 #' (rather than randomly assigning +1 or -1) to give faster convergence of average accuracy.
 #'
 #' @inheritParams heuristicaModel
+#' @inheritParams reversingModel
 #'
 #' @return An object of \code{\link[base]{class}} dawesModel.  This is a list containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
 #'    \item "linear_coef": A list of linear model coefficents (-1 or +1)
-#'           for the cues in order of cols_to_fit.
+#'           for the cues in order of cols_to_fit.  (It can only return -1's if reverse_cues=TRUE.)
 #'   }
 #'
 #' @seealso
