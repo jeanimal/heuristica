@@ -562,8 +562,7 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
                 "non-binary big criteriondiffs, big diffs, big diffs, big unique diffs"), {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,80,70,10))
-  # Cue a and b have validity 2/3, cue c has validity 0,
-  # but that validity is 1.0 when reversed.
+  # Cue a and b have validity 2/3, cue c has validity 1.
   # Cue c predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
@@ -1008,4 +1007,36 @@ test_that("logRegModel error when train_data one row", {
   expect_error(logRegModel(train_data, 1, c(2,3)),
                "Training set must have at least 2 rows but had 1 row",
                fixed=TRUE)
+})
+
+test_that("singleCueModel 4x3 real value cue c dominates", {
+  train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
+                         c=c(90,80,70,10))
+  # Cue a and b have validity 2/3, cue c has validity 1.
+  # Cue c predicts Row 3 > Row 4.
+  # But if you sum all cue weights, predict Row 4 > Row 3
+  model <- singleCueModel(train_df, 1, c(2:4))
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  # Only the highest-validity cue gets a weight-- the rest are zeroes.
+  expect_equal(c(a=0, b=0, c=1), coef(model), tolerance=0.002)
+  out <- predictPair(model, train_df)
+  expect_equal(1, getPredictiono(out, row1=3, row2=4))
+  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+})
+
+test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
+  train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
+                         c=c(10,70,80,90))
+  # Cue a and b have validity 2/3, cue c has validity 0, reversed to 1.
+  # Cue c predicts Row 3 > Row 4.
+  # But if you sum all cue weights, predict Row 4 > Row 3
+  model <- singleCueModel(train_df, 1, c(2:4))
+  expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  # Only the highest-validity cue gets a weight-- the rest are zeroes.
+  expect_equal(c(a=0, b=0, c=-1), coef(model), tolerance=0.002)
+  out <- predictPair(model, train_df)
+  expect_equal(1, getPredictiono(out, row1=3, row2=4))
+  expect_equal(0, getPredictiono(out, row1=4, row2=3))
 })
