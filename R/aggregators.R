@@ -119,8 +119,8 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows
   
   #TODO(Jean): This is the nth time I wrote this function.
   correct_values <- test_data[,criterion_col]
-  row_1_bigger_function <- function(row_pair) sign(correct_values[row_pair[[1]]]
-                                                   - correct_values[row_pair[[2]]])
+  row_1_bigger_function <- function(row_pair) 0.5 * (1+sign(correct_values[row_pair[[1]]]
+                                                   - correct_values[row_pair[[2]]]))
   #TODO: Use subset_rows
   correctProb <- as.vector(combn(nrow(test_data), 2, row_1_bigger_function ))
   #TODO: Only verbose will include a matrix with row_pairs
