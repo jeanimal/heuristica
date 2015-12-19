@@ -535,7 +535,6 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  # The coefficient for column c should be negative.
   expect_equal(c(c=1), sign(model$linear_coef["c"]), tolerance=0.002)
   out <- predictPair(model, train_df)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
@@ -553,7 +552,6 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  # The coefficient for column c should be negative.
   expect_equal(c(c=1), sign(model$linear_coef["c"]), tolerance=0.002)
   out <- predictPair(model, train_df)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
@@ -571,7 +569,6 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  # The coefficient for column c should be negative.
   expect_equal(c(c=1), sign(model$linear_coef["c"]), tolerance=0.002)
   out <- predictPair(model, train_df)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
@@ -589,7 +586,6 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame REVER
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  # The coefficient for column c should be negative.
   expect_equal(c(c=1), sign(model$linear_coef["c"]), tolerance=0.002)
   out <- predictPair(model, train_df)
   expect_equal(0, getPredictiono(out, row1=3, row2=4))
