@@ -1009,6 +1009,21 @@ test_that("logRegModel error when train_data one row", {
                fixed=TRUE)
 })
 
+test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
+  train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))
+  # Cue a has validity 1, cue b has validity 0.6.
+  # Cue a cannot discriminate between row 1 and 2, so it will return 0.5.
+  # Single cue will not use cue b to help.
+  model <- singleCueModel(train_df, 1, c(2:3))
+  expect_equal(c(a=1, b=0.6), model$cue_validities, tolerance=0.002)
+  expect_equal(c(a=1, b=0.6), model$cue_validities_with_reverse, tolerance=0.002)
+  # Only the highest-validity cue gets a weight-- the rest are zeroes.
+  expect_equal(c(a=1, b=0), coef(model), tolerance=0.002)
+  out <- predictPair(model, train_df)
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=2))
+  expect_equal(0.5, getPredictiono(out, row1=2, row2=1))
+})
+
 test_that("singleCueModel 4x3 real value cue c dominates", {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,80,70,10))
