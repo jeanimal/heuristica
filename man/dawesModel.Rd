@@ -4,7 +4,7 @@
 \alias{dawesModel}
 \title{DawesModel, a unit-weight linear model}
 \usage{
-dawesModel(train_data, criterion_col, cols_to_fit, reverse_cues = FALSE)
+dawesModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -20,7 +20,7 @@ An object of \code{\link[base]{class}} dawesModel.  This is a list containing at
   \itemize{
    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
    \item "linear_coef": A list of linear model coefficents (-1 or +1)
-          for the cues in order of cols_to_fit.
+          for the cues in order of cols_to_fit.  (It can only return -1's if reverse_cues=TRUE.)
   }
 }
 \description{
