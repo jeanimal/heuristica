@@ -24,17 +24,6 @@ test_that("pctCorrectOfPredictPair -1 prediction bug", {
   expect_equal(data.frame(ttbModel=c(0)), results)
 })
 
-test_that("pctCorrectOfPredictAlternative checking for -1 prediction bug", {
-  fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
-                               cue_validities=c(1, 0.8, 0.7),
-                               cue_validities_with_reverse=c(1, 0.8, 0.7),
-                               linear_coef=c(4,2,1)),
-                          class="ttbModel")
-  test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3), b=c(976,1437), c=c(50, 49.74))
-  results <- pctCorrectOfPredictAlternative(list(fitted_ttb), test_data)
-  expect_equal(data.frame(ttbModel=c(0)), results)
-})
-
 test_that("end to end test ttb vs. logistic regression", {
   train_data <- matrix(c(5,4,3,1,0,0), 3, 2)
   ttb <- ttbModel(train_data, 1, c(2))
