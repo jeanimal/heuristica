@@ -862,8 +862,29 @@ test_that("regModel 3x3 fit positive mixed", {
   expect_equal(3, length(coef(model)))  
 })
 
+test_that("regModel predictPair with intercept (check bug)", {
+  tol <- 0.0001
+  m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
+  model <- regModel(m_train, 1, c(2))
+  out <- predictPair(model, m_train)
+  # Reg cannot distinguish between rows 1 and 2 based on x1.
+  # But in the past there was a bug where the intercept weight was
+  # applied to the criterion column so reg was always correct!
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+})
 
 ### regNoIModel ###
+
+test_that("regNoIModel predictPair", {
+  tol <- 0.0001
+  m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
+  model <- regNoIModel(m_train, 1, c(2))
+  out <- predictPair(model, m_train)
+  # Reg cannot distinguish between rows 1 and 2 based on x1.
+  expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  # But this should be predicted correctly.
+  expect_equal(1, getPredictiono(out, row1=1, row2=4), tolerance=tol)
+})
 
 ### logRegModel ###
 
@@ -1089,7 +1110,7 @@ test_that("test_10_06 ttb",      {test_10_06(ttbModel,       1)})
 test_that("test_10_06 singleCue",{test_10_06(singleCueModel, 0.5)})
 test_that("test_10_06 dawes",    {test_10_06(dawesModel,     1)})
 test_that("test_10_06 franklin", {test_10_06(franklinModel,  1)})
-test_that("test_10_06 reg",      {test_10_06(regModel,       1, has_cv=FALSE)})
+test_that("test_10_06 reg",      {test_10_06(regModel,       0, has_cv=FALSE)})
 test_that("test_10_06 regNoI",   {test_10_06(regNoIModel,    1, has_cv=FALSE)})
 #TODO(Daniel): Why does logReg get this prediction wrong?  Is it a bug?
 test_that("test_10_06 logReg",   {test_10_06(logRegModel,    0, has_cv=FALSE)})
@@ -1153,7 +1174,7 @@ test_that("test_ab_vs_c ttb",      {test_ab_vs_c(ttbModel,       1)})
 test_that("test_ab_vs_c singleCue",{test_ab_vs_c(singleCueModel, 1)})
 test_that("test_ab_vs_c dawes",    {test_ab_vs_c(dawesModel,     0)})
 test_that("test_ab_vs_c franklin", {test_ab_vs_c(franklinModel,  0)})
-test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       0, has_cv=FALSE)})
+test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       1, has_cv=FALSE)})
 test_that("test_ab_vs_c regNoI",   {test_ab_vs_c(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): Also check why logReg gets this prediction wrong--  Is it a bug?
 test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
@@ -1183,7 +1204,7 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 #test_that("d_useless_cue_3 singleCue",{d_useless_cue_3(singleCueModel, #random(0,1))})
 test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
 test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
-test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       0, has_cv=FALSE)})
+test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv=FALSE)})
 test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): And check this one.
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})

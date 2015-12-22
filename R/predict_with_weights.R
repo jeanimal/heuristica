@@ -191,7 +191,15 @@ convertMatrixToPairSigns <- function(test_data, cols_to_fit, subset_rows=NULL) {
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
   pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
                                               -directed_matrix[index_pair[2],])
-  pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
+  # Below I correct for R's differing output format based on number of columns.
+  temp_pair_signs <- combn(nrow(directed_matrix), 2, pair_evaluator)
+  if (length(cols_to_fit) > 1) {
+    # With transpose.
+    pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
+  } else {
+    # Force into matrix and do not transpose.
+    pair_signs <- as.matrix(combn(nrow(directed_matrix), 2, pair_evaluator))
+  }
   return(pair_signs)
 }
 
@@ -206,10 +214,18 @@ predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subse
   # print(pair_signs)
   # print("combn finished with this many rows and columns:")
   
-  linear_coef <- col_weights
+  # Intercepts throw off the comparison of signs of pairs, so remove them if they were fit.
+  # It would have been better not to fit them.
+  col_weights_clean <- col_weights
+  if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept <- col_weights_clean["(Intercept)"]
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+    col_weights_clean <- col_weights_clean[-intercept_index]
+  }
   
   predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
-                                                      c(1:ncol(pair_signs)), linear_coef))
+                                                      c(1:length(cols_to_fit)),
+                                                      col_weights_clean))
   # print(head(predictions_neg_pos))
   # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
   predictions_0_1 <- (sign(predictions_neg_pos)+1)*0.5
