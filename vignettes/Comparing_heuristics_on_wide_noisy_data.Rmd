@@ -38,9 +38,14 @@ set.seed(3)
 First let's load the heuristica package to get the heuristics we will compare.  It also includes functions to calculate accuracy.  (The package is only on github for now.)
 
 ```{r}
-# Uncomment and execute if you do not already have devtools.
+# Uncomment and execute install functions you may need.
 # install.packages("devtools") 
-devtools::install_github("jeanimal/heuristica")
+# Uncomment and execute 
+# install.packages("heuristica") 
+#    -- OR --
+# devtools::install_github("jeanimal/heuristica")
+#    -- OR --
+devtools::load_all()
 library("heuristica")
 ```
 
@@ -69,7 +74,7 @@ multiPredict75 <- function(vec_of_models, num_rand_columns) {
     fitted_model <- model_constructor(m_train, criterion_col, cols_to_fit)
     list_of_fitted_models[[length(list_of_fitted_models)+1]] <- fitted_model
   }
-  pctCorrect <- pctCorrectOfPredictAlternative(list_of_fitted_models, m_test)
+  pctCorrect <- pctCorrectOfPredictPair(list_of_fitted_models, m_test)
   pctCorrect <- cbind.data.frame(num_rand_col=num_rand_columns, pctCorrect)
   df <- melt(pctCorrect, id.vars=c("num_rand_col"))
   names(df) <- c("num_rand_col", "model", "accuracy")
@@ -128,9 +133,12 @@ library("ggplot2")
 
 **Generating data**
 
-For 0 random cues, the models should be 75% accurate.  Let's confirm that.
+For 0 random cues, the models will be using the cue with 75% validity.  You might think that would lead to 75% accuracy, but the definition of cue validity ignores cases where the cues are the same-- when they do not discriminate between objects.  This is fairly common with binary data, when both objects can have a cue value of 1 or both have a cue value of 0.  In those cases, the models have to guess, which has a 50% accuracy.  So the overall accuracy will be somwehat less than 75%.
+
+Below we see all models earn 60% accuracy.  They are equally good at fitting the cue with a "signal" in it.
+
 ```{r}
-model_list <- list(dawesModel, franklinModel, ttbBinModel, logRegModel, regNoIModel, regModel)
+model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regNoIModel, regModel)
 multiPredict75(model_list, 0)
 ```
 
@@ -141,7 +149,7 @@ for (i in 1:200) { out <- rbind(out, multiPredict75(model_list, 1)) }
 out_summary <- summarySE(out, "accuracy", groupvars=c("model", "num_rand_col"))
 out_summary[c("model", "accuracy")]
 ```
-In general, the models will have falled to about 65% accuracy (from 75%).  The random cue definitely adds a challenge.  dawesModel is typically best, and regModel is typically much worse than the rest.
+In general, the models have fallen in accuracy.  The random cue definitely adds a challenge.  regNoI model-- a regression without fitting an intercept-- is typically best, and regModel is typically much worse than the rest because it wastes a degree of freedom on fitting an intercept.  An intercept fitted to each row is useless when comparing *pairs* of rows because the intercept of one row is the same as the intercept of the other row.  (Idea: We could fit a regression on the pairs matrix.)
 
 Below is a hacky but effective way to generate a lot of data for a variety of number of random cues.  You need 2 repetitions for 0 random cues because otherwise the summarize function complains.  Using 200 repetitions takes about a minute on my MacBook Air, while 2000 repetitions takes enough time to grab a coffee.
 ```{r}
@@ -158,7 +166,8 @@ for (i in 1:num_rep) { out <- rbind(out, multiPredict75(model_list, 7)) }
 for (i in 1:num_rep) { out <- rbind(out, multiPredict75(model_list, 8)) }
 ```
 
-Now for the fun part, the analysis!
+Now for the fun part, the analysis as we add more and more random columns!  Which model is best at picking out the signal amidst the noise?
+
 ```{r}
 out_summary <- summarySE(out, "accuracy", groupvars=c("model", "num_rand_col"))
 ```
@@ -171,14 +180,14 @@ ggplot(out_summary, aes(x=num_rand_col, y=accuracy, colour=model)) +
      geom_point() + xlab("number of random cues")
 ```
 
-It shows model accuracy decreasing as more random cues are added, which is not a surprise.  In general, dawesModel is still best and regModel is worst.  But note that regNoIModel, which is regression without an intercept, performs pretty well.
-
-Take Best is in the middle of the pack.
+It shows model accuracy decreasing as more random cues are added, which is not a surprise.  In general, regNoIModel, dawesModel, and franklinModel are best.  ttbModel does pretty badly.
 
 More good news is that most heuristics continue to maintain above-chance performance (above 50%) even with 8 additional random cues.  They are champions of picking out signals amidst the noise!
 
 **Discussion**
 
-Why does Dawes' Rule do best?
+I think ttbModel does badly because it puts so much emphasis on the first discriminating high-validity cue.  But with random data, we will generate some cues that appear to have a validity well above 75%, and ttb will incorrectly rely on those, ignoring the rest.
 
-Why is regression worst?
+In contrast, models like dawesModel-- unit linear, so every cue's weight is +1 or -1-- and franklinModel-- where cue weights are their cue validities except validities below 0.5 are reversed-- let the noise of additional cues cancel each other out.  For example, for dawesModel, if there are 100 random cues, 50 of them are likely to get +1 weights and 50 are likely to get -1 weights.  In fact, the more random cues are added, the more likely they are to cancel out!  Unfortunately, the weight of the one signal cue becomes a smaller percentage of the total weight, and its signal eventually gets lost anyway.
+
+But if there were multiple signal cues-- e.g. if 10% of the added cues were signal cues rather than noise cues-- then dawesModel could maintain its good performance with 100's of extra cues.  In contrast, ttb would increasingly choose cues which seemed to have a validity of 1.0 but were actually pure noise cues.
