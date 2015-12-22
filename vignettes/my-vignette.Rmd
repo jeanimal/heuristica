@@ -52,7 +52,7 @@ ttb$cue_validities
 
 We can use this model to generate predictions by passing the predict function the model and some data to predict on.  It will assume the predictor cues are still in columns 2 through 5.  Let us first have it try to predict using the data it used to fit:
 ```{r}
-pctCorrectOfPredictAlternative(list(ttb), schools)
+pctCorrectOfPredictPair(list(ttb), schools)
 ```
 
 Not bad.
@@ -62,15 +62,15 @@ Now let us get data from other schools and see how well it predicts there.
 more_schools <- highschool_dropout[which(highschool_dropout$Name_of_School %in% c('Fenger', 'Juarez', 'Kenwood')),]
 more_schools <- more_schools[, c("Name_of_School", "Dropout_Rate", "Low_Income_Students", "Limited_English_Students", "Percent_Black_Students")]
 more_schools
-pctCorrectOfPredictAlternative(list(ttb), more_schools)
+pctCorrectOfPredictPair(list(ttb), more_schools)
 ```
 
 A key point here is that this prediciton is based on the cue validities fitted from the original schools.  This is an out-of-sample prediction, a generalization from one set of schools to another.  
 
 Fitting the same sample is a much easier task.  Here is the accuracy if TTB merely fitted Fenger, Juarez, and Kenwood.
 ```{r}
-ttb_more_schools <- ttbBinModel(more_schools, 2, c(3:5))
-pctCorrectOfPredictAlternative(list(ttb_more_schools), more_schools)
+ttb_more_schools <- ttbModel(more_schools, 2, c(3:5))
+pctCorrectOfPredictPair(list(ttb_more_schools), more_schools)
 ```
 
 
@@ -80,14 +80,14 @@ In order to make comparison with regression easier, the package provides a wrapp
 
 ```{r}
 reg <- regModel(schools, 2, c(3:5))
-pctCorrectOfPredictAlternative(list(ttb, reg), schools)
+pctCorrectOfPredictPair(list(ttb, reg), schools)
 ```
 Both Take The Best and Regression performed well.
 
 Now let's compare at out-of-sample accuracy.
 
 ```{r}
-pctCorrectOfPredictAlternative(list(ttb, reg), more_schools)
+pctCorrectOfPredictPair(list(ttb, reg), more_schools)
 ```
-Regression did better in this case.
+Both ttb and regression struggled on this.
 
