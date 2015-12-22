@@ -45,7 +45,7 @@ cols_to_fit <- 4:ncol(city_population)
 ```
 Let's enter the models we want to test:
 ```{r}
-vec_of_models <-c(ttbBinModel, dawesModel, franklinModel, regModel, logRegModel)
+vec_of_models <-c(ttbModel, dawesModel, franklinModel, regModel, logRegModel)
 ```
 Next we define the size of the training and test sets.
 ```{r}
@@ -73,10 +73,7 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     }
 
     #calculate percentage of correct predictions
-
-    df <- predictAlternativeWithCorrect(models, test_set)
-    errors <- createErrorsFromPredicts(df)
-    pctCorr <- createPctCorrectsFromErrors(errors)
+    pctCorr <- pctCorrectOfPredictPair(models, test_set)
     results <- rbind(results,pctCorr)
   }
 
