@@ -192,7 +192,7 @@ predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subse
   pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
                                               -directed_matrix[index_pair[2],])
   pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
-  # print(head(pair_signs))
+  #print(pair_signs)
   # print("combn finished with this many rows and columns:")
   
   linear_coef <- col_weights
@@ -214,6 +214,6 @@ predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subse
 
 predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
                                    verbose_output=TRUE) {
-  return predictPairWithWeightsRaw(test_data, object$cols_to_fit, coef(object),
-                                   subset_rows, verbose_output)
+  return(predictPairWithWeightsRaw(test_data, object$cols_to_fit, coef(object),
+                                   subset_rows, verbose_output))
 }
