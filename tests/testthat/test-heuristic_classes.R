@@ -1178,6 +1178,7 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 }
 
 # The correct answer is 1, but models disagree a lot.
+#TODO(jean): Find a way to test ttb and singleCue despite random order of x1 and x2.
 #test_that("d_useless_cue_3 ttb",      {d_useless_cue_3(ttbModel,       #random(0,1))})
 #test_that("d_useless_cue_3 singleCue",{d_useless_cue_3(singleCueModel, #random(0,1))})
 test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
