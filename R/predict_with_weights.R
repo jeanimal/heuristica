@@ -203,7 +203,7 @@ predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subse
     sorted_subset_rows <- sort(subset_rows)
   }
   pair_signs <- convertMatrixToPairSigns(test_data, cols_to_fit, subset_rows)
-  #print(pair_signs)
+  # print(pair_signs)
   # print("combn finished with this many rows and columns:")
   
   linear_coef <- col_weights
