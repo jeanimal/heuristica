@@ -177,8 +177,8 @@ predictAlternativeWithWeights <- function(test_data, cols_to_fit, col_weights, r
   return(out)
 }
 
-predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subset_rows=NULL,
-                                      verbose_output=TRUE) {
+
+convertMatrixToPairSigns <- function(test_data, cols_to_fit, subset_rows=NULL) {
   # Subset by rows and columns and flip cue values as needed.
   if (is.null(subset_rows)) {
     sorted_subset_rows <- NULL
@@ -192,6 +192,17 @@ predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subse
   pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
                                               -directed_matrix[index_pair[2],])
   pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
+  return(pair_signs)
+}
+
+predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subset_rows=NULL,
+                                      verbose_output=TRUE) {
+  if (is.null(subset_rows)) {
+    sorted_subset_rows <- NULL
+  } else {
+    sorted_subset_rows <- sort(subset_rows)
+  }
+  pair_signs <- convertMatrixToPairSigns(test_data, cols_to_fit, subset_rows)
   #print(pair_signs)
   # print("combn finished with this many rows and columns:")
   
