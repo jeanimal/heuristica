@@ -8,6 +8,28 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col, cols_to_fit
   return(models)
 }
 
+# Private.
+pairToValue <- function(pair,na.replace=FALSE) {
+  if(na.replace==TRUE ){
+    pair[which(is.na(pair))] <- 0.5
+    if (pair[1] > pair[2]) {
+      return(1)
+    } else if (pair[2] > pair[1]) {
+      return(0)
+    } else {
+      return(0.5)
+    }
+  } else {
+    if (pair[1] > pair[2]) {
+      return(1)
+    } else if (pair[2] > pair[1]) {
+      return(0)
+    } else {
+      return(0.5)
+    }
+  }
+}
+
 
 #' Assuming you have a matrix with a columns row1 and row2,
 #' this helps you get the row which matches those columns.
@@ -90,6 +112,7 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
   }
   return(extendedMatrix)
 }
+
 
 #' Generates a matrix of predictPair predictions.
 #'

@@ -73,29 +73,6 @@ getPredictiono <- function(object, row1=NULL, row2=NULL) UseMethod("getPredictio
 
 ## Shared helper functions ##
 
-# Private.
-pairToValue <- function(pair,na.replace=FALSE) {
-  if(na.replace==TRUE ){
-  pair[which(is.na(pair))] <- 0.5 
-  if (pair[1] > pair[2]) {
-    return(1)
-  } else if (pair[2] > pair[1]) {
-    return(0)
-  } else {
-    return(0.5)
-  }
-  } else {
-  if (pair[1] > pair[2]) {
-    return(1)
-  } else if (pair[2] > pair[1]) {
-    return(0)
-  } else {
-    return(0.5)
-  }
-  }
-}
-
-
 # Example: inferNumOriginalRows(nrow(out$predictions))
 inferNumOriginalRows <- function(num_combo_rows) {
   guess <- ceiling(sqrt(num_combo_rows * 2))

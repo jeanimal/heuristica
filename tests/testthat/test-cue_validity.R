@@ -21,6 +21,10 @@ expect_equal(0.5, cueValidity(c(5,4,3), c(1,1,1)),tolerance=0.1)
 expect_equal(0.667, cueValidity(c(5,4,3,2), c(1,1,0,1)), tolerance=0.001)
 expect_equal(0.75,  cueValidity(c(5,4,3,2,1), c(1,1,1,0,1)),tolerance=0.01)
 
+# Real values.
+expect_equal(0.667, cueValidity(c(397,385,327), c(99,100,85)),
+  tolerance=0.001)
+
 expect_equal(-10, cueValidity(c(5,4,3), c(1,1,1), replaceNanWith=-10),tolerance=1)
 expect_equal(0.75,  cueValidity(c(5,4,3,2,1), c(1,1,1,0,1), replaceNanWith=-10),tolerance=0.01)
 

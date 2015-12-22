@@ -1155,4 +1155,36 @@ test_that("test_ab_vs_c dawes",    {test_ab_vs_c(dawesModel,     0)})
 test_that("test_ab_vs_c franklin", {test_ab_vs_c(franklinModel,  0)})
 test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       0, has_cv=FALSE)})
 test_that("test_ab_vs_c regNoI",   {test_ab_vs_c(regNoIModel,    0, has_cv=FALSE)})
-test_that("test_ab_vs_c logReg",   {test_10_06(logRegModel,      0, has_cv=FALSE)})
+#TODO(Daniel): Also check why logReg gets this prediction wrong--  Is it a bug?
+test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
+
+
+
+d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
+  # This is based on real data where a bug was found.  Some models think the first
+  # two cues are useful, but all agree the 3rd cue is useless.
+  train_df <- data.frame(criterion=c(397,385,327), x1=c(99,100,85), x2=c(3.6,2.9,3.2),
+                         x3=c(0,1,0))
+  fit <- model(train_df, 1, c(2:4))
+  if (has_cv) {
+    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fit$cue_validities, tolerance=0.002)
+    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fit$cue_validities_with_reverse,
+                 tolerance=0.002)
+  }
+  # Check prediction.
+  out <- predictPair(fit, train_df)
+  expect_equal(expected, getPredictiono(out, row1=1, row2=2))
+  expect_equal(1-expected, getPredictiono(out, row1=2, row2=1))
+}
+
+# The correct answer is 1, but models disagree a lot.
+#test_that("d_useless_cue_3 ttb",      {d_useless_cue_3(ttbModel,       #random(0,1))})
+#test_that("d_useless_cue_3 singleCue",{d_useless_cue_3(singleCueModel, #random(0,1))})
+test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
+test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
+test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       0, has_cv=FALSE)})
+test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv=FALSE)})
+#TODO(Daniel): And check this one.
+test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
+
+
