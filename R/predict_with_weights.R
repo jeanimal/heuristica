@@ -177,15 +177,15 @@ predictAlternativeWithWeights <- function(test_data, cols_to_fit, col_weights, r
   return(out)
 }
 
-predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
-                                   verbose_output=TRUE) {
+predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subset_rows=NULL,
+                                      verbose_output=TRUE) {
   # Subset by rows and columns and flip cue values as needed.
   if (is.null(subset_rows)) {
     sorted_subset_rows <- NULL
-    directed_matrix <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
+    directed_matrix <- as.matrix(test_data[,cols_to_fit, drop=FALSE])
   } else {
     sorted_subset_rows <- sort(subset_rows)
-    directed_matrix <- as.matrix(test_data[sorted_subset_rows,object$cols_to_fit, drop=FALSE])
+    directed_matrix <- as.matrix(test_data[sorted_subset_rows,cols_to_fit, drop=FALSE])
   }
   # print(head(directed_matrix))
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
@@ -195,7 +195,7 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
   # print(head(pair_signs))
   # print("combn finished with this many rows and columns:")
   
-  linear_coef <- coef(object)
+  linear_coef <- col_weights
   
   predictions_neg_pos <- as.matrix(predictWithWeights(pair_signs,
                                                       c(1:ncol(pair_signs)), linear_coef))
@@ -210,4 +210,10 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
   
   return(structure(list(predictions=predictions_0_1, subset_rows=sorted_subset_rows,
                         verbose_predictions=verbose_predictions), class="pairPredictor"))
+}
+
+predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
+                                   verbose_output=TRUE) {
+  return predictPairWithWeightsRaw(test_data, object$cols_to_fit, coef(object),
+                                   subset_rows, verbose_output)
 }
