@@ -208,29 +208,6 @@ createPctCorrectsFromErrors <- function(errors_raw) {
   return(newDf)
 }
 
-#' Runs predictAlternative for fitted heuristics to get percent correct on test.
-#'
-#' Combines other functons to 
-#' 1. Create predictions of alternatives for all the heuristics in the list.
-#' 2. Get errors of those predictions.
-#' 3. Calculate overall percent correct for each heuristic.
-#' Assumes the heuristics passed in have already been fitted to train_data.
-#'
-#' Each of the 3 steps above can be output if you call the helper functions directly:
-#' 1. predictAlternativeWithCorrect
-#' 2. createErrorsFromPredicts
-#' 3. createPctCorrectsFromErrors
-#'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbBinModel.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
-#' @export
-pctCorrectOfPredictAlternative <- function(fitted_heuristic_list, test_data) {
-  predictions <- predictAlternativeWithCorrect(fitted_heuristic_list, test_data)
-  errors <- createErrorsFromPredicts(predictions)
-  return(createPctCorrectsFromErrors(errors))
-}
-
 #' Runs predictPair for fitted heuristics to get percent correct on test.
 #'
 #' Combines other functons to 
