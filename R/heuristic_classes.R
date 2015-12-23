@@ -705,11 +705,12 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   }
   
   transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
-  
   criterion <- transform[,1]
   criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
   
   predictors <- transform[,2:ncol(transform)]
+  predictors[predictors>0] <- 1
+  predictors[predictors<0] <- -1
   
   training_set <- cbind(criterion,predictors)
   training_set <- as.data.frame(training_set)
@@ -755,7 +756,6 @@ predictPair.logRegModel <- function(object, test_data, subset_rows=NULL,
 #'
 #' Create a single cue model by specifying columns and a dataset.  
 #'
-#' This version assumes you always want to include the intercept.
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
@@ -811,5 +811,72 @@ predictPair.singleCueModel <- function(object, test_data, subset_rows=NULL,
                                  verbose_output=TRUE) {
   predictPairWithWeights(object, test_data, subset_rows, verbose_output)
 }
+
+#' Minimalist Model
+#'
+#' Fit the Minimalist heuristic by specifying columns and a dataset.  
+#'
+#' 
+#' @inheritParams heuristicaModel
+#' @inheritParams reversingModel
+#' @param reverse_cues Optional parameter to reverse cues as needed.
+#' @return An object of class minModel.
+#' @export
+#' @seealso
+#' \code{\link{predictPair.minModel}} (via \code{\link{predictPair}}) for prediction.
+#' @seealso
+#'
+#' @export
+minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=FALSE) {
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
+  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  if (reverse_cues) {
+    reverse_info = reverseAsNeeded(cue_validities)
+    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+    cue_directions <- reverse_info$cue_directions
+  } else {
+    cue_validities_with_reverse <- cue_validities
+    cue_directions <- rep(1, length(cue_validities_with_reverse))
+  }
+  
+  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
+  cue_ranks <- as.numeric(cue_ranks)
+  unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  
+  
+  linear_coef <- as.numeric(cue_directions) * unsigned_linear_coef
+  
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 cue_validities=cue_validities,
+                 cue_validities_with_reverse=cue_validities_with_reverse,
+                 linear_coef=linear_coef),
+            class="minModel")
+}
+
+#' Linear weights that can be used to compare pairs of cue directions.
+#'
+#' Do NOT apply these directly to raw data.
+#'
+#' @inheritParams stats::coef
+#' @export
+coef.minModel <- function(object, ...) object$linear_coef
+
+#' Predict which of a pair of rows has a higher criterion, using Minimalist Model.
+#'
+#' @param object A fitted minModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{minModel}} for example code.
+#'
+#' @export
+predictPair.minModel <- function(object, test_data, subset_rows=NULL,
+                                       verbose_output=TRUE) {
+  predictPairWithWeightsMin(object, test_data, subset_rows, verbose_output)
+}
+
+
 
 
