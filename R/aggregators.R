@@ -8,29 +8,6 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col, cols_to_fit
   return(models)
 }
 
-# Private.
-pairToValue <- function(pair,na.replace=FALSE) {
-  if(na.replace==TRUE ){
-    pair[which(is.na(pair))] <- 0.5
-    if (pair[1] > pair[2]) {
-      return(1)
-    } else if (pair[2] > pair[1]) {
-      return(0)
-    } else {
-      return(0.5)
-    }
-  } else {
-    if (pair[1] > pair[2]) {
-      return(1)
-    } else if (pair[2] > pair[1]) {
-      return(0)
-    } else {
-      return(0.5)
-    }
-  }
-}
-
-
 #' Assuming you have a matrix with a columns row1 and row2,
 #' this helps you get the row which matches those columns.
 #' getPrediction makes code below more readable.
@@ -67,53 +44,6 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
   return(df[(df$row1==row1) & (df$row2==row2),])
 }
 
-#' Generates a matrix of predictAlternative predictions.
-#'
-#' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
-#' the test matrix, then runs all the heuristics in order, generating a column of
-#' predictions for each, naming each column from the heuristic class.
-#'
-#' @param fitted_heuristic_list List of heuristics that implement the generic function
-#'  predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @param row_pairs An optional matrix where the first two columns are the pairs
-#'  of row indices to use in the test_data.  If not set, all pairs will be used.
-#' @return Same matrix as predictAlternative but with columns on correctness
-#' @seealso
-#' \code{\link{predictAlternative}}
-#' @export
-predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
-                                          row_pairs=NULL) {
-  if (is.null(row_pairs)) {
-    n <- nrow(test_data)
-    row_pairs <- rowPairGenerator(n)
-  }
-  if (length(fitted_heuristic_list) == 0) {
-    stop("No fitted heuristics.")
-    # We could allow this if we had a different way to specify criterion_col
-  }
-  criterion_col = fitted_heuristic_list[[1]]$criterion_col
-  #for (heuristic in fitted_heuristic_list) {
-  #  criterion_col = heuristic$criterion_col
-  #}
-  #TODO: make sure no heuristics disagree with that criterion_col
-  
-  correctValues <- test_data[,criterion_col]
-  correctProb <-  apply(row_pairs, 1,
-                        function(rowPair) pairToValue(correctValues[rowPair]))
-  resultMatrix <- cbind(row_pairs, correctProb)
-  extendedMatrix <- resultMatrix
-  for (heuristic in fitted_heuristic_list) {
-    predictMatrix <- predictAlternative(heuristic, test_data, row_pairs=row_pairs)
-    # TODO(jean): This assumes row_pairs match up.  Is that a safe assumption?
-    extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
-    model_name <- class(heuristic)[1]
-    names(extendedMatrix)[ncol(extendedMatrix)] = model_name
-  }
-  return(extendedMatrix)
-}
-
-
 #' Generates a matrix of predictPair predictions.
 #'
 #' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
@@ -121,13 +51,13 @@ predictAlternativeWithCorrect <- function(fitted_heuristic_list, test_data,
 #' predictions for each, naming each column from the heuristic class.
 #'
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
-#'  predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.
+#'  predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @param subset_rows An optional vector of row indices to use in the test_data.  If not
 #'  set, all pairs will be used.  TODO(jean): Implement this!
 #' @return Same matrix as predictAlternative but with columns on correctness
 #' @seealso
-#' \code{\link{predictAlternative}}
+#' \code{\link{predictPair}}
 #' @export
 predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows=NULL) {
   if (length(fitted_heuristic_list) == 0) {

@@ -8,7 +8,7 @@ EXPERIMENTAL and not meant for general use yet.}
 predictPair(object, test_data, subset_rows = NULL, verbose_output = TRUE)
 }
 \arguments{
-\item{object}{The object that implements predictAlternative, e.g. a ttb model.}
+\item{object}{The object that implements predictPair, e.g. a ttb model.}
 
 \item{test_data}{The matrix of data to predict on.  As with predict, columns
 must match those used for fitting.}

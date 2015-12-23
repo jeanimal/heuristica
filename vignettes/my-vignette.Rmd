@@ -16,9 +16,14 @@ Heuristica wraps up several inference heuristics in an easily-reused form. Heuri
 To get the github version of heuristica:
 
 ```{r}
-# Uncomment and execute the line below if you do not have devtools.
+# Uncomment and execute install functions you may need.
 # install.packages("devtools") 
-devtools::install_github("jeanimal/heuristica")
+# Uncomment and execute 
+# install.packages("heuristica") 
+#    -- OR --
+# devtools::install_github("jeanimal/heuristica")
+#    -- OR --
+devtools::load_all()
 library("heuristica")
 ```
 

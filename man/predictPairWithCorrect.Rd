@@ -8,7 +8,7 @@ predictPairWithCorrect(fitted_heuristic_list, test_data, subset_rows = NULL)
 }
 \arguments{
 \item{fitted_heuristic_list}{List of heuristics that implement the generic function
-predictAlternative, e.g. ttbBinModel.  All heuristics must agree on the criterion_col.}
+predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 
@@ -24,6 +24,6 @@ the test matrix, then runs all the heuristics in order, generating a column of
 predictions for each, naming each column from the heuristic class.
 }
 \seealso{
-\code{\link{predictAlternative}}
+\code{\link{predictPair}}
 }
 

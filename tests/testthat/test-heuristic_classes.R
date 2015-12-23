@@ -84,43 +84,7 @@ test_that("ttbBinModel 3x3 names shifted criterion", {
   expect_equal(c('Cue'), names(model$cue_validities))
 })
 
-# predictAlternative
-
-# getPredictionT makes test code below more readable.
-getPredictionT <- function(out, row1=NULL, row2=NULL) {
-  if (is.null(row1) || is.null(row2)) {
-    stop("You must set both row1 and row2")
-  }
-  lastCol <- ncol(out)
-  return(out[(out$Row1==row1) & (out$Row2==row2),][[lastCol]])
-}
-
-#TODO: Convert all tests to predictPair and use new getPrediction function.
-
-# ttbBinModel
-# TODO: Delete these when fully migrated to predictPair
-
-test_that("ttbBinModel 2x3 predictAlternative forward", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
-  model <- ttbBinModel(train_matrix, 1, c(2,3))
-  expect_equal(c(1,0), model$cue_validities)
-  out <- predictAlternative(model, train_matrix)
-  expect_equal(1, getPredictionT(out, row1=1, row2=2))
-  expect_equal(0, getPredictionT(out, row1=2, row2=1))
-})
-
-test_that("ttbBinModel 2x3 predictPair backward cues", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
-  model <- ttbBinModel(train_matrix, 1, c(2,3))
-  expect_equal(c(1,0), model$cue_validities)
-  # Cues in test_data below have been reversed.
-  out <- predictAlternative(model, matrix(c(5,4,0,1,1,0), 2, 3))
-  # So predictions should be reversed.
-  expect_equal(0, getPredictionT(out, row1=1, row2=2))
-  expect_equal(1, getPredictionT(out, row1=2, row2=1))
-  # No other rows.
-  expect_equal(2, nrow(out))
-})
+# ttbModel
 
 test_that("ttbModel 2x3 predictPair forward", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
@@ -173,17 +137,6 @@ test_that("ttbModel 3x3 predictPair cue_reversal", {
   expect_equal(1, getPredictiono(out, row1=1, row2=3))
 })
 
-test_that("ttbBinModel 2x3 predictAlternative forward row_pairs", {
-  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-  expect_equal(c(1,0), model$cue_validities)
-  row_pairs <- data.frame(Row1=c(1), Row2=c(2))
-  out <- predictAlternative(model, matrix(c(5,4,1,0,0,1), 2, 3),
-                            row_pairs=row_pairs)
-  expect_equal(1, getPredictionT(out, row1=1, row2=2))
-  # No other rows.
-  expect_equal(1, nrow(out))
-})
-
 test_that("ttbModel 2x3 predictPair forward subset_rows", {
   model <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
@@ -207,24 +160,6 @@ test_that("ttbModel 2x3 predictPair backward subset_rows", {
 })
 
 #TODO(jean): Test invalid row_pairs.
-
-test_that("ttbBinModel 3x3 pos pos predictAlternative forward", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
-  expect_equal(c(1,1),  model$cue_validities)
-
-  # All cues same as in training data.
-  out <- predictAlternative(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
-  expect_equal(1, getPredictionT(out, row1=1, row2=2))
-  expect_equal(0, getPredictionT(out, row1=2, row2=1))
-
-  expect_equal(1, getPredictionT(out, row1=1, row2=3))
-  expect_equal(0, getPredictionT(out, row1=3, row2=1))
-
-  expect_equal(1, getPredictionT(out, row1=2, row2=3))
-  expect_equal(0, getPredictionT(out, row1=3, row2=2))
-  # No other rows.
-  expect_equal(6, nrow(out))
-})
 
 test_that("ttbModel 3x3 pos pos predictPair forward", {
   model <- ttbModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
@@ -269,25 +204,6 @@ test_that("ttbModel 2x2,3x2 predictPair", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2))
   expect_equal(1, getPredictiono(out, row1=1, row2=3))
   expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=0.0001)
-})
-
-test_that("ttbBinModel 4x4 predictAlternative first cue dominates", {
-  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
-  # How this data looks:
-  # > train_data
-  #       [,1] [,2] [,3] [,4]
-  # [1,]    9    1    1    1
-  # [2,]    8    1    1    1
-  # [3,]    7    1    0    0
-  # [4,]    6    0    1    1
-  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
-  # Cue one predicts Row 3 > Row 4.
-  # But if you sum cue weights, predict Row 4 > Row 3
-  model <- ttbBinModel(train_data, 1, c(2:4))
-  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
-  out <- predictAlternative(model, train_data)
-  expect_equal(1, getPredictionT(out, row1=3, row2=4))
-  expect_equal(0, getPredictionT(out, row1=4, row2=3))
 })
 
 test_that("ttbModel 4x4 predictPair first cue dominates", {
@@ -338,25 +254,6 @@ test_that("ttbBinModel 3x3 predict without test_data", {
 
 ### ttbModel ###
 
-test_that("ttbModel 4x4 predictAlternative first cue dominates", {
-  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
-  # How this data looks:
-  # > train_data
-  #       [,1] [,2] [,3] [,4]
-  # [1,]    9    1    1    1
-  # [2,]    8    1    1    1
-  # [3,]    7    1    0    0
-  # [4,]    6    0    1    1
-  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
-  # Cue one predicts Row 3 > Row 4.
-  # But if you sum cue weights, predict Row 4 > Row 3
-  model <- ttbModel(train_data, 1, c(2:4))
-  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
-  out <- predictAlternative(model, train_data)
-  expect_equal(1, getPredictionT(out, row1=3, row2=4))
-  expect_equal(0, getPredictionT(out, row1=4, row2=3))
-})
-
 test_that("ttbModel 4x4 predictPair first cue dominates", {
   train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
   # How this data looks:
@@ -374,25 +271,6 @@ test_that("ttbModel 4x4 predictPair first cue dominates", {
   out <- predictPair(model, train_data)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
   expect_equal(0, getPredictiono(out, row1=4, row2=3))
-})
-
-test_that("ttbModel 4x4 predictAlternative first cue dominates non-binary", {
-  train_data <- matrix(c(9,8,7,6,0.1,0.1,0.1,0,1,1,0,1,1,1,0,1), 4, 4)
-  # How this data looks:
-  # > train_data
-  #       [,1] [,2] [,3] [,4]
-  # [1,]    9   0.1    1    1
-  # [2,]    8   0.1    1    1
-  # [3,]    7   0.1    0    0
-  # [4,]    6     0    1    1
-  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
-  # Cue one predicts Row 3 > Row 4.
-  # But if you sum cue weights, predict Row 4 > Row 3
-  model <- ttbModel(train_data, 1, c(2:4))
-  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
-  out <- predictAlternative(model, train_data)
-  expect_equal(1, getPredictionT(out, row1=3, row2=4))
-  expect_equal(0, getPredictionT(out, row1=4, row2=3))
 })
 
 test_that("ttbModel 4x4 predictPair first cue dominates non-binary", {
@@ -452,28 +330,6 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
   out <- predictPair(model, train_data)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
   expect_equal(0, getPredictiono(out, row1=4, row2=3))
-})
-
-test_that("ttbModel 4x4 predictAlternative 3nd cue dominates non-binary reverse cue data.frame", {
-  train_df <- data.frame(criterion=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1),
-                         c=c(0,0,0,0.1))
-  # How this data looks:
-  # > train_df
-  #   criterion a b   c
-  # 1         9 1 1 0.0
-  # 2         8 1 1 0.0
-  # 3         7 0 0 0.0
-  # 4         6 1 1 0.1
-  # Cue 1 and 2 have validity 2/3, cue 3 has validity 0,
-  # but that validity is 1.0 when reversed.
-  # Cue c predicts Row 3 > Row 4.
-  # But if you sum all cue weights, predict Row 4 > Row 3
-  model <- ttbModel(train_df, 1, c(2:4))
-  expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
-  out <- predictAlternative(model, train_df)
-  expect_equal(1, getPredictionT(out, row1=3, row2=4))
-  expect_equal(0, getPredictionT(out, row1=4, row2=3))
 })
 
 test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue data.frame", {
@@ -659,8 +515,6 @@ test_that("franklinModel 2x3 pos neg reverse_cues FALSE", {
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(0,  coef(model)[[2]])  
   expect_equal(2, length(coef(model)))
-  out1 <- predictAlternative(model, train_matrix)
-  expect_equal(1, getPredictionT(out1, row1=1, row2=2), tolerance=0.002)
   out2 <- predictPair(model, train_matrix)
   expect_equal(1, getPredictiono(out2, row1=1, row2=2), tolerance=0.002)
 })
@@ -672,8 +526,6 @@ test_that("franklinModel 2x3 pos neg", {
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(-1,  coef(model)[[2]])  
   expect_equal(2, length(coef(model)))
-  out1 <- predictAlternative(model, train_matrix)
-  expect_equal(1, getPredictionT(out1, row1=1, row2=2), tolerance=0.002)
   out2 <- predictPair(model, train_matrix)
   expect_equal(1, getPredictiono(out2, row1=1, row2=2), tolerance=0.002)
 })
@@ -761,31 +613,6 @@ test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cu
   out <- predictPair(model, train_df)
   expect_equal(0, getPredictiono(out, row1=3, row2=4))
   expect_equal(1, getPredictiono(out, row1=4, row2=3))
-})
-
-test_that("franklinModel 4x4 predictAlternative 3nd cue dominates non-binary reverse cue", {
-  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0,0,0,0.1), 4, 4)
-  train_df <- as.data.frame(train_data)
-  names(train_df) <- c("Y", "a", "b", "c")
-  # How this data looks:
-  # > train_df
-  #   Y a b   c
-  # 1 9 1 1 0.0
-  # 2 8 1 1 0.0
-  # 3 7 0 0 0.0
-  # 4 6 1 1 0.1
-  # Column Y is the criterion column.  Cues follow.
-  # Cue a and b have validity 2/3, cue c has validity validity 0,
-  # but that validity is 1.0 when reversed.
-  # Cue c predicts Row 3 > Row 4.
-  # But if you sum all cue weights, predict Row 4 > Row 3
-  model <- franklinModel(train_df, 1, c(2:4), reverse_cues=FALSE)
-  expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
-  # Soon: Linear coef will include reversing the cue pointed the wrong way.
-  expect_equal(c(a=0.667, b=0.667, c=0), model$linear_coef, tolerance=0.002)
-  out <- predictAlternative(model, train_df)
-  expect_equal(0, getPredictionT(out, row1=3, row2=4))
-  expect_equal(1, getPredictionT(out, row1=4, row2=3))
 })
 
 ### regModel ###
@@ -888,16 +715,6 @@ test_that("regNoIModel predictPair", {
 
 ### logRegModel ###
 
-test_that("logRegModel predictWithWeightsLog 2x2 fit train_data", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0), 2, 2)
-  model <- logRegModel(train_data, 1, c(2))
-  out <- predictAlternative(model, train_data)
-  expect_equal(1, getPredictionT(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictionT(out, row1=2, row2=1), tolerance=tol)
-  expect_equal(2, nrow(out)) # No other rows.
-})
-
 test_that("logRegModel predictPair 2x2 fit train_data", {
   tol <- 0.0001
   train_data <- matrix(c(5,4,1,0), 2, 2)
@@ -907,16 +724,6 @@ test_that("logRegModel predictPair 2x2 fit train_data", {
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is only one unique pair.
   expect_equal(1, nrow(out$verbose_predictions))
-})
-
-test_that("logRegModel predictWithWeightsLog 2x2 fit train_data reverse cue", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,0,1), 2, 2)
-  model <- logRegModel(train_data, 1, c(2))
-  out <- predictAlternative(model, train_data)
-  expect_equal(1, getPredictionT(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictionT(out, row1=2, row2=1), tolerance=tol)
-  expect_equal(2, nrow(out)) # No other rows.
 })
 
 test_that("logRegModel predictPair 2x2 fit train_data reverse cue", {

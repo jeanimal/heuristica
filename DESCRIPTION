@@ -12,13 +12,13 @@ Depends:
 License: MIT + file LICENSE
 LazyData: true
 Imports:
-    Hmisc,
-    plyr
+    Hmisc
 URL: https://github.com/jeanimal/heuristica
 Suggests:
     devtools,
     ggplot2,
     knitr,
+    plyr,
     reshape,
     reshape2,
     testthat

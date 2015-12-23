@@ -1,55 +1,43 @@
 context("predict_with_weights")
 
-test_that("predictAlternativeWithWeights 2x2", {
+# There is just one row pair to predict for 2 rows.
+
+test_that("predictPairWithWeightsRaw 2x2", {
   data <-cbind(a=c(1,2), b=c(1,2))
-  out <- predictAlternativeWithWeights(data, c(1,2), c(1,1))
-  expect_equal(0, out[(out$Row1==1) & (out$Row2==2),]$predictDirection)
-  expect_equal(1, out[(out$Row1==2) & (out$Row2==1),]$predictDirection)
+  out <- predictPairWithWeightsRaw(data, c(1,2), c(1,1))
+  expect_equal(matrix(c(0), 1, 1), out$predictions)
 })
 
-test_that("predictAlternativeWithWeights 2x2 up-down", {
+test_that("predictPairWithWeightsRaw 2x2 up-down", {
   data <-cbind(a=c(1,2), b=c(2,1))
-  out <- predictAlternativeWithWeights(data, c(1,2), c(1,1))
-  expect_equal(0.5, out[(out$Row1==1) & (out$Row2==2),]$predictDirection, tolerance=0.001)
-  expect_equal(0.5, out[(out$Row1==2) & (out$Row2==1),]$predictDirection, tolerance=0.001)
+  out <- predictPairWithWeightsRaw(data, c(1,2), c(1,1))
+  expect_equal(matrix(c(0.5), 1, 1), out$predictions, tolerance=0.001)
 })
 
-test_that("predictAlternativeWithWeights 2x2 up-down 1st more weight", {
+test_that("predictPairWithWeightsRaw 2x2 up-down 1st more weight", {
   data <-cbind(a=c(1,2), b=c(2,1))
-  out <- predictAlternativeWithWeights(data, c(1,2), c(2,1))
-  expect_equal(0, out[(out$Row1==1) & (out$Row2==2),]$predictDirection)
-  expect_equal(1, out[(out$Row1==2) & (out$Row2==1),]$predictDirection)
+  out <- predictPairWithWeightsRaw(data, c(1,2), c(2,1))
+  expect_equal(matrix(c(0), 1, 1), out$predictions)
 })
 
-test_that("predictAlternativeWithWeights 2x2 up-down 1st cue only", {
+test_that("predictPairWithWeightsRaw 2x2 up-down 1st cue only", {
   data <-cbind(a=c(1,2), b=c(2,1))
-  out <- predictAlternativeWithWeights(data, c(1), c(1))
-  expect_equal(0, out[(out$Row1==1) & (out$Row2==2),]$predictDirection)
-  expect_equal(1, out[(out$Row1==2) & (out$Row2==1),]$predictDirection)
+  out <- predictPairWithWeightsRaw(data, c(1), c(1))
+  expect_equal(matrix(c(0), 1, 1), out$predictions)
 })
 
-test_that("predictAlternativeWithWeights 2x2 up-down 2nd more weight", {
+test_that("predictPairWithWeightsRaw 2x2 up-down 2nd more weight", {
   data <-cbind(a=c(1,2), b=c(2,1))
-  out <- predictAlternativeWithWeights(data, c(1,2), c(1,2))
-  expect_equal(1, out[(out$Row1==1) & (out$Row2==2),]$predictDirection)
-  expect_equal(0, out[(out$Row1==2) & (out$Row2==1),]$predictDirection)
+  out <- predictPairWithWeightsRaw(data, c(1,2), c(1,2))
+  expect_equal(matrix(c(1), 1, 1), out$predictions)
 })
 
-test_that("predictAlternativeWithWeights 2x2 up-down 2nd cue only", {
+test_that("predictPairWithWeightsRaw 2x2 up-down 2nd cue only", {
   data <-cbind(a=c(1,2), b=c(2,1))
-  out <- predictAlternativeWithWeights(data, c(2), c(1))
-  expect_equal(1, out[(out$Row1==1) & (out$Row2==2),]$predictDirection)
-  expect_equal(0, out[(out$Row1==2) & (out$Row2==1),]$predictDirection)
+  out <- predictPairWithWeightsRaw(data, c(2), c(1))
+  expect_equal(matrix(c(1), 1, 1), out$predictions)
 })
 
-test_that("predictAlternativeWithWeights 2x2 up-down row_pairs", {
-  data <-cbind(a=c(1,2), b=c(2,1))
-  row_pairs <- cbind(Row1=c(1,2), Row2=c(1,2))
-  out <- predictAlternativeWithWeights(data, c(1,2), c(1,1), row_pairs=row_pairs)
-  expect_equal(0.5, out[(out$Row1==1) & (out$Row2==1),]$predictDirection, tolerance=0.001)
-  expect_equal(0.5, out[(out$Row1==2) & (out$Row2==2),]$predictDirection, tolerance=0.001)
-  expect_equal(2, nrow(out))
-})
 
 test_that("rowPairGenerator 2", {
   row_pairs <- rowPairGenerator(2)

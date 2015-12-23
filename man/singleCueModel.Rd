@@ -25,7 +25,7 @@ Create a single cue model by specifying columns and a dataset.
 This version assumes you always want to include the intercept.
 }
 \seealso{
-\code{\link{predictAlternative.singleCueModel}} (via \code{\link{predictAlternative}}) for prediction.
+\code{\link{predictPair.singleCueModel}} (via \code{\link{predictPair}}) for prediction.
 
 
 }

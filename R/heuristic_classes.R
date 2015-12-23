@@ -17,34 +17,10 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 
 ## New generics ##
 
-#' Generic function to use two rows of cues to predict which row has a higher criterion.
-#'
-#' @param object The object that implements predictAlternative, e.g. a ttb model.
-#' @param test_data The matrix of data to predict on.  As with predict, columns
-#'  must match those used for fitting.
-#' @param row_pairs The optionalrow_pairs is a matrix of pairs of column indices
-#'  you want to have predicted.  By default (if no list is given), it will use
-#'  all unique pairs.
-#'  E.g. for 3 rows, it will use [[1,2], [1,3], [2,3]].  
-#' @return A matrix with 3 columns: row1index, row2index, and the prob row1 greater.
-#'  The first two columns are the row_pairs (provided as input or all).
-#'  The 3rd column is the model's predicted probability (0 to 1) that the first
-#'  row index has a larger criterion than the 2nd row index.  0.5 is a tie.
-#'
-#'  For example:
-#'                              [[1,2,1], [1,3,0], [2,3,1]].
-#'  Means:
-#'  Between row 1 and 2, there is probabily 1 that row 1 is bigger.
-#'  Between row 1 and 3, there is probabily 0 that row 1 is bigger.
-#'     (That is, it predicts that row 3 is bigger.)
-#' Between row 2 and 3, there is probabily 1 that row 2 is bigger.
-#' @export
-predictAlternative <- function(object, test_data, row_pairs=NULL) UseMethod("predictAlternative")
-
 #' Generic function to predict which of a pair of rows has a higher criterion.
 #' EXPERIMENTAL and not meant for general use yet.
 #'
-#' @param object The object that implements predictAlternative, e.g. a ttb model.
+#' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param test_data The matrix of data to predict on.  As with predict, columns
 #'  must match those used for fitting.
 #' @param subset_rows Vector of row indices-- all pairs of these will be predicted.
@@ -259,8 +235,6 @@ reverseAsNeeded <- function(cue_validities) {
 #' predict(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
 #'
 #' @seealso
-#' \code{\link{predictAlternative.ttbBinModel}} (via \code{\link{predictAlternative}}) for prediction.
-#' @seealso
 #' \code{\link{predict.ttbBinModel}} (via \code{\link[stats]{predict}}) for prediction.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
@@ -329,20 +303,6 @@ predict.ttbBinModel <- function(object, ...) {
   }
 }
 
-
-#' Predict which alternative has higher criterion for Take The Best with binary cues.
-#'
-#' @param object A ttbBinModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{ttbBinModel}} for example code.
-#'
-#' @export
-predictAlternative.ttbBinModel <- function(object, test_data, row_pairs=NULL) {
-  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
-}
-
 ### Take The Best ###
 
 #' Take The Best
@@ -364,12 +324,12 @@ predictAlternative.ttbBinModel <- function(object, test_data, row_pairs=NULL) {
 #' @examples
 #' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
 #' ttb <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-#' predictAlternative(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
+#' predictPair(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
 #' ## But this input results in an incorrect prediction:
-#' predictAlternative(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
+#' predictPair(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
 #'
 #' @seealso
-#' \code{\link{predictAlternative.ttbModel}} (via \code{\link{predictAlternative}}) for prediction.
+#' \code{\link{predictPair.ttbModel}} (via \code{\link{predictPair}}) for prediction.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
@@ -406,46 +366,6 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #' @inheritParams stats::coef
 #' @export
 coef.ttbModel <- function(object, ...) object$linear_coef
-
-#' Predict which alternative has higher criterion for Take The Best.
-#'
-#' @param object A ttbModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{ttbModel}} for example code.
-#'
-#' @export
-predictAlternative.ttbModel <- function(object, test_data, row_pairs = NULL) {
-  if (is.null(row_pairs)) {
-    n <- nrow(test_data)
-    pairsMatrix <- rowPairGenerator(n)
-  } else {
-    if (ncol(row_pairs) != 2) {
-      stop(paste("row_pairs should be pairs matrix with two columns but got",
-                 row_pairs))
-    }
-    pairsMatrix <- row_pairs
-  }
-  cue_directions <- sign(object$linear_coef)
-  test_directed_matrix <- as.matrix(cue_directions*test_data[,object$cols_to_fit])
-  all_cue_sign <- plyr::mdply(pairsMatrix,
-      function(Row1, Row2) sign(test_directed_matrix[Row1,]
-                              -test_directed_matrix[Row2,]) )
-  #print(all_cue_sign)
-
-  raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
-  # Reverse ranks so first is last.
-  cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
-  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
-
-  #print(linear_coef)
-  predictions <- predictWithWeights(all_cue_sign, c(3:length(all_cue_sign)), linear_coef)
-  # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
-  out <- cbind(pairsMatrix, (sign(predictions)+1)*0.5)
-  names(out) <- c("Row1", "Row2", "probFirstRowGreater")
-  return(out)
-}
 
 #' Predict which of a pair of rows has a higher criterion, using Take The Best.
 #'
@@ -546,19 +466,6 @@ predict.dawesModel <- function(object, ...) {
   }
 }
 
-#' Predict which alternative has higher criterion for Dawes model.
-#'
-#' @param object A dawesModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{dawesModel}} for example code.
-#'
-#' @export
-predictAlternative.dawesModel <- function(object, test_data, row_pairs=NULL) {
-  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
-}
-
 #' Predict which of a pair of rows has a higher criterion, using Dawes' Model.
 #'
 #' @param object A fitted dawesModel.
@@ -592,7 +499,7 @@ predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
 #' @seealso
 #' \code{\link{predict.franklinModel}} (via \code{\link[stats]{predict}}) for prediction.
 #' @seealso
-#' \code{\link{predictAlternative.franklinModel}} for predicting among alternatives.
+#' \code{\link{predictPair.franklinModel}} for predicting among a pair of rows.
 #' @export 
 franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
@@ -640,19 +547,6 @@ predict.franklinModel <- function(object, ...) {
     stop("Expected only one unevaluated argument (test_data) but got " +
           length(args) + ":" + args)
   }
-}
-
-#' Predict which alternative has higher criterion for Franklin model.
-#'
-#' @param object A fitted franklinModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{franklinModel}} for example code.
-#'
-#' @export
-predictAlternative.franklinModel <- function(object, test_data, row_pairs=NULL) {
-  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using Franklin's Model.
@@ -715,7 +609,7 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso
-#' \code{\link{predictAlternative.regModel}} for predicting among alternatives.
+#' \code{\link{predictPair.regModel}} for predicting between a pair of rows.
 #'
 #' @export
 regModel <- function(train_matrix, criterion_col, cols_to_fit) {
@@ -726,19 +620,6 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
   return(model)
-}
-
-#' Predict which alternative has higher criterion for a linear regression model.
-#'
-#' @param object A fitted regModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{franklinModel}} for example code.
-#'
-#' @export
-predictAlternative.regModel <- function(object, test_data, row_pairs=NULL) {
-  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using regression.
@@ -776,7 +657,7 @@ predictPair.regModel <- function(object, test_data, subset_rows=NULL,
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso
-#' \code{\link{predictAlternative.regNoIModel}} for predicting among alternatives.
+#' \code{\link{predictPair.regNoIModel}} for predicting between a pair of alternatives.
 #'
 #' @export
 regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
@@ -786,19 +667,6 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
   return(model)
-}
-
-#' Predict which alternative has higher criterion for a no-intercept regression model.
-#'
-#' @param object A fitted regNoIModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{regNoIModel}} for example code.
-#'
-#' @export
-predictAlternative.regNoIModel <- function(object, test_data, row_pairs=NULL) {
-  return(modelPredictAlternativeWithWeights(object, test_data, row_pairs))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using regression no intercept.
@@ -867,12 +735,6 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
 #' @export
 coef.logRegModel <- function(object, ...) object$linear_coef
 
-#' @export
-predictAlternative.logRegModel <- function(object, test_data, row_pairs = NULL) {
-  return(predictWithWeightsLog(test_data, object$cols_to_fit, object$criterion_col, 
-                        object$linear_coef, row_pairs))
-}
-
 #' Predict which of a pair of rows has a higher criterion, using logistic regression.
 #'
 #' @param object A fitted logRegModel.
@@ -901,7 +763,7 @@ predictPair.logRegModel <- function(object, test_data, subset_rows=NULL,
 #' @return An object of class singleCueModel.
 #' @export
 #' @seealso
-#' \code{\link{predictAlternative.singleCueModel}} (via \code{\link{predictAlternative}}) for prediction.
+#' \code{\link{predictPair.singleCueModel}} (via \code{\link{predictPair}}) for prediction.
 #' @seealso
 #'
 #' @export
@@ -935,49 +797,6 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=
 #' @inheritParams stats::coef
 #' @export
 coef.singleCueModel <- function(object, ...) object$linear_coef
-
-#' Predict which alternative has higher criterion for Single Cue Model.
-#'
-#' @param object A singleCueModel.
-#' @inheritParams predictAlternative
-#'
-#' @seealso
-#' \code{\link{singleCueModel}} for example code.
-#'
-#' @export
-predictAlternative.singleCueModel <- function(object, test_data, row_pairs = NULL) {
-  if (is.null(row_pairs)) {
-    n <- nrow(test_data)
-    pairsMatrix <- rowPairGenerator(n)
-  } else {
-    if (ncol(row_pairs) != 2) {
-      stop(paste("row_pairs should be pairs matrix with two columns but got",
-                 row_pairs))
-    }
-    pairsMatrix <- row_pairs
-  }
-  cue_directions <- sign(object$linear_coef)
-  test_directed_matrix <- as.matrix(cue_directions*test_data[,object$cols_to_fit])
-  all_cue_sign <- plyr::mdply(pairsMatrix,
-                              function(Row1, Row2) sign(test_directed_matrix[Row1,]
-                                                        -test_directed_matrix[Row2,]) )
-  #print(all_cue_sign)
-  
-  #raw_ranks <- rank(object$cue_validities_with_reverse, ties.method="random")
-  # Reverse ranks so first is last.
-  #cue_ranks <- length(object$cue_validities_with_reverse) - raw_ranks + 1
-  
-  linear_coef <- sapply(object$cue_validities, function(v) if (v==max(object$cue_validities)) 1 else 0)
-  
-  #linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
-  
-  #print(linear_coef)
-  predictions <- predictWithWeights(all_cue_sign, c(3:length(all_cue_sign)), linear_coef)
-  # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
-  out <- cbind(pairsMatrix, (sign(predictions)+1)*0.5)
-  names(out) <- c("Row1", "Row2", "probFirstRowGreater")
-  return(out)
-}
 
 #' Predict which of a pair of rows has a higher criterion, using Single Cue Model.
 #'

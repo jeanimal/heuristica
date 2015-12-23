@@ -35,13 +35,13 @@ It does NOT implement predict on purpose.
 \examples{
 ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
 ttb <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-predictAlternative(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
+predictPair(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
 ## But this input results in an incorrect prediction:
-predictAlternative(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
+predictPair(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
 
 }
 \seealso{
-\code{\link{predictAlternative.ttbModel}} (via \code{\link{predictAlternative}}) for prediction.
+\code{\link{predictPair.ttbModel}} (via \code{\link{predictPair}}) for prediction.
 
 Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 }

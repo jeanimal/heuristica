@@ -29,6 +29,6 @@ This version assumes you always want to include the intercept.
 
 \code{\link{predict.lm}} for prediction.
 
-\code{\link{predictAlternative.regModel}} for predicting among alternatives.
+\code{\link{predictPair.regModel}} for predicting between a pair of rows.
 }
 

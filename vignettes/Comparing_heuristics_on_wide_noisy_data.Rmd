@@ -82,7 +82,7 @@ multiPredict75 <- function(vec_of_models, num_rand_columns) {
 }
 ```
 
-Now we need an easy way to summarize a lot of results.  I got this function from an R cookbook.  It's kind of hacky because it loads the plyr library in the middle, so maybe I will clean it up later.
+Now we need an easy way to summarize a lot of results.  I got this function from an R cookbook.  It uses plyr.'
 ```{r}
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and confidence interval (default 95%).
@@ -95,7 +95,6 @@ Now we need an easy way to summarize a lot of results.  I got this function from
 ## http://www.cookbook-r.com/Manipulating_data/Summarizing_data/
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
-    library(plyr)
     # New version of length which can handle NA's: if na.rm==T, don't count them
     length2 <- function (x, na.rm=FALSE) {
         if (na.rm) sum(!is.na(x))
@@ -103,7 +102,8 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     }
     # This does the summary. For each group's data frame, return a vector with
     # N, mean, and sd
-    datac <- ddply(data, groupvars, .drop=.drop,
+    if (requireNamespace("plyr", quietly = TRUE)) {
+     datac <- plyr::ddply(data, groupvars, .drop=.drop,
       .fun = function(xx, col) {
         c(N    = length2(xx[[col]], na.rm=na.rm),
           mean = mean   (xx[[col]], na.rm=na.rm),
@@ -111,9 +111,10 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
         )
       },
       measurevar
-    )
-    # Rename the "mean" column    
-    datac <- rename(datac, c("mean" = measurevar))
+     )
+     # Rename the "mean" column    
+     datac <- plyr::rename(datac, c("mean" = measurevar))
+    }
     datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
     # Confidence interval multiplier for standard error
     # Calculate t-statistic for confidence interval: 
