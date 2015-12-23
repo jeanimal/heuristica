@@ -843,7 +843,7 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=FALSE)
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
   cue_ranks <- as.numeric(cue_ranks)
-  unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  unsigned_linear_coef <- sapply(sample(cue_ranks), function(n) 2^(length(cue_ranks)-n) )
   
   
   linear_coef <- as.numeric(cue_directions) * unsigned_linear_coef
