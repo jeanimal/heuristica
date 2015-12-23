@@ -144,12 +144,12 @@ convertMatrixToPairSigns <- function(test_data, cols_to_fit, subset_rows=NULL) {
     sorted_subset_rows <- sort(subset_rows)
     directed_matrix <- as.matrix(test_data[sorted_subset_rows,cols_to_fit, drop=FALSE])
   }
+  directed_matrix <- as.matrix(test_data[,cols_to_fit, drop=FALSE])
   # print(head(directed_matrix))
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
   pair_evaluator <- function(index_pair) sign(directed_matrix[index_pair[1],]
                                               -directed_matrix[index_pair[2],])
   # Below I correct for R's differing output format based on number of columns.
-  temp_pair_signs <- combn(nrow(directed_matrix), 2, pair_evaluator)
   if (length(cols_to_fit) > 1) {
     # With transpose.
     pair_signs <- t(combn(nrow(directed_matrix), 2, pair_evaluator))
