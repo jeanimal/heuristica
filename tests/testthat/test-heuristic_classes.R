@@ -814,13 +814,12 @@ test_that("logRegModel predictPair 2x3 fit train_data 1st cue useless", {
   expect_equal(1, nrow(out$verbose_predictions))
 })
 
-test_that("logRegModel predictWithWeightsLog 3x2 fit train_data 1st cue useless", {
+test_that("logRegModel pctCorrectOfPredictPair", {
   tol <- 0.0001
   train_data <- cbind(c(5:1), c(1,1,1,0,1))
   model <- logRegModel(train_data, 1, c(2))
-  fit_predictions <- predictWithWeightsLog(train_data,2,1,model$linear_coef)
-  fit_accuracy <- logAccuracy(fit_predictions,train_data,1,2)
-  expect_equal(0.6, fit_accuracy, tolerance=tol)
+  fit_accuracy <- pctCorrectOfPredictPair(list(model), train_data)
+  expect_equal(0.6, fit_accuracy$logRegModel, tolerance=0.001)
 })
 
 test_that("logRegModel error when train_data zero rows", {

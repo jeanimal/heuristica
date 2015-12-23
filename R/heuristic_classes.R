@@ -143,60 +143,6 @@ getPredictiono <- function(object, row1=NULL, row2=NULL) {
   return(getPrediction_raw(prediction_matrix, row_pair))
 }
 
-
-# getPrediction makes test code more readable.
-#getPrediction <- function(out, row1=NULL, row2=NULL) {
-#  if (is.null(row1) || is.null(row2)) {
-#    stop("You must set both row1 and row2")
-#  }
-#  lastCol <- ncol(out)
-#  return(out[(out$Row1==row1) & (out$Row2==row2),][[lastCol]])
-#}
-
-#' Returns a correct proportion based on a vector of predictions.
-#'
-#' Intended for logistic regression.
-#' Assumes original data was sorted so that correct answers are all 1.
-#' This may need to be temporarily exported but will eventually be private.
-#'
-#' @param fit_predictions A vector of predictions ranging from 0 to 1.
-#' @param test_data test data.
-#' @param criterion_col vector specifying criterion column
-#' @param cols_to_fit vector specifying columns to fit
-#'@param row_pairs Optional matrix.  TODO(jean): share documentation.
-#' @return Returns a single value ranging from 0 to 1.
-#'private
-logAccuracy <- function(fit_predictions,test_data,criterion_col,cols_to_fit,row_pairs=NULL) {
-  
-  if (is.null(row_pairs)) {
-    n <- nrow(test_data)
-    all_pairs <- rowPairGenerator(n)
-  } else {
-    all_pairs <- row_pairs
-  }
-
-  #predictors <- cbind(test_data[all_pairs[,1],cols_to_fit],test_data[all_pairs[,2],cols_to_fit])
-  #data2 <- cbind(all_pairs,predictors)
-  criterion <- ifelse(test_data[all_pairs[,1],criterion_col] > test_data[all_pairs[,2],criterion_col],1,ifelse(test_data[all_pairs[,1],criterion_col] == test_data[all_pairs[,2],criterion_col],0.5,0 ))
-  fit_predictions<-fit_predictions[,3]
-  if(all(fit_predictions==0.5)){
-    fit_accuracy <- 0.5
-  } else {
-  errors <- criterion - fit_predictions
-  errors <- abs(errors)
-  fit_accuracy  <- (length(errors)-sum(errors)) /length(errors)
-  
-  #ids <- which(fit_predictions!=0.5)
-  #fit_predictions <- fit_predictions[ids]
-  #criterion <- criterion[ids]
-                                
-  #comp <- fit_predictions == criterion
-  #fit_accuracy <- length(comp[comp==TRUE])/length(comp)
-  }
-  return(fit_accuracy)
-  
-}
-
 ### TTB helper functions ###
 
 # Private for now. Will export and test when I settle on a name.
