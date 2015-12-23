@@ -202,30 +202,3 @@ predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
                                    subset_rows, verbose_output))
 }
 
-
-
-#' Linear prediction for use by minModel.
-#'
-#' Randomly shuffles weights in col_weights and applies them to the columns cols_to_fit in test_data.
-#' 
-#' @param test_data Data to predict for, as either a matrix or a data.frame.
-#' @param cols_to_fit Vector of column indexes to use in test_data.
-#' @param col_weights Vector of weights to apply to the columns indicated by cols_to_fit.
-#'
-#' @return A matrix (rows x1) of predictions, or a list if there was just one
-#'    column to fit. 
-#'    
-#' @export
-predictWithWeightsMin <- function(test_data, cols_to_fit, col_weights) {
-  test_matrix <- data.matrix(test_data)
-  col_weights_clean <- sample(col_weights)
-  if (length(col_weights_clean) == 1) {
-    predictions <- test_matrix[,cols_to_fit] * col_weights_clean
-  } else {
-    predictions <- test_matrix[,cols_to_fit] %*% col_weights_clean
-  }
-  return(predictions)
-}
-
-
-

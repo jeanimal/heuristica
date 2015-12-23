@@ -759,8 +759,6 @@ predictPair.logRegModel <- function(object, test_data, subset_rows=NULL,
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @param reverse_cues Optional parameter to reverse cues as needed.
-#' @return An object of class singleCueModel.
 #' @export
 #' @seealso
 #' \code{\link{predictPair.singleCueModel}} (via \code{\link{predictPair}}) for prediction.
@@ -819,15 +817,13 @@ predictPair.singleCueModel <- function(object, test_data, subset_rows=NULL,
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @param reverse_cues Optional parameter to reverse cues as needed.
-#' @return An object of class minModel.
 #' @export
 #' @seealso
 #' \code{\link{predictPair.minModel}} (via \code{\link{predictPair}}) for prediction.
 #' @seealso
 #'
 #' @export
-minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=FALSE) {
+minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -861,7 +857,7 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=FALSE)
 #'
 #' @inheritParams stats::coef
 #' @export
-coef.minModel <- function(object, ...) object$linear_coef
+coef.minModel <- function(object, ...) sample(object$linear_coef)
 
 #' Predict which of a pair of rows has a higher criterion, using Minimalist Model.
 #'
@@ -874,7 +870,7 @@ coef.minModel <- function(object, ...) object$linear_coef
 #' @export
 predictPair.minModel <- function(object, test_data, subset_rows=NULL,
                                        verbose_output=TRUE) {
-  predictPairWithWeightsMin(object, test_data, subset_rows, verbose_output)
+  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
 }
 
 

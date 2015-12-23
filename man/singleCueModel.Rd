@@ -13,10 +13,10 @@ singleCueModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE)
 
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 
-\item{reverse_cues}{Optional parameter to reverse cues as needed.}
-}
-\value{
-An object of class singleCueModel.
+\item{reverse_cues}{Optional parameter to reverse cues as needed.  By default, 
+the model will reverse the cue values for cues with cue validity < 0.5, so a cue
+with validity 0 becomes a cue with validity 1.
+Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \description{
 Create a single cue model by specifying columns and a dataset.

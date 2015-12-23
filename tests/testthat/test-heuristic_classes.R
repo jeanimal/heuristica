@@ -1018,20 +1018,28 @@ test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv
 
 # minModel
 
-test_that("minModel 2x3 predictPair forward", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
-  set.seed(1)
-  model <- minModel(train_matrix, 1, c(2,3))
-  expect_equal(c(1,2), model$linear_coef)
-  set.seed(2)
-  out <- predictWithWeightsMin(train_matrix,2:3,model$linear_coef)
-  expect_equal(1, out[1,])
-  expect_equal(2, out[2,])
-  
-  set.seed(4)
-  out <- predictWithWeightsMin(train_matrix,2:3,model$linear_coef)
-  expect_equal(2, out[1,])
-  expect_equal(1, out[2,])
-  
-})
+# test_that("minModel 2x3 predictPair forward", {
+#   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+#   set.seed(1)
+#   model <- minModel(train_matrix, 1, c(2,3))
+#   expect_equal(c(1,2), model$linear_coef)
+#   set.seed(2)
+#   out <- predictWithWeightsMin(train_matrix,2:3,model$linear_coef)
+#   expect_equal(1, out[1,])
+#   expect_equal(2, out[2,])
+#   
+#   set.seed(4)
+#   out <- predictWithWeightsMin(train_matrix,2:3,model$linear_coef)
+#   expect_equal(2, out[1,])
+#   expect_equal(1, out[2,])
+#   
+# })
 
+test_that("minModel predictPair 2x2 fit train_data reverse cue", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,0,1), 2, 2)
+  model <- minModel(train_data, 1, c(2))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+})
