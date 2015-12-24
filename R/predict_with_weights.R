@@ -135,15 +135,7 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   return(out_df)
 }
 
-convertMatrixToPairSigns <- function(test_data, cols_to_fit, subset_rows=NULL) {
-  # Subset by rows and columns and flip cue values as needed.
-  if (is.null(subset_rows)) {
-    sorted_subset_rows <- NULL
-    directed_matrix <- as.matrix(test_data[,cols_to_fit, drop=FALSE])
-  } else {
-    sorted_subset_rows <- sort(subset_rows)
-    directed_matrix <- as.matrix(test_data[sorted_subset_rows,cols_to_fit, drop=FALSE])
-  }
+convertMatrixToPairSigns <- function(test_data, cols_to_fit) {
   directed_matrix <- as.matrix(test_data[,cols_to_fit, drop=FALSE])
   # print(head(directed_matrix))
   # Evaluates pairs of row indexes with third col = 1 is first row is greater, else 0
@@ -160,14 +152,9 @@ convertMatrixToPairSigns <- function(test_data, cols_to_fit, subset_rows=NULL) {
   return(pair_signs)
 }
 
-predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subset_rows=NULL,
+predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights,
                                       verbose_output=TRUE) {
-  if (is.null(subset_rows)) {
-    sorted_subset_rows <- NULL
-  } else {
-    sorted_subset_rows <- sort(subset_rows)
-  }
-  pair_signs <- convertMatrixToPairSigns(test_data, cols_to_fit, subset_rows)
+  pair_signs <- convertMatrixToPairSigns(test_data, cols_to_fit)
   # print(pair_signs)
   # print("combn finished with this many rows and columns:")
   
@@ -187,18 +174,17 @@ predictPairWithWeightsRaw <- function(test_data, cols_to_fit, col_weights, subse
   # Convert predictions to signs, then convert [-1,1] to scale as [0,1].
   predictions_0_1 <- (sign(predictions_neg_pos)+1)*0.5
   if (verbose_output) {
-    verbose_predictions <- pairPredictionDF(predictions_0_1, sorted_subset_rows)
+    verbose_predictions <- pairPredictionDF(predictions_0_1)
   } else {
     verbose_predictions <- "Set verbose_output=True to get this output"
   }
   
-  return(structure(list(predictions=predictions_0_1, subset_rows=sorted_subset_rows,
+  return(structure(list(predictions=predictions_0_1,
                         verbose_predictions=verbose_predictions), class="pairPredictor"))
 }
 
-predictPairWithWeights <- function(object, test_data, subset_rows=NULL,
-                                   verbose_output=TRUE) {
+predictPairWithWeights <- function(object, test_data, verbose_output=TRUE) {
   return(predictPairWithWeightsRaw(test_data, object$cols_to_fit, coef(object),
-                                   subset_rows, verbose_output))
+                                   verbose_output=verbose_output))
 }
 

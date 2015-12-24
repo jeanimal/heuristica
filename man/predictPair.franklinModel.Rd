@@ -4,16 +4,13 @@
 \alias{predictPair.franklinModel}
 \title{Predict which of a pair of rows has a higher criterion, using Franklin's Model.}
 \usage{
-\method{predictPair}{franklinModel}(object, test_data, subset_rows = NULL,
-  verbose_output = TRUE)
+\method{predictPair}{franklinModel}(object, test_data, verbose_output = TRUE)
 }
 \arguments{
 \item{object}{A fitted franklinModel.}
 
 \item{test_data}{The matrix of data to predict on.  As with predict, columns
 must match those used for fitting.}
-
-\item{subset_rows}{Vector of row indices-- all pairs of these will be predicted.}
 
 \item{verbose_output}{Controls how much output is generated, which may slow down
 computations and use more memory.  When automating, set to FALSE, which will turn

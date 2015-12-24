@@ -137,30 +137,6 @@ test_that("ttbModel 3x3 predictPair cue_reversal", {
   expect_equal(1, getPredictiono(out, row1=1, row2=3))
 })
 
-test_that("ttbModel 2x3 predictPair forward subset_rows", {
-  model <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-  expect_equal(c(1,0), model$cue_validities)
-  out <- predictPair(model, matrix(c(5,4,1,0,0,1), 2, 3),
-                     subset_rows=c(1,2))
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(0, getPredictiono(out, row1=2, row2=1))
-  # No other rows.
-  expect_equal(1, nrow(out$predictions))
-})
-
-test_that("ttbModel 2x3 predictPair backward subset_rows", {
-  model <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-  expect_equal(c(1,0), model$cue_validities)
-  out <- predictPair(model, matrix(c(5,4,1,0,0,1), 2, 3),
-                     subset_rows=c(2,1))
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(0, getPredictiono(out, row1=2, row2=1))
-  # No other rows.
-  expect_equal(1, nrow(out$predictions))
-})
-
-#TODO(jean): Test invalid row_pairs.
-
 test_that("ttbModel 3x3 pos pos predictPair forward", {
   model <- ttbModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)

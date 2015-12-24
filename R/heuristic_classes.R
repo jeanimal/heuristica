@@ -13,28 +13,22 @@ heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL
 # Private.  This is just an easy way to share parameter documentation.
 reversingModel <- function(reverse_cues=TRUE) NULL
 
-# TODO(jean): Share row_pairs documentation... or subset_rows if that's what I switch to.
-
 ## New generics ##
 
 #' Generic function to predict which of a pair of rows has a higher criterion.
-#' EXPERIMENTAL and not meant for general use yet.
 #'
 #' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param test_data The matrix of data to predict on.  As with predict, columns
 #'  must match those used for fitting.
-#' @param subset_rows Vector of row indices-- all pairs of these will be predicted.
 #' @param verbose_output Controls how much output is generated, which may slow down
 #'  computations and use more memory.  When automating, set to FALSE, which will turn
 #'  off outputs preced by verbose_.
 #' @return A pairPredictor, which is a structure of a list of
 #'  1) predictions: A vector of probabilities that the first row has a greater criterion.
-#'  2) subset_rows: Echoes the input to help you parse predictions (NULL means all rows used).
-#'  3) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
+#'  2) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
 #'     and (2) in an easily-read form.  Only output if verbose_output = TRUE.
 #' @export
-predictPair <- function(object, test_data, subset_rows=NULL,
-                        verbose_output=TRUE) UseMethod("predictPair")
+predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predictPair")
 
 pairPredictionDFo <- function(object) UseMethod("pairPredictionDFo")
 
@@ -73,33 +67,27 @@ stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
 # TODO(jean): Delete unused experimental functions.
 #
 
-# If subset_rows is NULL, assume predictions were all rows from 1 to some N,
+# Assume predictions were all rows from 1 to some N,
 # and it will back out N.
-pairPredictionMatrix <- function(predictions, subset_rows=NULL) {
+pairPredictionMatrix <- function(predictions) {
   #if (nrow(predictions) == 0) { # It dies here, not with my stop message.
   #  stop("Cannot generate matrix with zero data")
   #}
-  if (is.null(subset_rows)) {
-    num_original_rows <- inferNumOriginalRows(nrow(predictions))
-    row_pairs <- t(combn(num_original_rows, 2))
-  } else {
-    row_index_fetcher <- function(index_pair) c(subset_rows[index_pair[1]],
-                                                subset_rows[index_pair[2]])
-    row_pairs <- t(combn(length(subset_rows), 2, row_index_fetcher))
-  }
+  num_original_rows <- inferNumOriginalRows(nrow(predictions))
+  row_pairs <- t(combn(num_original_rows, 2))
   # Columns are Row1, Row2, and ProbRow1Greater
   out <- cbind(row_pairs, predictions)
   return(out) 
 }
 
-pairPredictionDF<- function(predictions, subset_rows=NULL) {
-  out <- as.data.frame(pairPredictionMatrix(predictions, subset_rows))
+pairPredictionDF<- function(predictions) {
+  out <- as.data.frame(pairPredictionMatrix(predictions))
   names(out) <- c("Row1", "Row2", "ProbRow1Greater")
   return(out)
 }
 
 pairPredictionDFo.pairPredictor <- function(object) {
-  return(pairPredictionDF(object$predictions, object$subset_rows))
+  return(pairPredictionDF(object$predictions))
 }
 
 # Returns just one number.  Assumes you want just the last column.
@@ -136,7 +124,7 @@ getPredictiono <- function(object, row1=NULL, row2=NULL) {
   row_pair <- c(row1, row2)
   #TODO(jeanw): Does this perform a copy?  If so, then shorten it.
   if (is.null(object$verbose_predictions)) {
-    prediction_matrix <- pairPredictionMatrix(object$predictions, object$subset_rows)
+    prediction_matrix <- pairPredictionMatrix(object$predictions)
   } else {
     prediction_matrix <- object$verbose_predictions
   }
@@ -322,9 +310,8 @@ coef.ttbModel <- function(object, ...) object$linear_coef
 #' \code{\link{ttbModel}} for example code.
 #'
 #' @export
-predictPair.ttbModel <- function(object, test_data, subset_rows=NULL,
-                                 verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.ttbModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 ### Dawes Model ###
@@ -421,9 +408,8 @@ predict.dawesModel <- function(object, ...) {
 #' \code{\link{dawesModel}} for example code.
 #'
 #' @export
-predictPair.dawesModel <- function(object, test_data, subset_rows=NULL,
-                                   verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.dawesModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 ### Franklin's Model ###
@@ -504,9 +490,8 @@ predict.franklinModel <- function(object, ...) {
 #' \code{\link{franklinModel}} for example code.
 #'
 #' @export
-predictPair.franklinModel <- function(object, test_data, subset_rows=NULL,
-                                   verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.franklinModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 ### Wrappers for linear regression models ###
@@ -577,9 +562,8 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #' \code{\link{regModel}} for example code.
 #'
 #' @export
-predictPair.regModel <- function(object, test_data, subset_rows=NULL,
-                                 verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.regModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 #' Linear regression (no intercept) wrapper for hueristica
@@ -624,11 +608,9 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #' \code{\link{regNoIModel}} for example code.
 #'
 #' @export
-predictPair.regNoIModel <- function(object, test_data, subset_rows=NULL,
-                                 verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.regNoIModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
-
 #' Logistic Regression model
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
@@ -691,9 +673,8 @@ coef.logRegModel <- function(object, ...) object$linear_coef
 #' \code{\link{logRegModel}} for example code.
 #'
 #' @export
-predictPair.logRegModel <- function(object, test_data, subset_rows=NULL,
-                                    verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.logRegModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 
@@ -751,9 +732,8 @@ coef.singleCueModel <- function(object, ...) object$linear_coef
 #' \code{\link{singleCueModel}} for example code.
 #'
 #' @export
-predictPair.singleCueModel <- function(object, test_data, subset_rows=NULL,
-                                 verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.singleCueModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 #' Minimalist Model
@@ -814,9 +794,8 @@ coef.minModel <- function(object, ...) sample(object$linear_coef)
 #' \code{\link{minModel}} for example code.
 #'
 #' @export
-predictPair.minModel <- function(object, test_data, subset_rows=NULL,
-                                       verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, subset_rows, verbose_output)
+predictPair.minModel <- function(object, test_data, verbose_output=TRUE) {
+  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
 }
 
 

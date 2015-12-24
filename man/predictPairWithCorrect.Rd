@@ -4,16 +4,13 @@
 \alias{predictPairWithCorrect}
 \title{Generates a matrix of predictPair predictions.}
 \usage{
-predictPairWithCorrect(fitted_heuristic_list, test_data, subset_rows = NULL)
+predictPairWithCorrect(fitted_heuristic_list, test_data)
 }
 \arguments{
 \item{fitted_heuristic_list}{List of heuristics that implement the generic function
 predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
-
-\item{subset_rows}{An optional vector of row indices to use in the test_data.  If not
-set, all pairs will be used.  TODO(jean): Implement this!}
 }
 \value{
 Same matrix as predictAlternative but with columns on correctness

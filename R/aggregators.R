@@ -53,13 +53,11 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
 #'  predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.
 #' @param test_data Data to try to predict; must match columns in fit.
-#' @param subset_rows An optional vector of row indices to use in the test_data.  If not
-#'  set, all pairs will be used.  TODO(jean): Implement this!
 #' @return Same matrix as predictAlternative but with columns on correctness
 #' @seealso
 #' \code{\link{predictPair}}
 #' @export
-predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows=NULL) {
+predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
   if (length(fitted_heuristic_list) == 0) {
     stop("No fitted heuristics.")
     # We could allow this if we had a different way to specify criterion_col
@@ -74,7 +72,6 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows
   correct_values <- test_data[,criterion_col]
   row_1_bigger_function <- function(row_pair) 0.5 * (1+sign(correct_values[row_pair[[1]]]
                                                    - correct_values[row_pair[[2]]]))
-  #TODO: Use subset_rows
   correctProb <- as.vector(combn(nrow(test_data), 2, row_1_bigger_function ))
   #TODO: Only verbose will include a matrix with row_pairs
   row_pairs <- t(combn(nrow(test_data), 2))
@@ -82,7 +79,7 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data, subset_rows
   extendedMatrix <- data.frame(resultMatrix)
   #TODO(jean): Make this work for matrix, not just data.frame.
   for (heuristic in fitted_heuristic_list) {
-    predictMatrix <- predictPair(heuristic, test_data, subset_rows=subset_rows, verbose_output=FALSE)$predictions
+    predictMatrix <- predictPair(heuristic, test_data)$predictions
     # TODO(jean): This assumes row_pairs match up.  Is that a safe assumption?
     model_name <- class(heuristic)[1]
     extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])

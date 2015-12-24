@@ -2,18 +2,15 @@
 % Please edit documentation in R/heuristic_classes.R
 \name{predictPair}
 \alias{predictPair}
-\title{Generic function to predict which of a pair of rows has a higher criterion.
-EXPERIMENTAL and not meant for general use yet.}
+\title{Generic function to predict which of a pair of rows has a higher criterion.}
 \usage{
-predictPair(object, test_data, subset_rows = NULL, verbose_output = TRUE)
+predictPair(object, test_data, verbose_output = TRUE)
 }
 \arguments{
 \item{object}{The object that implements predictPair, e.g. a ttb model.}
 
 \item{test_data}{The matrix of data to predict on.  As with predict, columns
 must match those used for fitting.}
-
-\item{subset_rows}{Vector of row indices-- all pairs of these will be predicted.}
 
 \item{verbose_output}{Controls how much output is generated, which may slow down
 computations and use more memory.  When automating, set to FALSE, which will turn
@@ -22,12 +19,10 @@ off outputs preced by verbose_.}
 \value{
 A pairPredictor, which is a structure of a list of
  1) predictions: A vector of probabilities that the first row has a greater criterion.
- 2) subset_rows: Echoes the input to help you parse predictions (NULL means all rows used).
- 3) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
+ 2) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
     and (2) in an easily-read form.  Only output if verbose_output = TRUE.
 }
 \description{
 Generic function to predict which of a pair of rows has a higher criterion.
-EXPERIMENTAL and not meant for general use yet.
 }
 
