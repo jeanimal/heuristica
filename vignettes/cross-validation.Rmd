@@ -55,12 +55,16 @@ testS <- nrow(city_population)-trainS
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
-crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, reps) {
+crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, reps, max_test_size) {
   results <- vector()
   for ( i in 1:reps) {
   
     train <- sample(1:nrow(x),train_size)
     test <- setdiff(1:nrow(x),train)
+    # Keep test set a constant size of 8 for comparable statistics.
+    test_trim_size <- min(max_test_size, nrow(test))
+    test <- head(test, test_trim_size)
+    #print(paste("iteration", i, " nrow(test):", length(test)))
 
     training_set <- x[train,]
     test_set <- x[test,]
@@ -84,9 +88,10 @@ Then we can just run this function to calculate predictive accuracy for differen
 ```{r}
 accuracy<-vector()
 reps <- 5
+max_test_size <- 8 # Max number of rows in test set to keep stats comparable
 for (s in 1:length(trainS)){
   train_size <- trainS[s]
-  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps))
+  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps, max_test_size))
 }
 ```
 Finally, let's plot the results:
