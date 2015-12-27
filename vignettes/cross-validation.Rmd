@@ -35,13 +35,14 @@ Now we can load the German cities dataset which is included in the heuristica pa
 
 ```{r}
 data(city_population)
+data_set <- city_population
 ```
 
 We remove the first and second columns which contain data that we do not need for the models.
 Then we store the position of the criterion values and the predictor variables.
 ```{r}
 criterion_col <- 3
-cols_to_fit <- 4:ncol(city_population)
+cols_to_fit <- 4:ncol(data_set)
 ```
 Let's enter the models we want to test:
 ```{r}
@@ -50,8 +51,8 @@ vec_of_models <-c(ttbModel, dawesModel, franklinModel, regModel, logRegModel)
 Next we define the size of the training and test sets.
 ```{r}
 trainVec <- seq(0.1,0.9,0.1)
-trainS <- round(nrow(city_population)*trainVec)
-testS <- nrow(city_population)-trainS
+trainS <- round(nrow(data_set)*trainVec)
+testS <- nrow(data_set)-trainS
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
@@ -91,7 +92,7 @@ reps <- 5
 max_test_size <- 8 # Max number of rows in test set to keep stats comparable
 for (s in 1:length(trainS)){
   train_size <- trainS[s]
-  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, city_population, train_size, reps, max_test_size))
+  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps, max_test_size))
 }
 ```
 Finally, let's plot the results:
