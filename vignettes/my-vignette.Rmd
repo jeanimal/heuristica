@@ -23,7 +23,7 @@ To get the github version of heuristica:
 #    -- OR --
 # devtools::install_github("jeanimal/heuristica")
 #    -- OR --
-devtools::load_all()
+# devtools::load_all()
 library("heuristica")
 ```
 
