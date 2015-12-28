@@ -62,9 +62,9 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
   
     train <- sample(1:nrow(x),train_size)
     test <- setdiff(1:nrow(x),train)
-    # Keep test set a constant size of 8 for comparable statistics.
-    test_trim_size <- min(max_test_size, nrow(test))
-    test <- head(test, test_trim_size)
+    # Keep test set a constant size for comparable statistics.
+    # Note that head will use all data if it has less than max_test_size
+    test <- head(test, max_test_size)
     #print(paste("iteration", i, " nrow(test):", length(test)))
 
     training_set <- x[train,]
