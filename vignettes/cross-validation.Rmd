@@ -71,9 +71,9 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     test_set <- x[test,]
 
     models<-list()
-    y=0
+    y <- 0
     for (mod in vec_of_models) { #fit the models to the training_set
-      y=y+1
+      y <- y+1
       models[[y]] <- mod(training_set, criterion_col, cols_to_fit)
     }
 
