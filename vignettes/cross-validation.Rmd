@@ -61,7 +61,6 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     # Keep test set a constant size for comparable statistics.
     # Note that head will use all data if it has less than max_test_size
     test <- head(test, max_test_size)
-    #print(paste("iteration", i, " length(test):", length(test)))
 
     training_set <- x[train,]
     test_set <- x[test,]
@@ -75,7 +74,7 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
 
     #calculate percentage of correct predictions
     pctCorr <- pctCorrectOfPredictPair(models, test_set)
-    results <- rbind(results,pctCorr)
+    results <- rbind(results, pctCorr)
   }
 
   # Predictions of na are equivalent to guessing, which is 50% correct.
