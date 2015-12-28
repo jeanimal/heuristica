@@ -31,19 +31,15 @@ First let's load the heuristica package to get the heuristics we will compare.  
 library("heuristica")
 ```
 
-Now we can load the German cities dataset which is included in the heuristica package.
+Now we can load the German cities dataset which is included in the heuristica package.  The criterion column may change depending on your data set, so set it correctly!
 
 ```{r}
 data(city_population)
 data_set <- city_population
-```
-
-We remove the first and second columns which contain data that we do not need for the models.
-Then we store the position of the criterion values and the predictor variables.
-```{r}
 criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
+
 Let's enter the models we want to test:
 ```{r}
 vec_of_models <-c(ttbModel, dawesModel, franklinModel, regModel, logRegModel)
