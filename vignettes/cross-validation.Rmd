@@ -60,8 +60,8 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
   results <- vector()
   for ( i in 1:reps) {
   
-    train <- sample(1:nrow(x),train_size)
-    test <- setdiff(1:nrow(x),train)
+    train <- sample(1:nrow(x), train_size)
+    test <- setdiff(1:nrow(x), train)
     # Keep test set a constant size for comparable statistics.
     # Note that head will use all data if it has less than max_test_size
     test <- head(test, max_test_size)
