@@ -82,7 +82,10 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     results <- rbind(results,pctCorr)
   }
 
-  return (colMeans(results,na.rm=T))
+  # Predictions of na are equivalent to guessing, which is 50% correct.
+  # TODO(jean): Handle this case in pctCorrectOfPredictPair, not here.
+  results[is.na(results)] <- 0.5
+  return (colMeans(results))
 }  
 ```
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
