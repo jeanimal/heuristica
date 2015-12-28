@@ -7,7 +7,7 @@
 pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data, e.g. ttbBinModel.}
+\item{fitted_heuristic_list}{A list of heuristics already fitted to data, e.g. ttbModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 }

@@ -131,7 +131,7 @@ getPredictiono <- function(object, row1=NULL, row2=NULL) {
   return(getPrediction_raw(prediction_matrix, row_pair))
 }
 
-### TTB helper functions ###
+### Helper functions ###
 
 # Private for now. Will export and test when I settle on a name.
 reverseAsNeeded <- function(cue_validities) {
@@ -139,102 +139,6 @@ reverseAsNeeded <- function(cue_validities) {
   cue_directions <- sign(cue_validities - 0.5)
   structure(list(cue_validities_with_reverse=cue_validities_with_reverse,
                  cue_directions=cue_directions))
-}
-
-###  Take the Best binary (ttbBinModel) ###
-
-#' Take The Best for binary cues
-#'
-#' An implementation of the Take The Best heuristic for binary cues.
-#' It sorts cues in order of \code{\link{cueValidity}}, making a decision based on the first cue that
-#' discriminates (has differing values on the two objects).
-#' Accepting only binary cues allows it to implement the predict function.
-#' Warning: it will not error if you give it non-binary (real-valued) cues.
-#' 
-#' @inheritParams heuristicaModel
-#' @inheritParams reversingModel
-#'
-#' @return An object of \code{\link[base]{class}} ttbBinModel.  This is a list containing at least the following components:
-#'   \itemize{
-#'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
-#'   }
-#'
-#' @examples
-#' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-#' ttb <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-#' ## Outputs predicted values for the first and second values, but Take The Best
-#' ## is only trying to achieve sort order, so this makes a correct prediction. 
-#' predict(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
-#' ## But this input results in an incorrect prediction:
-#' predict(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
-#'
-#' @seealso
-#' \code{\link{predict.ttbBinModel}} (via \code{\link[stats]{predict}}) for prediction.
-#' @seealso
-#' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
-#'
-#' @export
-ttbBinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
-  if (reverse_cues) {
-    reverse_info = reverseAsNeeded(cue_validities)
-    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
-    cue_directions <- reverse_info$cue_directions
-  } else {
-    cue_validities_with_reverse <- cue_validities
-    cue_directions <- rep(1, length(cue_validities_with_reverse))
-  }
-  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
-  # Reverse ranks so first is last.
-  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
-  linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
-  linear_coef <- cue_directions * linear_coef
-  # Need to save fit_predictions in case user calls predict without test_data.
-  fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
-  fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cue_validities,
-                 linear_coef=linear_coef, fit_predictions=fit_predictions,
-                 fit_accuracy=fit_accuracy), 
-            class="ttbBinModel")
-}
-
-# TODO: Make this private.  The external world need not know the implementation actual uses a linear model
-# under the hood.  However, for now I need it until I get predict working correctly for a named m_test input.
-#' @export
-coef.ttbBinModel <- function(object, ...) object$linear_coef
-
-#' Generates predictions for Take The Best with binary cues
-#'
-#' Implementation of \code{\link[stats]{predict}} for ttbBinModel,
-#' Take The Best with binary cues.
-#'
-#' @param object A ttbBinModel.
-#' @param ... Normally this would be the test data. 
-#'  It is used to predict and can be a matrix or data.frame.  
-#'  It must have the same cols_to_fit indices as those used in train_data.
-#'
-#' @return An N x 1 matrix of predicted values, or a list if there was only one cue.
-#'  Only the sort order of these is relevant for Take The Best.
-#' 
-#' @seealso
-#' \code{\link{ttbBinModel}} for example code.
-#'
-#' @export
-# Under the hood, TTB is implemented as a linear prediction with exponentiall-decaying weights.
-# This is just because it was more convenient to code it that way in R.
-# The output is equivalent to the Take The Best model description.
-predict.ttbBinModel <- function(object, ...) {
-  args <- eval(substitute(alist(...)))
-  if (length(args)==0) {
-    return(object$fit_predictions)
-  } else if (length(args)==1) {
-    test_data <- eval(args[[1]])
-    return(predictWithWeights(test_data, object$cols_to_fit, object$linear_coef))
-  } else {
-    stop("Expected only one unevaluated argument (test_data) but got " +
-          length(args) + ":" + args)
-  }
 }
 
 ### Take The Best ###

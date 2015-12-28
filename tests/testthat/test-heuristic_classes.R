@@ -2,87 +2,6 @@ context("heuristic_classes")
 
 # require('testthat')
 
-### Take The Best (ttbBinModel) ###
-
-test_that("ttbBinModel 2x2 pos", {
-  model <- ttbBinModel(matrix(c(5,4,1,0), 2, 2), 1, c(2))
-  expect_equal(c(1),  model$cue_validities) 
-  expect_equal(1,  coef(model)[[1]]) 
-  expect_equal(1, length(coef(model))) 
-})
-
-test_that("ttbBinModel 2x2 neg", {
-  model <- ttbBinModel(matrix(c(5,4,0,1), 2, 2), 1, c(2), reverse_cues=FALSE)
-  expect_equal(c(0),  model$cue_validities) 
-  expect_equal(1,  coef(model)[[1]])  
-  expect_equal(1, length(coef(model))) 
-})
-
-test_that("ttbBinModel 2x3 pos neg", {
-  m <- matrix(c(5,4,1,0,0,1), 2, 3)
-  model <- ttbBinModel(m, 1, c(2,3), reverse_cues=FALSE)
-  expect_equal(c(1,0),  model$cue_validities) 
-  expect_equal(2,  coef(model)[[1]])  
-  expect_equal(1,  coef(model)[[2]])  
-  expect_equal(2, length(coef(model))) 
-})
-
-test_that("ttbBinModel 2x3 pos neg data.frame", {
-  df <- data.frame(criterion=c(5,4), cue1=c(1,0), cue2=c(0,1))
-  model <- ttbBinModel(df, 1, c(2,3), reverse_cues=FALSE)
-  expect_equal(c(cue1=1, cue2=0), model$cue_validities)
-  # Below I test the inner implementation.  Maybe I shouldn't.
-  expect_equal(2,  coef(model)[["cue1"]])
-  expect_equal(1,  coef(model)[["cue2"]])
-  expect_equal(2, length(coef(model))) 
-})
-
-test_that("ttbBinModel 2x3 neg pos", {
-  m <- matrix(c(5,4,0,1,1,0), 2, 3)
-  model <- ttbBinModel(m, 1, c(2,3), reverse_cues=FALSE)
-  expect_equal(c(0,1),  model$cue_validities) 
-  expect_equal(1,  coef(model)[[1]])  
-  expect_equal(2,  coef(model)[[2]])  
-  expect_equal(2, length(coef(model))) 
-})
-
-test_that("ttbBinModel 2x3 pos neg (col 3 not fit)", {
-  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2))
-  expect_equal(c(1),  model$cue_validities) 
-  expect_equal(1,  coef(model)[[1]])  
-  expect_equal(1, length(coef(model))) 
-})
-
-test_that("ttbBinModel 2x3 pos neg (col 2 not fit)", {
-  model <- ttbBinModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(3), reverse_cues=FALSE)
-  expect_equal(c(0),  model$cue_validities) 
-  expect_equal(1,  coef(model)[[1]])  
-  expect_equal(1, length(coef(model))) 
-})
-
-test_that("ttbBinModel 3x3 pos neg", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,0,0,1), 3, 3), 1, c(2,3), reverse_cues=FALSE)
-  expect_equal(c(1,0),  model$cue_validities) 
-  expect_equal(2,  coef(model)[[1]])  
-  expect_equal(1,  coef(model)[[2]]) 
-  expect_equal(2, length(coef(model))) 
-})
-
-test_that("ttbBinModel 3x3 pos mixed", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,0,1), 3, 3), 1, c(2,3), reverse_cues=FALSE)
-  expect_equal(c(1,0.5),  model$cue_validities) 
-  expect_equal(2,  coef(model)[[1]])  
-  expect_equal(1,  coef(model)[[2]]) 
-  expect_equal(2, length(coef(model)))  
-})
-
-test_that("ttbBinModel 3x3 names shifted criterion", {
-  df <- data.frame(matrix(c(99, 99, 99, 5,4,3,1,0,1), 3, 3))
-  names(df) <- c('Garbage', 'Criterion', 'Cue')
-  model <- ttbBinModel(df, 2, c(3))
-  expect_equal(c(0.5), unname(model$cue_validities))
-  expect_equal(c('Cue'), names(model$cue_validities))
-})
 
 # ttbModel
 
@@ -199,33 +118,6 @@ test_that("ttbModel 4x4 predictPair first cue dominates", {
   out <- predictPair(model, train_data)
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
   expect_equal(0, getPredictiono(out, row1=4, row2=3))
-})
-
-# Most testing of predict is with predictWithWeights, so here I am
-# just making sure it is correctly wired into the ttbBinModel.
-# ttb only guarantees the ordering of its predictions, not values, 
-# so only the ordering is tested.
-test_that("ttbBinModel 3x3 pos pos predict", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
-  expect_equal(c(1,1),  model$cue_validities) 
-  good <- predict(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
-  expect_more_than(good[1,1], good[2,1])
-  expect_more_than(good[2,1], good[3,1])
-  expect_equal(3, length(good))
-  bad <- predict(model, matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
-  expect_less_than(bad[1,1], bad[2,1])
-  expect_less_than(bad[2,1], bad[3,1])
-  expect_equal(3, length(bad))
-})
-
-test_that("ttbBinModel 3x3 predict without test_data", {
-  model <- ttbBinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
-  expect_equal(c(1,1),  model$cue_validities) 
-  good <- predict(model)
-  expect_more_than(good[1,1], good[2,1])
-  expect_more_than(good[2,1], good[3,1])
-  expect_equal(3, length(good))
-  expect_equal(model$fit_predictions, good)
 })
 
 ### ttbModel ###
@@ -674,6 +566,23 @@ test_that("regModel predictPair with intercept (check bug)", {
   # But in the past there was a bug where the intercept weight was
   # applied to the criterion column so reg was always correct!
   expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+})
+
+# Most testing of predict is with predictWithWeights, so here I am
+# just making sure it is correctly wired into the regModel.
+
+test_that("regModel 3x3 pos pos predict", {
+  train_data <- matrix(c(5,4,3,1,0,0,1,1,0), 3, 3)
+  model <- regModel(train_data, 1, c(2,3))
+  good <- predict(model, as.data.frame(train_data))
+  expect_more_than(good[[1]], good[[2]])
+  expect_more_than(good[[2]], good[[3]])
+  expect_equal(3, length(good))
+  bad <- predict(model, as.data.frame(
+    matrix(c(5,4,3,0,1,1,0,0,1), 3, 3)))
+  expect_less_than(bad[[1]], bad[[2]])
+  expect_less_than(bad[[2]], bad[[3]])
+  expect_equal(3, length(bad))
 })
 
 ### regNoIModel ###

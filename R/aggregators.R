@@ -143,7 +143,7 @@ createPctCorrectsFromErrors <- function(errors_raw) {
 #' 3. Calculate overall percent correct for each heuristic.
 #' Assumes the heuristics passed in have already been fitted to train_data.
 #'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbBinModel.
+#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
 #' @export
