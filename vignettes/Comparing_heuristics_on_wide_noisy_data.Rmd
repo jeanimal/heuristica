@@ -1,6 +1,6 @@
 ---
 title: "Comparing heuristics on wide, noisy data"
-author: "Jean Whitmore"
+author: "Jean Czerlinski Whitmore"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
