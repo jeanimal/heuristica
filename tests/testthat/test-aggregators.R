@@ -24,6 +24,17 @@ test_that("pctCorrectOfPredictPair -1 prediction bug", {
   expect_equal(data.frame(ttbModel=c(0)), results)
 })
 
+test_that("pctCorrectOfPredictPair -1 prediction bug reverse rows", {
+  # Specify enough of a ttb model for prediction.
+  fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
+                               linear_coef=c(4,2,1)),
+                          class="ttbModel")
+  test_data <- data.frame(criterion=rev(c(33200, 36184)), a=rev(c(5,3)),
+                          b=rev(c(976,1437)), c=rev(c(50, 49.74)))
+  results <- pctCorrectOfPredictPair(list(fitted_ttb), test_data)
+  expect_equal(data.frame(ttbModel=c(0)), results)
+})
+
 test_that("end to end test ttb vs. logistic regression", {
   train_data <- matrix(c(5,4,3,1,0,0), 3, 2)
   ttb <- ttbModel(train_data, 1, c(2))
