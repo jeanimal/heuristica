@@ -101,7 +101,7 @@ library(reshape)
 library(ggplot2)
 
 p <- melt(accuracy)
-p$X1 <- rep(seq(10,90,10),ncol(accuracy))
+p$X1 <- rep(100*trainVec, ncol(accuracy))
 colnames(p)<-c("size","model","value")
 
 ggplot(p, aes(x=size, y=value, colour=model)) + 
