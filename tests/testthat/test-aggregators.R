@@ -79,6 +79,26 @@ test_that("end to end test ttb vs. logistic regression data.frame", {
   expect_equal(1, nrow(pct_correct_df))
 })
 
+# Warning: This test is NOT self-contained.  It relies on the provided
+# city_population data set.
+test_that("city_population ttb vs. regression on dirty four cities", {
+  ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+  reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+
+  pct_correct_df <- pctCorrectOfPredictPair(list(ttb, reg),
+                                            city_population[c(27,30,52,68),])
+  expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
+  expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
+
+  # Confirm same results even with a different order of rows.
+  pct_correct_df <- pctCorrectOfPredictPair(list(ttb, reg),
+                                            city_population[c(68,52,30,27),])
+  expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
+  expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
+
+  # Now try on reversed rows
+})
+
 test_that("getPredictionRow all good", {
   pred_df <- data.frame(Row1=c(1,2), Row2=c(2,1), A=c(10,11), B=c(30, 31))
 #  Row1 Row2  A   B
