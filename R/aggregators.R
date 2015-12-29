@@ -44,7 +44,7 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
   return(df[(df$row1==row1) & (df$row2==row2),])
 }
 
-#' Generates a matrix of predictPair predictions.
+#' Generates a matrix of predictPair predictions plus correct output.
 #'
 #' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
 #' the test matrix, then runs all the heuristics in order, generating a column of
@@ -79,7 +79,7 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
   extendedMatrix <- data.frame(resultMatrix)
   #TODO(jean): Make this work for matrix, not just data.frame.
   for (heuristic in fitted_heuristic_list) {
-    predictMatrix <- predictPair(heuristic, test_data)$predictions
+    predictMatrix <- predictPairMatrix(heuristic, test_data)
     # TODO(jean): This assumes row_pairs match up.  Is that a safe assumption?
     model_name <- class(heuristic)[1]
     extendedMatrix <- cbind(extendedMatrix, model=predictMatrix[,ncol(predictMatrix)])
@@ -135,7 +135,7 @@ createPctCorrectsFromErrors <- function(errors_raw) {
   return(newDf)
 }
 
-#' Runs predictPair for fitted heuristics to get percent correct on test.
+#' Runs predictPair for all row pairs for all fitted heuristics to get percent correct.
 #'
 #' Combines other functons to 
 #' 1. Create predictions of alternatives for all the heuristics in the list.

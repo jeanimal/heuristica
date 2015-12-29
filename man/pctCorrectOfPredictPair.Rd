@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{pctCorrectOfPredictPair}
 \alias{pctCorrectOfPredictPair}
-\title{Runs predictPair for fitted heuristics to get percent correct on test.}
+\title{Runs predictPair for all row pairs for all fitted heuristics to get percent correct.}
 \usage{
 pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }

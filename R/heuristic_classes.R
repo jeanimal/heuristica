@@ -222,12 +222,23 @@ predictRoot.ttbModel <- function(object, row1, row2) {
   0.5 * (direction_plus_minus_1 + 1)
 }
 
-predictPairMatrix <- function(object, test_data, verbose_output=TRUE) {
+#' Run predictPair for all row pairs in test_data to generate a one-column matrix.
+#'
+#' @param object A fitted model that implements predictRoot.
+#' @param test_data A matrix of data frame or data with object$cols_to_fit columns.
+#' @return An one-column matrix.  Each row represents a pair of rows.  Use get
+#'   prediction functions to find the rows if you care.  (TODO(jean): Document that
+#'   more-- give examples, too.)
+#'
+#' @seealso
+#' \code{\link{predictRoot}} for the function the fitted model must implement.
+#'
+#' @export
+predictPairMatrix <- function(object, test_data) {
   test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
   pair_evaluator_fn <- function(index_pair) predictRoot(object,
                                                         test_data_trim[index_pair[1],],
                                                         test_data_trim[index_pair[2],])
-  predictions <- t(as.matrix(combn(nrow(test_data_trim), 2, pair_evaluator_fn)))
   if (length(object$cols_to_fit) > 1) {
     # With transpose.
     predictions <- as.matrix(combn(nrow(test_data), 2, pair_evaluator_fn))

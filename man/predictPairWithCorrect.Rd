@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{predictPairWithCorrect}
 \alias{predictPairWithCorrect}
-\title{Generates a matrix of predictPair predictions.}
+\title{Generates a matrix of predictPair predictions plus correct output.}
 \usage{
 predictPairWithCorrect(fitted_heuristic_list, test_data)
 }
