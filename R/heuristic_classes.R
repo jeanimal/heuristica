@@ -222,6 +222,11 @@ predictRoot.ttbModel <- function(object, row1, row2) {
   0.5 * (direction_plus_minus_1 + 1)
 }
 
+# private.  But I might re-use it.
+pairMatrix <- function(num_row, pair_evaluator_fn) {
+  as.matrix(combn(num_row, 2, pair_evaluator_fn))
+}
+
 #' Run predictPair for all row pairs in test_data to generate a one-column matrix.
 #'
 #' @param object A fitted model that implements predictRoot.
@@ -239,14 +244,7 @@ predictPairMatrix <- function(object, test_data) {
   pair_evaluator_fn <- function(index_pair) predictRoot(object,
                                                         test_data_trim[index_pair[1],],
                                                         test_data_trim[index_pair[2],])
-  if (length(object$cols_to_fit) > 1) {
-    # With transpose.
-    predictions <- as.matrix(combn(nrow(test_data), 2, pair_evaluator_fn))
-  } else {
-    # Force into matrix and do not transpose.
-    predictions <-as.matrix(combn(nrow(test_data), 2, pair_evaluator_fn))
-  }
-  return(predictions)
+  pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
 }
 
 #' Predict which of a pair of rows has a higher criterion, using Take The Best.
