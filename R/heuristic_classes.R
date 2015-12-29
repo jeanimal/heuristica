@@ -222,17 +222,6 @@ predictRoot.ttbModel <- function(object, row1, row2) {
   0.5 * (direction_plus_minus_1 + 1)
 }
 
-applyFunctionToRowPairs2 <- function(test_data, pair_evaluator_function) {
-  # Below I correct for R's differing output format based on number of columns.
-  if (ncol(test_data) > 1) {
-    # With transpose.
-    return(t(as.matrix(combn(nrow(test_data), 2, pair_evaluator_function))))
-  } else {
-    # Force into matrix and do not transpose.
-    return(as.matrix(combn(nrow(test_data), 2, pair_evaluator_function)))
-  }
-}
-
 predictPairMatrix <- function(object, test_data, verbose_output=TRUE) {
   test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
   pair_evaluator_fn <- function(index_pair) predictRoot(object,
