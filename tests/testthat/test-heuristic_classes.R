@@ -3,7 +3,7 @@ context("heuristic_classes")
 # require('testthat')
 
 
-# ttbModel
+# ttbModel on binary cues
 
 test_that("ttbModel 2x3 predictPair forward", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
@@ -14,7 +14,7 @@ test_that("ttbModel 2x3 predictPair forward", {
   expect_equal(0, getPredictiono(out, row1=2, row2=1))
   # No other rows.
   expect_equal(1, nrow(out$predictions))
-  expect_equal(1, nrow(out$verbose_predictions))
+  #expect_equal(1, nrow(out$verbose_predictions))
 })
 
 test_that("ttbModel 2x3 predictPair backward cues", {
@@ -28,7 +28,7 @@ test_that("ttbModel 2x3 predictPair backward cues", {
   expect_equal(1, getPredictiono(out, row1=2, row2=1))
   # No other rows.
   expect_equal(1, nrow(out$predictions))
-  expect_equal(1, nrow(out$verbose_predictions))
+  #expect_equal(1, nrow(out$verbose_predictions))
 })
 
 test_that("ttbModel 2x2 predictPair cue_reversal", {
@@ -40,6 +40,17 @@ test_that("ttbModel 2x2 predictPair cue_reversal", {
   expect_equal(0, getPredictiono(out, row1=2, row2=1))
   # No other rows.
   expect_equal(1, nrow(out$predictions))
+})
+
+test_that("ttbModel 3x3 predictPair forward", {
+  train_matrix <- matrix(c(5,4,3,1,0,1,1,0,0), 3, 3)
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_equal(c(0.5, 1), model$cue_validities)
+  out <- predictPair(model, train_matrix)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2))
+  expect_equal(1, getPredictiono(out, row1=1, row2=3))
+  # Cue in column 2 discriminates but validity is 0.5, so not used.
+  expect_equal(0.5, getPredictiono(out, row1=2, row2=3))
 })
 
 test_that("ttbModel 3x3 predictPair cue_reversal", {
@@ -119,8 +130,6 @@ test_that("ttbModel 4x4 predictPair first cue dominates", {
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
   expect_equal(0, getPredictiono(out, row1=4, row2=3))
 })
-
-### ttbModel ###
 
 test_that("ttbModel 4x4 predictPair first cue dominates", {
   train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
@@ -223,6 +232,8 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue dat
   expect_equal(1, getPredictiono(out, row1=3, row2=4))
   expect_equal(0, getPredictiono(out, row1=4, row2=3))
 })
+
+### ttbModel on real-valued cues ###
 
 test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates reverse cue data.frame",
           "non-binary small diffs, big diffs, small diffs"), {
@@ -585,6 +596,19 @@ test_that("regModel 3x3 pos pos predict", {
   expect_equal(3, length(bad))
 })
 
+# Warning: Not a self-contained test.  Uses city_population.
+test_that("regModel predictPair city_population", {
+  tol <- 0.0001
+  model <- regModel(city_population, 3, c(4:ncol(city_population)))
+  out <- predictPair(model, city_population)
+  # Hamburg (row 2) and Munich (row 3) differ only on the license plate, which has a
+  # coefficient of about 25,000.
+  # There is an intercept of 75k, but you can ignore it in pairs.
+  # So because Hamburg does not have a license plate, the prob it has a greater
+  # population should be zero.
+  expect_equal(0, getPredictiono(out, row1=2, row2=3), tolerance=tol)
+})
+
 ### regNoIModel ###
 
 test_that("regNoIModel predictPair", {
@@ -608,7 +632,7 @@ test_that("logRegModel predictPair 2x2 fit train_data", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is only one unique pair.
-  expect_equal(1, nrow(out$verbose_predictions))
+  expect_equal(1, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPair 2x2 fit train_data reverse cue", {
@@ -619,7 +643,7 @@ test_that("logRegModel predictPair 2x2 fit train_data reverse cue", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is only one unique pair.
-  expect_equal(1, nrow(out$verbose_predictions))
+  expect_equal(1, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPair 2x2,3x2 all correct", {
@@ -636,7 +660,7 @@ test_that("logRegModel predictPair 2x2,3x2 all correct", {
   expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=tol)
   expect_equal(0.5, getPredictiono(out, row1=3, row2=2), tolerance=tol)
   # There are three unique pairs.
-  expect_equal(3, nrow(out$verbose_predictions))
+  expect_equal(3, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPair 2x2,3x2 all incorrect", {
@@ -652,7 +676,7 @@ test_that("logRegModel predictPair 2x2,3x2 all incorrect", {
   expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=tol)
   expect_equal(0.5, getPredictiono(out, row1=3, row2=2), tolerance=tol)
   # There are three unique pairs.
-  expect_equal(3, nrow(out$verbose_predictions))
+  expect_equal(3, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPair 2x3 fit train_data", {
@@ -663,7 +687,7 @@ test_that("logRegModel predictPair 2x3 fit train_data", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is one unique pair.
-  expect_equal(1, nrow(out$verbose_predictions))
+  expect_equal(1, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPairg 2x3 fit train_data 2nd cue useless", {
@@ -674,7 +698,7 @@ test_that("logRegModel predictPairg 2x3 fit train_data 2nd cue useless", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is one unique pair.
-  expect_equal(1, nrow(out$verbose_predictions))
+  expect_equal(1, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPair 2x3 fit train_data 2nd cue reverse", {
@@ -685,7 +709,7 @@ test_that("logRegModel predictPair 2x3 fit train_data 2nd cue reverse", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is one unique pair.
-  expect_equal(1, nrow(out$verbose_predictions))
+  expect_equal(1, nrow(out$predictions))
 })
 
 test_that("logRegModel predictPair 2x3 fit train_data 1st cue useless", {
@@ -696,7 +720,7 @@ test_that("logRegModel predictPair 2x3 fit train_data 1st cue useless", {
   expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
   expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
   # There is one unique pair.
-  expect_equal(1, nrow(out$verbose_predictions))
+  expect_equal(1, nrow(out$predictions))
 })
 
 test_that("logRegModel pctCorrectOfPredictPair", {

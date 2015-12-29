@@ -30,6 +30,16 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 #' @export
 predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predictPair")
 
+#' Generic function to predict which of a pair of rows has a higher criterion.
+#'
+#' @param object The object that implements predictPair, e.g. a ttb model.
+#' @param row1 The first row of cues (from cols_to_fit columns, based on object).
+#' @param row2 The second row
+#' @return A value from 0 to 1, representing the probability that row1's criterion
+#'   is greater than row2's criterion.
+#' @export
+predictRoot <- function(object, row1, row2)  UseMethod("predictRoot")
+
 pairPredictionDFo <- function(object) UseMethod("pairPredictionDFo")
 
 #' Extract prediction from output of predictPair for {row1, row2}.
@@ -205,6 +215,40 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #' @export
 coef.ttbModel <- function(object, ...) object$linear_coef
 
+predictRoot.ttbModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
+applyFunctionToRowPairs2 <- function(test_data, pair_evaluator_function) {
+  # Below I correct for R's differing output format based on number of columns.
+  if (ncol(test_data) > 1) {
+    # With transpose.
+    return(t(as.matrix(combn(nrow(test_data), 2, pair_evaluator_function))))
+  } else {
+    # Force into matrix and do not transpose.
+    return(as.matrix(combn(nrow(test_data), 2, pair_evaluator_function)))
+  }
+}
+
+predictPairMatrix <- function(object, test_data, verbose_output=TRUE) {
+  test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
+  pair_evaluator_fn <- function(index_pair) predictRoot(object,
+                                                        test_data_trim[index_pair[1],],
+                                                        test_data_trim[index_pair[2],])
+  predictions <- t(as.matrix(combn(nrow(test_data_trim), 2, pair_evaluator_fn)))
+  if (length(object$cols_to_fit) > 1) {
+    # With transpose.
+    predictions <- as.matrix(combn(nrow(test_data), 2, pair_evaluator_fn))
+  } else {
+    # Force into matrix and do not transpose.
+    predictions <-as.matrix(combn(nrow(test_data), 2, pair_evaluator_fn))
+  }
+  return(predictions)
+}
+
 #' Predict which of a pair of rows has a higher criterion, using Take The Best.
 #'
 #' @param object A fitted ttbModel.
@@ -214,9 +258,11 @@ coef.ttbModel <- function(object, ...) object$linear_coef
 #' \code{\link{ttbModel}} for example code.
 #'
 #' @export
-predictPair.ttbModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+predictPair.ttbModel  <- function(object, test_data, verbose_output=TRUE) {
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
+
 
 ### Dawes Model ###
 
@@ -303,6 +349,13 @@ predict.dawesModel <- function(object, ...) {
   }
 }
 
+predictRoot.dawesModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 #' Predict which of a pair of rows has a higher criterion, using Dawes' Model.
 #'
 #' @param object A fitted dawesModel.
@@ -313,7 +366,8 @@ predict.dawesModel <- function(object, ...) {
 #'
 #' @export
 predictPair.dawesModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 ### Franklin's Model ###
@@ -385,6 +439,13 @@ predict.franklinModel <- function(object, ...) {
   }
 }
 
+predictRoot.franklinModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 #' Predict which of a pair of rows has a higher criterion, using Franklin's Model.
 #'
 #' @param object A fitted franklinModel.
@@ -395,7 +456,8 @@ predict.franklinModel <- function(object, ...) {
 #'
 #' @export
 predictPair.franklinModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 ### Wrappers for linear regression models ###
@@ -457,6 +519,21 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   return(model)
 }
 
+predictRoot.regModel <- function(object, row1, row2) {
+  col_weights_clean <- coef(object)
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  # Because the intercept is 0 for row1 and ro2, ignore it.
+  if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+    col_weights_clean <- col_weights_clean[-intercept_index]
+  }
+  direction_plus_minus_1 <- sign(col_weights_clean %*% sign(row1 - row2))
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 #' Predict which of a pair of rows has a higher criterion, using regression.
 #'
 #' @param object A fitted regModel.
@@ -467,7 +544,8 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #'
 #' @export
 predictPair.regModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 #' Linear regression (no intercept) wrapper for hueristica
@@ -503,6 +581,13 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
   return(model)
 }
 
+predictRoot.regNoIModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 #' Predict which of a pair of rows has a higher criterion, using regression no intercept.
 #'
 #' @param object A fitted regNoIModel.
@@ -513,8 +598,10 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
 #'
 #' @export
 predictPair.regNoIModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
+
 #' Logistic Regression model
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
@@ -568,6 +655,21 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
 #' @export
 coef.logRegModel <- function(object, ...) object$linear_coef
 
+predictRoot.logRegModel <- function(object, row1, row2) {
+  col_weights_clean <- coef(object)
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  # Because the intercept is 0 for row1 and ro2, ignore it.
+  if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+    col_weights_clean <- col_weights_clean[-intercept_index]
+  }
+  direction_plus_minus_1 <- sign(col_weights_clean %*% sign(row1 - row2))
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 #' Predict which of a pair of rows has a higher criterion, using logistic regression.
 #'
 #' @param object A fitted logRegModel.
@@ -578,9 +680,9 @@ coef.logRegModel <- function(object, ...) object$linear_coef
 #'
 #' @export
 predictPair.logRegModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
-
 
 
 #' Single Cue Model
