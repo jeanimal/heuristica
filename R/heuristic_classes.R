@@ -76,6 +76,22 @@ stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   }
 }
 
+# private
+handleNAs <- function(train_data, replaceNanWith) {
+ if(replaceNanWith==0){
+   train_data[is.na(train_data)] <- 0
+ } else if (replaceNanWith==0.5) {
+   train_data[is.na(train_data)] <- 0.5
+ } else if (replaceNanWith=="omit"){
+   rowsWithNA <- which(rowSums(is.na(train_data)) >= 1)
+   train_data <- train_data[-rowsWithNA,]
+ } else {
+   stop("NAs not replaced. Please choose NA handling method")
+ }
+ return(train_data)
+}
+
+
 #
 # TODO(jean): Delete unused experimental functions.
 #
@@ -643,8 +659,6 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
   
   predictors <- transform[,2:ncol(transform)]
-  predictors[predictors>0] <- 1
-  predictors[predictors<0] <- -1
   
   training_set <- cbind(criterion,predictors)
   training_set <- as.data.frame(training_set)

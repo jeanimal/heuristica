@@ -105,8 +105,6 @@ predictWithWeightsLog <- function(test_data, cols_to_fit, criterion_col, col_wei
   transform <- test_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - test_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
   
   predictors <- transform[,2:ncol(transform)]
-  predictors[predictors>0] <- 1
-  predictors[predictors<0] <- -1
   #if(is.vector(test_d)!=TRUE) test_set <- as.data.frame(test_set)
   
   intercept <- 0
