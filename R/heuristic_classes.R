@@ -73,6 +73,22 @@ stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   }
 }
 
+# private
+handleNAs <- function(train_data, replaceNanWith) {
+ if(replaceNanWith==0){
+   train_data[is.na(train_data)] <- 0
+ } else if (replaceNanWith==0.5) {
+   train_data[is.na(train_data)] <- 0.5
+ } else if (replaceNanWith=="omit"){
+   rowsWithNA <- which(rowSums(is.na(train_data)) >= 1)
+   train_data <- train_data[-rowsWithNA,]
+ } else {
+   stop("NAs not replaced. Please choose NA handling method")
+ }
+ return(train_data)
+}
+
+
 #
 # TODO(jean): Delete unused experimental functions.
 #
