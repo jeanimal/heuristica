@@ -18,6 +18,6 @@ A value from 0 to 1, representing the probability that row1's criterion
   is greater than row2's criterion.
 }
 \description{
-Generic function to predict which of a pair of rows has a higher criterion.
+Implement this for every heuristic.
 }
 

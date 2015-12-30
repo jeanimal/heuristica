@@ -31,6 +31,8 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predictPair")
 
 #' Generic function to predict which of a pair of rows has a higher criterion.
+#' 
+#' Implement this for every heuristic.
 #'
 #' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param row1 The first row of cues (from cols_to_fit columns, based on object).
@@ -38,7 +40,8 @@ predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predi
 #' @return A value from 0 to 1, representing the probability that row1's criterion
 #'   is greater than row2's criterion.
 #' @export
-predictRoot <- function(object, row1, row2)  UseMethod("predictRoot")
+predictRoot <- function(object, row1, row2) UseMethod("predictRoot")
+
 
 pairPredictionDFo <- function(object) UseMethod("pairPredictionDFo")
 
@@ -151,6 +154,22 @@ reverseAsNeeded <- function(cue_validities) {
                  cue_directions=cue_directions))
 }
 
+#' Predict which of a pair of rows has a higher criterion.
+#' Assumes the object implements predictRoot and has $cols_to_fit.
+#' Experimental.  I will give it a different name later.
+#'
+#' @param object The object that implements predictPair, e.g. a ttb model.
+#' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
+#' @param row2 The second row (will apply cols_to_fit for you, based on object).
+#' @return A value from 0 to 1, representing the probability that row1's criterion
+#'   is greater than row2's criterion.
+#' @export
+predictP2 <- function(object, row1, row2) {
+  row1_trim <- row1[,object$cols_to_fit, drop=FALSE]
+  row2_trim <- row2[,object$cols_to_fit, drop=FALSE]
+  predictRoot(object, row1_trim, row2_trim)
+}
+
 ### Take The Best ###
 
 #' Take The Best
@@ -216,10 +235,8 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 coef.ttbModel <- function(object, ...) object$linear_coef
 
 predictRoot.ttbModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  0.5 * (direction_plus_minus_1 + 1)
+  direction_plus_minus_1 <- sign(sign(row1 - row2)  %*% coef(object))
+  0.5 * (direction_plus_minus_1 + 1)[1,1]
 }
 
 # private.  But I might re-use it.
