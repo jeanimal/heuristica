@@ -626,8 +626,6 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
   
   predictors <- transform[,2:ncol(transform)]
-  predictors[predictors>0] <- 1
-  predictors[predictors<0] <- -1
   
   training_set <- cbind(criterion,predictors)
   training_set <- as.data.frame(training_set)
