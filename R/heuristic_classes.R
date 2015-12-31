@@ -170,6 +170,17 @@ reverseAsNeeded <- function(cue_validities) {
                  cue_directions=cue_directions))
 }
 
+# Private.
+assert_single_row <- function(row) {
+  num_rows <- nrow(row)
+  if (is.null(num_rows)) {
+    stop(paste("Error: Object does not have row dimension.  To get one row of a",
+               "matrix, be sure to use drop=FALSE, e.g. my_matrix[row_num, , drop=FALSE]"))
+  } else if (num_rows != 1) {
+    stop(paste("Error: Expected a single row but got", num_rows, "rows."))
+  }
+}
+
 #' Predict which of a pair of rows has a higher criterion.
 #' Assumes the object implements predictRoot and has $cols_to_fit.
 #' Experimental.  I will give it a different name later.
@@ -181,6 +192,8 @@ reverseAsNeeded <- function(cue_validities) {
 #'   is greater than row2's criterion.
 #' @export
 predictP2 <- function(object, row1, row2) {
+  assert_single_row(row1)
+  assert_single_row(row2)
   row1_trim <- row1[,object$cols_to_fit, drop=FALSE]
   row2_trim <- row2[,object$cols_to_fit, drop=FALSE]
   predictRoot(object, row1_trim, row2_trim)

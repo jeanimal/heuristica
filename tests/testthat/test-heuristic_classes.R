@@ -5,6 +5,20 @@ context("heuristic_classes")
 
 # ttbModel on binary cues
 
+test_that("predictP2 error does not have row dimension", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_error(predictP2(model, train_matrix[1,], train_matrix[2,]),
+               "Object does not have row dimension")
+})
+
+test_that("predictP2 error too many rows", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_error(predictP2(model, train_matrix[c(1:2),], train_matrix[2,]),
+               "Expected a single row but got 2 rows")
+})
+
 test_that("ttbModel 2x3 predictPair forward", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
