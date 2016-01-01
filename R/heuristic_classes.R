@@ -179,6 +179,14 @@ oneRow <- function(matrix_or_data_frame, row_index) {
   matrix_or_data_frame[row_index,,drop=FALSE]
 }
 
+getCuePairDirections <- function(coefficients, row1, row2) {
+  sign(sign(row1 - row2) %*% coefficients)
+}
+
+rescale0To1 <- function(direction_plus_minus_1) {
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 # Private for now. Will export and test when I settle on a name.
 reverseAsNeeded <- function(cue_validities) {
   cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
@@ -198,6 +206,15 @@ assert_single_row <- function(row) {
   }
 }
 
+assert_single_column <- function(obj) {
+  num_cols <- ncol(obj)
+  if (is.null(num_cols)) {
+    stop(paste("Error: Object does not have column dimension."))
+  } else if (num_cols != 1) {
+    stop(paste("Error: Expected a single column but got", num_cols, "columns."))
+  }
+}
+
 #' Predict which of a pair of rows has a higher criterion.
 #' Assumes the object implements predictRoot and has $cols_to_fit.
 #' Experimental.  I will give it a different name later.
@@ -213,7 +230,11 @@ predictP2 <- function(object, row1, row2) {
   assert_single_row(row2)
   row1_clean <- as.matrix(row1[,object$cols_to_fit, drop=FALSE])
   row2_clean <- as.matrix(row2[,object$cols_to_fit, drop=FALSE])
-  unname(predictRoot(object, row1_clean, row2_clean))
+  out <- unname(predictRoot(object, row1_clean, row2_clean))
+  # The asserts below ensure predictRoot has a reasonable implementation.
+  assert_single_row(out)
+  assert_single_column(out)
+  return(out[1,1])
 }
 
 ### Take The Best ###
@@ -281,8 +302,10 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 coef.ttbModel <- function(object, ...) object$linear_coef
 
 predictRoot.ttbModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- sign(sign(row1 - row2)  %*% coef(object))
-  0.5 * (direction_plus_minus_1 + 1)[1,1]
+  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 # private.  But I might re-use it.
@@ -411,10 +434,10 @@ predict.dawesModel <- function(object, ...) {
 }
 
 predictRoot.dawesModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
-  0.5 * (direction_plus_minus_1 + 1)
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using Dawes' Model.
@@ -501,10 +524,10 @@ predict.franklinModel <- function(object, ...) {
 }
 
 predictRoot.franklinModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
-  0.5 * (direction_plus_minus_1 + 1)
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using Franklin's Model.
@@ -589,10 +612,10 @@ predictRoot.regModel <- function(object, row1, row2) {
     intercept_index <- which(names(col_weights_clean)=="(Intercept)")
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
-  direction_plus_minus_1 <- sign(col_weights_clean %*% sign(row1 - row2))
+  direction_plus_minus_1 <- getCuePairDirections(col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
-  0.5 * (direction_plus_minus_1 + 1)
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using regression.

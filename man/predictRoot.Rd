@@ -9,9 +9,10 @@ predictRoot(object, row1, row2)
 \arguments{
 \item{object}{The object that implements predictPair, e.g. a ttb model.}
 
-\item{row1}{The first row of cues (from cols_to_fit columns, based on object).}
+\item{row1}{The first row of cues (object$cols_to_fit columns), as a
+one-row matrix.}
 
-\item{row2}{The second row}
+\item{row2}{The second row of cues.}
 }
 \value{
 A value from 0 to 1, representing the probability that row1's criterion
