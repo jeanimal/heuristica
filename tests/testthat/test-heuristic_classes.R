@@ -23,18 +23,26 @@ test_that("ttbModel 2x3 predictPair forward", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
+  # The probability that row 1 > row 2 is 1.
   expect_equal(1, predictP2(model, oneRow(train_matrix, 1),
                             oneRow(train_matrix, 2)))
+  # So as expected, the probability that row2 > row 1 is 0.
   expect_equal(0, predictP2(model, oneRow(train_matrix, 2),
                             oneRow(train_matrix, 1)))
   out2 <- predictPairMatrix(model, train_matrix)
-  out <- predictPair(model, train_matrix)
-  expect_equal(out$predictions, out2)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(0, getPredictiono(out, row1=2, row2=1))
-  # No other rows.
-  expect_equal(1, nrow(out$predictions))
-  #expect_equal(1, nrow(out$verbose_predictions))
+})
+
+test_that("ttbModel 2x3 predictPair forward data.frame", {
+  train_df <- data.frame(matrix(c(5,4,1,0,0,1), 2, 3))
+  model <- ttbModel(train_df, 1, c(2,3))
+  expect_equal(c(1,0), unname(model$cue_validities))
+  # The probability that row 1 > row 2 is 1.
+  expect_equal(1, predictP2(model, oneRow(train_df, 1),
+                            oneRow(train_df, 2)), tolerance=0.0001)
+  # So as expected, the probability that row2 > row 1 is 0.
+  expect_equal(0, predictP2(model, oneRow(train_df, 2),
+                            oneRow(train_df, 1)), tolerance=0.0001)
+  out2 <- predictPairMatrix(model, train_df)
 })
 
 test_that("ttbModel 2x3 predictPair backward cues", {

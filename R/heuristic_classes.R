@@ -35,8 +35,9 @@ predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predi
 #' Implement this for every heuristic.
 #'
 #' @param object The object that implements predictPair, e.g. a ttb model.
-#' @param row1 The first row of cues (from cols_to_fit columns, based on object).
-#' @param row2 The second row
+#' @param row1 The first row of cues (object$cols_to_fit columns), as a
+#'   one-row matrix.
+#' @param row2 The second row of cues.
 #' @return A value from 0 to 1, representing the probability that row1's criterion
 #'   is greater than row2's criterion.
 #' @export
@@ -210,9 +211,9 @@ assert_single_row <- function(row) {
 predictP2 <- function(object, row1, row2) {
   assert_single_row(row1)
   assert_single_row(row2)
-  row1_trim <- row1[,object$cols_to_fit, drop=FALSE]
-  row2_trim <- row2[,object$cols_to_fit, drop=FALSE]
-  predictRoot(object, row1_trim, row2_trim)
+  row1_trim <- as.matrix(row1[,object$cols_to_fit, drop=FALSE])
+  row2_trim <- as.matrix(row2[,object$cols_to_fit, drop=FALSE])
+  unname(predictRoot(object, row1_trim, row2_trim))
 }
 
 ### Take The Best ###
