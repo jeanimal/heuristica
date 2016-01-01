@@ -328,8 +328,8 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 predictPairMatrix <- function(object, test_data) {
   test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
   pair_evaluator_fn <- function(index_pair) predictRoot(object,
-                                                        test_data_trim[index_pair[1],],
-                                                        test_data_trim[index_pair[2],])
+                                                        test_data_trim[index_pair[1],,drop=FALSE],
+                                                        test_data_trim[index_pair[2],,drop=FALSE])
   pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
 }
 
