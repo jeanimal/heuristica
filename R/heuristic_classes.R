@@ -600,11 +600,9 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   # Functions in this package assume all models track criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
-  return(model)
-}
-
-predictRoot.regModel <- function(object, row1, row2) {
-  col_weights_clean <- coef(object)
+  
+  # Make clean weights that can be easily used in predictRoot.
+  col_weights_clean <- coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
   # Because the intercept is 0 for row1 and ro2, ignore it.
@@ -612,7 +610,13 @@ predictRoot.regModel <- function(object, row1, row2) {
     intercept_index <- which(names(col_weights_clean)=="(Intercept)")
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
-  direction_plus_minus_1 <- getCuePairDirections(col_weights_clean, row1, row2)
+  model$col_weights_clean <- col_weights_clean
+  
+  return(model)
+}
+
+predictRoot.regModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
