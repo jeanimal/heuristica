@@ -600,7 +600,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   # Functions in this package assume all models track criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
-  
+
   # Make clean weights that can be easily used in predictRoot.
   col_weights_clean <- coef(model)
   # Set na to zero.
@@ -611,7 +611,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
   model$col_weights_clean <- col_weights_clean
-  
+
   return(model)
 }
 
@@ -666,14 +666,19 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
   # Functions in this package assume all models track criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
+  # Make clean weights that can be easily used in predictRoot.
+  col_weights_clean <- coef(model)
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  model$col_weights_clean <- col_weights_clean
   return(model)
 }
 
 predictRoot.regNoIModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- sign(coef(object) %*% sign(row1 - row2))
+  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
-  0.5 * (direction_plus_minus_1 + 1)
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using regression no intercept.
@@ -732,8 +737,20 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
     
   col_weights <- coef(model)
   
+  # Make clean weights that can be easily used in predictRoot.
+  col_weights_clean <- col_weights
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  # Because the intercept is 0 for row1 and ro2, ignore it.
+  if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+    col_weights_clean <- col_weights_clean[-intercept_index]
+  }
+  
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 linear_coef=col_weights,model=model), 
+                 linear_coef=col_weights,
+                 col_weights_clean=col_weights_clean,
+                 model=model),
             class="logRegModel")
 }
 
@@ -742,18 +759,10 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
 coef.logRegModel <- function(object, ...) object$linear_coef
 
 predictRoot.logRegModel <- function(object, row1, row2) {
-  col_weights_clean <- coef(object)
-  # Set na to zero.
-  col_weights_clean[is.na(col_weights_clean)] <- 0
-  # Because the intercept is 0 for row1 and ro2, ignore it.
-  if ("(Intercept)" %in% names(col_weights_clean)) {
-    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
-    col_weights_clean <- col_weights_clean[-intercept_index]
-  }
-  direction_plus_minus_1 <- sign(col_weights_clean %*% sign(row1 - row2))
+  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
-  0.5 * (direction_plus_minus_1 + 1)
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 #' Predict which of a pair of rows has a higher criterion, using logistic regression.
