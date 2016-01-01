@@ -162,6 +162,22 @@ getPredictiono <- function(object, row1=NULL, row2=NULL) {
 
 ### Helper functions ###
 
+#' Convenience function to get one row from a matrix or data frame.
+#'
+#' This simply calls matrix_or_data_frame[row_index,,drop=FALSE] for you
+#' but is shorter and helps you avoid forgetting drop=FALSE.  The need
+#' for drop=FALSE when selecting just one row is explained here:
+#' http://www.hep.by/gnu/r-patched/r-faq/R-FAQ_56.html
+#'
+#' @param matrix_or_data_frame A matrix or data frome from which you want one row.
+#' @param row_index The integer index of the row
+#' @return The selected row of the data frame.
+#'
+#' @export
+oneRow <- function(matrix_or_data_frame, row_index) {
+  matrix_or_data_frame[row_index,,drop=FALSE]
+}
+
 # Private for now. Will export and test when I settle on a name.
 reverseAsNeeded <- function(cue_validities) {
   cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
