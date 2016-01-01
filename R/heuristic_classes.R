@@ -231,7 +231,7 @@ predictP2 <- function(object, row1, row2) {
   row1_clean <- as.matrix(row1[,object$cols_to_fit, drop=FALSE])
   row2_clean <- as.matrix(row2[,object$cols_to_fit, drop=FALSE])
   out <- unname(predictRoot(object, row1_clean, row2_clean))
-  # The asserts below ensure predictRoot has a reasonable implementation.
+  # The asserts below ensure predictRoot had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)
   return(out[1,1])
