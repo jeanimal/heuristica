@@ -101,6 +101,20 @@ test_that("allRowPairApply criterion function", {
   expect_equal(2, ncol(out2))
 })
 
+# Test colPairValues function
+test_that("allRowPairApply colPairValues function numeric", {
+  train_df <- data.frame(matrix(c(5,4,3,1,0,0,0,1,0), 3, 3))
+  model <- ttbModel(train_df, 1, c(2,3))
+  # colPairValues outputs 2 columns
+  out1 <- allRowPairApply(train_df, 1, c(2,3), colPairValues(1, "a"))
+  expect_equal(3, nrow(out1))
+  expect_equal(2, ncol(out1))
+  out2 <- allRowPairApply(train_df, 1, c(2,3), colPairValues(1, "a"),
+                          colPairValues(1, "b"))
+  expect_equal(3, nrow(out2))
+  expect_equal(4, ncol(out2))
+})
+
 
 # ttbModel on binary cues
 

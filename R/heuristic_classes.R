@@ -458,6 +458,22 @@ createFunction.criterion <- function(object, test_data, predictor_cols) {
   return(correct_fn)
 }
 
+# To get the column index by name: which(colnames(df)=="B")
+colPairValues <- function(input_column_index, output_column_name) {
+  structure(list(input_column_index=input_column_index,
+                 column_names=c(paste0(output_column_name,"_1"),
+                                paste0(output_column_name,"_2"))),
+            class="colPairValues")
+}
+
+createFunction.colPairValues<- function(object, test_data, predictor_cols) {
+  # The column value might not be numeric, so do not convert to a matrix.
+  column_df <- test_data[, object$input_column_index, drop=FALSE]
+  column_fn <- function(index_pair)
+    c(column_df[index_pair[1], , drop=FALSE], column_df[index_pair[2], , drop=FALSE])
+  return(column_fn)
+}
+
 # Example:
 # ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 # reg <- regModel(city_population, 3, c(4:ncol(city_population)))
@@ -466,8 +482,8 @@ createFunction.criterion <- function(object, test_data, predictor_cols) {
 # allRowPairApply(head(city_population, 4), 3, c(4:ncol(city_population)),
 #   heuristics(ttb), criterion(3))
 #   returns 2 columns, named ttbModel and ProbGreater
-# TODO: Generalize to this:
-#   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions)
+# TODO: Make a version that handles non-numeric, which will be a slower data.frame,
+#       but it's a nice option to have.
 allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
   function_creator_list <- list(...)
   column_names <- vector()
