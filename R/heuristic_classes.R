@@ -447,6 +447,7 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
 allRowPairApply <- function(test_data, criterion_col, predictor_cols, object) {
   fn <- createFunction.heuristics(object, test_data, predictor_cols)
   raw_matrix <- t(pairMatrix(nrow(test_data), fn))
+  #TODO: Fix impementation leak here.  I'll later count the total number of names.
   if (length(object$predictRoot_implementers) == 1) {
     raw_matrix <- t(raw_matrix)
   }
