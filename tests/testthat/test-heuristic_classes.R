@@ -59,10 +59,10 @@ test_that("allRowPairApply dimension test matrix, 2 rows = 1 pair", {
 test_that("allRowPairApply dimension test matrix, 3 rows = 3 pairs", {
   train_df <- data.frame(matrix(c(5,4,3,1,0,0,0,1,0), 3, 3))
   model <- ttbModel(train_df, 1, c(2,3))
-  out1 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model))
+  out1 <- allRowPairApply(train_df, 1, c(2,3), heuristics(model))
   expect_equal(3, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model, model))
+  out2 <- allRowPairApply(train_df, 1, c(2,3), heuristics(model, model))
   expect_equal(3, nrow(out2))
   expect_equal(2, ncol(out2))
 })
