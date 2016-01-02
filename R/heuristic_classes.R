@@ -406,7 +406,13 @@ pairMatrixPlus <- function(object_list, test_data) {
 
 # @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
 heuristics <- function(...) {
-  structure(list(predictRoot_implementers=list(...)),
+  implementers <- list(...)
+  # Use the first-level class as the name of the implementer.
+  # e.g. Regression has class [regModel, lm], so it will use regModel.
+  names <- sapply(implementers, function(x) { head(class(x), 1) })
+  
+  structure(list(predictRoot_implementers=implementers,
+                 implementer_names=names),
             class="heuristics")
 }
 
@@ -432,11 +438,6 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
   return(all_predictRoot_fn)
 }
 
-# Needs work
-#createNames.heuristics <- function() {
-#  return sapply(object$predictRoot_implementers, class)
-#}
-
 # Example:
 # ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 # allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb))
@@ -448,10 +449,10 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
 allRowPairApply <- function(test_data, criterion_col, predictor_cols, object) {
   fn <- createFunction.heuristics(object, test_data, predictor_cols)
   raw_matrix <- t(pairMatrix(nrow(test_data), fn))
-  #TODO: Fix impementation leak here.  I'll later count the total number of names.
-  if (length(object$predictRoot_implementers) == 1) {
+  if (length(object$implementer_names) == 1) {
     raw_matrix <- t(raw_matrix)
   }
+  colnames(raw_matrix) <- object$implementer_names
   return(raw_matrix)
 }
 
