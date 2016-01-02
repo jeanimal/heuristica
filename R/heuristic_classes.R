@@ -438,10 +438,11 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
   return(all_predictRoot_fn)
 }
 
+
+
 # Example:
 # ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb))
-#   or
+# reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 # allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb, reg))
 #   returns 2 columns
 # TODO: Generalize to this:
