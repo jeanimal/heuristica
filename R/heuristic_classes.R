@@ -333,6 +333,76 @@ predictPairMatrix <- function(object, test_data) {
   pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
 }
 
+pairMatrixManyPredict <- function(object_list, test_data) {
+  # Assume all objects agree on cols_to_fit in first object.
+  cols_to_fit <- object_list[[1]]$cols_to_fit
+  test_data_trim <- as.matrix(test_data[, cols_to_fit, drop=FALSE])
+  all_predictRoot_fn <- function(index_pair) {
+    row1 <- oneRow(test_data_trim, index_pair[1])
+    row2 <- oneRow(test_data_trim, index_pair[2])
+    out_all <- vector()
+    y <- 0
+    for (object in object_list) {
+      out <- predictRoot(object, row1, row2)
+      y <- y+1
+      out_all[[y]] <- out
+    }
+    return(out_all)
+  }
+  t(pairMatrix(nrow(test_data), all_predictRoot_fn))
+}
+
+
+pairMatrixPlus <- function(object_list, test_data) {
+  row1_fn <- function(index_pair) index_pair[1]
+  row2_fn <- function(index_pair) index_pair[2]
+
+  # Assume all objects agree on criterion_col in first object.
+  criterion_col = object_list[[1]]$criterion_col
+  criterion_matrix <- as.matrix(test_data[,criterion_col,drop=FALSE])
+  correct_fn <- function(index_pair)
+    sign(criterion_matrix[index_pair[1],,drop=FALSE]
+         - criterion_matrix[index_pair[2],,drop=FALSE])
+
+  # Assume all objects agree on cols_to_fit in first object.
+  cols_to_fit <- object_list[[1]]$cols_to_fit
+  test_data_trim <- as.matrix(test_data[, cols_to_fit, drop=FALSE])
+  all_predictRoot_fn <- function(index_pair) {
+    row1 <- oneRow(test_data_trim, index_pair[1])
+    row2 <- oneRow(test_data_trim, index_pair[2])
+    out_all <- vector()
+    y <- 0
+    for (object in object_list) {
+      out <- predictRoot(object, row1, row2)
+      y <- y+1
+      out_all[[y]] <- out
+    }
+    return(out_all)
+  }
+
+  function_list <- list(row1_fn, row2_fn, correct_fn, all_predictRoot_fn)
+  all_fn <- function(x) {
+    out_all <- c()
+    y <- 0
+    for (fun in function_list) {
+      out <- fun(x)
+      y <- y+1
+      out_all <- c(out_all, out)
+    }
+    #print(out_all)
+    return(out_all)
+  }
+  raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
+  df <- as.data.frame(raw_matrix)
+  names(df)[[1]] <- "Row1" # Currently required by some other functions.
+  names(df)[[2]] <- "Row2" # Currently required by some other functions.
+  names(df)[[3]] <- "correctProb" # Currently required by some other functions.
+  return(df)
+}
+
+
+
+
 #' Predict which of a pair of rows has a higher criterion, using Take The Best.
 #'
 #' @param object A fitted ttbModel.
