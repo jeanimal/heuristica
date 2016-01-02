@@ -45,7 +45,7 @@ test_that("ttbModel 2x3 predictPair forward data.frame", {
 })
 
 #TODO: Do this test with a dumber function than ttb.
-test_that("allRowPairApply dimension test matrix, 2 rows = 1 pair", {
+test_that("allRowPairApply dimension test: matrix, 2 rows = 1 pair", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
   out1 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model))
@@ -56,7 +56,7 @@ test_that("allRowPairApply dimension test matrix, 2 rows = 1 pair", {
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply dimension test matrix, 3 rows = 3 pairs", {
+test_that("allRowPairApply dimension test: matrix, 3 rows = 3 pairs", {
   train_df <- data.frame(matrix(c(5,4,3,1,0,0,0,1,0), 3, 3))
   model <- ttbModel(train_df, 1, c(2,3))
   out1 <- allRowPairApply(train_df, 1, c(2,3), heuristics(model))
@@ -67,7 +67,7 @@ test_that("allRowPairApply dimension test matrix, 3 rows = 3 pairs", {
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply dimension test data.frame", {
+test_that("allRowPairApply dimension test: data.frame", {
   train_df <- data.frame(matrix(c(5,4,3,1,0,0,0,1,0), 3, 3))
   model <- ttbModel(train_df, 1, c(2,3))
   out1 <- allRowPairApply(train_df, 1, c(2,3), heuristics(model))
