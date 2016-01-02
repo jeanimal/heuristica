@@ -405,7 +405,7 @@ pairMatrixPlus <- function(object_list, test_data) {
 # for use in allRowPairApply.
 ######################
 
-createFunction <- function(object, test_data, predictor_cols) UseMethod("createFunction")
+createFunction <- function(object, test_data) UseMethod("createFunction")
 
 # A pair function creator for fitted heuristics.
 # For use in allRowPairApply.
@@ -416,18 +416,21 @@ createFunction <- function(object, test_data, predictor_cols) UseMethod("createF
 # function_creator <- heuristics(ttb, reg))
 heuristics <- function(...) {
   implementers <- list(...)
+  # Assume the cols_to_fit are the same for all heuristics.
+  cols_to_fit <- implementers[[1]]$cols_to_fit
   # Use the first-level class as the name of the implementer.
   # e.g. Regression has class [regModel, lm], so it will use regModel.
   names <- sapply(implementers, function(x) { head(class(x), 1) })
   structure(list(predictRoot_implementers=implementers,
+                 cols_to_fit=cols_to_fit,
                  column_names=names),
             class="heuristics")
 }
 
 # Creates a function that takes an index pair and returns a prediction
 # for each of the predictRoot implementers.
-createFunction.heuristics <- function(object, test_data, predictor_cols) {
-  test_data_trim <- as.matrix(test_data[, predictor_cols, drop=FALSE])
+createFunction.heuristics <- function(object, test_data) {
+  test_data_trim <- as.matrix(test_data[, object$cols_to_fit, drop=FALSE])
   all_predictRoot_fn <- function(index_pair) {
     row1 <- oneRow(test_data_trim, index_pair[1])
     row2 <- oneRow(test_data_trim, index_pair[2])
@@ -450,7 +453,7 @@ criterion <- function(criterion_col, output_column_name="ProbGreater") {
             class="criterion")
 }
 
-createFunction.criterion <- function(object, test_data, predictor_cols) {
+createFunction.criterion <- function(object, test_data) {
   criterion_matrix <- as.matrix(test_data[, object$criterion_col, drop=FALSE])
   correct_fn <- function(index_pair)
     sign(criterion_matrix[index_pair[1], , drop=FALSE]
@@ -466,7 +469,7 @@ colPairValues <- function(input_column_index, output_column_name) {
             class="colPairValues")
 }
 
-createFunction.colPairValues<- function(object, test_data, predictor_cols) {
+createFunction.colPairValues<- function(object, test_data) {
   # The column value might not be numeric, so do not convert to a matrix.
   column_df <- test_data[, object$input_column_index, drop=FALSE]
   column_fn <- function(index_pair)
@@ -484,12 +487,12 @@ createFunction.colPairValues<- function(object, test_data, predictor_cols) {
 #   returns 2 columns, named ttbModel and ProbGreater
 # TODO: Make a version that handles non-numeric, which will be a slower data.frame,
 #       but it's a nice option to have.
-allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
+allRowPairApply <- function(test_data, ...) {
   function_creator_list <- list(...)
   column_names <- vector()
   function_list <- vector()
   for (function_creator in function_creator_list) {
-    fn <- createFunction(function_creator, test_data, predictor_cols)
+    fn <- createFunction(function_creator, test_data)
     function_list <- c(function_list, fn)
     column_names <- c(column_names, function_creator$column_names)
   }
