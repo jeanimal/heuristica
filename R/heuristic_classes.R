@@ -404,8 +404,9 @@ pairMatrixPlus <- function(object_list, test_data) {
 # allRowPairApply(city_population, list(correct_fn, predict_root_implementers(ttb, reg)))
 # allRowPairApply(city_population, list(correct_fn, heuristics(ttb, reg)))
 
-heuristics <- function(list_of_predictRoot_implementers) {
-  structure(list(predictRoot_implementers=list_of_predictRoot_implementers),
+# @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
+heuristics <- function(...) {
+  structure(list(predictRoot_implementers=list(...)),
             class="heuristics")
 }
 
@@ -438,9 +439,9 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
 
 # Example:
 # ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(list(ttb)))
+# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb))
 #   or
-# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(list(ttb, reg)))
+# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb, reg))
 #   returns 2 columns
 # TODO: Generalize to this:
 #   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions)
