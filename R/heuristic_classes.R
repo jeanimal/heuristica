@@ -412,7 +412,7 @@ heuristics <- function(...) {
   names <- sapply(implementers, function(x) { head(class(x), 1) })
   
   structure(list(predictRoot_implementers=implementers,
-                 implementer_names=names),
+                 column_names=names),
             class="heuristics")
 }
 
@@ -447,13 +447,34 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
 #   returns 2 columns
 # TODO: Generalize to this:
 #   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions)
-allRowPairApply <- function(test_data, criterion_col, predictor_cols, object) {
-  fn <- createFunction.heuristics(object, test_data, predictor_cols)
-  raw_matrix <- t(pairMatrix(nrow(test_data), fn))
-  if (length(object$implementer_names) == 1) {
+allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
+  function_creator_list <- list(...)
+  column_names <- vector()
+  function_list <- vector()
+  for (function_creator in function_creator_list) {
+    fn <- createFunction.heuristics(function_creator, test_data, predictor_cols)
+    function_list <- c(function_list, fn)
+    column_names <- c(column_names, function_creator$column_names)
+  }
+  all_fn <- function(x) {
+    out_all <- c()
+    y <- 0
+    for (fun in function_list) {
+      out <- fun(x)
+      y <- y+1
+      out_all <- c(out_all, out)
+    }
+    #print(out_all)
+    return(out_all)
+  }
+  raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
+  # R drops dimensions if there's only one, so make consistent dimensions here.
+  if (length(column_names) == 1) {
     raw_matrix <- t(raw_matrix)
   }
-  colnames(raw_matrix) <- object$implementer_names
+  #print(column_names)
+  #print(raw_matrix)
+  colnames(raw_matrix) <- column_names
   return(raw_matrix)
 }
 
