@@ -443,7 +443,7 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
 # allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(list(ttb, reg)))
 #   returns 2 columns
 # TODO: Generalize to this:
-#   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions) 
+#   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions)
 allRowPairApply <- function(test_data, criterion_col, predictor_cols, object) {
   fn <- createFunction.heuristics(object, test_data, predictor_cols)
   raw_matrix <- t(pairMatrix(nrow(test_data), fn))
