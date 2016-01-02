@@ -105,11 +105,14 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
 #'  This is technically a measure of error.
 #' @export
 createErrorsFromPredicts <- function(df) {
-  for (col in 4:ncol(df)) {
-    df[,col] <- (df[,col] - df[,3] )
-    #df[,col] <- (df[,col] - df$correctProb )
+  return(createErrorsFromPredicts2(df, 3, c(4:ncol(df))))
+}
+
+createErrorsFromPredicts2 <- function(data, reference_col, cols_to_compare) {
+  for (col in cols_to_compare) {
+    data[,col] <- (data[,col] - data[,reference_col] )
   }
-  return(df)
+  return(data)
 }
 
 #' Converts output of createErrorsFromPredicts to percent correct for each column.
@@ -119,10 +122,13 @@ createErrorsFromPredicts <- function(df) {
 #' @return A dataframe with one row and the last column as a percent correct.
 #' @export
 createPctCorrectsFromErrors <- function(errors_raw) {
+  return(createPctCorrectsFromErrors2(errors_raw, 4))
+}
+
+createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
   #TODO: Make this work without a data.frame
   errors <- data.frame(errors_raw)
   newDf <- NULL
-  startCol <- 4
   for (col in startCol:ncol(errors)) {
     sumError <- sum(abs(errors[,col]))
     if (is.null(newDf)) {
@@ -151,5 +157,15 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
   predictions <- predictPairWithCorrect(fitted_heuristic_list, test_data)
   errors <- createErrorsFromPredicts(predictions)
   df <- createPctCorrectsFromErrors(errors)
+  return(df)
+}
+
+pctCorrectOfPredictPair2 <- function(fitted_heuristic_list, test_data) {
+  # Assume the criterion_col is same for all heuristics.
+  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  predictions <- allRowPairApply(test_data, criterion(criterion_col),
+                                 heuristics(fitted_heuristic_list))
+  errors <- createErrorsFromPredicts2(1, c(2:ncol(predictions)))
+  df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)
 }
