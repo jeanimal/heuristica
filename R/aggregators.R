@@ -160,12 +160,17 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
   return(df)
 }
 
-pctCorrectOfPredictPair2 <- function(fitted_heuristic_list, test_data) {
+# Example:
+# ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+# reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+# pctCorrectOfPredictPair2(city_population, ttb, reg)
+pctCorrectOfPredictPair2 <- function(test_data, ...) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  heuristics_wrapper <- heuristics(...)
   predictions <- allRowPairApply(test_data, criterion(criterion_col),
-                                 heuristics(fitted_heuristic_list))
-  errors <- createErrorsFromPredicts2(1, c(2:ncol(predictions)))
+                                 heuristics_wrapper)
+  errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
   df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)
 }
