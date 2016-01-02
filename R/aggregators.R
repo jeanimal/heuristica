@@ -166,6 +166,7 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
 # pctCorrectOfPredictPair2(city_population, ttb, reg)
 pctCorrectOfPredictPair2 <- function(test_data, ...) {
   # Assume the criterion_col is same for all heuristics.
+  fitted_heuristic_list <- list(...)
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   heuristics_wrapper <- heuristics(...)
   predictions <- allRowPairApply(test_data, criterion(criterion_col),
