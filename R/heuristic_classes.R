@@ -464,7 +464,6 @@ allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
       y <- y+1
       out_all <- c(out_all, out)
     }
-    #print(out_all)
     return(out_all)
   }
   raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
@@ -472,8 +471,6 @@ allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
   if (length(column_names) == 1) {
     raw_matrix <- t(raw_matrix)
   }
-  #print(column_names)
-  #print(raw_matrix)
   colnames(raw_matrix) <- column_names
   return(raw_matrix)
 }
