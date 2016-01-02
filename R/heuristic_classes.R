@@ -400,17 +400,19 @@ pairMatrixPlus <- function(object_list, test_data) {
   return(df)
 }
 
-# Goal:
-# allRowPairApply(city_population, list(correct_fn, predict_root_implementers(ttb, reg)))
-# allRowPairApply(city_population, list(correct_fn, heuristics(ttb, reg)))
 
+# A pair function creator for fitted heuristics.
+# For use in allRowPairApply.
 # @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
+# Example:
+# ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+# reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+# function_creator <- heuristics(ttb, reg))
 heuristics <- function(...) {
   implementers <- list(...)
   # Use the first-level class as the name of the implementer.
   # e.g. Regression has class [regModel, lm], so it will use regModel.
   names <- sapply(implementers, function(x) { head(class(x), 1) })
-  
   structure(list(predictRoot_implementers=implementers,
                  column_names=names),
             class="heuristics")
