@@ -2,8 +2,7 @@ context("heuristic_classes")
 
 # require('testthat')
 
-
-# ttbModel on binary cues
+# New stuff
 
 test_that("predictP2 error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
@@ -44,6 +43,44 @@ test_that("ttbModel 2x3 predictPair forward data.frame", {
                             oneRow(train_df, 1)), tolerance=0.0001)
   out2 <- predictPairMatrix(model, train_df)
 })
+
+#TODO: Do this test with a dumber function than ttb.
+test_that("allRowPairApply dimension test matrix, 2 rows = 1 pair", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  out1 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model))
+  expect_equal(1, nrow(out1))
+  expect_equal(1, ncol(out1))
+  out2 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model, model))
+  expect_equal(1, nrow(out2))
+  expect_equal(2, ncol(out2))
+})
+
+test_that("allRowPairApply dimension test matrix, 3 rows = 3 pairs", {
+  train_df <- data.frame(matrix(c(5,4,3,1,0,0,0,1,0), 3, 3))
+  model <- ttbModel(train_df, 1, c(2,3))
+  out1 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model))
+  expect_equal(3, nrow(out1))
+  expect_equal(1, ncol(out1))
+  out2 <- allRowPairApply(train_matrix, 1, c(2,3), heuristics(model, model))
+  expect_equal(3, nrow(out2))
+  expect_equal(2, ncol(out2))
+})
+
+test_that("allRowPairApply dimension test data.frame", {
+  train_df <- data.frame(matrix(c(5,4,3,1,0,0,0,1,0), 3, 3))
+  model <- ttbModel(train_df, 1, c(2,3))
+  out1 <- allRowPairApply(train_df, 1, c(2,3), heuristics(model))
+  expect_equal(3, nrow(out1))
+  expect_equal(1, ncol(out1))
+  out2 <- allRowPairApply(train_df, 1, c(2,3), heuristics(model, model))
+  expect_equal(3, nrow(out2))
+  expect_equal(2, ncol(out2))
+})
+
+
+
+# ttbModel on binary cues
 
 test_that("ttbModel 2x3 predictPair backward cues", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
