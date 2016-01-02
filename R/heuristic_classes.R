@@ -400,6 +400,58 @@ pairMatrixPlus <- function(object_list, test_data) {
   return(df)
 }
 
+# Goal:
+# allRowPairApply(city_population, list(correct_fn, predict_root_implementers(ttb, reg)))
+# allRowPairApply(city_population, list(correct_fn, heuristics(ttb, reg)))
+
+heuristics <- function(list_of_predictRoot_implementers) {
+  structure(list(predictRoot_implementers=list_of_predictRoot_implementers),
+            class="heuristics")
+}
+
+#createFunction <- function(object, test_data, predictor_cols) UseMethod("createFunction")
+
+# Creates a function that takes an index pair and returns a prediction
+# for each of the predictRoot implementers.
+createFunction.heuristics <- function(object, test_data, predictor_cols) {
+  test_data_trim <- as.matrix(test_data[, predictor_cols, drop=FALSE])
+  all_predictRoot_fn <- function(index_pair) {
+    row1 <- oneRow(test_data_trim, index_pair[1])
+    row2 <- oneRow(test_data_trim, index_pair[2])
+    out_all <- vector()
+    y <- 0
+    for (implementer in object$predictRoot_implementers) {
+      #print(class(implementer))
+      out <- predictRoot(implementer, row1, row2)
+      y <- y+1
+      out_all[[y]] <- out
+    }
+    return(out_all)
+  }
+  return(all_predictRoot_fn)
+}
+
+# Needs work
+#createNames.heuristics <- function() {
+#  return sapply(object$predictRoot_implementers, class)
+#}
+
+# Example:
+# ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(list(ttb)))
+#   or
+# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(list(ttb, reg)))
+#   returns 2 columns
+# TODO: Generalize to this:
+#   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions) 
+allRowPairApply <- function(test_data, criterion_col, predictor_cols, object) {
+  fn <- createFunction.heuristics(object, test_data, predictor_cols)
+  raw_matrix <- t(pairMatrix(nrow(test_data), fn))
+  if (length(object$predictRoot_implementers) == 1) {
+    raw_matrix <- t(raw_matrix)
+  }
+  return(raw_matrix)
+}
 
 
 
