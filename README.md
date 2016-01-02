@@ -17,7 +17,7 @@ The key function heuristics must implement is __predictAlternative__ rather than
 
 ## Models
 The package comes with the following models that implement predictAlternative. 
-* __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects). (Note: ttbBinModel is deprecated.  It only worked on binary cue values.)
+* __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
 * __dawesModel__: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
 * __franklinModel__: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a weighted decision method similar to this.
 * __regModel__: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.
