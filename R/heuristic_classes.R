@@ -400,6 +400,12 @@ pairMatrixPlus <- function(object_list, test_data) {
   return(df)
 }
 
+######################
+# Function creators-- they implement createFunction and $column_names
+# for use in allRowPairApply.
+######################
+
+createFunction <- function(object, test_data, predictor_cols) UseMethod("createFunction")
 
 # A pair function creator for fitted heuristics.
 # For use in allRowPairApply.
@@ -417,8 +423,6 @@ heuristics <- function(...) {
                  column_names=names),
             class="heuristics")
 }
-
-#createFunction <- function(object, test_data, predictor_cols) UseMethod("createFunction")
 
 # Creates a function that takes an index pair and returns a prediction
 # for each of the predictRoot implementers.
@@ -440,13 +444,28 @@ createFunction.heuristics <- function(object, test_data, predictor_cols) {
   return(all_predictRoot_fn)
 }
 
+criterion <- function(criterion_col, output_column_name="ProbGreater") {
+  structure(list(criterion_col=criterion_col,
+                 column_names=c(output_column_name)),
+            class="criterion")
+}
 
+createFunction.criterion <- function(object, test_data, predictor_cols) {
+  criterion_matrix <- as.matrix(test_data[, object$criterion_col, drop=FALSE])
+  correct_fn <- function(index_pair)
+    sign(criterion_matrix[index_pair[1], , drop=FALSE]
+         - criterion_matrix[index_pair[2], , drop=FALSE])
+  return(correct_fn)
+}
 
 # Example:
 # ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 # reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 # allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb, reg))
-#   returns 2 columns
+#   returns 2 columns, named ttbModel and regModel
+# allRowPairApply(head(city_population, 4), 3, c(4:ncol(city_population)),
+#   heuristics(ttb), criterion(3))
+#   returns 2 columns, named ttbModel and ProbGreater
 # TODO: Generalize to this:
 #   allRowPairApply <- function(test_data, criterion_col, predictor_cols, list_of_functions)
 allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
@@ -454,7 +473,7 @@ allRowPairApply <- function(test_data, criterion_col, predictor_cols, ...) {
   column_names <- vector()
   function_list <- vector()
   for (function_creator in function_creator_list) {
-    fn <- createFunction.heuristics(function_creator, test_data, predictor_cols)
+    fn <- createFunction(function_creator, test_data, predictor_cols)
     function_list <- c(function_list, fn)
     column_names <- c(column_names, function_creator$column_names)
   }
