@@ -4,17 +4,17 @@ context("heuristic_classes")
 
 # New stuff
 
-test_that("predictP2 error does not have row dimension", {
+test_that("predictRowPair error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
-  expect_error(predictP2(model, train_matrix[1,], train_matrix[2,]),
+  expect_error(predictRowPair(model, train_matrix[1,], train_matrix[2,]),
                "Object does not have row dimension")
 })
 
-test_that("predictP2 error too many rows", {
+test_that("predictRowPair error too many rows", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
-  expect_error(predictP2(model, train_matrix[c(1:2),], train_matrix[2,]),
+  expect_error(predictRowPair(model, train_matrix[c(1:2),], train_matrix[2,]),
                "Expected a single row but got 2 rows")
 })
 
@@ -23,10 +23,10 @@ test_that("ttbModel 2x3 predictPair forward", {
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
   # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictP2(model, oneRow(train_matrix, 1),
+  expect_equal(1, predictRowPair(model, oneRow(train_matrix, 1),
                             oneRow(train_matrix, 2)))
   # So as expected, the probability that row2 > row 1 is 0.
-  expect_equal(0, predictP2(model, oneRow(train_matrix, 2),
+  expect_equal(0, predictRowPair(model, oneRow(train_matrix, 2),
                             oneRow(train_matrix, 1)))
   out2 <- predictPairMatrix(model, train_matrix)
 })
@@ -36,10 +36,10 @@ test_that("ttbModel 2x3 predictPair forward data.frame", {
   model <- ttbModel(train_df, 1, c(2,3))
   expect_equal(c(1,0), unname(model$cue_validities))
   # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictP2(model, oneRow(train_df, 1),
+  expect_equal(1, predictRowPair(model, oneRow(train_df, 1),
                             oneRow(train_df, 2)), tolerance=0.0001)
   # So as expected, the probability that row2 > row 1 is 0.
-  expect_equal(0, predictP2(model, oneRow(train_df, 2),
+  expect_equal(0, predictRowPair(model, oneRow(train_df, 2),
                             oneRow(train_df, 1)), tolerance=0.0001)
   out2 <- predictPairMatrix(model, train_df)
 })
