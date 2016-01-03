@@ -12,15 +12,63 @@
 # Function creators-- they implement createFunction and $column_names
 # for use in row pair apply functions.
 
+#' Generic function to create functions for allRowPairApply.
+#' 
+#' An example of solving something with another layer of indirection.
+#' https://en.wikipedia.org/wiki/Fundamental_theorem_of_software_engineering
+#'
+#' @param object The object that implements createFunction, e.g. 
+#'   heuristics(ttb).
+#' @param test_data The test data that row_pairs will be drawn from.
+#'   We recommend 
+#' @return A function that can easily be used by allRowPairApply.  This
+#'   is not normally used by ordinary users.
+#' 
+#' @seealso
+#' \code{\link{predictRowPair}} for a simpler way to generate predictions
+#'   from fitted models.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
 createFunction <- function(object, test_data) UseMethod("createFunction")
 
-# A pair function creator for fitted heuristics.
-# For use in allRowPairApply.
-# @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
-# Example:
-# ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-# reg <- regModel(city_population, 3, c(4:ncol(city_population)))
-# function_creator <- heuristics(ttb, reg))
+#' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
+#'
+#' One or more fitted heuristics can be passed in.  They must all implement
+#' predictRoot.  Users will generally not use the output directly.
+#' 
+#' @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
+#' @return An object of class heuristics, which implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#' 
+#' @examples
+#' ## This is typical usage:
+#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+#' out <- allRowPairApply(city_population, heuristics(ttb))
+#' head(out)
+#' 
+#' ## If you are curious how the function_creator works, try this:
+#' function_creator <- heuristics(ttb)
+#' fn <- createFunction(function_creator, city_population)
+#' ## ttb's prediction for row 1 vs. 2 (probability row 1 greater):
+#' fn(c(1,2))
+#' ## ttb's prediction for row 2 vs. 1 (probability row 2 greater):
+#' fn(c(1,2))
+#' ## ttb's prediction for row 82 vs 83 (probability row 82 greater):
+#' fn(c(1,2))
+#' ## Under the hood, it calls ttb's predictRoot.
+#' 
+#' @seealso
+#' \code{\link{predictRowPair}} for a simpler way to generate predictions
+#'   from fitted models.
+#' @seealso
+#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#'    order to use them with the heuristics() wrapper function.
+#' @seealso
+#' \code{\link{createFunction}} which is what the returned object implements.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
 heuristics <- function(...) {
   implementers <- list(...)
   # Assume the cols_to_fit are the same for all heuristics.
@@ -34,8 +82,23 @@ heuristics <- function(...) {
             class="heuristics")
 }
 
-# Creates a function that takes an index pair and returns a prediction
-# for each of the predictRoot implementers.
+
+
+#' Create function for heuristics prediction with allRowPairApply.
+#'
+#' Creates a function that takes an index pair and returns a prediction
+#' for each of the predictRoot implementers.
+#'
+#' @param object A heuristics object.
+#' @inheritParams createFunction
+#' @return A function that can easily be used by allRowPairApply to
+#'   generate predictions for all heuristics the object was created with.
+#'   If it was created with M heuristics, it will generate M predictions.
+#'
+#' @seealso
+#' \code{\link{ttbModel}} for example code.
+#'
+#' @export
 createFunction.heuristics <- function(object, test_data) {
   test_data_trim <- as.matrix(test_data[, object$cols_to_fit, drop=FALSE])
   all_predictRoot_fn <- function(index_pair) {
@@ -54,6 +117,24 @@ createFunction.heuristics <- function(object, test_data) {
   return(all_predictRoot_fn)
 }
 
+#' Wrapper to get a column of correct probabilities with allRowPairApply.
+#'
+#' Using allRowPairApply, this can generate a column with
+#' the correct probability that row 1 > row 2 for each row pair in 
+#' the test_data.  It can do this using the criterion column passed in.
+#' By default, the output column is called ProbGreater, but you
+#' can override the name with output_column_name.
+#' 
+#' @param criterion_col The integer index of the criterion in test_data.
+#' @param output_column_name An optional string
+#' @return An object of class heuristics, which implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#' 
+#' @seealso
+#' \code{\link{createFunction}} which is what the returned object implements.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
 criterion <- function(criterion_col, output_column_name="ProbGreater") {
   structure(list(criterion_col=criterion_col,
                  column_names=c(output_column_name)),
@@ -88,17 +169,49 @@ createFunction.colPairValues<- function(object, test_data) {
 ###
 # The most general row pair apply function.  All others call this one.
 
-# Example:
-# ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-# reg <- regModel(city_population, 3, c(4:ncol(city_population)))
-# allRowPairApply(city_population, 3, c(4:ncol(city_population)), heuristics(ttb, reg))
-#   returns 2 columns, named ttbModel and regModel
-# allRowPairApply(head(city_population, 4), 3, c(4:ncol(city_population)),
-#   heuristics(ttb), criterion(3))
-#   returns 2 columns, named ttbModel and ProbGreater
-# TODO: Make a version that handles non-numeric, which will be a slower data.frame,
-#       but it's a nice option to have.
+#' Apply functions to all row pairs.
+#' 
+#' Apply functions like heuristic predictions to all row pairs in a matrix
+#' or data.frame.
+#' 
+#' @param test_data The data to apply the functions to as a matrix or data.frame.
+#'    Heuristics must have already been fitted to trying data and must include the
+#'    same criterion_col and cols_to_fit.
+#' @param ... The objects that generate the functions to apply, using createFunction.
+#'    For example, heuristics(ttb), criterion(col), or colPairValues.
+#' @return A matrix of outputs from the functions.  The number of rows is based on
+#'    the number of row pairs in test_data.  If the input has N rows, the output
+#'    will have N x (N-1) rows.  The number of columns will be at least the number
+#'    of functions but may be more as some functions may output more than one column.
+#
+#' @examples
+#' ## Fit two models to the city_population data set.
+#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+#' 
+#' ## Generate predictions for all row pairs for these two models:
+#' out1 <- allRowPairApply(city_population, heuristics(ttb, reg))
+#' head(out1)
+#' nrow(out1)
+#' ## returns a matrix of 2 columns, named ttbModel and regModel.
+#' 
+#' ## Generate a matrix with the correct values and the heuristics' predictions:
+#' out2 <- allRowPairApply(city_population, criterion(3), heuristics(reg, ttb))
+#' head(out2)
+#' nrow(out2)
+#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+#'
+#' @seealso
+#' \code{\link{createFunction}} which must be implemented by the objects
+#'    passed in the "..." argument, along with the attribute $column_names.
+#' @seealso
+#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#'    order to use them with the heuristics() wrapper function.
+#'
+#' @export
 allRowPairApply <- function(test_data, ...) {
+  # TODO(jean): Make a version that handles non-numeric as a data.frame.  It will
+  #             be slower, but it's a nice option to have for debugging.
   function_creator_list <- list(...)
   column_names <- vector()
   function_list <- vector()

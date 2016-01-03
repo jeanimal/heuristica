@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristic_classes.R
 \name{heuristicaModel}
 \alias{heuristicaModel}
-\title{Heuristica Model}
+\title{Documentation stub.}
 \usage{
 heuristicaModel(train_data, criterion_col, cols_to_fit)
 }
@@ -14,6 +14,6 @@ heuristicaModel(train_data, criterion_col, cols_to_fit)
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 }
 \description{
-Heuristica Model
+Documentation stub.
 }
 

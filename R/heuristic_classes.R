@@ -1,11 +1,11 @@
-#' Heuristica Model
+#' Documentation stub.
 #' @param train_data Training/fitting data as a matrix or data.frame.
 #' @param criterion_col The index of the colum in train_data that has the criterion.
 #' @param cols_to_fit A vector of column indices in train_data, used to fit the criterion.
 # Private.  This is just an easy way to share parameter documentation.
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
-#' Reversing Model
+#' Documentation stub.
 #' @param reverse_cues Optional parameter to reverse cues as needed.  By default, 
 #' the model will reverse the cue values for cues with cue validity < 0.5, so a cue
 #' with validity 0 becomes a cue with validity 1.

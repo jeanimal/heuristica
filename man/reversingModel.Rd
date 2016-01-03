@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristic_classes.R
 \name{reversingModel}
 \alias{reversingModel}
-\title{Reversing Model}
+\title{Documentation stub.}
 \usage{
 reversingModel(reverse_cues = TRUE)
 }
@@ -13,6 +13,6 @@ with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \description{
-Reversing Model
+Documentation stub.
 }
 
