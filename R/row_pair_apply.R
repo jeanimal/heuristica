@@ -84,6 +84,10 @@ createFunction.colPairValues<- function(object, test_data) {
   return(column_fn)
 }
 
+
+###
+# The most general row pair apply function.  All others call this one.
+
 # Example:
 # ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 # reg <- regModel(city_population, 3, c(4:ncol(city_population)))
@@ -120,5 +124,52 @@ allRowPairApply <- function(test_data, ...) {
   }
   colnames(raw_matrix) <- column_names
   return(raw_matrix)
+}
+
+###
+# Specific row pair apply functions.
+
+
+# Private helper.
+assert_single_row <- function(row) {
+  num_rows <- nrow(row)
+  if (is.null(num_rows)) {
+    stop(paste("Error: Object does not have row dimension.  To get one row of a",
+               "matrix, be sure to use drop=FALSE, e.g. my_matrix[row_num, , drop=FALSE]"))
+  } else if (num_rows != 1) {
+    stop(paste("Error: Expected a single row but got", num_rows, "rows."))
+  }
+}
+
+# Private helper.
+assert_single_column <- function(obj) {
+  num_cols <- ncol(obj)
+  if (is.null(num_cols)) {
+    stop(paste("Error: Object does not have column dimension."))
+  } else if (num_cols != 1) {
+    stop(paste("Error: Expected a single column but got", num_cols, "columns."))
+  }
+}
+
+#' Predict which of a pair of rows has a higher criterion.
+#' Assumes the object implements predictRoot and has $cols_to_fit.
+#' Experimental.  I will give it a different name later.
+#'
+#' @param object The object that implements predictPair, e.g. a ttb model.
+#' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
+#' @param row2 The second row (will apply cols_to_fit for you, based on object).
+#' @return A value from 0 to 1, representing the probability that row1's criterion
+#'   is greater than row2's criterion.
+#' @export
+predictP2 <- function(object, row1, row2) {
+  assert_single_row(row1)
+  assert_single_row(row2)
+  row1_clean <- as.matrix(row1[,object$cols_to_fit, drop=FALSE])
+  row2_clean <- as.matrix(row2[,object$cols_to_fit, drop=FALSE])
+  out <- unname(predictRoot(object, row1_clean, row2_clean))
+  # The asserts below ensure predictRoot had a reasonable implementation.
+  assert_single_row(out)
+  assert_single_column(out)
+  return(out[1,1])
 }
 
