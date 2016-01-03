@@ -333,25 +333,6 @@ predictPairMatrix <- function(object, test_data) {
   pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
 }
 
-pairMatrixManyPredict <- function(object_list, test_data) {
-  # Assume all objects agree on cols_to_fit in first object.
-  cols_to_fit <- object_list[[1]]$cols_to_fit
-  test_data_trim <- as.matrix(test_data[, cols_to_fit, drop=FALSE])
-  all_predictRoot_fn <- function(index_pair) {
-    row1 <- oneRow(test_data_trim, index_pair[1])
-    row2 <- oneRow(test_data_trim, index_pair[2])
-    out_all <- vector()
-    y <- 0
-    for (object in object_list) {
-      out <- predictRoot(object, row1, row2)
-      y <- y+1
-      out_all[[y]] <- out
-    }
-    return(out_all)
-  }
-  t(pairMatrix(nrow(test_data), all_predictRoot_fn))
-}
-
 
 pairMatrixPlus <- function(object_list, test_data) {
   row1_fn <- function(index_pair) index_pair[1]
