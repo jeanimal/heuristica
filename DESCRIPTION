@@ -1,8 +1,12 @@
 Package: heuristica
 Title: Heuristics including Take The Best and unit-weight linear
 Version: 1.0.0.0000
-Authors@R: person("Jean", "imal", email = "jeanimal@gmail.com",
+Authors@R: c(
+	person("Jean", "Whitmore", email = "jeanimal@gmail.com",
                   role = c("aut", "cre"))
+	person("Daniel", "Barkoczi", email = "barkoczi@mpib-berlin.mpg.de",
+		role = "aut")
+	)
 Description: Implements various heuristics like Take The Best and
     unit-weight linear, called Dawes' model here, in a format that
     makes it easy to use with other R fit models.  In particular,
@@ -14,6 +18,7 @@ LazyData: true
 Imports:
     Hmisc
 URL: https://github.com/jeanimal/heuristica
+BugReports: https://github.com/jeanimal/heuristica/issues
 Suggests:
     devtools,
     ggplot2,
