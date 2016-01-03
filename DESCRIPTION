@@ -3,7 +3,7 @@ Title: Heuristics including Take The Best and unit-weight linear
 Version: 1.0.0.0000
 Authors@R: c(
 	person("Jean", "Whitmore", email = "jeanimal@gmail.com",
-                  role = c("aut", "cre"))
+                  role = c("aut", "cre")),
 	person("Daniel", "Barkoczi", email = "barkoczi@mpib-berlin.mpg.de",
 		role = "aut")
 	)
