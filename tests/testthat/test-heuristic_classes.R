@@ -55,10 +55,10 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
   # [1,]        1
   expect_equal(expected_out1, out1)
 
+  out2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
   expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
   #           ttbModel ttbModel
   # [1,]        1        1
-  out2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
   expect_equal(expected_out2, out2)
 })
 
