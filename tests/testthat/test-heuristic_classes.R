@@ -228,7 +228,7 @@ test_that("ttbModel 4x4 predictRowPair cue x1 dominates non-binary", {
                                  oneRow(train_data, 3), model))
 })
 
-test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary", {
+test_that("ttbModel 4x4 predictPair cue x3 dominates non-binary", {
   train_data <- cbind(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
                       x3=c(0.1, 0.1, 0.1, 0))
   # How this data looks:
@@ -238,8 +238,8 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary", {
   # [2,]    8    1    1  0.1
   # [3,]    7    0    0  0.1
   # [4,]    6    1    1  0.0
-  # Cue 1 and 2 have validity 2/3, cue 1 has validity 1.0.
-  # Cue 3 predicts Row 3 > Row 4.
+  # Cue x1 and x2 have validity 2/3, cue x3 has validity 1.0.
+  # Cue x3 predicts Row 3 > Row 4.
   # But if you sum cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(0.667, 0.667, 1), model$cue_validities, tolerance=0.002)
@@ -250,48 +250,52 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary", {
 })
 
 test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
-  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0,0,0,0.1), 4, 4)
+  train_data <- cbind(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
+                      x3=c(0, 0, 0, 0.1))
   # How this data looks:
   # > train_data
-  #      [,1] [,2] [,3] [,4]
+  #         y   x1   x2   x3
   # [1,]    9    1    1  0.0
   # [2,]    8    1    1  0.0
   # [3,]    7    0    0  0.0
   # [4,]    6    1    1  0.1
-  # Column 1 is the criterion column.  Cues follow.
-  # Cue 1 and 2 have validity 2/3, cue 3 has validity 0,
+  # Column y is the criterion column.  Cues follow.
+  # Cue x1 and x2 have validity 2/3, cue x3 has validity 0,
   # but that validity is 1.0 when reversed.
-  # Cue 3 predicts Row 3 > Row 4.
+  # Cue x3 predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(0.667, 0.667, 0), model$cue_validities, tolerance=0.002)
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_data, 3),
+                                 oneRow(train_data, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 4),
+                                 oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue data.frame", {
-  train_df <- data.frame(criterion=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1),
-                         c=c(0,0,0,0.1))
+  train_df <- data.frame(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
+                         x3=c(0,0,0,0.1))
   # How this data looks:
   # > train_df
-  #   criterion a b   c
-  # 1         9 1 1 0.0
-  # 2         8 1 1 0.0
-  # 3         7 0 0 0.0
-  # 4         6 1 1 0.1
-  # Cue 1 and 2 have validity 2/3, cue 3 has validity 0,
+  #   y x1 x2  x3
+  # 1 9  1  1 0.0
+  # 2 8  1  1 0.0
+  # 3 7  0  0 0.0
+  # 4 6  1  1 0.1
+  # Cue x1 and x2 have validity 2/3, cue x3 has validity 0,
   # but that validity is 1.0 when reversed.
-  # Cue c predicts Row 3 > Row 4.
+  # Cue x3 predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
-  expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(x1=0.667, x2=0.667, x3=0), model$cue_validities, tolerance=0.002)
+  expect_equal(c(x1=0.667, x2=0.667, x3=1), model$cue_validities_with_reverse,
+               tolerance=0.002)
   # The coefficient for column c should be negative.
-  expect_equal(c(c=-1), sign(coef(model)["c"]), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(c(x3=-1), sign(coef(model)["x3"]), tolerance=0.002)
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 ### ttbModel on real-valued cues ###
