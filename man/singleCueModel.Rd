@@ -21,6 +21,11 @@ Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 \description{
 Create a single cue model by specifying columns and a dataset.
 }
+\examples{
+##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+singlecue <- singleCueModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+predictPair(singlecue, matrix(c(5,4,1,0,0,1), 2, 3)) 
+}
 \seealso{
 \code{\link{predictPair.singleCueModel}} (via \code{\link{predictPair}}) for prediction.
 

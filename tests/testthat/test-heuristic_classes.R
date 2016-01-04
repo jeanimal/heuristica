@@ -804,6 +804,131 @@ test_that("logRegModel error when train_data one row", {
                fixed=TRUE)
 })
 
+
+### logRegWithIModel ###
+
+test_that("logRegWithIModel predictPair 2x2 fit train_data", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0), 2, 2)
+  model <- logRegWithIModel(train_data, 1, c(2))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  # There is only one unique pair.
+  expect_equal(1, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPair 2x2 fit train_data reverse cue", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,0,1), 2, 2)
+  model <- logRegWithIModel(train_data, 1, c(2))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  # There is only one unique pair.
+  expect_equal(1, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPair 2x2,3x2 all correct", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0), 2, 2)
+  model <- logRegWithIModel(train_data, 1, c(2))
+  test_data <- matrix(c(5,4,3,1,0,0), 3, 2)
+  out <- predictPair(model, test_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(1, getPredictiono(out, row1=1, row2=3), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=3, row2=1), tolerance=tol)
+  # Row 2 and 3 have same cue values, so Row1 is equally likely to be greater.
+  expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=tol)
+  expect_equal(0.5, getPredictiono(out, row1=3, row2=2), tolerance=tol)
+  # There are three unique pairs.
+  expect_equal(3, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPair 2x2,3x2 all incorrect", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0), 2, 2)
+  model <- logRegWithIModel(train_data, 1, c(2))
+  test_data <- matrix(c(5,4,3,0,1,1), 3, 2)
+  out <- predictPair(model, test_data)
+  expect_equal(0, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(1, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=1, row2=3), tolerance=tol)
+  expect_equal(1, getPredictiono(out, row1=3, row2=1), tolerance=tol)
+  expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=tol)
+  expect_equal(0.5, getPredictiono(out, row1=3, row2=2), tolerance=tol)
+  # There are three unique pairs.
+  expect_equal(3, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPair 2x3 fit train_data", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0,1,0), 2, 3)
+  model <- logRegWithIModel(train_data, 1, c(2,3))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  # There is one unique pair.
+  expect_equal(1, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPairg 2x3 fit train_data 2nd cue useless", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0,1,1), 2, 3)
+  model <- logRegWithIModel(train_data, 1, c(2,3))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  # There is one unique pair.
+  expect_equal(1, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPair 2x3 fit train_data 2nd cue reverse", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- logRegWithIModel(train_data, 1, c(2,3))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  # There is one unique pair.
+  expect_equal(1, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel predictPair 2x3 fit train_data 1st cue useless", {
+  tol <- 0.0001
+  train_data <- matrix(c(5,4,0,0,1,0), 2, 3)
+  model <- logRegWithIModel(train_data, 1, c(2,3))
+  out <- predictPair(model, train_data)
+  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  # There is one unique pair.
+  expect_equal(1, nrow(out$predictions))
+})
+
+test_that("logRegWithIModel pctCorrectOfPredictPair", {
+  tol <- 0.0001
+  train_data <- cbind(c(5:1), c(1,1,1,0,1))
+  model <- logRegWithIModel(train_data, 1, c(2))
+  fit_accuracy <- pctCorrectOfPredictPair(list(model), train_data)
+  expect_equal(0.6, fit_accuracy$logRegWithIModel, tolerance=0.001)
+})
+
+test_that("logRegWithIModel error when train_data zero rows", {
+  train_data <- data.frame(y=c(), x1=c(), x2=c())
+  expect_error(logRegWithIModel(train_data, 1, c(2,3)),
+               "Training set must have at least 2 rows but had 0 rows",
+               fixed=TRUE)
+})
+
+test_that("logRegWithIModel error when train_data one row", {
+  train_data <- data.frame(y=c(5), x1=c(1), x2=c(0))
+  expect_error(logRegWithIModel(train_data, 1, c(2,3)),
+               "Training set must have at least 2 rows but had 1 row",
+               fixed=TRUE)
+})
+
+
 test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))
   # Cue a has validity 1, cue b has validity 0.6.
@@ -888,7 +1013,7 @@ test_that("test_10_06 reg",      {test_10_06(regModel,       0, has_cv=FALSE)})
 test_that("test_10_06 regNoI",   {test_10_06(regNoIModel,    1, has_cv=FALSE)})
 #TODO(Daniel): Why does logReg get this prediction wrong?  Is it a bug?
 test_that("test_10_06 logReg",   {test_10_06(logRegModel,    0, has_cv=FALSE)})
-
+test_that("test_10_06 logRegWithI",   {test_10_06(logRegWithIModel,    0, has_cv=FALSE)})
 
 
 # This test is named by the cue validities of the two cues, 1.0 and 0.6,
@@ -922,7 +1047,7 @@ test_that("test_00_04_rc franklin", {test_00_04_rc(franklinModel,  0)})
 test_that("test_00_04_rc reg",      {test_00_04_rc(regModel,       1, has_cv=FALSE)})
 test_that("test_00_04_rc regNoI",   {test_00_04_rc(regNoIModel,    1, has_cv=FALSE)})
 test_that("test_00_04_rc logReg",   {test_10_06(logRegModel,       0, has_cv=FALSE)})
-
+test_that("test_00_04_rc logRegWithI",   {test_10_06(logRegWithIModel,       0, has_cv=FALSE)})
 
 
 test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
@@ -952,7 +1077,7 @@ test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       1, has_cv=FALSE
 test_that("test_ab_vs_c regNoI",   {test_ab_vs_c(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): Also check why logReg gets this prediction wrong--  Is it a bug?
 test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
-
+test_that("test_ab_vs_c logRegWithI",   {test_ab_vs_c(logRegWithIModel,    1, has_cv=FALSE)})
 
 
 d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
@@ -982,6 +1107,7 @@ test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv
 test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): And check this one.#DANIEL: this looks ok now
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
+test_that("d_useless_cue_3 logRegWithI",   {d_useless_cue_3(logRegWithIModel,    1, has_cv=FALSE)})
 
 # minModel
 

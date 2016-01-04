@@ -77,22 +77,6 @@ stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   }
 }
 
-# private
-handleNAs <- function(train_data, replaceNanWith) {
- if(replaceNanWith==0){
-   train_data[is.na(train_data)] <- 0
- } else if (replaceNanWith==0.5) {
-   train_data[is.na(train_data)] <- 0.5
- } else if (replaceNanWith=="omit"){
-   rowsWithNA <- which(rowSums(is.na(train_data)) >= 1)
-   train_data <- train_data[-rowsWithNA,]
- } else {
-   stop("NAs not replaced. Please choose NA handling method")
- }
- return(train_data)
-}
-
-
 #
 # TODO(jean): Delete unused experimental functions.
 #
@@ -659,12 +643,12 @@ predictPair.regNoIModel <- function(object, test_data, verbose_output=TRUE) {
   return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
-#' Logistic Regression model
+#' Logistic Regression model without intercept
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
 #' with R's glm function.
 #'
-#' This version assumes you always want to include the intercept.
+#' This version assumes you do not want to include the intercept.
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
@@ -744,6 +728,90 @@ predictPair.logRegModel <- function(object, test_data, verbose_output=TRUE) {
 }
 
 
+#' Logistic Regression model with intercept
+#'
+#' Create a logistic regression model by specifying columns and a dataset.  It fits the model
+#' with R's glm function.
+#'
+#' This version assumes you always want to include the intercept.
+#' 
+#' @inheritParams heuristicaModel
+#' @return An object of class logRegModel.
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
+#' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
+#' @export
+logRegWithIModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
+  if (is.null(row_pairs)) {
+    n <- nrow(train_data)
+    all_pairs <- rowPairGenerator(n)
+  } else {
+    all_pairs <- row_pairs
+  }
+  
+  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  criterion <- transform[,1]
+  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
+  
+  predictors <- transform[,2:ncol(transform)]
+  
+  training_set <- cbind(criterion,predictors)
+  training_set <- as.data.frame(training_set)
+  
+  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
+  
+  
+  if(is.null(suppress_warnings)){
+    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
+  } else { 
+    model <- glm(formula,family=binomial,data=training_set)  
+  }
+  
+  col_weights <- coef(model)
+  
+  # Make clean weights that can be easily used in predictRoot.
+  col_weights_clean <- col_weights
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  # Because the intercept is 0 for row1 and ro2, ignore it.
+   if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+     col_weights_clean <- col_weights_clean[-intercept_index]
+   }
+#   
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 linear_coef=col_weights,
+                 col_weights_clean=col_weights_clean,
+                 model=model),
+            class="logRegWithIModel")
+}
+
+
+#' @export
+coef.logRegWithIModel <- function(object, ...) object$linear_coef
+
+predictRoot.logRegWithIModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  return(rescale0To1(direction_plus_minus_1))
+}
+
+#' Predict which of a pair of rows has a higher criterion, using logistic regression.
+#'
+#' @param object A fitted logRegModel.
+#' @inheritParams predictPair
+#'
+#' @seealso
+#' \code{\link{logRegWithIModel}} for example code.
+#'
+#' @export
+predictPair.logRegWithIModel <- function(object, test_data, verbose_output=TRUE) {
+  predictions <- predictPairMatrix(object, test_data)
+  return(structure(list(predictions=predictions), class="pairPredictor"))
+}
+
+
 #' Single Cue Model
 #'
 #' Create a single cue model by specifying columns and a dataset.  
@@ -751,7 +819,10 @@ predictPair.logRegModel <- function(object, test_data, verbose_output=TRUE) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @export
+#' @examples
+#' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+#' singlecue <- singleCueModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+#' predictPair(singlecue, matrix(c(5,4,1,0,0,1), 2, 3)) 
 #' @seealso
 #' \code{\link{predictPair.singleCueModel}} (via \code{\link{predictPair}}) for prediction.
 #' @seealso
@@ -808,7 +879,11 @@ predictPair.singleCueModel <- function(object, test_data, verbose_output=TRUE) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @export
+#' @examples
+#' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+#' min <- minModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+#' predictPair(min, matrix(c(5,4,1,0,0,1), 2, 3)) 
+#'
 #' @seealso
 #' \code{\link{predictPair.minModel}} (via \code{\link{predictPair}}) for prediction.
 #' @seealso
