@@ -6,7 +6,7 @@
 Assumes the object implements predictRoot and has $cols_to_fit.
 Experimental.  I will give it a different name later.}
 \usage{
-predictRowPair(row1, row2, ...)
+predictRowPair(row1, row2, object)
 }
 \arguments{
 \item{row1}{The first row of cues (will apply cols_to_fit for you, based on object).}
@@ -17,9 +17,8 @@ predictRowPair(row1, row2, ...)
 or regModel.}
 }
 \value{
-A matrix row of values from 0 to 1, representing the probability
-  that row1's criterion is greater than row2's criterion.  There are as many
-  columns as models passed in with ..., with colnames based on class names.
+A double from 0 to 1, representing the probability
+  that row1's criterion is greater than row2's criterion.
 }
 \description{
 Predict which of a pair of rows has a higher criterion.
