@@ -186,68 +186,54 @@ test_that("ttbModel 2x2,3x2 predictRowPair", {
                                    oneRow(train_matrix, 3), model))
 })
 
-test_that("ttbModel 4x4 predictPair first cue dominates", {
-  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
+test_that("ttbModel 4x4 predictRowPair x1 cue dominates", {
+  train_data <- cbind(y=c(9,8,7,6), x1=c(1,1,1,0), x2=c(1,1,0,1),
+                      x3=c(1,1,0,1))
   # How this data looks:
   # > train_data
-  #       [,1] [,2] [,3] [,4]
+  #         y  x1   x2   x3
   # [1,]    9    1    1    1
   # [2,]    8    1    1    1
   # [3,]    7    1    0    0
   # [4,]    6    0    1    1
-  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
-  # Cue one predicts Row 3 > Row 4.
+  # Cue x2 has validity 1.0, cue x2 and cue x3 have validity 2/3.
+  # Cue x1 predicts Row 3 > Row 4.
   # But if you sum cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_data, 3),
+                                 oneRow(train_data, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 4),
+                                 oneRow(train_data, 3), model))
 })
 
-test_that("ttbModel 4x4 predictPair first cue dominates", {
-  train_data <- matrix(c(9,8,7,6,1,1,1,0,1,1,0,1,1,1,0,1), 4, 4)
+test_that("ttbModel 4x4 predictRowPair cue x1 dominates non-binary", {
+  train_data <- cbind(y=c(9,8,7,6), x1=c(0.1, 0.1, 0.1, 0),
+                      x2=c(1,1,0,1), x3=c(1,1,0,1))
   # How this data looks:
   # > train_data
-  #       [,1] [,2] [,3] [,4]
-  # [1,]    9    1    1    1
-  # [2,]    8    1    1    1
-  # [3,]    7    1    0    0
-  # [4,]    6    0    1    1
-  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
-  # Cue one predicts Row 3 > Row 4.
-  # But if you sum cue weights, predict Row 4 > Row 3
-  model <- ttbModel(train_data, 1, c(2:4))
-  expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
-})
-
-test_that("ttbModel 4x4 predictPair first cue dominates non-binary", {
-  train_data <- matrix(c(9,8,7,6,0.1,0.1,0.1,0,1,1,0,1,1,1,0,1), 4, 4)
-  # How this data looks:
-  # > train_data
-  #       [,1] [,2] [,3] [,4]
+  #         y    x1   x2   x3
   # [1,]    9   0.1    1    1
   # [2,]    8   0.1    1    1
   # [3,]    7   0.1    0    0
   # [4,]    6     0    1    1
-  # Cue 1 has validity 1.0, cue 2 and cue 3 have validity 2/3.
-  # Cue one predicts Row 3 > Row 4.
+  # Cue x1 has validity 1.0, cue x2 and cue x3 have validity 2/3.
+  # Cue x1 predicts Row 3 > Row 4.
   # But if you sum cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(1, 0.667, 0.667), model$cue_validities, tolerance=0.002)
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_data, 3),
+                                 oneRow(train_data, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 4),
+                                 oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary", {
-  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0.1,0.1,0.1,0), 4, 4)
+  train_data <- cbind(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
+                      x3=c(0.1, 0.1, 0.1, 0))
   # How this data looks:
   # > train_data
-  #      [,1] [,2] [,3] [,4]
+  #         y   x1   x2   x3
   # [1,]    9    1    1  0.1
   # [2,]    8    1    1  0.1
   # [3,]    7    0    0  0.1
@@ -257,9 +243,10 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary", {
   # But if you sum cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(0.667, 0.667, 1), model$cue_validities, tolerance=0.002)
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_data, 3),
+                                 oneRow(train_data, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 4),
+                                 oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
