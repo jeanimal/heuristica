@@ -457,26 +457,26 @@ test_that("dawesModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cu
 
 ### franklinModel ###
 
-test_that("franklinModel 2x3 pos neg reverse_cues FALSE", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+test_that("franklinModel 2x3 predictRowPair pos neg reverse_cues FALSE", {
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- franklinModel(train_matrix, 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(0,  coef(model)[[2]])  
   expect_equal(2, length(coef(model)))
-  out2 <- predictPair(model, train_matrix)
-  expect_equal(1, getPredictiono(out2, row1=1, row2=2), tolerance=0.002)
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
 })
 
 test_that("franklinModel 2x3 pos neg", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- franklinModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(-1,  coef(model)[[2]])  
   expect_equal(2, length(coef(model)))
-  out2 <- predictPair(model, train_matrix)
-  expect_equal(1, getPredictiono(out2, row1=1, row2=2), tolerance=0.002)
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
 })
 
 test_that("franklinModel 5x1 75", {
