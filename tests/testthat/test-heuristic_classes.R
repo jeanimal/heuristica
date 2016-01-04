@@ -300,7 +300,7 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue dat
 
 ### ttbModel on real-valued cues ###
 
-test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates reverse cue data.frame",
+test_that(paste("ttbModel 4x4 predictRowPair 3nd cue dominates reverse cue data.frame",
           "non-binary small diffs, big diffs, small diffs"), {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(1.1,1.1,1.0,1.1), b=c(10,10,-10,10),
                          c=c(0,0,0,0.1))
@@ -310,7 +310,7 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates reverse cue data.fra
   # 2         8 1.1  10 0.0
   # 3         7 1.0 -10 0.0
   # 4         6 1.1  10 0.1
-  # Cue 1 and 2 have validity 2/3, cue 3 has validity 0,
+  # Cue a and b have validity 2/3, cue c has validity 0,
   # but that validity is 1.0 when reversed.
   # Cue c predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
@@ -319,12 +319,13 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates reverse cue data.fra
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   # The coefficient for column c should be negative.
   expect_equal(c(c=-1), sign(coef(model)["c"]), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
+test_that(paste("ttbModel 4x4 predictRowPair 3nd cue dominates cue data.frame",
                 "non-binary big diffs, big diffs, big diffs"), {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,90,90,10))
@@ -336,12 +337,13 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
+test_that(paste("ttbModel 4x4 predictRowPair 3nd cue dominates cue data.frame",
                 "non-binary big criteriondiffs, big diffs, big diffs, big diffs"), {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,90,90,10))
@@ -353,9 +355,10 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
@@ -369,9 +372,10 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame REVERSE",
@@ -386,9 +390,10 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame REVER
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(0, getPredictiono(out, row1=3, row2=4))
-  expect_equal(1, getPredictiono(out, row1=4, row2=3))
+  expect_equal(0, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(1, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 ### dawesModel ###
