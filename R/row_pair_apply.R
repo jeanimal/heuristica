@@ -134,8 +134,8 @@ criterion <- function(criterion_col, output_column_name="ProbGreater") {
 createFunction.criterion <- function(object, test_data) {
   criterion_matrix <- as.matrix(test_data[, object$criterion_col, drop=FALSE])
   correct_fn <- function(index_pair)
-    sign(criterion_matrix[index_pair[1], , drop=FALSE]
-         - criterion_matrix[index_pair[2], , drop=FALSE])
+    rescale0To1(sign(criterion_matrix[index_pair[1], , drop=FALSE]
+                     - criterion_matrix[index_pair[2], , drop=FALSE]))
   return(correct_fn)
 }
 
