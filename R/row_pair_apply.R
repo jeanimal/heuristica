@@ -267,7 +267,7 @@ rowPairApply <- function(row1, row2, ...) {
   assert_single_row(row2)
   test_data <- rbind(row1, row2)
   out <- allRowPairApply(test_data, ...)
-  # The asserts below ensure predictRoot had a reasonable implementation.
+  # The asserts below ensures the functions produced only one row of output.
   assert_single_row(out)
   return(out)
 }
