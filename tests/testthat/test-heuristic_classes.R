@@ -429,10 +429,9 @@ test_that("dawesModel 3x3 pos pos predict", {
   expect_equal(matrix(c(0,1,2), 3, 1), bad)
 })
 
-test_that("dawesModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
-  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0,0,0,0.1), 4, 4)
-  train_df <- as.data.frame(train_data)
-  names(train_df) <- c("Y", "a", "b", "c")
+test_that("dawesModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cue", {
+  train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1),
+                         c=c(0,0,0,0.1))
   # How this data looks:
   # > train_df
   #   Y a b   c
@@ -450,9 +449,10 @@ test_that("dawesModel 4x4 predictPair 3nd cue dominates non-binary reverse cue",
   #TODO(jean): Return cue reversal.
   #expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   expect_equal(c(a=1, b=1, c=-1), model$linear_coef, tolerance=0.002)
-  out <- predictPair(model, train_data)
-  expect_equal(0, getPredictiono(out, row1=3, row2=4))
-  expect_equal(1, getPredictiono(out, row1=4, row2=3))
+  expect_equal(0, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(1, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 ### franklinModel ###
