@@ -468,7 +468,7 @@ test_that("franklinModel 2x3 predictRowPair pos neg reverse_cues FALSE", {
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("franklinModel 2x3 pos neg", {
+test_that("franklinModel 2x3 predictRowPair pos neg", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- franklinModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
