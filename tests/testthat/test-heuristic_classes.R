@@ -40,7 +40,7 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
   # output should look like
   #      ttbModel
   # [1,]        1
-  expect_equal(makeMatrix(ttbModel=c(1)), out1)
+  expect_equal(cbind(ttbModel=c(1)), out1)
 
   out2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
   expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
@@ -66,12 +66,12 @@ test_that("ttbModel 2x3 predictRowPair forward", {
 })
 
 test_that("ttbModel 2x3 predictRowPair test_matrix backward cues", {
-  train_matrix <- makeMatrix(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
   # Cues in test_data below have been reversed.
   # So predictions should be reversed.
-  test_matrix <- makeMatrix(y=c(5,4), x1=c(0,1), x2=c(1,0))
+  test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(1,0))
   expect_equal(0, predictRowPair(oneRow(test_matrix, 1),
                                  oneRow(test_matrix, 2), model))
   expect_equal(1, predictRowPair(oneRow(test_matrix, 2),
@@ -79,12 +79,12 @@ test_that("ttbModel 2x3 predictRowPair test_matrix backward cues", {
 })
 
 test_that("ttbModel 2x3 predictRowPair test_matrix backward criterion", {
-  train_matrix <- makeMatrix(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
   # The criterion in test_data below has been reversed.
   # It should be ignored-- continue to use the validities from train_matrix.
-  test_matrix <- makeMatrix(y=c(4,5), x1=c(1,0), x2=c(0,1))
+  test_matrix <- cbind(y=c(4,5), x1=c(1,0), x2=c(0,1))
   expect_equal(1, predictRowPair(oneRow(test_matrix, 1),
                                  oneRow(test_matrix, 2), model))
   expect_equal(0, predictRowPair(oneRow(test_matrix, 2),

@@ -163,12 +163,6 @@ oneRow <- function(matrix_or_data_frame, row_index) {
   matrix_or_data_frame[row_index,,drop=FALSE]
 }
 
-# Convenience function to create a matrix in a readable way, similar
-# to how we make data.frames.
-# e.g. makeMatrix(ttbModel=c(1)))
-# Private.
-makeMatrix <- function(...) as.matrix(data.frame(...))
-
 getCuePairDirections <- function(coefficients, row1, row2) {
   sign(sign(row1 - row2) %*% coefficients)
 }
