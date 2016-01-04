@@ -254,6 +254,24 @@ assert_single_column <- function(obj) {
   }
 }
 
+#' Apply all functions to the row pair.
+#'
+#' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
+#' @param row2 The second row (will apply cols_to_fit for you, based on object).
+#' @param ... The objects that generate the functions to apply, using createFunction.
+#'    For example, heuristics(ttb), criterion(col), or colPairValues.
+#' @return A matrix of function outputs.
+#' @export
+rowPairApply <- function(row1, row2, ...) {
+  assert_single_row(row1)
+  assert_single_row(row2)
+  test_data <- rbind(row1, row2)
+  out <- allRowPairApply(test_data, ...)
+  # The asserts below ensure predictRoot had a reasonable implementation.
+  assert_single_row(out)
+  return(out)
+}
+
 #' Predict which of a pair of rows has a higher criterion.
 #' Assumes the object implements predictRoot and has $cols_to_fit.
 #' Experimental.  I will give it a different name later.
@@ -262,18 +280,13 @@ assert_single_column <- function(obj) {
 #' @param row2 The second row (will apply cols_to_fit for you, based on object).
 #' @param ... The objects that implements predictPair, e.g. a fitted ttbModel
 #'   or regModel.
-#' @return A matrix row of values from 0 to 1, representing the probability
-#'   that row1's criterion is greater than row2's criterion.  There are as many
-#'   columns as models passed in with ..., with colnames based on class names.
+#' @return A double from 0 to 1, representing the probability
+#'   that row1's criterion is greater than row2's criterion.
 #' @export
-predictRowPair <- function(row1, row2, ...) {
-  assert_single_row(row1)
-  assert_single_row(row2)
-  test_data <- rbind(row1, row2)
-  out <- allRowPairApply(test_data, heuristics(...))
+predictRowPair <- function(row1, row2, object) {
+  out <- rowPairApply(row1, row2, heuristics(object))
   # The asserts below ensure predictRoot had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)
-  return(out)
+  return(unname(out[1,1]))
 }
-
