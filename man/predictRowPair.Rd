@@ -6,18 +6,20 @@
 Assumes the object implements predictRoot and has $cols_to_fit.
 Experimental.  I will give it a different name later.}
 \usage{
-predictRowPair(object, row1, row2)
+predictRowPair(row1, row2, ...)
 }
 \arguments{
-\item{object}{The object that implements predictPair, e.g. a ttb model.}
-
 \item{row1}{The first row of cues (will apply cols_to_fit for you, based on object).}
 
 \item{row2}{The second row (will apply cols_to_fit for you, based on object).}
+
+\item{...}{The objects that implements predictPair, e.g. a fitted ttbModel
+or regModel.}
 }
 \value{
-A value from 0 to 1, representing the probability that row1's criterion
-  is greater than row2's criterion.
+A matrix row of values from 0 to 1, representing the probability
+  that row1's criterion is greater than row2's criterion.  There are as many
+  columns as models passed in with ..., with colnames based on class names.
 }
 \description{
 Predict which of a pair of rows has a higher criterion.

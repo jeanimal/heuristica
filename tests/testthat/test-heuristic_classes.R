@@ -7,14 +7,14 @@ context("heuristic_classes")
 test_that("predictRowPair error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
-  expect_error(predictRowPair(model, train_matrix[1,], train_matrix[2,]),
+  expect_error(predictRowPair(train_matrix[1,], train_matrix[2,], model),
                "Object does not have row dimension")
 })
 
 test_that("predictRowPair error too many rows", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
-  expect_error(predictRowPair(model, train_matrix[c(1:2),], train_matrix[2,]),
+  expect_error(predictRowPair(train_matrix[c(1:2),], train_matrix[2,], model),
                "Expected a single row but got 2 rows")
 })
 
@@ -23,11 +23,13 @@ test_that("ttbModel 2x3 predictPair forward", {
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
   # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictRowPair(model, oneRow(train_matrix, 1),
-                            oneRow(train_matrix, 2)))
+  expect_equal(makeMatrix(ttbModel=c(1)),
+               predictRowPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
   # So as expected, the probability that row2 > row 1 is 0.
-  expect_equal(0, predictRowPair(model, oneRow(train_matrix, 2),
-                            oneRow(train_matrix, 1)))
+  expect_equal(makeMatrix(ttbModel=c(0)),
+               predictRowPair(oneRow(train_matrix, 2),
+                              oneRow(train_matrix, 1), model))
   out2 <- predictPairMatrix(model, train_matrix)
 })
 
@@ -36,12 +38,13 @@ test_that("ttbModel 2x3 predictPair forward data.frame", {
   model <- ttbModel(train_df, 1, c(2,3))
   expect_equal(c(1,0), unname(model$cue_validities))
   # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictRowPair(model, oneRow(train_df, 1),
-                            oneRow(train_df, 2)), tolerance=0.0001)
+  expect_equal(makeMatrix(ttbModel=c(1)),
+               predictRowPair(oneRow(train_df, 1),
+                              oneRow(train_df, 2), model))
   # So as expected, the probability that row2 > row 1 is 0.
-  expect_equal(0, predictRowPair(model, oneRow(train_df, 2),
-                            oneRow(train_df, 1)), tolerance=0.0001)
-  out2 <- predictPairMatrix(model, train_df)
+  expect_equal(makeMatrix(ttbModel=c(0)),
+               predictRowPair(oneRow(train_df, 2),
+                              oneRow(train_df, 1), model))
 })
 
 test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
@@ -49,11 +52,10 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
   ttb <- ttbModel(train_matrix, 1, c(2,3))
 
   out1 <- allRowPairApply(train_matrix, heuristics(ttb))
-  expected_out1 <- matrix(c(1), 1, 1, dimnames = list(NULL, c("ttbModel")))
-  # output looks like
+  # output should look like
   #      ttbModel
   # [1,]        1
-  expect_equal(expected_out1, out1)
+  expect_equal(makeMatrix(ttbModel=c(1)), out1)
 
   out2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
   expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))

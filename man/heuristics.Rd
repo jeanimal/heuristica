@@ -22,16 +22,6 @@ predictRoot.  Users will generally not use the output directly.
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 out <- allRowPairApply(city_population, heuristics(ttb))
 head(out)
-
-## If you are curious how the function_creator works, try this:
-function_creator <- heuristics(ttb)
-fn <- createFunction(function_creator, city_population)
-## ttb's prediction for row 1 vs. 2 (probability row 1 greater):
-fn(c(1,2))
-## ttb's prediction for row 2 vs. 1 (probability row 2 greater):
-fn(c(1,2))
-## ttb's prediction for row 82 vs 83 (probability row 82 greater):
-fn(c(1,2))
 ## Under the hood, it calls ttb's predictRoot.
 
 }

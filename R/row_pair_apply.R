@@ -258,21 +258,22 @@ assert_single_column <- function(obj) {
 #' Assumes the object implements predictRoot and has $cols_to_fit.
 #' Experimental.  I will give it a different name later.
 #'
-#' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
 #' @param row2 The second row (will apply cols_to_fit for you, based on object).
-#' @return A value from 0 to 1, representing the probability that row1's criterion
-#'   is greater than row2's criterion.
+#' @param ... The objects that implements predictPair, e.g. a fitted ttbModel
+#'   or regModel.
+#' @return A matrix row of values from 0 to 1, representing the probability
+#'   that row1's criterion is greater than row2's criterion.  There are as many
+#'   columns as models passed in with ..., with colnames based on class names.
 #' @export
-predictRowPair <- function(object, row1, row2) {
+predictRowPair <- function(row1, row2, ...) {
   assert_single_row(row1)
   assert_single_row(row2)
-  row1_clean <- as.matrix(row1[,object$cols_to_fit, drop=FALSE])
-  row2_clean <- as.matrix(row2[,object$cols_to_fit, drop=FALSE])
-  out <- unname(predictRoot(object, row1_clean, row2_clean))
+  test_data <- rbind(row1, row2)
+  out <- allRowPairApply(test_data, heuristics(...))
   # The asserts below ensure predictRoot had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)
-  return(out[1,1])
+  return(out)
 }
 
