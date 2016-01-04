@@ -2,7 +2,7 @@ context("heuristic_classes")
 
 # require('testthat')
 
-# New stuff
+# TODO: Move the tests below to where I test predictRowPair
 
 test_that("predictRowPair error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
@@ -18,20 +18,9 @@ test_that("predictRowPair error too many rows", {
                "Expected a single row but got 2 rows")
 })
 
-test_that("ttbModel 2x3 predictPair forward", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
-  model <- ttbModel(train_matrix, 1, c(2,3))
-  expect_equal(c(1,0), model$cue_validities)
-  # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
-                                 oneRow(train_matrix, 2), model))
-  # The logical opposite: the probability that row2 > row 1 is 0.
-  expect_equal(0, predictRowPair(oneRow(train_matrix, 2),
-                                 oneRow(train_matrix, 1), model))
-  out2 <- predictPairMatrix(model, train_matrix)
-})
+# Variations with data taypes
 
-test_that("ttbModel 2x3 predictPair forward data.frame", {
+test_that("ttbModel 2x3 predictRowPair forward data.frame", {
   train_df <- data.frame(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_df, 1, c(2,3))
   expect_equal(c(1,0), unname(model$cue_validities))
@@ -63,29 +52,53 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
 
 # ttbModel on binary cues
 
-test_that("ttbModel 2x3 predictPair backward cues", {
+test_that("ttbModel 2x3 predictRowPair forward", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,0), model$cue_validities)
-  # Cues in test_data below have been reversed.
-  out <- predictPair(model, matrix(c(5,4,0,1,1,0), 2, 3))
-  # So predictions should be reversed.
-  expect_equal(0, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1, getPredictiono(out, row1=2, row2=1))
-  # No other rows.
-  expect_equal(1, nrow(out$predictions))
-  #expect_equal(1, nrow(out$verbose_predictions))
+  # The probability that row 1 > row 2 is 1.
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
+  # The logical opposite: the probability that row2 > row 1 is 0.
+  expect_equal(0, predictRowPair(oneRow(train_matrix, 2),
+                                 oneRow(train_matrix, 1), model))
+  out2 <- predictPairMatrix(model, train_matrix)
 })
 
-test_that("ttbModel 2x2 predictPair cue_reversal", {
+test_that("ttbModel 2x3 predictRowPair test_matrix backward cues", {
+  train_matrix <- makeMatrix(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_equal(c(1,0), model$cue_validities)
+  # Cues in test_data below have been reversed.
+  # So predictions should be reversed.
+  test_matrix <- makeMatrix(y=c(5,4), x1=c(0,1), x2=c(1,0))
+  expect_equal(0, predictRowPair(oneRow(test_matrix, 1),
+                                 oneRow(test_matrix, 2), model))
+  expect_equal(1, predictRowPair(oneRow(test_matrix, 2),
+                                 oneRow(test_matrix, 1), model))
+})
+
+test_that("ttbModel 2x3 predictRowPair test_matrix backward criterion", {
+  train_matrix <- makeMatrix(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_equal(c(1,0), model$cue_validities)
+  # The criterion in test_data below has been reversed.
+  # It should be ignored-- continue to use the validities from train_matrix.
+  test_matrix <- makeMatrix(y=c(4,5), x1=c(1,0), x2=c(0,1))
+  expect_equal(1, predictRowPair(oneRow(test_matrix, 1),
+                                 oneRow(test_matrix, 2), model))
+  expect_equal(0, predictRowPair(oneRow(test_matrix, 2),
+                                 oneRow(test_matrix, 1), model))
+})
+
+test_that("ttbModel 2x2 predictRowPair cue_reversal", {
   train_matrix <- matrix(c(5,4,0,1), 2, 2)
   model <- ttbModel(train_matrix, 1, c(2))
   expect_equal(c(0), model$cue_validities)
-  out <- predictPair(model, train_matrix)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(0, getPredictiono(out, row1=2, row2=1))
-  # No other rows.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_matrix, 2),
+                                 oneRow(train_matrix, 1), model))
 })
 
 test_that("ttbModel 3x3 predictPair forward", {
