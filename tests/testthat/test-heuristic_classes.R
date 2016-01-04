@@ -174,13 +174,16 @@ test_that("ttbModel 3x3 pos pos predictPair backward cues in test", {
                                  oneRow(test_matrix, 2), model))
 })
 
-test_that("ttbModel 2x2,3x2 predictPair", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0), 2, 3), 1, c(2))
+test_that("ttbModel 2x2,3x2 predictRowPair", {
+  train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0))
+  model <- ttbModel(train_matrix, 1, c(2))
   expect_equal(c(1), model$cue_validities)
-  out <- predictPair(model, matrix(c(5,4,3,1,0,0), 3, 2))
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1, getPredictiono(out, row1=1, row2=3))
-  expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=0.0001)
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 3), model))
+  expect_equal(0.5, predictRowPair(oneRow(train_matrix, 2),
+                                   oneRow(train_matrix, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPair first cue dominates", {
