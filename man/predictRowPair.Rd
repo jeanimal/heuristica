@@ -13,7 +13,7 @@ predictRowPair(row1, row2, object)
 
 \item{row2}{The second row (will apply cols_to_fit for you, based on object).}
 
-\item{...}{The objects that implements predictPair, e.g. a fitted ttbModel
+\item{object}{The object that implements predictPair, e.g. a fitted ttbModel
 or regModel.}
 }
 \value{
