@@ -814,7 +814,7 @@ predictPair.logRegWithIModel <- function(object, test_data, verbose_output=TRUE)
 
 #' Single Cue Model
 #'
-#' Create a single cue model by specifying columns and a dataset.  
+#' Create a single cue model by specifying columns and a dataset.  It sorts cues in order of cueValidity and uses the cue with the highest cueValidity. If the cue does not discriminate it guesses randomly.
 #'
 #' 
 #' @inheritParams heuristicaModel
@@ -874,7 +874,7 @@ predictPair.singleCueModel <- function(object, test_data, verbose_output=TRUE) {
 
 #' Minimalist Model
 #'
-#' Fit the Minimalist heuristic by specifying columns and a dataset.  
+#' Fit the Minimalist heuristic by specifying columns and a dataset. It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two objects).
 #'
 #' 
 #' @inheritParams heuristicaModel

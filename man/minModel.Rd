@@ -19,7 +19,7 @@ with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \description{
-Fit the Minimalist heuristic by specifying columns and a dataset.
+Fit the Minimalist heuristic by specifying columns and a dataset. It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two objects).
 }
 \examples{
 ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
