@@ -92,7 +92,7 @@ test_that("ttbModel 2x3 predictRowPair test_matrix backward criterion", {
 })
 
 test_that("ttbModel 2x2 predictRowPair cue_reversal", {
-  train_matrix <- matrix(c(5,4,0,1), 2, 2)
+  train_matrix <- cbind(y=c(5,4), x1=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2))
   expect_equal(c(0), model$cue_validities)
   expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
@@ -101,65 +101,77 @@ test_that("ttbModel 2x2 predictRowPair cue_reversal", {
                                  oneRow(train_matrix, 1), model))
 })
 
-test_that("ttbModel 3x3 predictPair forward", {
-  train_matrix <- matrix(c(5,4,3,1,0,1,1,0,0), 3, 3)
+test_that("ttbModel 3x3 predictRowPair forward", {
+  train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,1), x2=c(1,0,0))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(0.5, 1), model$cue_validities)
-  out <- predictPair(model, train_matrix)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1, getPredictiono(out, row1=1, row2=3))
-  # Cue in column 2 discriminates but validity is 0.5, so not used.
-  expect_equal(0.5, getPredictiono(out, row1=2, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 3), model))
+  # Cue x1 discriminates rows 2 and 3, but validity=0.5, so not used.
+  expect_equal(0.5, predictRowPair(oneRow(train_matrix, 2),
+                                   oneRow(train_matrix, 3), model))
 })
 
-test_that("ttbModel 3x3 predictPair cue_reversal", {
-  train_matrix <- matrix(c(5,4,3,1,0,1,0,0,1), 3, 3)
+test_that("ttbModel 3x3 predictRowPair cue_reversal", {
+  train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,1), x2=c(0,0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(0.5, 0), model$cue_validities)
-  out <- predictPair(model, train_matrix)
-  # First cue discriminates but has 0.5 validity.
-  # 2nd cue does not discriminate.
+  # x1 discriminates but has 0.5 validity.
+  # x2 does not discriminate.
   # So it's a guess = 0.5.
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=2))
+  expect_equal(0.5, predictRowPair(oneRow(train_matrix, 1),
+                                   oneRow(train_matrix, 2), model))
   # Reverse the 2nd cue, and it discriminates to get these right.
-  expect_equal(1, getPredictiono(out, row1=1, row2=3))
-  expect_equal(1, getPredictiono(out, row1=1, row2=3))
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 2),
+                                 oneRow(train_matrix, 3), model))
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 3), model))
 })
 
 test_that("ttbModel 3x3 pos pos predictPair forward", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+  train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,1,0))
+  model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
-
-  # All cues same as in training data.
-  out <- predictPair(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
-  expect_equal(1, getPredictiono(out, row1=1, row2=2))
-  expect_equal(0, getPredictiono(out, row1=2, row2=1))
-
-  expect_equal(1, getPredictiono(out, row1=1, row2=3))
-  expect_equal(0, getPredictiono(out, row1=3, row2=1))
-
-  expect_equal(1, getPredictiono(out, row1=2, row2=3))
-  expect_equal(0, getPredictiono(out, row1=3, row2=2))
-  # No other rows.
-  expect_equal(3, nrow(out$predictions))
+  
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_matrix, 2),
+                                 oneRow(train_matrix, 1), model))
+  
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 3), model))
+  expect_equal(0, predictRowPair(oneRow(train_matrix, 3),
+                                 oneRow(train_matrix, 1), model))
+  
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 2),
+                                 oneRow(train_matrix, 3), model))
+  expect_equal(0, predictRowPair(oneRow(train_matrix, 3),
+                                 oneRow(train_matrix, 2), model))
 })
 
-test_that("ttbModel 3x3 pos pos predictPair backward cues", {
-  model <- ttbModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
+test_that("ttbModel 3x3 pos pos predictPair backward cues in test", {
+  train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,1,0))
+  model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
 
   # All cues backwards relative to training data.
-  out <- predictPair(model, matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
-  expect_equal(0, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1, getPredictiono(out, row1=2, row2=1))
-
-  expect_equal(0, getPredictiono(out, row1=1, row2=3))
-  expect_equal(1, getPredictiono(out, row1=3, row2=1))
-
-  expect_equal(0, getPredictiono(out, row1=2, row2=3))
-  expect_equal(1, getPredictiono(out, row1=3, row2=2))
-  # No other rows.
-  expect_equal(3, nrow(out$predictions))
+  test_matrix <- cbind(y=c(5,4,3), x1=c(0,1,1), x2=c(0,0,1))
+  expect_equal(0, predictRowPair(oneRow(test_matrix, 1),
+                                 oneRow(test_matrix, 2), model))
+  expect_equal(1, predictRowPair(oneRow(test_matrix, 2),
+                                 oneRow(test_matrix, 1), model))
+  
+  expect_equal(0, predictRowPair(oneRow(test_matrix, 1),
+                                 oneRow(test_matrix, 3), model))
+  expect_equal(1, predictRowPair(oneRow(test_matrix, 3),
+                                 oneRow(test_matrix, 1), model))
+  
+  expect_equal(0, predictRowPair(oneRow(test_matrix, 2),
+                                 oneRow(test_matrix, 3), model))
+  expect_equal(1, predictRowPair(oneRow(test_matrix, 3),
+                                 oneRow(test_matrix, 2), model))
 })
 
 test_that("ttbModel 2x2,3x2 predictPair", {
