@@ -51,7 +51,6 @@ test_that("allRowPairApply dimension test: heuristics, heuristics", {
   expect_equal(2, ncol(out2))
 })
 
-# Test criterion function
 test_that("allRowPairApply criterion function", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))
@@ -63,7 +62,17 @@ test_that("allRowPairApply criterion function", {
   expect_equal(2, ncol(out2))
 })
 
-# Test colPairValues function
+test_that("allRowPairApply rowIndexes function", {
+  train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
+  model <- ttbModel(train_df, 1, c(2,3))
+  out1 <- allRowPairApply(train_df, rowIndexes())
+  expect_equal(3, nrow(out1))
+  expect_equal(2, ncol(out1))
+  out2 <- allRowPairApply(train_df, rowIndexes(), rowIndexes())
+  expect_equal(3, nrow(out2))
+  expect_equal(4, ncol(out2))
+})
+
 test_that("allRowPairApply colPairValues function numeric", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))

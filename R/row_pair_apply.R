@@ -107,6 +107,8 @@ createFunction.heuristics <- function(object, test_data) {
   return(all_predictRoot_fn)
 }
 
+# criterion
+
 #' Wrapper to get a column of correct probabilities with allRowPairApply.
 #'
 #' Using allRowPairApply, this can generate a column with
@@ -138,6 +140,37 @@ createFunction.criterion <- function(object, test_data) {
                      - criterion_matrix[index_pair[2], , drop=FALSE]))
   return(correct_fn)
 }
+
+# rowIndexes
+
+#' Wrapper to output two columns, row 1 and row 2.
+#'
+#' Using allRowPairApply, this can generate two columns, which by default
+#' are called "Row1" and "Row2"
+#' 
+#' @param rowIndexColNames An optional vector of 2 strings for column names.
+#' @return An object of class rowIndexes, which implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#' 
+#' @seealso
+#' \code{\link{createFunction}} which is what the returned object implements.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
+rowIndexes <- function(rowIndexColNames=c("Row1", "Row2")) {
+  if (length(rowIndexColNames) != 2) {
+    stop(paste("Expected only 2 column names but got: ", length(rowIndexColNames)))
+  }
+  structure(list(column_names=rowIndexColNames),
+            class="rowIndexes")
+}
+
+createFunction.rowIndexes<- function(object, test_data) {
+  row_index_fn <- function(index_pair) c(index_pair[1], index_pair[2])
+  return(row_index_fn)
+}
+
+# colPairValues (still under development)
 
 # To get the column index by name: which(colnames(df)=="B")
 colPairValues <- function(input_column_index, output_column_name) {
