@@ -488,14 +488,14 @@ test_that("franklinModel allRowPairApply 5x1 75", {
   
   expect_equal(0.5, getPrediction_raw(out, c(1,2)), tolerance=0.002)
   expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
-  expect_equal(1, getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(1,   getPrediction_raw(out, c(1,4)), tolerance=0.002)
   expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
   
   expect_equal(0, getPrediction_raw(out, c(4,5)), tolerance=0.002)
 })
 
 test_that("franklinModel 5x1 25 reverse_cues FALSE", {
-  train_matrix <- matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2)
+  train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,0,1,1,1))
   model <- franklinModel(train_matrix, 1, c(2), reverse_cues=FALSE)
   expect_equal(c(0.25),  model$cue_validities)
   # No cue reversal means cue_validities_with_reversal is NULL.
@@ -569,7 +569,7 @@ test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cu
 ### regModel ###
 
 test_that("regModel 2x2 fit pos slope", {
-  train_matrix <- matrix(c(5,4,1,0), 2, 2)
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0))
   model <- regModel(train_matrix, 1, c(2))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
@@ -579,7 +579,7 @@ test_that("regModel 2x2 fit pos slope", {
 })
 
 test_that("regModel 2x2 fit neg slope", {
-  train_matrix <- matrix(c(5,4,0,1), 2, 2)
+  train_matrix <- cbind(y=c(5,4), x1=c(0,1))
   model <- regModel(train_matrix, 1, c(2))
   expect_equal(5,  coef(model)[[1]])  # intercept
   expect_equal(-1,  coef(model)[[2]])  # slope
@@ -588,7 +588,7 @@ test_that("regModel 2x2 fit neg slope", {
 })
 
 test_that("regModel 2x2 fit pos slope -- data.frame", {
-  train_df <- as.data.frame( matrix(c(5,4,1,0), 2, 2))
+  train_df <- data.frame(y=c(5,4), x1=c(1,0))
   model <- regModel(train_df, 1, c(2))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
@@ -598,7 +598,8 @@ test_that("regModel 2x2 fit pos slope -- data.frame", {
 })
 
 test_that("lmWrapper 2x2 fit pos slope -- no intercept", {
-  model <- lmWrapper(matrix(c(5,4,1,0), 2, 2), 1, c(2),  include_intercept=FALSE)
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0))
+  model <- lmWrapper(train_matrix, 1, c(2),  include_intercept=FALSE)
   expect_equal(5,  coef(model)[[1]])  # slope
   expect_equal(1, length(coef(model))) 
 })
