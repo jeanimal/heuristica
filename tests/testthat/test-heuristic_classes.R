@@ -479,17 +479,19 @@ test_that("franklinModel 2x3 predictRowPair pos neg", {
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("franklinModel 5x1 75", {
-  train_matrix <- matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2)
+test_that("franklinModel allRowPairApply 5x1 75", {
+  train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,1,1,0,1))
   model <- franklinModel(train_matrix, 1, c(2))
   expect_equal(c(0.75),  model$cue_validities) 
   expect_equal(c(0.75),  coef(model))
-  out <- predictPair(model, train_matrix)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
-  expect_equal(1, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
-  expect_equal(0, getPredictiono(out, row1=4, row2=5), tolerance=0.002)
+  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  
+  expect_equal(0.5, getPrediction_raw(out, c(1,2)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
+  expect_equal(1, getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
+  
+  expect_equal(0, getPrediction_raw(out, c(4,5)), tolerance=0.002)
 })
 
 test_that("franklinModel 5x1 25 reverse_cues FALSE", {

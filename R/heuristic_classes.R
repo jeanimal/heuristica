@@ -104,6 +104,7 @@ pairPredictionDFo.pairPredictor <- function(object) {
   return(pairPredictionDF(object$predictions))
 }
 
+# TODO(jean): If this gets used a lot, export it and give it a nicer name.
 # Returns just one number.  Assumes you want just the last column.
 getPrediction_raw <- function(prediction_matrix, row_pair) {
   if (length(row_pair) != 2) {
