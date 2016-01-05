@@ -541,9 +541,7 @@ test_that("franklinModel 3x3 pos pos predict", {
 })
 
 test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
-  train_data <- matrix(c(9,8,7,6,1,1,0,1,1,1,0,1,0,0,0,0.1), 4, 4)
-  train_df <- as.data.frame(train_data)
-  names(train_df) <- c("Y", "a", "b", "c")
+  train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1), c=c(0,0,0,0.1))
   # How this data looks:
   # > train_df
   #   Y a b   c
