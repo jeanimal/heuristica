@@ -502,18 +502,17 @@ test_that("franklinModel 5x1 25 reverse_cues FALSE", {
   expect_true(is.null(model$cue_validities_with_reversal))
   # No cue reversal means coefficients are same as cue validities.
   expect_equal(c(0.25),  coef(model))
-  out <- predictPair(model, train_matrix)
-  # Cue reversal will change below to 0.
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
-  # Cue reversal will change below to 1.
-  expect_equal(0, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
+  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  expect_equal(1,   getPrediction_raw(out, c(1,2)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
+  
+  expect_equal(0,   getPrediction_raw(out, c(2,3)), tolerance=0.002)
 })
 
 test_that("franklinModel 5x1 25", {
-  train_matrix <- matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2)
+  train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,0,1,1,1))
   # By default, reverse_cues is TRUE
   model <- franklinModel(train_matrix, 1, c(2))
   expect_equal(c(0.25),  model$cue_validities)
@@ -521,14 +520,14 @@ test_that("franklinModel 5x1 25", {
   expect_equal(c(0.75),  model$cue_validities_with_reverse)
   # Cue reversal changes coefficient from 0.75 to -0.75.
   expect_equal(c(-0.75),  coef(model))
-  out <- predictPair(model, train_matrix)
-  # Cue reversal will change below to 0.
-  expect_equal(0, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=3), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=4), tolerance=0.002)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=5), tolerance=0.002)
-  # Cue reversal will change below to 1.
-  expect_equal(1, getPredictiono(out, row1=2, row2=3), tolerance=0.002)
+  
+  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  expect_equal(0,   getPrediction_raw(out, c(1,2)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
+  
+  expect_equal(1,   getPrediction_raw(out, c(2,3)), tolerance=0.002)
 })
 
 
@@ -561,9 +560,11 @@ test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cu
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
   # Soon: Linear coef will include reversing the cue pointed the wrong way.
   expect_equal(c(a=0.667, b=0.667, c=0), model$linear_coef, tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(0, getPredictiono(out, row1=3, row2=4))
-  expect_equal(1, getPredictiono(out, row1=4, row2=3))
+  
+  expect_equal(0, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(1, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 ### regModel ###
