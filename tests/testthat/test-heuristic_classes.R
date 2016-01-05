@@ -130,7 +130,7 @@ test_that("ttbModel 3x3 predictRowPair cue_reversal", {
                                  oneRow(train_matrix, 3), model))
 })
 
-test_that("ttbModel 3x3 pos pos predictPair forward", {
+test_that("ttbModel 3x3 pos pos predictRowPair forward", {
   train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,1,0))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
@@ -151,7 +151,7 @@ test_that("ttbModel 3x3 pos pos predictPair forward", {
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("ttbModel 3x3 pos pos predictPair backward cues in test", {
+test_that("ttbModel 3x3 pos pos predictRowPair backward cues in test", {
   train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,1,0))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1,1),  model$cue_validities)
