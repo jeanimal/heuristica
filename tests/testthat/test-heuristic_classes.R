@@ -540,7 +540,7 @@ test_that("franklinModel 3x3 pos pos predict", {
   expect_equal(matrix(c(0,1,2), 3, 1), bad)
 })
 
-test_that("franklinModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
+test_that("franklinModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cue", {
   train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1), c=c(0,0,0,0.1))
   # How this data looks:
   # > train_df
@@ -573,8 +573,8 @@ test_that("regModel 2x2 fit pos slope", {
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
   expect_equal(2, length(coef(model)))
-  out <- predictPair(model, train_matrix)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
 })
 
 test_that("regModel 2x2 fit neg slope", {
@@ -583,7 +583,8 @@ test_that("regModel 2x2 fit neg slope", {
   expect_equal(5,  coef(model)[[1]])  # intercept
   expect_equal(-1,  coef(model)[[2]])  # slope
   out <- predictPair(model, train_matrix)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
 })
 
 test_that("regModel 2x2 fit pos slope -- data.frame", {
@@ -593,7 +594,8 @@ test_that("regModel 2x2 fit pos slope -- data.frame", {
   expect_equal(1,  coef(model)[[2]])  # slope
   expect_equal(2, length(coef(model))) 
   out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=0.002)
+  expect_equal(1, predictRowPair(oneRow(train_df, 1),
+                                 oneRow(train_df, 2), model))
 })
 
 test_that("lmWrapper 2x2 fit pos slope -- no intercept", {
@@ -604,10 +606,15 @@ test_that("lmWrapper 2x2 fit pos slope -- no intercept", {
 })
 
 test_that("regModel 2x3 fit 4.5,1,NA", {
-  model <- regModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+  #TODO(jean): Ideally regModel would randomize which cue got the NA coef.
+  # Right now, it's always the 2nd cue that gets the NA.
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  model <- regModel(train_matrix, 1, c(2,3))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # x1
   expect_true( is.na(coef(model)[[3]]) )  # x2 excluded because too many columns
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
 })
 
 test_that("regModel 2x3 fit 4,1 (col 3 not fit)", {
