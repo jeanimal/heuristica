@@ -706,41 +706,50 @@ test_that("regNoIModel predictRowPair", {
 
 test_that("logRegModel predictPair 2x2 fit train_data", {
   tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0), 2, 2)
+  train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
+  out <- allRowPairApply(train_data, heuristics(model))
   # There is only one unique pair.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, nrow(out))
 })
 
 test_that("logRegModel predictPair 2x2 fit train_data reverse cue", {
   tol <- 0.0001
-  train_data <- matrix(c(5,4,0,1), 2, 2)
+  train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  # There is only one unique pair.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
 })
 
 test_that("logRegModel predictPair 2x2,3x2 all correct", {
   tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0), 2, 2)
+  train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
-  test_data <- matrix(c(5,4,3,1,0,0), 3, 2)
-  out <- predictPair(model, test_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  expect_equal(1, getPredictiono(out, row1=1, row2=3), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=3, row2=1), tolerance=tol)
+  test_data <- cbind(y=c(5,4,3), x1=c(1,0,0))
+  
+  expect_equal(1, predictRowPair(oneRow(test_data, 1),
+                                 oneRow(test_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(test_data, 2),
+                                 oneRow(test_data, 1), model))
+  expect_equal(1, predictRowPair(oneRow(test_data, 1),
+                                 oneRow(test_data, 3), model))
+  expect_equal(0, predictRowPair(oneRow(test_data, 3),
+                                 oneRow(test_data, 1), model))
   # Row 2 and 3 have same cue values, so Row1 is equally likely to be greater.
-  expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=tol)
-  expect_equal(0.5, getPredictiono(out, row1=3, row2=2), tolerance=tol)
+  expect_equal(0.5, predictRowPair(oneRow(test_data, 2),
+                                   oneRow(test_data, 3), model))
+  expect_equal(0.5, predictRowPair(oneRow(test_data, 3),
+                                   oneRow(test_data, 2), model))
+  
+  out <- allRowPairApply(test_data, heuristics(model))
   # There are three unique pairs.
-  expect_equal(3, nrow(out$predictions))
+  expect_equal(3, nrow(out))
 })
 
 test_that("logRegModel predictPair 2x2,3x2 all incorrect", {
