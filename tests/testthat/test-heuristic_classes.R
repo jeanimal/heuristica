@@ -647,7 +647,7 @@ test_that("regModel 3x3 fit positive mixed", {
   expect_equal(3, length(coef(model)))  
 })
 
-test_that("regModel predictPair with intercept (check bug)", {
+test_that("regModel predictRowPair with intercept (check bug)", {
   tol <- 0.0001
   m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
   model <- regModel(m_train, 1, c(2))
@@ -676,30 +676,30 @@ test_that("regModel 3x3 pos pos predict", {
 })
 
 # Warning: Not a self-contained test.  Uses city_population.
-test_that("regModel predictPair city_population", {
+test_that("regModel predictRowPair city_population", {
   tol <- 0.0001
   model <- regModel(city_population, 3, c(4:ncol(city_population)))
-  out <- predictPair(model, city_population)
   # Hamburg (row 2) and Munich (row 3) differ only on the license plate, which has a
   # coefficient of about 25,000.
   # There is an intercept of 75k, but you can ignore it in pairs.
   # So because Hamburg does not have a license plate, the prob it has a greater
   # population should be zero.
   expect_equal(0, predictRowPair(oneRow(city_population, 2),
-                                   oneRow(city_population, 3), model))
+                                 oneRow(city_population, 3), model))
 })
 
 ### regNoIModel ###
 
-test_that("regNoIModel predictPair", {
+test_that("regNoIModel predictRowPair", {
   tol <- 0.0001
   m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
   model <- regNoIModel(m_train, 1, c(2))
-  out <- predictPair(model, m_train)
   # Reg cannot distinguish between rows 1 and 2 based on x1.
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0.5, predictRowPair(oneRow(m_train, 1),
+                                   oneRow(m_train, 2), model))
   # But this should be predicted correctly.
-  expect_equal(1, getPredictiono(out, row1=1, row2=4), tolerance=tol)
+  expect_equal(1, predictRowPair(oneRow(m_train, 1),
+                                 oneRow(m_train, 4), model))
 })
 
 ### logRegModel ###
