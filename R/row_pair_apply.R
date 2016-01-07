@@ -37,6 +37,48 @@ createFunction <- function(object, test_data) UseMethod("createFunction")
 #' One or more fitted heuristics can be passed in.  They must all implement
 #' predictRoot.  Users will generally not use the output directly.
 #' 
+#' @param list_of_fitted_heuristics A list of predictRoot implementers,
+#'   e.g. a fitted ttb model.
+#' @return An object of class heuristics, which implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#' 
+#' @examples
+#' ## This is typical usage:
+#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+#' out <- allRowPairApply(city_population, heuristics(ttb))
+#' head(out)
+#' ## Under the hood, it calls ttb's predictRoot.
+#' 
+#' @seealso
+#' \code{\link{predictRowPair}} for a simpler way to generate predictions
+#'   from fitted models.
+#' \code{\link{heuristics}} for a non-list version of this function.
+#' @seealso
+#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#'    order to use them with the heuristics() wrapper function.
+#' @seealso
+#' \code{\link{createFunction}} which is what the returned object implements.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
+heuristicsList <- function(list_of_fitted_heuristics) {
+  implementers <- list_of_fitted_heuristics
+  # Assume the cols_to_fit are the same for all heuristics.
+  cols_to_fit <- implementers[[1]]$cols_to_fit
+  # Use the first-level class as the name of the implementer.
+  # e.g. Regression has class [regModel, lm], so it will use regModel.
+  names <- sapply(implementers, function(x) { head(class(x), 1) })
+  structure(list(predictRoot_implementers=implementers,
+                 cols_to_fit=cols_to_fit,
+                 column_names=names),
+            class="heuristics")
+}
+
+#' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
+#'
+#' One or more fitted heuristics can be passed in.  They must all implement
+#' predictRoot.  Users will generally not use the output directly.
+#' 
 #' @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
 #' @return An object of class heuristics, which implements createFunction.
 #'   Users will generally not use this directly-- allRowPairApply will.
@@ -61,15 +103,7 @@ createFunction <- function(object, test_data) UseMethod("createFunction")
 #' @export
 heuristics <- function(...) {
   implementers <- list(...)
-  # Assume the cols_to_fit are the same for all heuristics.
-  cols_to_fit <- implementers[[1]]$cols_to_fit
-  # Use the first-level class as the name of the implementer.
-  # e.g. Regression has class [regModel, lm], so it will use regModel.
-  names <- sapply(implementers, function(x) { head(class(x), 1) })
-  structure(list(predictRoot_implementers=implementers,
-                 cols_to_fit=cols_to_fit,
-                 column_names=names),
-            class="heuristics")
+  return(heuristicsList(implementers))
 }
 
 

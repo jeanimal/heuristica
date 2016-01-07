@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{pctCorrectOfPredictPair}
 \alias{pctCorrectOfPredictPair}
-\title{Runs predictPair for all row pairs for all fitted heuristics to get percent correct.}
+\title{Predicts with heuristics for all row pairs and caclulates percent correct.}
 \usage{
 pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }
@@ -13,12 +13,19 @@ pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }
 \value{
 A one-row matrix of numbers from 0 to 1 indicating the percent correct.
+  Each column is named with the heuristic's class.
 }
 \description{
 Combines other functons to 
-1. Create predictions of alternatives for all the heuristics in the list.
+1. Create predictions of row pairs for all heuristics in the list.
 2. Get errors of those predictions.
 3. Calculate overall percent correct for each heuristic.
-Assumes the heuristics passed in have already been fitted to train_data.
+Assumes the heuristics passed in have already been fitted to training data
+and all have the same criterion column.
+}
+\examples{
+ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+pctCorrectOfPredictPair(list(ttb, reg), city_population)
 }
 

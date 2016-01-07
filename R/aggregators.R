@@ -141,36 +141,32 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
   return(newDf)
 }
 
-#' Runs predictPair for all row pairs for all fitted heuristics to get percent correct.
+
+#' Predicts with heuristics for all row pairs and caclulates percent correct.
 #'
 #' Combines other functons to 
-#' 1. Create predictions of alternatives for all the heuristics in the list.
+#' 1. Create predictions of row pairs for all heuristics in the list.
 #' 2. Get errors of those predictions.
 #' 3. Calculate overall percent correct for each heuristic.
-#' Assumes the heuristics passed in have already been fitted to train_data.
+#' Assumes the heuristics passed in have already been fitted to training data
+#' and all have the same criterion column.
 #'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
+#'   Each column is named with the heuristic's class.
+#' @examples
+#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+#' pctCorrectOfPredictPair(list(ttb, reg), city_population)
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
-  predictions <- predictPairWithCorrect(fitted_heuristic_list, test_data)
-  errors <- createErrorsFromPredicts(predictions)
-  df <- createPctCorrectsFromErrors(errors)
-  return(df)
-}
-
-# Example:
-# ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-# reg <- regModel(city_population, 3, c(4:ncol(city_population)))
-# pctCorrectOfPredictPair2(city_population, ttb, reg)
-pctCorrectOfPredictPair2 <- function(test_data, ...) {
   # Assume the criterion_col is same for all heuristics.
-  fitted_heuristic_list <- list(...)
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
-  heuristics_wrapper <- heuristics(...)
-  predictions <- allRowPairApply(test_data, criterion(criterion_col),
-                                 heuristics_wrapper)
+  # TODO: Check and stop if a heuristics disagrees with criterion_col.
+  all_fn_creator_list <- list(criterion(criterion_col),
+                              heuristicsList(fitted_heuristic_list))
+  predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
   errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
   df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)
