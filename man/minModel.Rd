@@ -23,12 +23,13 @@ Fit the Minimalist heuristic by specifying columns and a dataset. It searches cu
 }
 \examples{
 ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-min <- minModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-predictPair(min, matrix(c(5,4,1,0,0,1), 2, 3)) 
+train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
+min <- minModel(train_matrix, 1, c(2,3))
+predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
 
 }
 \seealso{
-\code{\link{predictPair.minModel}} (via \code{\link{predictPair}}) for prediction.
+\code{\link{predictRowPair}} for prediction.
 
 
 }

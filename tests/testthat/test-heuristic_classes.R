@@ -419,15 +419,6 @@ test_that("dawesModel 5x1 25", {
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("dawesModel 3x3 pos pos predict", {
-  model <- dawesModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
-  expect_equal(c(1,1),  coef(model)) 
-  good <- predict(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
-  expect_equal(matrix(c(2,1,0), 3, 1), good)
-  bad <- predict(model, matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
-  expect_equal(matrix(c(0,1,2), 3, 1), bad)
-})
-
 test_that("dawesModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cue", {
   train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1),
                          c=c(0,0,0,0.1))
@@ -527,16 +518,6 @@ test_that("franklinModel 5x1 25", {
   expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
   
   expect_equal(1,   getPrediction_raw(out, c(2,3)), tolerance=0.002)
-})
-
-
-test_that("franklinModel 3x3 pos pos predict", {
-  model <- franklinModel(matrix(c(5,4,3,1,0,0,1,1,0), 3, 3), 1, c(2,3))
-  expect_equal(c(1,1),  coef(model)) 
-  good <- predict(model, matrix(c(5,4,3,1,0,0,1,1,0), 3, 3))
-  expect_equal(matrix(c(2,1,0), 3, 1), good)
-  bad <- predict(model, matrix(c(5,4,3,0,1,1,0,0,1), 3, 3))
-  expect_equal(matrix(c(0,1,2), 3, 1), bad)
 })
 
 test_that("franklinModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cue", {
@@ -653,23 +634,6 @@ test_that("regModel predictRowPair with intercept (check bug)", {
   # applied to the criterion column so reg was always correct!
   expect_equal(0.5, predictRowPair(oneRow(m_train, 1),
                                    oneRow(m_train, 2), model))
-})
-
-# Most testing of predict is with predictWithWeights, so here I am
-# just making sure it is correctly wired into the regModel.
-
-test_that("regModel 3x3 pos pos predict", {
-  train_data <- matrix(c(5,4,3,1,0,0,1,1,0), 3, 3)
-  model <- regModel(train_data, 1, c(2,3))
-  good <- predict(model, as.data.frame(train_data))
-  expect_more_than(good[[1]], good[[2]])
-  expect_more_than(good[[2]], good[[3]])
-  expect_equal(3, length(good))
-  bad <- predict(model, as.data.frame(
-    matrix(c(5,4,3,0,1,1,0,0,1), 3, 3)))
-  expect_less_than(bad[[1]], bad[[2]])
-  expect_less_than(bad[[2]], bad[[3]])
-  expect_equal(3, length(bad))
 })
 
 # Warning: Not a self-contained test.  Uses city_population.
@@ -930,7 +894,6 @@ test_that("test_10_06 reg",      {test_10_06(regModel,       0, has_cv=FALSE)})
 test_that("test_10_06 regNoI",   {test_10_06(regNoIModel,    1, has_cv=FALSE)})
 #TODO(Daniel): Why does logReg get this prediction wrong?  Is it a bug?
 test_that("test_10_06 logReg",   {test_10_06(logRegModel,    0, has_cv=FALSE)})
-test_that("test_10_06 logRegWithI",   {test_10_06(logRegWithIModel,    0, has_cv=FALSE)})
 
 
 # This test is named by the cue validities of the two cues, 1.0 and 0.6,
@@ -965,7 +928,6 @@ test_that("test_00_04_rc franklin", {test_00_04_rc(franklinModel,  0)})
 test_that("test_00_04_rc reg",      {test_00_04_rc(regModel,       1, has_cv=FALSE)})
 test_that("test_00_04_rc regNoI",   {test_00_04_rc(regNoIModel,    1, has_cv=FALSE)})
 test_that("test_00_04_rc logReg",   {test_10_06(logRegModel,       0, has_cv=FALSE)})
-test_that("test_00_04_rc logRegWithI",   {test_10_06(logRegWithIModel,       0, has_cv=FALSE)})
 
 
 test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
@@ -996,7 +958,6 @@ test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       1, has_cv=FALSE
 test_that("test_ab_vs_c regNoI",   {test_ab_vs_c(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): Also check why logReg gets this prediction wrong--  Is it a bug?
 test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
-test_that("test_ab_vs_c logRegWithI",   {test_ab_vs_c(logRegWithIModel,    1, has_cv=FALSE)})
 
 
 d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
@@ -1028,7 +989,6 @@ test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv
 test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): And check this one.#DANIEL: this looks ok now
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
-test_that("d_useless_cue_3 logRegWithI",   {d_useless_cue_3(logRegWithIModel,    1, has_cv=FALSE)})
 
 # minModel
 

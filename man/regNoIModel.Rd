@@ -33,6 +33,6 @@ estimating it wastes a degree of freedom.
 
 \code{\link{predict.lm}} for prediction.
 
-\code{\link{predictPair.regNoIModel}} for predicting between a pair of alternatives.
+\code{\link{predictRowPair}} for predicting between a pair of alternatives.
 }
 

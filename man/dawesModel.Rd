@@ -34,9 +34,7 @@ This version differs from others in that it uses a weight of 0 if cue validity i
 (rather than randomly assigning +1 or -1) to give faster convergence of average accuracy.
 }
 \seealso{
-\code{\link{predict.dawesModel}} (via \code{\link[stats]{predict}}) for prediction.
-
-\code{\link{predictPair.dawesModel}} for predicting among a pair of alternatives.
+\code{\link{predictRowPair}} for predicting among a pair of alternatives.
 
 Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 }

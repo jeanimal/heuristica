@@ -34,14 +34,16 @@ It does NOT implement predict on purpose.
 }
 \examples{
 ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-ttb <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-predictPair(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
-## But this input results in an incorrect prediction:
-predictPair(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
+train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+ttb <- ttbModel(train_matrix, 1, c(2,3))
+predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
+## But this test data results in an incorrect prediction because x1 is unexpected.
+test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
+predictRowPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 
 }
 \seealso{
-\code{\link{predictPair.ttbModel}} (via \code{\link{predictPair}}) for prediction.
+\code{\link{predictRowPair}} for prediction.
 
 Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 }

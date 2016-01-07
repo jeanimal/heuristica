@@ -204,13 +204,15 @@ reverseAsNeeded <- function(cue_validities) {
 #'
 #' @examples
 #' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-#' ttb <- ttbModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-#' predictPair(ttb, matrix(c(5,4,1,0,0,1), 2, 3)) 
-#' ## But this input results in an incorrect prediction:
-#' predictPair(ttb, matrix(c(5,4,0,1,0,1), 2, 3)) 
+#' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+#' ttb <- ttbModel(train_matrix, 1, c(2,3))
+#' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
+#' ## But this test data results in an incorrect prediction because x1 is unexpected.
+#' test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
+#' predictRowPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 #'
 #' @seealso
-#' \code{\link{predictPair.ttbModel}} (via \code{\link{predictPair}}) for prediction.
+#' \code{\link{predictRowPair}} for prediction.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
@@ -319,9 +321,7 @@ predictPair.ttbModel  <- function(object, test_data, verbose_output=TRUE) {
 #'   }
 #'
 #' @seealso
-#' \code{\link{predict.dawesModel}} (via \code{\link[stats]{predict}}) for prediction.
-#' @seealso
-#' \code{\link{predictPair.dawesModel}} for predicting among a pair of alternatives.
+#' \code{\link{predictRowPair}} for predicting among a pair of alternatives.
 #' @seealso
 #' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 #'
@@ -340,12 +340,8 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE
     cue_validities_with_reverse = cue_validities
     linear_coef <- rep(1, length(cue_validities_with_reverse))
   }
-  
-  # Need to save fit_predictions in case user calls predict without test_data.
-  fit_predictions <- predictWithWeights(train_data, cols_to_fit, linear_coef)
-  fit_accuracy <- cueValidity(train_data[,criterion_col], fit_predictions)
+
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 fit_predictions=fit_predictions, fit_accuracy=fit_accuracy,
                  cue_validities=cue_validities,
                  cue_validities_with_reverse=cue_validities_with_reverse,
                  linear_coef=linear_coef), class="dawesModel")
@@ -355,31 +351,6 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE
 #' @export
 coef.dawesModel <- function(object, ...) object$linear_coef
 
-#' Generates predictions for Dawes Model 
-#'
-#' Implementation of \code{\link[stats]{predict}} for dawesModel.
-#'
-#' @param object A dawesModel.
-#' @param ... Normally this would be the test data. 
-#'  It is used to predict and can be a matrix or data.frame.  
-#'  It must have the same cols_to_fit indices as those used in train_data.
-#'
-#' @return An N x 1 matrix of predicted values, or a list if there was only one cue.
-#' 
-#' @export
-predict.dawesModel <- function(object, ...) {
-  args <- eval(substitute(alist(...)))
-  if (length(args)==0) {
-    return(object$fit_predictions)
-  } else if (length(args)==1) {
-    test_data <- eval(args[[1]])
-    return(predictWithWeights(test_data, object$cols_to_fit, object$linear_coef))
-  } else {
-    stop("Expected only one unevaluated argument (test_data) but got " +
-          length(args) + ":" + args)
-  }
-}
-
 predictRoot.dawesModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
@@ -387,19 +358,6 @@ predictRoot.dawesModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
-#' Predict which of a pair of rows has a higher criterion, using Dawes' Model.
-#'
-#' @param object A fitted dawesModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{dawesModel}} for example code.
-#'
-#' @export
-predictPair.dawesModel <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
-}
 
 ### Franklin's Model ###
 
@@ -418,9 +376,7 @@ predictPair.dawesModel <- function(object, test_data, verbose_output=TRUE) {
 #'   }
 #'
 #' @seealso
-#' \code{\link{predict.franklinModel}} (via \code{\link[stats]{predict}}) for prediction.
-#' @seealso
-#' \code{\link{predictPair.franklinModel}} for predicting among a pair of rows.
+#' \code{\link{predictRowPair}} for predicting among a pair of rows.
 #' @export 
 franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
@@ -445,50 +401,11 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=T
 #' @export
 coef.franklinModel <- function(object, ...) object$linear_coef
 
-#' Generates predictions for Franklin's Model 
-#'
-#' Implementation of \code{\link[stats]{predict}} for franklinModel.
-#'
-#' @param object A fitted franklinModel.
-#' @param ... Normally this would be the test data. 
-#'  It is used to predict and can be a matrix or data.frame.  
-#'  It must have the same cols_to_fit indices as those used in train_data.
-#'
-#' @return An N x 1 matrix of predicted values, or a list if there was only one cue.
-#' 
-#' @export
-predict.franklinModel <- function(object, ...) {
-  args <- eval(substitute(alist(...)))
-  if (length(args)==0) {
-    return(object$fit_predictions)
-  } else if (length(args)==1) {
-    test_data <- eval(args[[1]])
-    return(predictWithWeights(test_data, object$cols_to_fit, object$linear_coef))
-  } else {
-    stop("Expected only one unevaluated argument (test_data) but got " +
-          length(args) + ":" + args)
-  }
-}
-
 predictRoot.franklinModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
-}
-
-#' Predict which of a pair of rows has a higher criterion, using Franklin's Model.
-#'
-#' @param object A fitted franklinModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{franklinModel}} for example code.
-#'
-#' @export
-predictPair.franklinModel <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 ### Wrappers for linear regression models ###
@@ -537,7 +454,7 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso
-#' \code{\link{predictPair.regModel}} for predicting between a pair of rows.
+#' \code{\link{predictRowPair}} for predicting between a pair of rows.
 #'
 #' @export
 regModel <- function(train_matrix, criterion_col, cols_to_fit) {
@@ -604,7 +521,7 @@ predictPair.regModel <- function(object, test_data, verbose_output=TRUE) {
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso
-#' \code{\link{predictPair.regNoIModel}} for predicting between a pair of alternatives.
+#' \code{\link{predictRowPair}} for predicting between a pair of alternatives.
 #'
 #' @export
 regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
@@ -726,91 +643,6 @@ predictPair.logRegModel <- function(object, test_data, verbose_output=TRUE) {
   return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
-
-#' Logistic Regression model with intercept
-#'
-#' Create a logistic regression model by specifying columns and a dataset.  It fits the model
-#' with R's glm function.
-#'
-#' This version assumes you always want to include the intercept.
-#' 
-#' @inheritParams heuristicaModel
-#' @return An object of class logRegModel.
-#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
-#' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
-#' @export
-logRegWithIModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
-  stopIfTrainingSetHasLessThanTwoRows(train_data)
-  if (is.null(row_pairs)) {
-    n <- nrow(train_data)
-    all_pairs <- rowPairGenerator(n)
-  } else {
-    all_pairs <- row_pairs
-  }
-  
-  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
-  criterion <- transform[,1]
-  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
-  
-  predictors <- transform[,2:ncol(transform)]
-  
-  training_set <- cbind(criterion,predictors)
-  training_set <- as.data.frame(training_set)
-  
-  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
-  
-  
-  if(is.null(suppress_warnings)){
-    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
-  } else { 
-    model <- glm(formula,family=binomial,data=training_set)  
-  }
-  
-  col_weights <- coef(model)
-  
-  # Make clean weights that can be easily used in predictRoot.
-  col_weights_clean <- col_weights
-  # Set na to zero.
-  col_weights_clean[is.na(col_weights_clean)] <- 0
-  # Because the intercept is 0 for row1 and ro2, ignore it.
-   if ("(Intercept)" %in% names(col_weights_clean)) {
-    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
-     col_weights_clean <- col_weights_clean[-intercept_index]
-   }
-#   
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 linear_coef=col_weights,
-                 col_weights_clean=col_weights_clean,
-                 model=model),
-            class="logRegWithIModel")
-}
-
-
-#' @export
-coef.logRegWithIModel <- function(object, ...) object$linear_coef
-
-predictRoot.logRegWithIModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
-}
-
-#' Predict which of a pair of rows has a higher criterion, using logistic regression.
-#'
-#' @param object A fitted logRegModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{logRegWithIModel}} for example code.
-#'
-#' @export
-predictPair.logRegWithIModel <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
-}
-
-
 #' Single Cue Model
 #'
 #' Create a single cue model by specifying columns and a dataset.  It sorts
@@ -823,10 +655,11 @@ predictPair.logRegWithIModel <- function(object, test_data, verbose_output=TRUE)
 #' @inheritParams reversingModel
 #' @examples
 #' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-#' singlecue <- singleCueModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-#' predictPair(singlecue, matrix(c(5,4,1,0,0,1), 2, 3)) 
+#' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+#' singlecue <- singleCueModel(train_matrix, 1, c(2,3))
+#' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue) 
 #' @seealso
-#' \code{\link{predictPair.singleCueModel}} (via \code{\link{predictPair}}) for prediction.
+#' \code{\link{predictRowPair}} for prediction.
 #' @seealso
 #'
 #' @export
@@ -861,19 +694,6 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=
 #' @export
 coef.singleCueModel <- function(object, ...) object$linear_coef
 
-#' Predict which of a pair of rows has a higher criterion, using Single Cue Model.
-#'
-#' @param object A fitted singleCueModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{singleCueModel}} for example code.
-#'
-#' @export
-predictPair.singleCueModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
-}
-
 predictRoot.singleCueModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
@@ -890,11 +710,12 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 #' @inheritParams reversingModel
 #' @examples
 #' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
-#' min <- minModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
-#' predictPair(min, matrix(c(5,4,1,0,0,1), 2, 3)) 
+#' train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
+#' min <- minModel(train_matrix, 1, c(2,3))
+#' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
 #'
 #' @seealso
-#' \code{\link{predictPair.minModel}} (via \code{\link{predictPair}}) for prediction.
+#' \code{\link{predictRowPair}} for prediction.
 #' @seealso
 #'
 #' @export
@@ -933,19 +754,6 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #' @inheritParams stats::coef
 #' @export
 coef.minModel <- function(object, ...) sample(object$linear_coef)
-
-#' Predict which of a pair of rows has a higher criterion, using Minimalist Model.
-#'
-#' @param object A fitted minModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{minModel}} for example code.
-#'
-#' @export
-predictPair.minModel <- function(object, test_data, verbose_output=TRUE) {
-  predictPairWithWeights(object, test_data, verbose_output=verbose_output)
-}
 
 predictRoot.minModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(coef(object), row1, row2)
