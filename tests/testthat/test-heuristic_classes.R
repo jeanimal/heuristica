@@ -1035,6 +1035,24 @@ test_that("d_useless_cue_3 logRegWithI",   {d_useless_cue_3(logRegWithIModel,   
 
 # minModel
 
+test_that("minModel predictRowPair 2x2 forward", {
+  train_data <- cbind(y=c(5,4), x1=c(1,0))
+  model <- minModel(train_data, 1, c(2))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
+})
+
+test_that("minModel predictRowPair 2x2 reverse cue", {
+  train_data <- cbind(y=c(5,4), x1=c(0,1))
+  model <- minModel(train_data, 1, c(2))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
+})
+
 test_that("minModel 2x3 predictRowPair equal coef", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   set.seed(1)
@@ -1051,13 +1069,4 @@ test_that("minModel 2x3 predictRowPair equal coef", {
   expect_equal(0, predictRowPair(oneRow(train_matrix, 1),
                                  oneRow(train_matrix, 2), model))
 
-})
-
-test_that("minModel predictRowPair 2x2 fit train_data reverse cue", {
-  train_data <- cbind(y=c(5,4), x1=c(0,1))
-  model <- minModel(train_data, 1, c(2))
-  expect_equal(1, predictRowPair(oneRow(train_data, 1),
-                                 oneRow(train_data, 2), model))
-  expect_equal(0, predictRowPair(oneRow(train_data, 2),
-                                 oneRow(train_data, 1), model))
 })
