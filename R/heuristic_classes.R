@@ -51,36 +51,6 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
   as.matrix(combn(num_row, 2, pair_evaluator_fn))
 }
 
-#' Run predictPair for all row pairs in test_data to generate a one-column matrix.
-#'
-#' @param object A fitted model that implements predictRoot.
-#' @param test_data A matrix of data frame or data with object$cols_to_fit columns.
-#' @return An one-column matrix.  Each row represents a pair of rows.  Use get
-#'   prediction functions to find the rows if you care.  (TODO(jean): Document that
-#'   more-- give examples, too.)
-#'
-#' @seealso
-#' \code{\link{predictRoot}} for the function the fitted model must implement.
-#'
-#' @export
-predictPairMatrix <- function(object, test_data) {
-  test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
-  pair_evaluator_fn <- function(index_pair)
-    predictRoot(object, oneRow(test_data_trim, index_pair[1]),
-                oneRow(test_data_trim, index_pair[2]))
-  pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
-}
-
-# Example: inferNumOriginalRows(nrow(out$predictions))
-inferNumOriginalRows <- function(num_combo_rows) {
-  guess <- ceiling(sqrt(num_combo_rows * 2))
-  # Validate the guess worked.
-  if (guess * (guess-1) / 2 != num_combo_rows) {
-    stop(paste("Cannot guess number of original rows for", num_combo_rows))
-  }
-  return(guess)
-}
-
 # private
 stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   if (nrow(train_data) == 0) {
@@ -89,19 +59,6 @@ stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   if (nrow(train_data) == 1) {
     stop("Training set must have at least 2 rows but had 1 row")
   }
-}
-
-# Assume predictions were all rows from 1 to some N,
-# and it will back out N.
-pairPredictionMatrix <- function(predictions) {
-  #if (nrow(predictions) == 0) { # It dies here, not with my stop message.
-  #  stop("Cannot generate matrix with zero data")
-  #}
-  num_original_rows <- inferNumOriginalRows(nrow(predictions))
-  row_pairs <- t(combn(num_original_rows, 2))
-  # Columns are Row1, Row2, and ProbRow1Greater
-  out <- cbind(row_pairs, predictions)
-  return(out) 
 }
 
 # TODO(jean): If this gets used a lot, export it and give it a nicer name.
