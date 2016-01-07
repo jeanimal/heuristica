@@ -19,7 +19,11 @@ with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \description{
-Create a single cue model by specifying columns and a dataset.  It sorts cues in order of cueValidity and uses the cue with the highest cueValidity. If the cue does not discriminate it guesses randomly.
+Create a single cue model by specifying columns and a dataset.  It sorts
+cues in order of cueValidity and uses the cue with the highest cueValidity.
+If the cue does not discriminate it guesses randomly.  If several cues have
+the highest validity, then on each prediction it randomly selects which one
+to use (so it might not give the same answer every time).
 }
 \examples{
 ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.

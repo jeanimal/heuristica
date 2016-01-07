@@ -200,6 +200,76 @@ createFunction.colPairValues<- function(object, test_data) {
 #' @param test_data The data to apply the functions to as a matrix or data.frame.
 #'    Heuristics must have already been fitted to trying data and must include the
 #'    same criterion_col and cols_to_fit.
+#' @param function_creator_list List of the objects that generate the functions to
+#'    apply, using createFunction.  For example,
+#'    list(heuristics(ttb, reg), criterion(col), rowIndexes()).
+#' @return A matrix of outputs from the functions.  The number of rows is based on
+#'    the number of row pairs in test_data.  If the input has N rows, the output
+#'    will have N x (N-1) rows.  The number of columns will be at least the number
+#'    of functions but may be more as some functions may output more than one column.
+#
+#' @examples
+#' ## Fit two models to the city_population data set.
+#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+#' 
+#' ## Generate predictions for all row pairs for these two models:
+#' out1 <- allRowPairApplyList(city_population, list(heuristics(ttb, reg)))
+#' head(out1)
+#' nrow(out1)
+#' ## returns a matrix of 2 columns, named ttbModel and regModel.
+#' 
+#' ## Generate a matrix with the correct values and the heuristics' predictions:
+#' out2 <- allRowPairApplyList(city_population, list(criterion(3), heuristics(reg, ttb)))
+#' head(out2)
+#' nrow(out2)
+#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+#'
+#' @seealso
+#' \code{\link{createFunction}} which must be implemented by the objects
+#'    passed in the "..." argument, along with the attribute $column_names.
+#' @seealso
+#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#'    order to use them with the heuristics() wrapper function.
+#'
+#' @export
+allRowPairApplyList <- function(test_data, function_creator_list) {
+  # TODO(jean): Make a version that handles non-numeric as a data.frame.  It will
+  #             be slower, but it's a nice option to have for debugging.
+  column_names <- vector()
+  function_list <- vector()
+  for (function_creator in function_creator_list) {
+    fn <- createFunction(function_creator, test_data)
+    function_list <- c(function_list, fn)
+    column_names <- c(column_names, function_creator$column_names)
+  }
+  all_fn <- function(x) {
+    out_all <- c()
+    y <- 0
+    for (fun in function_list) {
+      out <- fun(x)
+      y <- y+1
+      out_all <- c(out_all, out)
+    }
+    return(out_all)
+  }
+  raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
+  # R drops dimensions if there's only one, so make consistent dimensions here.
+  if (length(column_names) == 1) {
+    raw_matrix <- t(raw_matrix)
+  }
+  colnames(raw_matrix) <- column_names
+  return(raw_matrix)
+}
+
+#' Apply functions to all row pairs.
+#' 
+#' Apply functions like heuristic predictions to all row pairs in a matrix
+#' or data.frame.
+#' 
+#' @param test_data The data to apply the functions to as a matrix or data.frame.
+#'    Heuristics must have already been fitted to trying data and must include the
+#'    same criterion_col and cols_to_fit.
 #' @param ... The objects that generate the functions to apply, using createFunction.
 #'    For example, heuristics(ttb), criterion(col), or colPairValues.
 #' @return A matrix of outputs from the functions.  The number of rows is based on
@@ -233,33 +303,8 @@ createFunction.colPairValues<- function(object, test_data) {
 #'
 #' @export
 allRowPairApply <- function(test_data, ...) {
-  # TODO(jean): Make a version that handles non-numeric as a data.frame.  It will
-  #             be slower, but it's a nice option to have for debugging.
   function_creator_list <- list(...)
-  column_names <- vector()
-  function_list <- vector()
-  for (function_creator in function_creator_list) {
-    fn <- createFunction(function_creator, test_data)
-    function_list <- c(function_list, fn)
-    column_names <- c(column_names, function_creator$column_names)
-  }
-  all_fn <- function(x) {
-    out_all <- c()
-    y <- 0
-    for (fun in function_list) {
-      out <- fun(x)
-      y <- y+1
-      out_all <- c(out_all, out)
-    }
-    return(out_all)
-  }
-  raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
-  # R drops dimensions if there's only one, so make consistent dimensions here.
-  if (length(column_names) == 1) {
-    raw_matrix <- t(raw_matrix)
-  }
-  colnames(raw_matrix) <- column_names
-  return(raw_matrix)
+  return(allRowPairApplyList(test_data, function_creator_list))
 }
 
 ###
