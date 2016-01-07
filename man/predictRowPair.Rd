@@ -2,9 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{predictRowPair}
 \alias{predictRowPair}
-\title{Predict which of a pair of rows has a higher criterion.
-Assumes the object implements predictRoot and has $cols_to_fit.
-Experimental.  I will give it a different name later.}
+\title{Predict which of a pair of rows has a higher criterion.}
 \usage{
 predictRowPair(row1, row2, object)
 }
@@ -21,8 +19,6 @@ A double from 0 to 1, representing the probability
   that row1's criterion is greater than row2's criterion.
 }
 \description{
-Predict which of a pair of rows has a higher criterion.
 Assumes the object implements predictRoot and has $cols_to_fit.
-Experimental.  I will give it a different name later.
 }
 

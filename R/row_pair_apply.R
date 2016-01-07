@@ -385,8 +385,8 @@ rowPairApply <- function(row1, row2, ...) {
 }
 
 #' Predict which of a pair of rows has a higher criterion.
+#'
 #' Assumes the object implements predictRoot and has $cols_to_fit.
-#' Experimental.  I will give it a different name later.
 #'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
 #' @param row2 The second row (will apply cols_to_fit for you, based on object).
