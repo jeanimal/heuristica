@@ -809,8 +809,11 @@ predictPair.logRegWithIModel <- function(object, test_data, verbose_output=TRUE)
 
 #' Single Cue Model
 #'
-#' Create a single cue model by specifying columns and a dataset.  It sorts cues in order of cueValidity and uses the cue with the highest cueValidity. If the cue does not discriminate it guesses randomly.
-#'
+#' Create a single cue model by specifying columns and a dataset.  It sorts
+#' cues in order of cueValidity and uses the cue with the highest cueValidity.
+#' If the cue does not discriminate it guesses randomly.  If several cues have
+#' the highest validity, then on each prediction it randomly selects which one
+#' to use (so it might not give the same answer every time).
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
@@ -865,6 +868,13 @@ coef.singleCueModel <- function(object, ...) object$linear_coef
 #' @export
 predictPair.singleCueModel <- function(object, test_data, verbose_output=TRUE) {
   predictPairWithWeights(object, test_data, verbose_output=verbose_output)
+}
+
+predictRoot.singleCueModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 #' Minimalist Model

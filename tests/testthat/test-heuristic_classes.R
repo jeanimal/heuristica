@@ -853,9 +853,10 @@ test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
   expect_equal(c(a=1, b=0.6), model$cue_validities_with_reverse, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=1, b=0), coef(model), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(0.5, getPredictiono(out, row1=1, row2=2))
-  expect_equal(0.5, getPredictiono(out, row1=2, row2=1))
+  expect_equal(0.5, predictRowPair(oneRow(train_df, 1),
+                                   oneRow(train_df, 2), model))
+  expect_equal(0.5, predictRowPair(oneRow(train_df, 2),
+                                   oneRow(train_df, 1), model))
 })
 
 test_that("singleCueModel 4x3 real value cue c dominates", {
