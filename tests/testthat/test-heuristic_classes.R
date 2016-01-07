@@ -62,7 +62,6 @@ test_that("ttbModel 2x3 predictRowPair forward", {
   # The logical opposite: the probability that row2 > row 1 is 0.
   expect_equal(0, predictRowPair(oneRow(train_matrix, 2),
                                  oneRow(train_matrix, 1), model))
-  out2 <- predictPairMatrix(model, train_matrix)
 })
 
 test_that("ttbModel 2x3 predictRowPair test_matrix backward cues", {
@@ -228,7 +227,7 @@ test_that("ttbModel 4x4 predictRowPair cue x1 dominates non-binary", {
                                  oneRow(train_data, 3), model))
 })
 
-test_that("ttbModel 4x4 predictPair cue x3 dominates non-binary", {
+test_that("ttbModel 4x4 predictRowPair cue x3 dominates non-binary", {
   train_data <- cbind(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
                       x3=c(0.1, 0.1, 0.1, 0))
   # How this data looks:
@@ -249,7 +248,7 @@ test_that("ttbModel 4x4 predictPair cue x3 dominates non-binary", {
                                  oneRow(train_data, 3), model))
 })
 
-test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
+test_that("ttbModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cue", {
   train_data <- cbind(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
                       x3=c(0, 0, 0, 0.1))
   # How this data looks:
@@ -272,7 +271,7 @@ test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
                                  oneRow(train_data, 3), model))
 })
 
-test_that("ttbModel 4x4 predictPair 3nd cue dominates non-binary reverse cue data.frame", {
+test_that("ttbModel 4x4 predictRowPair 3nd cue dominates non-binary reverse cue data.frame", {
   train_df <- data.frame(y=c(9,8,7,6), x1=c(1,1,0,1), x2=c(1,1,0,1),
                          x3=c(0,0,0,0.1))
   # How this data looks:
@@ -361,7 +360,7 @@ test_that(paste("ttbModel 4x4 predictRowPair 3nd cue dominates cue data.frame",
                                  oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
+test_that(paste("ttbModel 4x4 predictRowPair 3nd cue dominates cue data.frame",
                 "non-binary big criteriondiffs, big diffs, big diffs, big unique diffs"), {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,80,70,10))
@@ -378,7 +377,7 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
                                  oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame REVERSE",
+test_that(paste("ttbModel 4x4 predictRowPair 3nd cue dominates cue data.frame REVERSE",
                 "non-binary big criteriondiffs, big diffs, big diffs, big unique diffs"), {
   train_df <- data.frame(criterion=c(6,100,400,900), a=c(101,20,101,101), b=c(59,5,59,59),
                          c=c(10,70,80,90))
@@ -582,7 +581,6 @@ test_that("regModel 2x2 fit neg slope", {
   model <- regModel(train_matrix, 1, c(2))
   expect_equal(5,  coef(model)[[1]])  # intercept
   expect_equal(-1,  coef(model)[[2]])  # slope
-  out <- predictPair(model, train_matrix)
   expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
                                  oneRow(train_matrix, 2), model))
 })
@@ -593,7 +591,6 @@ test_that("regModel 2x2 fit pos slope -- data.frame", {
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
   expect_equal(2, length(coef(model))) 
-  out <- predictPair(model, train_df)
   expect_equal(1, predictRowPair(oneRow(train_df, 1),
                                  oneRow(train_df, 2), model))
 })
