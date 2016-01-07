@@ -860,8 +860,8 @@ test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
 })
 
 test_that("singleCueModel 4x3 real value cue c dominates", {
-  train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
-                         c=c(90,80,70,10))
+  train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101),
+                         b=c(59,59,5,59), c=c(90,80,70,10))
   # Cue a and b have validity 2/3, cue c has validity 1.
   # Cue c predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
@@ -870,9 +870,11 @@ test_that("singleCueModel 4x3 real value cue c dominates", {
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=0, b=0, c=1), coef(model), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
@@ -886,9 +888,11 @@ test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=0, b=0, c=-1), coef(model), tolerance=0.002)
-  out <- predictPair(model, train_df)
-  expect_equal(1, getPredictiono(out, row1=3, row2=4))
-  expect_equal(0, getPredictiono(out, row1=4, row2=3))
+  
+  expect_equal(1, predictRowPair(oneRow(train_df, 3),
+                                 oneRow(train_df, 4), model))
+  expect_equal(0, predictRowPair(oneRow(train_df, 4),
+                                 oneRow(train_df, 3), model))
 })
 
 
