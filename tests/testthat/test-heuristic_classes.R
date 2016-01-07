@@ -1053,6 +1053,19 @@ test_that("minModel predictRowPair 2x2 reverse cue", {
                                  oneRow(train_data, 1), model))
 })
 
+# TODO: This test shows a bug in minModel.  Fix it.
+#test_that("minModel predictRowPair 5x4 all cues same after reverse", {
+#  train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,0,0,0,0),
+#                      x3=c(0,1,1,1,1))
+#  model <- minModel(train_data, 1, c(2:4))
+#  # Note x3 is same when reversed.
+#  # Gives same answer consistently, no matter which cue is selected.
+#  for (i in 1:5) {
+#    expect_equal(1, predictRowPair(oneRow(train_data, 1),
+#                                   oneRow(train_data, 2), model))
+#  }
+#})
+
 test_that("minModel 2x3 predictRowPair equal coef", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   set.seed(1)
