@@ -16,21 +16,6 @@ reversingModel <- function(reverse_cues=TRUE) NULL
 ## New generics ##
 
 #' Generic function to predict which of a pair of rows has a higher criterion.
-#'
-#' @param object The object that implements predictPair, e.g. a ttb model.
-#' @param test_data The matrix of data to predict on.  As with predict, columns
-#'  must match those used for fitting.
-#' @param verbose_output Controls how much output is generated, which may slow down
-#'  computations and use more memory.  When automating, set to FALSE, which will turn
-#'  off outputs preced by verbose_.
-#' @return A pairPredictor, which is a structure of a list of
-#'  1) predictions: A vector of probabilities that the first row has a greater criterion.
-#'  2) verbose_predictions: A data.frame of Row1, Row2, and predictions, combining (1)
-#'     and (2) in an easily-read form.  Only output if verbose_output = TRUE.
-#' @export
-predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predictPair")
-
-#' Generic function to predict which of a pair of rows has a higher criterion.
 #' 
 #' Implement this for every heuristic.
 #'
@@ -43,19 +28,48 @@ predictPair <- function(object, test_data, verbose_output=TRUE) UseMethod("predi
 #' @export
 predictRoot <- function(object, row1, row2) UseMethod("predictRoot")
 
-
-pairPredictionDFo <- function(object) UseMethod("pairPredictionDFo")
-
-#' Extract prediction from output of predictPair for {row1, row2}.
-#' 
-#' @param object a pairPredictor class
-#' @param row1 The index of row1 of the test_data that was predicted
-#' @param row2 The index of row2 of the test_data that was predicted
-#' @return The probability that row1 is greater
-#' @export
-getPredictiono <- function(object, row1=NULL, row2=NULL) UseMethod("getPredictiono")
-
 ## Shared helper functions ##
+
+#' Convenience function to get one row from a matrix or data frame.
+#'
+#' This simply calls matrix_or_data_frame[row_index,,drop=FALSE] for you
+#' but is shorter and helps you avoid forgetting drop=FALSE.  The need
+#' for drop=FALSE when selecting just one row is explained here:
+#' http://www.hep.by/gnu/r-patched/r-faq/R-FAQ_56.html
+#'
+#' @param matrix_or_data_frame A matrix or data frome from which you want one row.
+#' @param row_index The integer index of the row
+#' @return The selected row of the data frame.
+#'
+#' @export
+oneRow <- function(matrix_or_data_frame, row_index) {
+  matrix_or_data_frame[row_index,,drop=FALSE]
+}
+
+# private.  But I might re-use it.
+pairMatrix <- function(num_row, pair_evaluator_fn) {
+  as.matrix(combn(num_row, 2, pair_evaluator_fn))
+}
+
+#' Run predictPair for all row pairs in test_data to generate a one-column matrix.
+#'
+#' @param object A fitted model that implements predictRoot.
+#' @param test_data A matrix of data frame or data with object$cols_to_fit columns.
+#' @return An one-column matrix.  Each row represents a pair of rows.  Use get
+#'   prediction functions to find the rows if you care.  (TODO(jean): Document that
+#'   more-- give examples, too.)
+#'
+#' @seealso
+#' \code{\link{predictRoot}} for the function the fitted model must implement.
+#'
+#' @export
+predictPairMatrix <- function(object, test_data) {
+  test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
+  pair_evaluator_fn <- function(index_pair)
+    predictRoot(object, oneRow(test_data_trim, index_pair[1]),
+                oneRow(test_data_trim, index_pair[2]))
+  pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
+}
 
 # Example: inferNumOriginalRows(nrow(out$predictions))
 inferNumOriginalRows <- function(num_combo_rows) {
@@ -77,10 +91,6 @@ stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   }
 }
 
-#
-# TODO(jean): Delete unused experimental functions.
-#
-
 # Assume predictions were all rows from 1 to some N,
 # and it will back out N.
 pairPredictionMatrix <- function(predictions) {
@@ -92,16 +102,6 @@ pairPredictionMatrix <- function(predictions) {
   # Columns are Row1, Row2, and ProbRow1Greater
   out <- cbind(row_pairs, predictions)
   return(out) 
-}
-
-pairPredictionDF<- function(predictions) {
-  out <- as.data.frame(pairPredictionMatrix(predictions))
-  names(out) <- c("Row1", "Row2", "ProbRow1Greater")
-  return(out)
-}
-
-pairPredictionDFo.pairPredictor <- function(object) {
-  return(pairPredictionDF(object$predictions))
 }
 
 # TODO(jean): If this gets used a lot, export it and give it a nicer name.
@@ -131,38 +131,7 @@ getPrediction_raw <- function(prediction_matrix, row_pair) {
   }
 }
 
-#' @export
-getPredictiono <- function(object, row1=NULL, row2=NULL) {
-  if (is.null(row1) || is.null(row2)) {
-    stop("You must set both row1 and row2")
-  }
-  row_pair <- c(row1, row2)
-  #TODO(jeanw): Does this perform a copy?  If so, then shorten it.
-  if (is.null(object$verbose_predictions)) {
-    prediction_matrix <- pairPredictionMatrix(object$predictions)
-  } else {
-    prediction_matrix <- object$verbose_predictions
-  }
-  return(getPrediction_raw(prediction_matrix, row_pair))
-}
-
 ### Helper functions ###
-
-#' Convenience function to get one row from a matrix or data frame.
-#'
-#' This simply calls matrix_or_data_frame[row_index,,drop=FALSE] for you
-#' but is shorter and helps you avoid forgetting drop=FALSE.  The need
-#' for drop=FALSE when selecting just one row is explained here:
-#' http://www.hep.by/gnu/r-patched/r-faq/R-FAQ_56.html
-#'
-#' @param matrix_or_data_frame A matrix or data frome from which you want one row.
-#' @param row_index The integer index of the row
-#' @return The selected row of the data frame.
-#'
-#' @export
-oneRow <- function(matrix_or_data_frame, row_index) {
-  matrix_or_data_frame[row_index,,drop=FALSE]
-}
 
 getCuePairDirections <- function(row1, row2) {
   sign(row1 - row2)
@@ -255,45 +224,6 @@ predictRoot.ttbModel <- function(object, row1, row2) {
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
-}
-
-# private.  But I might re-use it.
-pairMatrix <- function(num_row, pair_evaluator_fn) {
-  as.matrix(combn(num_row, 2, pair_evaluator_fn))
-}
-
-#' Run predictPair for all row pairs in test_data to generate a one-column matrix.
-#'
-#' @param object A fitted model that implements predictRoot.
-#' @param test_data A matrix of data frame or data with object$cols_to_fit columns.
-#' @return An one-column matrix.  Each row represents a pair of rows.  Use get
-#'   prediction functions to find the rows if you care.  (TODO(jean): Document that
-#'   more-- give examples, too.)
-#'
-#' @seealso
-#' \code{\link{predictRoot}} for the function the fitted model must implement.
-#'
-#' @export
-predictPairMatrix <- function(object, test_data) {
-  test_data_trim <- as.matrix(test_data[,object$cols_to_fit, drop=FALSE])
-  pair_evaluator_fn <- function(index_pair)
-    predictRoot(object, oneRow(test_data_trim, index_pair[1]),
-                oneRow(test_data_trim, index_pair[2]))
-  pairMatrix(nrow(test_data_trim), pair_evaluator_fn)
-}
-
-#' Predict which of a pair of rows has a higher criterion, using Take The Best.
-#'
-#' @param object A fitted ttbModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{ttbModel}} for example code.
-#'
-#' @export
-predictPair.ttbModel  <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 
@@ -486,20 +416,6 @@ predictRoot.regModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
-#' Predict which of a pair of rows has a higher criterion, using regression.
-#'
-#' @param object A fitted regModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{regModel}} for example code.
-#'
-#' @export
-predictPair.regModel <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
-}
-
 #' Linear regression (no intercept) wrapper for hueristica
 #'
 #' A wrapper to create a lm model just specifying columns, generating
@@ -543,20 +459,6 @@ predictRoot.regNoIModel <- function(object, row1, row2) {
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
-}
-
-#' Predict which of a pair of rows has a higher criterion, using regression no intercept.
-#'
-#' @param object A fitted regNoIModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{regNoIModel}} for example code.
-#'
-#' @export
-predictPair.regNoIModel <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 #' Logistic Regression model without intercept
@@ -627,20 +529,6 @@ predictRoot.logRegModel <- function(object, row1, row2) {
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
-}
-
-#' Predict which of a pair of rows has a higher criterion, using logistic regression.
-#'
-#' @param object A fitted logRegModel.
-#' @inheritParams predictPair
-#'
-#' @seealso
-#' \code{\link{logRegModel}} for example code.
-#'
-#' @export
-predictPair.logRegModel <- function(object, test_data, verbose_output=TRUE) {
-  predictions <- predictPairMatrix(object, test_data)
-  return(structure(list(predictions=predictions), class="pairPredictor"))
 }
 
 #' Single Cue Model
