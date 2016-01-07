@@ -704,7 +704,7 @@ test_that("regNoIModel predictRowPair", {
 
 ### logRegModel ###
 
-test_that("logRegModel predictPair 2x2 fit train_data", {
+test_that("logRegModel predictRowPair 2x2 fit train_data", {
   tol <- 0.0001
   train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
@@ -717,7 +717,7 @@ test_that("logRegModel predictPair 2x2 fit train_data", {
   expect_equal(1, nrow(out))
 })
 
-test_that("logRegModel predictPair 2x2 fit train_data reverse cue", {
+test_that("logRegModel predictRowPair 2x2 fit train_data reverse cue", {
   tol <- 0.0001
   train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
@@ -727,7 +727,7 @@ test_that("logRegModel predictPair 2x2 fit train_data reverse cue", {
                                  oneRow(train_data, 1), model))
 })
 
-test_that("logRegModel predictPair 2x2,3x2 all correct", {
+test_that("logRegModel predictRowPair 2x2,3x2 all correct", {
   tol <- 0.0001
   train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
@@ -752,64 +752,58 @@ test_that("logRegModel predictPair 2x2,3x2 all correct", {
   expect_equal(3, nrow(out))
 })
 
-test_that("logRegModel predictPair 2x2,3x2 all incorrect", {
+test_that("logRegModel predictRowPair 2x2,3x2 all incorrect", {
   tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0), 2, 2)
+  train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- logRegModel(train_data, 1, c(2))
-  test_data <- matrix(c(5,4,3,0,1,1), 3, 2)
-  out <- predictPair(model, test_data)
-  expect_equal(0, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(1, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=1, row2=3), tolerance=tol)
-  expect_equal(1, getPredictiono(out, row1=3, row2=1), tolerance=tol)
-  expect_equal(0.5, getPredictiono(out, row1=2, row2=3), tolerance=tol)
-  expect_equal(0.5, getPredictiono(out, row1=3, row2=2), tolerance=tol)
+  test_data <- cbind(y=c(5,4,3), x1=c(0,1,1))
+  
+  out <- allRowPairApply(test_data, rowIndexes(), heuristics(model))
+  expect_equal(0,   getPrediction_raw(out, c(1,2)))
+  expect_equal(0,   getPrediction_raw(out, c(1,3)))
+  expect_equal(0.5, getPrediction_raw(out, c(2,3)))
+  # Confirm opposite pairs have opposite predictions.
+  expect_equal(1,   getPrediction_raw(out, c(2,1)))
+  expect_equal(1,   getPrediction_raw(out, c(3,1)))
+  expect_equal(0.5, getPrediction_raw(out, c(3,2)))
   # There are three unique pairs.
-  expect_equal(3, nrow(out$predictions))
+  expect_equal(3, nrow(out))
 })
 
-test_that("logRegModel predictPair 2x3 fit train_data", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0,1,0), 2, 3)
+test_that("logRegModel predictRowPair 2x3 fit train_data", {
+  train_data <- cbind(y=c(5,4), x1=c(1,0), x2=c(1,0))
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  # There is one unique pair.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
 })
 
-test_that("logRegModel predictPairg 2x3 fit train_data 2nd cue useless", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0,1,1), 2, 3)
+test_that("logRegModel predictRowPair 2x3 fit train_data 2nd cue useless", {
+  train_data <- cbind(y=c(5,4), x1=c(1,0), x2=c(1,1))
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  # There is one unique pair.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
 })
 
-test_that("logRegModel predictPair 2x3 fit train_data 2nd cue reverse", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,1,0,0,1), 2, 3)
+test_that("logRegModel predictRowPair 2x3 fit train_data 2nd cue reverse", {
+  train_data <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  # There is one unique pair.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
 })
 
-test_that("logRegModel predictPair 2x3 fit train_data 1st cue useless", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,0,0,1,0), 2, 3)
+test_that("logRegModel predictRowPair 2x3 fit train_data 1st cue useless", {
+  train_data <- cbind(y=c(5,4), x1=c(0,0), x2=c(1,0))
   model <- logRegModel(train_data, 1, c(2,3))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
-  # There is one unique pair.
-  expect_equal(1, nrow(out$predictions))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
 })
 
 test_that("logRegModel pctCorrectOfPredictPair", {
