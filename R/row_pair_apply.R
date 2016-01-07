@@ -222,6 +222,16 @@ createFunction.colPairValues<- function(object, test_data) {
   return(column_fn)
 }
 
+#' Apply a function to all unique pairs of row indices up to num_row.
+#' @param num_row The number of rows to generate index pairs for.
+#' @param pair_evaluator_fn The function you want applied.  It should
+#'   accept a list of two numbers, the index of row 1 and the index of row2.
+#' @return A matrix of the output of the function for all unique row pairs:
+#'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
+pairMatrix <- function(num_row, pair_evaluator_fn) {
+  as.matrix(combn(num_row, 2, pair_evaluator_fn))
+}
+
 
 ###
 # The most general row pair apply function.  All others call this one.
