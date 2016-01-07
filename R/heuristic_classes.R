@@ -164,8 +164,12 @@ oneRow <- function(matrix_or_data_frame, row_index) {
   matrix_or_data_frame[row_index,,drop=FALSE]
 }
 
-getCuePairDirections <- function(coefficients, row1, row2) {
-  sign(sign(row1 - row2) %*% coefficients)
+getCuePairDirections <- function(row1, row2) {
+  sign(row1 - row2)
+}
+
+getWeightedCuePairDirections <- function(coefficients, row1, row2) {
+  sign(getCuePairDirections(row1, row2) %*% coefficients)
 }
 
 rescale0To1 <- function(direction_plus_minus_1) {
@@ -245,7 +249,7 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 coef.ttbModel <- function(object, ...) object$linear_coef
 
 predictRoot.ttbModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -377,7 +381,7 @@ predict.dawesModel <- function(object, ...) {
 }
 
 predictRoot.dawesModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -467,7 +471,7 @@ predict.franklinModel <- function(object, ...) {
 }
 
 predictRoot.franklinModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -559,7 +563,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 }
 
 predictRoot.regModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -618,7 +622,7 @@ regNoIModel <- function(train_matrix, criterion_col, cols_to_fit) {
 }
 
 predictRoot.regNoIModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -702,7 +706,7 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
 coef.logRegModel <- function(object, ...) object$linear_coef
 
 predictRoot.logRegModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -786,7 +790,7 @@ logRegWithIModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NU
 coef.logRegWithIModel <- function(object, ...) object$linear_coef
 
 predictRoot.logRegWithIModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$col_weights_clean, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -871,7 +875,7 @@ predictPair.singleCueModel <- function(object, test_data, verbose_output=TRUE) {
 }
 
 predictRoot.singleCueModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -944,7 +948,7 @@ predictPair.minModel <- function(object, test_data, verbose_output=TRUE) {
 }
 
 predictRoot.minModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getCuePairDirections(coef(object), row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(coef(object), row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
