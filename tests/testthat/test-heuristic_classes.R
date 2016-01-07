@@ -918,9 +918,10 @@ test_10_06 <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.001)
   }
   # Check output.
-  out <- predictPair(fitted_model, train_df)
-  expect_equal(expected, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1-expected, getPredictiono(out, row1=2, row2=1))
+  expect_equal(expected, predictRowPair(oneRow(train_df, 1),
+                                        oneRow(train_df, 2), fitted_model))
+  expect_equal(1-expected, predictRowPair(oneRow(train_df, 2),
+                                          oneRow(train_df, 1), fitted_model))
 }
 
 # The correct answer is 1, but we confirm each model works as designed.
@@ -952,9 +953,10 @@ test_00_04_rc <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.001)
   }
   # Check output.
-  out <- predictPair(fitted_model, train_df)
-  expect_equal(expected, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1-expected, getPredictiono(out, row1=2, row2=1))
+  expect_equal(expected, predictRowPair(oneRow(train_df, 1),
+                                        oneRow(train_df, 2), fitted_model))
+  expect_equal(1-expected, predictRowPair(oneRow(train_df, 2),
+                                          oneRow(train_df, 1), fitted_model))
 }
 
 # The correct answer is 0, but we confirm each model works as designed.
@@ -982,9 +984,10 @@ test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.002)
   }
   # Check prediction.
-  out <- predictPair(fitted_model, train_df)
-  expect_equal(expected, getPredictiono(out, row1=3, row2=4))
-  expect_equal(1-expected, getPredictiono(out, row1=4, row2=3))
+  expect_equal(expected, predictRowPair(oneRow(train_df, 3),
+                                        oneRow(train_df, 4), fitted_model))
+  expect_equal(1-expected, predictRowPair(oneRow(train_df, 4),
+                                          oneRow(train_df, 3), fitted_model))
 }
 
 # The correct answer is 0, but we confirm each model works as designed.
@@ -1004,16 +1007,18 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
   # two cues are useful, but all agree the 3rd cue is useless.
   train_df <- data.frame(criterion=c(397,385,327), x1=c(99,100,85), x2=c(3.6,2.9,3.2),
                          x3=c(0,1,0))
-  fit <- model(train_df, 1, c(2:4))
+  fitted_model <- model(train_df, 1, c(2:4))
   if (has_cv) {
-    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fit$cue_validities, tolerance=0.002)
-    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fit$cue_validities_with_reverse,
+    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fitted_model$cue_validities, tolerance=0.002)
+    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fitted_model$cue_validities_with_reverse,
                  tolerance=0.002)
   }
   # Check prediction.
-  out <- predictPair(fit, train_df)
-  expect_equal(expected, getPredictiono(out, row1=1, row2=2))
-  expect_equal(1-expected, getPredictiono(out, row1=2, row2=1))
+  expect_equal(expected, predictRowPair(oneRow(train_df, 1),
+                                        oneRow(train_df, 2), fitted_model))
+  expect_equal(1-expected, predictRowPair(oneRow(train_df, 2),
+                                          oneRow(train_df, 1), fitted_model))
+  
 }
 
 # The correct answer is 1, but models disagree a lot.
