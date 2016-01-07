@@ -1035,27 +1035,29 @@ test_that("d_useless_cue_3 logRegWithI",   {d_useless_cue_3(logRegWithIModel,   
 
 # minModel
 
-test_that("minModel 2x3 predictPair forward", {
-  tol <- 0.0001
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+test_that("minModel 2x3 predictRowPair equal coef", {
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   set.seed(1)
   model <- minModel(train_matrix, 1, c(2,3))
   expect_equal(c(2,-1), model$linear_coef)
+  
+  # Setting the random seed is a hacky way to test.  Let's come up
+  # with a better way.
   set.seed(2)
-  out <- predictPair(model,train_matrix)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
   
   set.seed(4)
-  out <- predictPair(model,train_matrix)
-  expect_equal(0, getPredictiono(out, row1=1, row2=2), tolerance=tol)
+  expect_equal(0, predictRowPair(oneRow(train_matrix, 1),
+                                 oneRow(train_matrix, 2), model))
 
 })
 
-test_that("minModel predictPair 2x2 fit train_data reverse cue", {
-  tol <- 0.0001
-  train_data <- matrix(c(5,4,0,1), 2, 2)
+test_that("minModel predictRowPair 2x2 fit train_data reverse cue", {
+  train_data <- cbind(y=c(5,4), x1=c(0,1))
   model <- minModel(train_data, 1, c(2))
-  out <- predictPair(model, train_data)
-  expect_equal(1, getPredictiono(out, row1=1, row2=2), tolerance=tol)
-  expect_equal(0, getPredictiono(out, row1=2, row2=1), tolerance=tol)
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(0, predictRowPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
 })
