@@ -148,3 +148,34 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
   df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)
 }
+
+#' pctCorrectOfPredictPair for non-symmetric heuristics
+#'
+#' Same as pctCorrectOfPredictPair but for weird heuristics that do not consistently
+#' choose the same row.  If a symmetric heuristics says row1 > row2, then it will also
+#' says row2 < row1.  Those can be used with pctCorrectOfPredictPair.  All heuristics
+#' built into heuristica quality.  They will get the same answers for pctCorrectOfPredictPair
+#' and pctCorrectOfPredictPairNonSymmetric.  But a non-symmetric heuristic will only
+#' get correct answers for pctCorrectOfPredictPairNonSymmetric.
+#'
+#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbModel.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
+#'   Each column is named with the heuristic's class.
+#' @seealso
+#' \code{\link{pctCorrectOfPredictPair}} for prediction.
+#' @export
+pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list, test_data) {
+  # Assume the criterion_col is same for all heuristics.
+  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  # TODO: Check and stop if a heuristics disagrees with criterion_col.
+  all_fn_creator_list <- list(criterion(criterion_col),
+                              heuristicsList(fitted_heuristic_list))
+  predictions_fwd <- allRowPairApplyList(test_data, all_fn_creator_list)
+  test_data_rev <- test_data[c(nrow(test_data):1),]
+  predictions_rev <- allRowPairApplyList(test_data_rev, all_fn_creator_list)
+  predictions <- rbind(predictions_fwd, predictions_rev)
+  errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
+  df <- createPctCorrectsFromErrors2(errors, 2)
+  return(df)
+}

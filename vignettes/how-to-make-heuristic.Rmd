@@ -109,3 +109,9 @@ Heuristica makes this sort of assessment easy-- it cn check your model agains al
 myFit <- myModel(schools, 2, c(3:5))
 pctCorrectOfPredictPair(list(myFit), schools)
 ```
+
+Oops that gave us the wrong answer because myModel is not symmetric.  So it's a bad example.  But below you can see I can generate the right answer:
+```{r}
+myFit <- myModel(schools, 2, c(3:5))
+pctCorrectOfPredictPairNonSymmetric(list(myFit), schools)
+```
