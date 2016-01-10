@@ -520,15 +520,12 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
   cue_ranks <- as.numeric(cue_ranks)
-  unsigned_linear_coef <- sapply(sample(cue_ranks), function(n) 2^(length(cue_ranks)-n) )
-  
-  
-  linear_coef <- as.numeric(cue_directions) * unsigned_linear_coef
+  unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cue_validities,
+                 cue_validities=cue_validities, cue_directions=cue_directions,
                  cue_validities_with_reverse=cue_validities_with_reverse,
-                 linear_coef=linear_coef),
+                 unsigned_linear_coef=unsigned_linear_coef),
             class="minModel")
 }
 
@@ -538,10 +535,12 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 #'
 #' @inheritParams stats::coef
 #' @export
-coef.minModel <- function(object, ...) sample(object$linear_coef)
+coef.minModel <- function(object, ...) return(object$unsigned_linear_coef)
 
 predictRoot.minModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(coef(object), row1, row2)
+  random_order_coefficients <- sample(object$unsigned_linear_coef)
+  coefficients <- object$cue_directions * random_order_coefficients
+  direction_plus_minus_1 <- sign(getCuePairDirections(row1, row2) %*% coefficients)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))

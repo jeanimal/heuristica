@@ -1010,33 +1010,40 @@ test_that("minModel predictRowPair 2x2 reverse cue", {
                                  oneRow(train_data, 1), model))
 })
 
-# TODO: This test shows a bug in minModel.  Fix it.
-#test_that("minModel predictRowPair 5x4 all cues same after reverse", {
-#  train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,0,0,0,0),
-#                      x3=c(0,1,1,1,1))
-#  model <- minModel(train_data, 1, c(2:4))
-#  # Note x3 is same when reversed.
-#  # Gives same answer consistently, no matter which cue is selected.
-#  for (i in 1:5) {
-#    expect_equal(1, predictRowPair(oneRow(train_data, 1),
-#                                   oneRow(train_data, 2), model))
-#  }
-#})
-
-test_that("minModel 2x3 predictRowPair equal coef", {
-  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
-  set.seed(1)
-  model <- minModel(train_matrix, 1, c(2,3))
-  expect_equal(c(2,-1), model$linear_coef)
-  
-  # Setting the random seed is a hacky way to test.  Let's come up
-  # with a better way.
-  set.seed(2)
-  expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
-                                 oneRow(train_matrix, 2), model))
-  
-  set.seed(4)
-  expect_equal(0, predictRowPair(oneRow(train_matrix, 1),
-                                 oneRow(train_matrix, 2), model))
-
+test_that("minModel predictRowPair 5x4 all cues same after reverse", {
+  train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,0,0,0,0),
+                      x3=c(0,1,1,1,1))
+  model <- minModel(train_data, 1, c(2:4))
+  expect_equal(c(1,1,-1), model$cue_directions)
+  # Note x3 is same when reversed.
+  # Gives same answer consistently, no matter which cue is selected.
+  for (i in 1:5) {
+    expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                   oneRow(train_data, 2), model))
+  }
 })
+
+test_that("minModel predictRowPair 5x4", {
+  train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
+                      x3=c(1,0,0,0,1))
+  model <- minModel(train_data, 1, c(2:4))
+  expect_equal(c(1,1,0), model$cue_directions)
+  expect_equal(c(1, 0.667, 0.5), model$cue_validities, tolerance=0.002)
+  # Between row 1 and 2, if x1 is chosen, predict 1, else predict 0.5.
+  for (i in 1:5) {
+    out12 <- predictRowPair(oneRow(train_data, 1),
+                            oneRow(train_data, 2), model)
+    if ( ! out12 %in% c(1, 0.5)) {
+      fail(paste("Should have predicted 1 or 0.5 but predicted", out12))
+    }
+  }
+  # Between row 4 and 5, if x2 is chosen, predict 0, else predict 0.5.
+  for (i in 1:5) {
+    out45 <- predictRowPair(oneRow(train_data, 4),
+                            oneRow(train_data, 5), model)
+    if ( ! out45 %in% c(0, 0.5)) {
+      fail(paste("Should have predicted 0 or 0.5 but predicted", out45))
+    }
+  }
+})
+
