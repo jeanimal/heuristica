@@ -1,15 +1,12 @@
 ---
-title: "Test"
-author: "Jean Whitmore"
+title: "Vignette Title"
+author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
-This is just a test
-
-
-
+Test 2
