@@ -1,0 +1,15 @@
+---
+title: "Test"
+author: "Jean Whitmore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+This is just a test
+
+
+
