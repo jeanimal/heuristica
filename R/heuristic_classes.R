@@ -505,8 +505,7 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 #' @seealso
 #'
 #' @export
-minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE,
-                     sample_fn=sample) {
+minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -528,7 +527,7 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE,
                  cue_validities=cue_validities, cue_directions=cue_directions,
                  cue_validities_with_reverse=cue_validities_with_reverse,
                  unsigned_linear_coef=unsigned_linear_coef,
-                 sample_fn=sample_fn),
+                 cue_sample_fn=sample),
             class="minModel")
 }
 
@@ -541,7 +540,7 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE,
 coef.minModel <- function(object, ...) return(object$unsigned_linear_coef)
 
 predictRoot.minModel <- function(object, row1, row2) {
-  random_order_coefficients <- object$sample_fn(object$unsigned_linear_coef)
+  random_order_coefficients <- object$cue_sample_fn(object$unsigned_linear_coef)
   coefficients <- object$cue_directions * random_order_coefficients
   direction_plus_minus_1 <- sign(getCuePairDirections(row1, row2) %*% coefficients)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 

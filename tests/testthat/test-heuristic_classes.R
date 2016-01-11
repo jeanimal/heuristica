@@ -1026,8 +1026,10 @@ test_that("minModel predictRowPair 5x4 all cues same after reverse", {
 test_that("minModel predictRowPair 5x4 sample_fn in_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
+  model <- minModel(train_data, 1, c(2:4))
+  # For testing purposes, force cue order to always be x1, x2, x3.
   in_order <- function(x) return(x)
-  model <- minModel(train_data, 1, c(2:4), sample_fn=in_order)
+  model$cue_sample_fn <- in_order
   expect_equal(c(1,1,0), model$cue_directions)
   expect_equal(c(1, 0.667, 0.5), model$cue_validities, tolerance=0.002)
   
@@ -1043,8 +1045,10 @@ test_that("minModel predictRowPair 5x4 sample_fn in_order", {
 test_that("minModel predictRowPair 5x4 sample_fn reverse_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
+  model <- minModel(train_data, 1, c(2:4))
+  # For testing purposes, force cue order to always be x3, x2, x1.
   reverse_order <- function(x) return(rev(x))
-  model <- minModel(train_data, 1, c(2:4), sample_fn=reverse_order)
+  model$cue_sample_fn <- reverse_order
   expect_equal(c(1,1,0), model$cue_directions)
   expect_equal(c(1, 0.667, 0.5), model$cue_validities, tolerance=0.002)
   
