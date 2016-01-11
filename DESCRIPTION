@@ -11,21 +11,22 @@ Description: Implements various heuristics like Take The Best and
     unit-weight linear, called Dawes' model here, in a format that
     makes it easy to use with other R fit models.  In particular,
     they implement coef and predict.  Includes helper functions.
-Depends:
+Depends: 
     R (>= 3.1.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports:
+Imports: 
     Hmisc
 URL: https://github.com/jeanimal/heuristica
 BugReports: https://github.com/jeanimal/heuristica/issues
-Suggests:
+Suggests: 
     devtools,
     ggplot2,
     knitr,
     plyr,
     reshape,
     reshape2,
-    testthat
+    testthat,
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

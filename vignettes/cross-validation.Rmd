@@ -6,7 +6,7 @@ output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 This document provides a simple example of how to compare the predictive performance of different models in the heuristica package. It uses cross-validation on the German cities dataset and measures model performance by the percentage of correct predictions.
