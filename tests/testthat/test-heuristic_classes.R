@@ -889,7 +889,7 @@ test_that("minModel predictRowPair 5x4 all cues same after reverse", {
   }
 })
 
-test_that("minModel predictRowPair 5x4 sample_fn in_order", {
+test_that("minModel predictRowPair 5x4 cue_sample_fn in_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
   model <- minModel(train_data, 1, c(2:4))
@@ -908,7 +908,7 @@ test_that("minModel predictRowPair 5x4 sample_fn in_order", {
                                  oneRow(train_data, 5), model))
 })
 
-test_that("minModel predictRowPair 5x4 sample_fn reverse_order", {
+test_that("minModel predictRowPair 5x4 cue_sample_fn reverse_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
   model <- minModel(train_data, 1, c(2:4))
