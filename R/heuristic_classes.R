@@ -493,7 +493,6 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @param sample_fn Use only for unit-testing.
 #' @examples
 #' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
 #' train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
