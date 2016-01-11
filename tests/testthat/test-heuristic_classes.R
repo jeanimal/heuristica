@@ -989,7 +989,7 @@ test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv
 test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv=FALSE)})
 #TODO(Daniel): And check this one.#DANIEL: this looks ok now
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
-
+test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs,    0, has_cv=FALSE)})
 # minModel
 
 test_that("minModel predictRowPair 2x2 forward", {

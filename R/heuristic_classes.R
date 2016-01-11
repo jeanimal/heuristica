@@ -358,7 +358,7 @@ predictRoot.regNoIModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
-#' Logistic Regression model without intercept
+#' Logistic Regression model without intercept usign cue differences as predictors
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
 #' with R's glm function.
@@ -427,6 +427,81 @@ predictRoot.logRegModel <- function(object, row1, row2) {
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
 }
+
+
+#' Logistic Regression model without intercept uses the sign of the difference of cues as predictors
+#'
+#' Create a logistic regression model by specifying columns and a dataset.  It fits the model
+#' with R's glm function.
+#'
+#' This version assumes you do not want to include the intercept.
+#' 
+#' @inheritParams heuristicaModel
+#' @return An object of class logRegModelCueDiffs.
+#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
+#' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
+#' @export
+logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
+  if (is.null(row_pairs)) {
+    n <- nrow(train_data)
+    all_pairs <- rowPairGenerator(n)
+  } else {
+    all_pairs <- row_pairs
+  }
+  
+  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  criterion <- transform[,1]
+  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
+  
+  predictors <- transform[,2:ncol(transform)]
+  predictors[predictors<0] <- -1
+  predictors[predictors>0] <- 1
+  
+  training_set <- cbind(criterion,predictors)
+  training_set <- as.data.frame(training_set)
+  
+  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
+  # Do not fit intercept by default.
+  formula <- paste(formula, "-1")
+  
+  if(is.null(suppress_warnings)){
+    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
+  } else { 
+    model <- glm(formula,family=binomial,data=training_set)  
+  }
+  
+  col_weights <- coef(model)
+  
+  # Make clean weights that can be easily used in predictRoot.
+  col_weights_clean <- col_weights
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  # Because the intercept is 0 for row1 and ro2, ignore it.
+  if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+    col_weights_clean <- col_weights_clean[-intercept_index]
+  }
+  
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 linear_coef=col_weights,
+                 col_weights_clean=col_weights_clean,
+                 model=model),
+            class="logRegModelCueDiffs")
+}
+
+
+#' @export
+coef.logRegModelCueDiffs <- function(object, ...) object$linear_coef
+
+predictRoot.logRegModelCueDiffs <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  return(rescale0To1(direction_plus_minus_1))
+}
+
+
 
 #' Single Cue Model
 #'
