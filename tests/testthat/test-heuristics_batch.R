@@ -2,7 +2,7 @@
 # Batch testing of multiple heuristics #
 ########################################
 
-context("heuristicsi_batch")
+context("heuristics_batch")
 
 # This test is named by the cue validities of the two cues, 1.0 and 0.6.
 test_10_06 <- function(model, expected, has_cv=TRUE) {
