@@ -2,6 +2,8 @@
 # Batch testing of multiple heuristics #
 ########################################
 
+context("heuristics")
+
 # This test is named by the cue validities of the two cues, 1.0 and 0.6.
 test_10_06 <- function(model, expected, has_cv=TRUE) {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))

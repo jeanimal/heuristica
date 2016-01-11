@@ -1,8 +1,7 @@
-context("heuristic_classes")
+context("heuristics")
 
 # require('testthat')
 
-# TODO: Move the tests below to where I test predictRowPair
 
 test_that("predictRowPair error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
