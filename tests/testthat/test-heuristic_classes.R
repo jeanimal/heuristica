@@ -1023,27 +1023,37 @@ test_that("minModel predictRowPair 5x4 all cues same after reverse", {
   }
 })
 
-test_that("minModel predictRowPair 5x4", {
+test_that("minModel predictRowPair 5x4 sample_fn in_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
-  model <- minModel(train_data, 1, c(2:4))
+  in_order <- function(x) return(x)
+  model <- minModel(train_data, 1, c(2:4), sample_fn=in_order)
   expect_equal(c(1,1,0), model$cue_directions)
   expect_equal(c(1, 0.667, 0.5), model$cue_validities, tolerance=0.002)
-  # Between row 1 and 2, if x1 is chosen, predict 1, else predict 0.5.
-  for (i in 1:5) {
-    out12 <- predictRowPair(oneRow(train_data, 1),
-                            oneRow(train_data, 2), model)
-    if ( ! out12 %in% c(1, 0.5)) {
-      fail(paste("Should have predicted 1 or 0.5 but predicted", out12))
-    }
-  }
-  # Between row 4 and 5, if x2 is chosen, predict 0, else predict 0.5.
-  for (i in 1:5) {
-    out45 <- predictRowPair(oneRow(train_data, 4),
-                            oneRow(train_data, 5), model)
-    if ( ! out45 %in% c(0, 0.5)) {
-      fail(paste("Should have predicted 0 or 0.5 but predicted", out45))
-    }
-  }
+  
+  # Between row 1 and 2, x1 predicts 1 (others would predict 0.5)
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+
+  # Between row 4 and 5, x1 doesn't discriminate, then x2 predicts 0
+  expect_equal(0, predictRowPair(oneRow(train_data, 4),
+                                 oneRow(train_data, 5), model))
+})
+
+test_that("minModel predictRowPair 5x4 sample_fn reverse_order", {
+  train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
+                      x3=c(1,0,0,0,1))
+  reverse_order <- function(x) return(rev(x))
+  model <- minModel(train_data, 1, c(2:4), sample_fn=reverse_order)
+  expect_equal(c(1,1,0), model$cue_directions)
+  expect_equal(c(1, 0.667, 0.5), model$cue_validities, tolerance=0.002)
+  
+  # Between row 1 and 2, x3 predicts 0 (x1 would also predict 1)
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  
+  # Between row 4 and 5, x3 predict 0, while x1 would guess.
+  expect_equal(0, predictRowPair(oneRow(train_data, 4),
+                                 oneRow(train_data, 5), model))
 })
 
