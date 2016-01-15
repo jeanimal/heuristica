@@ -252,11 +252,11 @@ predictRoot.franklinModel <- function(object, row1, row2) {
 #' @param criterion_col The index of the criterion column-- "y" in the formula.
 #' @param cols_to_fit A vector of column indexes to fit-- the "x's" in the formula.
 # Private
-regModelForDocumentation <- function(train_matrix, criterion_col, cols_to_fit) NULL
+regInterceptModelForDocumentation <- function(train_matrix, criterion_col, cols_to_fit) NULL
 
 #' A wrapper to create a lm model just specifying columns, generating a formula for you.
 #' 
-#' @inheritParams regModelForDocumentation 
+#' @inheritParams regInterceptModelForDocumentation 
 #' @param include_intercept A boolean of whether to include an intercept in the formula.
 #'
 #' @return An object of class lm.
@@ -281,9 +281,9 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #'
 #' This version assumes you always want to include the intercept.
 #' 
-#' @inheritParams regModelForDocumentation 
+#' @inheritParams regInterceptModelForDocumentation 
 #'
-#' @return An object of class regModel, which is a subclass of lm.
+#' @return An object of class regInterceptModel, which is a subclass of lm.
 #'
 #' @seealso
 #' \code{\link{regNoIModel}} for a version that excludes the intercept.
@@ -293,10 +293,10 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #' \code{\link{predictRowPair}} for predicting between a pair of rows.
 #'
 #' @export
-regModel <- function(train_matrix, criterion_col, cols_to_fit) {
+regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   stopIfTrainingSetHasLessThanTwoRows(train_matrix)
   model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE)
-  class(model) <- c("regModel", class(model))
+  class(model) <- c("regInterceptModel", class(model))
   # Functions in this package assume all models track criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
@@ -315,7 +315,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   return(model)
 }
 
-predictRoot.regModel <- function(object, row1, row2) {
+predictRoot.regInterceptModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
@@ -334,12 +334,12 @@ predictRoot.regModel <- function(object, row1, row2) {
 #' predicting rank order because the intercept does not affect the ranking, but
 #' estimating it wastes a degree of freedom.
 #' 
-#' @inheritParams regModelForDocumentation 
+#' @inheritParams regInterceptModelForDocumentation 
 #'
 #' @return An object of class regNoIModel, which is a subclass of lm.
 #'
 #' @seealso
-#' \code{\link{regModel}} for a version that includes the intercept.
+#' \code{\link{regInterceptModel}} for a version that includes the intercept.
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso

@@ -28,19 +28,19 @@ or data.frame.
 \examples{
 ## Fit two models to the city_population data set.
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 
 ## Generate predictions for all row pairs for these two models:
 out1 <- allRowPairApplyList(city_population, list(heuristics(ttb, reg)))
 head(out1)
 nrow(out1)
-## returns a matrix of 2 columns, named ttbModel and regModel.
+## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 
 ## Generate a matrix with the correct values and the heuristics' predictions:
 out2 <- allRowPairApplyList(city_population, list(criterion(3), heuristics(reg, ttb)))
 head(out2)
 nrow(out2)
-## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
 
 }
 \seealso{

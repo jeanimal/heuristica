@@ -25,7 +25,7 @@ and all have the same criterion column.
 }
 \examples{
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 pctCorrectOfPredictPair(list(ttb, reg), city_population)
 }
 

@@ -544,11 +544,11 @@ test_that("franklinModel 4x4 predictRowPair 3nd cue dominates non-binary reverse
                                  oneRow(train_df, 3), model))
 })
 
-### regModel ###
+### regInterceptModel ###
 
-test_that("regModel 2x2 fit pos slope", {
+test_that("regInterceptModel 2x2 fit pos slope", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0))
-  model <- regModel(train_matrix, 1, c(2))
+  model <- regInterceptModel(train_matrix, 1, c(2))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
   expect_equal(2, length(coef(model)))
@@ -556,18 +556,18 @@ test_that("regModel 2x2 fit pos slope", {
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("regModel 2x2 fit neg slope", {
+test_that("regInterceptModel 2x2 fit neg slope", {
   train_matrix <- cbind(y=c(5,4), x1=c(0,1))
-  model <- regModel(train_matrix, 1, c(2))
+  model <- regInterceptModel(train_matrix, 1, c(2))
   expect_equal(5,  coef(model)[[1]])  # intercept
   expect_equal(-1,  coef(model)[[2]])  # slope
   expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("regModel 2x2 fit pos slope -- data.frame", {
+test_that("regInterceptModel 2x2 fit pos slope -- data.frame", {
   train_df <- data.frame(y=c(5,4), x1=c(1,0))
-  model <- regModel(train_df, 1, c(2))
+  model <- regInterceptModel(train_df, 1, c(2))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # slope
   expect_equal(2, length(coef(model))) 
@@ -582,52 +582,52 @@ test_that("lmWrapper 2x2 fit pos slope -- no intercept", {
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("regModel 2x3 fit 4.5,1,NA", {
+test_that("regInterceptModel 2x3 fit 4.5,1,NA", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
-  model <- regModel(train_matrix, 1, c(2,3))
+  model <- regInterceptModel(train_matrix, 1, c(2,3))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # x1
-  #TODO(jean): Ideally regModel would randomize which cue got the NA coef.
+  #TODO(jean): Ideally regInterceptModel would randomize which cue got the NA coef.
   # Right now, it's always the 2nd cue that gets the NA.
   expect_true( is.na(coef(model)[[3]]) )  # x2 excluded because too many columns
   expect_equal(1, predictRowPair(oneRow(train_matrix, 1),
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("regModel 2x3 fit 4,1 (col 3 not fit)", {
-  model <- regModel(cbind(y=c(5,4), x1=c(1,0), x2=c(0,1)), 1, c(2))
+test_that("regInterceptModel 2x3 fit 4,1 (col 3 not fit)", {
+  model <- regInterceptModel(cbind(y=c(5,4), x1=c(1,0), x2=c(0,1)), 1, c(2))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # x1
   expect_equal(2, length(coef(model))) 
 })
 
-test_that("regModel 2x3 fit 5,-1 (col 2 not fit)", {
-  model <- regModel(cbind(y=c(5,4), x1=c(1,0), x2=c(0,1)), 1, c(3))
+test_that("regInterceptModel 2x3 fit 5,-1 (col 2 not fit)", {
+  model <- regInterceptModel(cbind(y=c(5,4), x1=c(1,0), x2=c(0,1)), 1, c(3))
   expect_equal(5,  coef(model)[[1]])  # intercept
   expect_equal(-1,  coef(model)[[2]])  # x1
   expect_equal(2, length(coef(model))) 
 })
 
-test_that("regModel 3x3 fit positive negative", {
-  model <- regModel(cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(0,0,1)), 1, c(2,3))
+test_that("regInterceptModel 3x3 fit positive negative", {
+  model <- regInterceptModel(cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(0,0,1)), 1, c(2,3))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(1,  coef(model)[[2]])  # V2
   expect_equal(-1,  coef(model)[[3]])  # V3
   expect_equal(3, length(coef(model))) 
 })
 
-test_that("regModel 3x3 fit positive mixed", {
-  model <- regModel(cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1)), 1, c(2,3))
+test_that("regInterceptModel 3x3 fit positive mixed", {
+  model <- regInterceptModel(cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1)), 1, c(2,3))
   expect_equal(4,  coef(model)[[1]])  # intercept
   expect_equal(2,  coef(model)[[2]])  # V2
   expect_equal(-1, coef(model)[[3]])  # V3
   expect_equal(3, length(coef(model)))  
 })
 
-test_that("regModel predictRowPair with intercept (check bug)", {
+test_that("regInterceptModel predictRowPair with intercept (check bug)", {
   tol <- 0.0001
   m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
-  model <- regModel(m_train, 1, c(2))
+  model <- regInterceptModel(m_train, 1, c(2))
   # Reg cannot distinguish between rows 1 and 2 based on x1.
   # But in the past there was a bug where the intercept weight was
   # applied to the criterion column so reg was always correct!
@@ -636,9 +636,9 @@ test_that("regModel predictRowPair with intercept (check bug)", {
 })
 
 # Warning: Not a self-contained test.  Uses city_population.
-test_that("regModel predictRowPair city_population", {
+test_that("regInterceptModel predictRowPair city_population", {
   tol <- 0.0001
-  model <- regModel(city_population, 3, c(4:ncol(city_population)))
+  model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
   # Hamburg (row 2) and Munich (row 3) differ only on the license plate, which has a
   # coefficient of about 25,000.
   # There is an intercept of 75k, but you can ignore it in pairs.

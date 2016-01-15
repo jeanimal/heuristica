@@ -139,7 +139,7 @@ For 0 random cues, the models will be using the cue with 75% validity.  You migh
 Below we see all models earn 60% accuracy.  They are equally good at fitting the cue with a "signal" in it.
 
 ```{r}
-model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regNoIModel, regModel)
+model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regNoIModel)
 multiPredict75(model_list, 0)
 ```
 
@@ -150,7 +150,7 @@ for (i in 1:200) { out <- rbind(out, multiPredict75(model_list, 1)) }
 out_summary <- summarySE(out, "accuracy", groupvars=c("model", "num_rand_col"))
 out_summary[c("model", "accuracy")]
 ```
-In general, the models have fallen in accuracy.  The random cue definitely adds a challenge.  regNoI model-- a regression without fitting an intercept-- is typically best, and regModel is typically much worse than the rest because it wastes a degree of freedom on fitting an intercept.  An intercept fitted to each row is useless when comparing *pairs* of rows because the intercept of one row is the same as the intercept of the other row.  (Idea: We could fit a regression on the pairs matrix.)
+In general, the models have fallen in accuracy.  The random cue definitely adds a challenge.  regNoI model-- a regression without fitting an intercept-- is typically best, and regression is typically much worse than the rest because it wastes a degree of freedom on fitting an intercept.  An intercept fitted to each row is useless when comparing *pairs* of rows because the intercept of one row is the same as the intercept of the other row.  (Idea: We could fit a regression on the pairs matrix.)
 
 Below is a hacky but effective way to generate a lot of data for a variety of number of random cues.  You need 2 repetitions for 0 random cues because otherwise the summarize function complains.  Using 200 repetitions takes about a minute on my MacBook Air, while 2000 repetitions takes enough time to grab a coffee.
 ```{r}

@@ -134,7 +134,7 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #'   Each column is named with the heuristic's class.
 #' @examples
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' pctCorrectOfPredictPair(list(ttb, reg), city_population)
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {

@@ -66,7 +66,7 @@ heuristicsList <- function(list_of_fitted_heuristics) {
   # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
   # Use the first-level class as the name of the implementer.
-  # e.g. Regression has class [regModel, lm], so it will use regModel.
+  # e.g. Regression has class [regInterceptModel, lm], so it will use regInterceptModel.
   names <- sapply(implementers, function(x) { head(class(x), 1) })
   structure(list(predictRoot_implementers=implementers,
                  cols_to_fit=cols_to_fit,
@@ -255,19 +255,19 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 #' @examples
 #' ## Fit two models to the city_population data set.
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
 #' out1 <- allRowPairApplyList(city_population, list(heuristics(ttb, reg)))
 #' head(out1)
 #' nrow(out1)
-#' ## returns a matrix of 2 columns, named ttbModel and regModel.
+#' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 #' 
 #' ## Generate a matrix with the correct values and the heuristics' predictions:
 #' out2 <- allRowPairApplyList(city_population, list(criterion(3), heuristics(reg, ttb)))
 #' head(out2)
 #' nrow(out2)
-#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
 #'
 #' @seealso
 #' \code{\link{createFunction}} which must be implemented by the objects
@@ -324,19 +324,19 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' @examples
 #' ## Fit two models to the city_population data set.
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
 #' out1 <- allRowPairApply(city_population, heuristics(ttb, reg))
 #' head(out1)
 #' nrow(out1)
-#' ## returns a matrix of 2 columns, named ttbModel and regModel.
+#' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 #' 
 #' ## Generate a matrix with the correct values and the heuristics' predictions:
 #' out2 <- allRowPairApply(city_population, criterion(3), heuristics(reg, ttb))
 #' head(out2)
 #' nrow(out2)
-#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
 #'
 #' @seealso
 #' \code{\link{createFunction}} which must be implemented by the objects
@@ -401,7 +401,7 @@ rowPairApply <- function(row1, row2, ...) {
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
 #' @param row2 The second row (will apply cols_to_fit for you, based on object).
 #' @param object The object that implements predictPair, e.g. a fitted ttbModel
-#'   or regModel.
+#'   or regInterceptModel.
 #' @return A double from 0 to 1, representing the probability
 #'   that row1's criterion is greater than row2's criterion.
 #' @export

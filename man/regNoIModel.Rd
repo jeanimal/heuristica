@@ -29,7 +29,7 @@ predicting rank order because the intercept does not affect the ranking, but
 estimating it wastes a degree of freedom.
 }
 \seealso{
-\code{\link{regModel}} for a version that includes the intercept.
+\code{\link{regInterceptModel}} for a version that includes the intercept.
 
 \code{\link{predict.lm}} for prediction.
 

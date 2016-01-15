@@ -12,7 +12,7 @@ predictRowPair(row1, row2, object)
 \item{row2}{The second row (will apply cols_to_fit for you, based on object).}
 
 \item{object}{The object that implements predictPair, e.g. a fitted ttbModel
-or regModel.}
+or regInterceptModel.}
 }
 \value{
 A double from 0 to 1, representing the probability

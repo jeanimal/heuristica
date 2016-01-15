@@ -21,8 +21,8 @@ test_that("Benchmark ttbModel on city_population", {
   #   0.137   0.006   0.143
 })
 
-test_that("Benchmark regModel on city_population", {
-  model <- regModel(city_population, 3, c(4:ncol(city_population)))
+test_that("Benchmark regInterceptModel on city_population", {
+  model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
   times <- system.time(allRowPairApply(city_population, heuristics(model)))
   print("reg")
   print(times)
