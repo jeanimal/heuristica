@@ -131,3 +131,33 @@ test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv
 test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs,    0, has_cv=FALSE)})
 # minModel
 
+
+
+
+a_reordered_columns <- function(model) {
+  # Re-order the column and make sure the output is the same.  I had to make sure there
+  # wad enough data for regression models to fit parameters for all columns.
+  df1 <- data.frame(criterion=c(397,385,327,301), x1=c(99,100,85,92), x2=c(0,1,2,3))
+  fitted_model1 <- model(df1, 1, c(2,3))
+  out1 <- allRowPairApply(df1, heuristics(fitted_model1))
+  df2 <- data.frame(x1=df1$x1, criterion=df1$criterion, x2=df1$x2)
+  fitted_model2 <- model(df2, 2, c(1,3))
+  out2 <- allRowPairApply(df2, heuristics(fitted_model2))
+  expect_equal(out1, out2)
+  
+  # Fitted parameters should be the same, too.
+  if (!is.null(coef(fitted_model1))) {
+    expect_equal(coef(fitted_model1), coef(fitted_model2))
+  }
+}
+
+test_that("a_reordered_columns ttb",      {a_reordered_columns(ttbModel)})
+test_that("a_reordered_columns singleCue",{a_reordered_columns(singleCueModel)})
+test_that("a_reordered_columns dawes",    {a_reordered_columns(dawesModel)})
+test_that("a_reordered_columns franklin", {a_reordered_columns(franklinModel)})
+test_that("a_reordered_columns reg",      {a_reordered_columns(regInterceptModel)})
+test_that("a_reordered_columns regNoI",   {a_reordered_columns(regNoIModel)})
+test_that("a_reordered_columns logReg",   {a_reordered_columns(logRegModel)})
+test_that("a_reordered_columns logRegCueDiffs", {a_reordered_columns(logRegModelCueDiffs)})
+# minModel
+
