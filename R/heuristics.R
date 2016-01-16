@@ -379,7 +379,8 @@ predictRoot.regNoIModel <- function(object, row1, row2) {
 #' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
 #' @export
-logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
+logRegModel <- function(train_data, criterion_col, cols_to_fit, row_pairs=NULL,
+                        suppress_warnings=TRUE){
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   if (is.null(row_pairs)) {
     n <- nrow(train_data)
@@ -401,7 +402,7 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,su
   # Do not fit intercept by default.
   formula <- paste(formula, "-1")
   
-  if(is.null(suppress_warnings)){
+  if(suppress_warnings) {
     model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
   } else { 
     model <- glm(formula,family=binomial,data=training_set)  
@@ -450,7 +451,8 @@ predictRoot.logRegModel <- function(object, row1, row2) {
 #' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
 #' @export
-logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,row_pairs=NULL,suppress_warnings=NULL){
+logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,
+                                row_pairs=NULL, suppress_warnings=TRUE){
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   if (is.null(row_pairs)) {
     n <- nrow(train_data)
@@ -474,7 +476,7 @@ logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,row_pairs
   # Do not fit intercept by default.
   formula <- paste(formula, "-1")
   
-  if(is.null(suppress_warnings)){
+  if(suppress_warnings){
     model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
   } else { 
     model <- glm(formula,family=binomial,data=training_set)  

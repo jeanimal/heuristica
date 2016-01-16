@@ -5,7 +5,7 @@
 \title{Logistic Regression model without intercept uses the sign of the difference of cues as predictors}
 \usage{
 logRegModelCueDiffs(train_data, criterion_col, cols_to_fit, row_pairs = NULL,
-  suppress_warnings = NULL)
+  suppress_warnings = TRUE)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
