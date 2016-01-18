@@ -139,7 +139,7 @@ For 0 random cues, the models will be using the cue with 75% validity.  You migh
 Below we see all models earn 60% accuracy.  They are equally good at fitting the cue with a "signal" in it.
 
 ```{r}
-model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regNoIModel)
+model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regModel)
 multiPredict75(model_list, 0)
 ```
 
@@ -181,7 +181,7 @@ ggplot(out_summary, aes(x=num_rand_col, y=accuracy, colour=model)) +
      geom_point() + xlab("number of random cues")
 ```
 
-It shows model accuracy decreasing as more random cues are added, which is not a surprise.  In general, regNoIModel, dawesModel, and franklinModel are best.  ttbModel does pretty badly.
+It shows model accuracy decreasing as more random cues are added, which is not a surprise.  In general, regModel, dawesModel, and franklinModel are best.  ttbModel does pretty badly.
 
 More good news is that most heuristics continue to maintain above-chance performance (above 50%) even with 8 additional random cues.  They are champions of picking out signals amidst the noise!
 

@@ -32,7 +32,7 @@ test_that("test_10_06 singleCue",{test_10_06(singleCueModel, 0.5)})
 test_that("test_10_06 dawes",    {test_10_06(dawesModel,     1)})
 test_that("test_10_06 franklin", {test_10_06(franklinModel,  1)})
 test_that("test_10_06 reg",      {test_10_06(regInterceptModel,       0, has_cv=FALSE)})
-test_that("test_10_06 regNoI",   {test_10_06(regNoIModel,    1, has_cv=FALSE)})
+test_that("test_10_06 regNoI",   {test_10_06(regModel,    1, has_cv=FALSE)})
 #TODO(Daniel): Why does logReg get this prediction wrong?  Is it a bug?
 test_that("test_10_06 logReg",   {test_10_06(logRegModel,    0, has_cv=FALSE)})
 
@@ -67,7 +67,7 @@ test_that("test_00_04_rc dawes",    {test_00_04_rc(dawesModel,     0)})
 test_that("test_00_04_rc franklin", {test_00_04_rc(franklinModel,  0)})
 #TODO(jean): Why do regInterceptModel and regNoI get this wrong?
 test_that("test_00_04_rc reg",      {test_00_04_rc(regInterceptModel,       1, has_cv=FALSE)})
-test_that("test_00_04_rc regNoI",   {test_00_04_rc(regNoIModel,    1, has_cv=FALSE)})
+test_that("test_00_04_rc regNoI",   {test_00_04_rc(regModel,    1, has_cv=FALSE)})
 test_that("test_00_04_rc logReg",   {test_10_06(logRegModel,       0, has_cv=FALSE)})
 
 
@@ -96,7 +96,7 @@ test_that("test_ab_vs_c singleCue",{test_ab_vs_c(singleCueModel, 1)})
 test_that("test_ab_vs_c dawes",    {test_ab_vs_c(dawesModel,     0)})
 test_that("test_ab_vs_c franklin", {test_ab_vs_c(franklinModel,  0)})
 test_that("test_ab_vs_c reg",      {test_ab_vs_c(regInterceptModel,       1, has_cv=FALSE)})
-test_that("test_ab_vs_c regNoI",   {test_ab_vs_c(regNoIModel,    0, has_cv=FALSE)})
+test_that("test_ab_vs_c regNoI",   {test_ab_vs_c(regModel,    0, has_cv=FALSE)})
 test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
 
 
@@ -126,7 +126,7 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
 test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
 test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regInterceptModel,       1, has_cv=FALSE)})
-test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regNoIModel,    0, has_cv=FALSE)})
+test_that("d_useless_cue_3 regNoI",   {d_useless_cue_3(regModel,    0, has_cv=FALSE)})
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
 test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs,    0, has_cv=FALSE)})
 # minModel
@@ -156,7 +156,7 @@ test_that("a_reordered_columns singleCue",{a_reordered_columns(singleCueModel)})
 test_that("a_reordered_columns dawes",    {a_reordered_columns(dawesModel)})
 test_that("a_reordered_columns franklin", {a_reordered_columns(franklinModel)})
 test_that("a_reordered_columns reg",      {a_reordered_columns(regInterceptModel)})
-test_that("a_reordered_columns regNoI",   {a_reordered_columns(regNoIModel)})
+test_that("a_reordered_columns regNoI",   {a_reordered_columns(regModel)})
 test_that("a_reordered_columns logReg",   {a_reordered_columns(logRegModel)})
 test_that("a_reordered_columns logRegCueDiffs", {a_reordered_columns(logRegModelCueDiffs)})
 # minModel

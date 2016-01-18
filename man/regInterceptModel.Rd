@@ -25,7 +25,7 @@ other models in heuristica.
 This version assumes you always want to include the intercept.
 }
 \seealso{
-\code{\link{regNoIModel}} for a version that excludes the intercept.
+\code{\link{regModel}} for a version that excludes the intercept.
 
 \code{\link{predict.lm}} for prediction.
 

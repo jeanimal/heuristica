@@ -648,12 +648,12 @@ test_that("regInterceptModel predictRowPair city_population", {
                                  oneRow(city_population, 3), model))
 })
 
-### regNoIModel ###
+### regModel ###
 
-test_that("regNoIModel predictRowPair", {
+test_that("regModel predictRowPair", {
   tol <- 0.0001
   m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
-  model <- regNoIModel(m_train, 1, c(2))
+  model <- regModel(m_train, 1, c(2))
   # Reg cannot distinguish between rows 1 and 2 based on x1.
   expect_equal(0.5, predictRowPair(oneRow(m_train, 1),
                                    oneRow(m_train, 2), model))
