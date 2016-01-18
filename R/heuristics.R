@@ -466,6 +466,8 @@ logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,
   criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
   
   predictors <- transform[,2:ncol(transform)]
+  # The two lines below are how it differs from logRegModel.
+  # TODO: Write a shared function with a variable to switch on these two lines.
   predictors[predictors<0] <- -1
   predictors[predictors>0] <- 1
   
