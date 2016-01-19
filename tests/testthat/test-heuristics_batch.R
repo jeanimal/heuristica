@@ -95,7 +95,7 @@ test_that("test_ab_vs_c ttb",      {test_ab_vs_c(ttbModel,       1)})
 test_that("test_ab_vs_c singleCue",{test_ab_vs_c(singleCueModel, 1)})
 test_that("test_ab_vs_c dawes",    {test_ab_vs_c(dawesModel,     0)})
 test_that("test_ab_vs_c franklin", {test_ab_vs_c(franklinModel,  0)})
-test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       0, has_cv=FALSE)})
+test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       1, has_cv=FALSE)})
 test_that("test_ab_vs_c regIntercept", {test_ab_vs_c(regInterceptModel,       1, has_cv=FALSE)})
 test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
 
@@ -126,9 +126,9 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
 test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
 test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       0, has_cv=FALSE)})
-test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel,       1, has_cv=FALSE)})
+test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 0, has_cv=FALSE)})
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
-test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs,    0, has_cv=FALSE)})
+test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs, 0, has_cv=FALSE)})
 # minModel
 
 
