@@ -125,8 +125,8 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 #test_that("d_useless_cue_3 singleCue",{d_useless_cue_3(singleCueModel, #random(0,1))})
 test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
 test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
-test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       0, has_cv=FALSE)})
-test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 0, has_cv=FALSE)})
+test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv=FALSE)})
+test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 1, has_cv=FALSE)})
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
 test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs, 0, has_cv=FALSE)})
 # minModel
