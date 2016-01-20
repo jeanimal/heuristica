@@ -535,8 +535,6 @@ coef.logRegModelCueDiffs <- function(object, ...) object$linear_coef
 
 predictRoot.logRegModelCueDiffs <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
-  # TODO(jean): Why does this produce the same accuracy as this:
-  # direction_plus_minus_1 <-getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
