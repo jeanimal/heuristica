@@ -320,8 +320,26 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   return(model)
 }
 
+# If you have a model that implements predict, you can confirm you
+# implemented predictRoot correctly using this, which is too slow
+# to use in practice.
+predictRootUsingPredict <- function(object, row1, row2) {
+  p1 <- predict(object, as.data.frame(row1))
+  p2 <- predict(object, as.data.frame(row2))
+  if (p1 > p2) {
+    return(1)
+  } else if (p1 < p2) {
+    return(0)
+  } else {
+    return(0.5)
+  }
+}
+
+# This does the equivalent of predictPairUsingPredict but faster.
 predictRoot.regInterceptModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
+  # When we subtract rows predictions, the intercept cancels out.  So it's safe to exclude
+  # the intercept from the weights below.
+  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -365,8 +383,11 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   return(model)
 }
 
+# This does the equivalent of predictPairUsingPredict but faster.
 predictRoot.regModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
+  # When we subtract rows predictions, the intercept cancels out.  So it's safe to exclude
+  # the intercept from the weights below.
+  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
