@@ -393,6 +393,27 @@ predictRoot.regModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
+logRegData <- function(train_data, criterion_col, cols_to_fit) {
+  n <- nrow(train_data)
+  all_pairs <- rowPairGenerator(n)
+  
+  #transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)]
+  #- train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  # The criterion has been moved to the first colum.  But it is not a diff--
+  # it is the probability row 1 is greater, which ranges from 0 to 1.
+  #transform[,1] <- rescale0To1(sign(transform[,1]))
+  
+  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  criterion <- transform[,1]
+  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
+  
+  predictors <- transform[,2:ncol(transform)]
+  
+  training_set <- cbind(criterion,predictors)
+  
+  return(training_set)
+}
+
 #' Logistic Regression model without intercept usign cue differences as predictors
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
@@ -408,20 +429,7 @@ predictRoot.regModel <- function(object, row1, row2) {
 logRegModel <- function(train_data, criterion_col, cols_to_fit, row_pairs=NULL,
                         suppress_warnings=TRUE){
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  if (is.null(row_pairs)) {
-    n <- nrow(train_data)
-    all_pairs <- rowPairGenerator(n)
-  } else {
-    all_pairs <- row_pairs
-  }
-  
-  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
-  criterion <- transform[,1]
-  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
-  
-  predictors <- transform[,2:ncol(transform)]
-  
-  training_set <- cbind(criterion,predictors)
+  training_set <- logRegData(train_data, criterion_col, cols_to_fit)
   training_set <- as.data.frame(training_set)
   
   formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
