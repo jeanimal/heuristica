@@ -86,7 +86,7 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 accuracy<-vector()
-reps <- 15
+reps <- 30
 max_test_size <- 8 # Max number of rows in test set to keep stats comparable
 for (s in 1:length(trainS)){
   train_size <- trainS[s]
@@ -109,3 +109,29 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
      scale_y_continuous(limits=c(min(accuracy)-0.01, max(accuracy)+0.01),breaks=seq(0.6,0.8, 0.1),expand=c(0.01,0.01))
 
 ```
+
+Now do the same analysis for the school drop-out data set.  It has more real-valued cues rather than binary cues.
+```{r}
+data(highschool_dropout)
+data_set <- highschool_dropout
+criterion_col <- 4
+cols_to_fit <- 6:ncol(data_set)
+trainVec <- seq(0.1,0.8,0.1)
+trainS <- round(nrow(data_set)*trainVec)
+testS <- nrow(data_set)-trainS
+accuracy<-vector()
+reps <- 30
+max_test_size <- 8 # Max number of rows in test set to keep stats comparable
+for (s in 1:length(trainS)){
+  train_size <- trainS[s]
+  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps, max_test_size))
+  p <- melt(accuracy)
+}
+p$X1 <- rep(100*trainVec, ncol(accuracy))
+colnames(p)<-c("size","model","value")
+ggplot(p, aes(x=size, y=value, colour=model)) +
+     geom_line() +
+     geom_point() + xlab("Size of training set") + ylab("Percent correct")
+```
+
+Franklin model and dawes model do really well at all training set sizes.
