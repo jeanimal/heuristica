@@ -455,10 +455,12 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit, row_pairs=NULL,
 coef.logRegModel <- function(object, ...) object$linear_coef
 
 predictRoot.logRegModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
+  return(
+    predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
+  #direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
+  #return(rescale0To1(direction_plus_minus_1))
 }
 
 

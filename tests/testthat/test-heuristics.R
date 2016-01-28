@@ -778,10 +778,10 @@ test_that("logRegModel predictRowPair 2x3 fit train_data 1st cue useless", {
 
 test_that("logRegModel pctCorrectOfPredictPair", {
   tol <- 0.0001
-  train_data <- cbind(c(5:1), c(1,1,1,0,1))
+  train_data <- cbind(y=c(5:1), x=c(1,1,1,0,1))
   model <- logRegModel(train_data, 1, c(2))
   fit_accuracy <- pctCorrectOfPredictPair(list(model), train_data)
-  expect_equal(0.6, fit_accuracy$logRegModel, tolerance=0.001)
+  expect_equal(0.55, fit_accuracy$logRegModel, tolerance=0.001)
 })
 
 test_that("logRegModel predictRowPair 2x2 data.frame", {
