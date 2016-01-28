@@ -404,6 +404,8 @@ logRegData <- function(train_data, criterion_col, cols_to_fit) {
   #transform[,1] <- rescale0To1(sign(transform[,1]))
   
   transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
+  # The criterion has been moved to the first colum.  But it is not a diff--
+  # it is the probability row 1 is greater, which ranges from 0 to 1.
   criterion <- transform[,1]
   criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
   
