@@ -29,7 +29,7 @@ First let's load the heuristica package to get the heuristics we will compare.  
 #install.packages("devtools")
 #devtools::install_github("jeanimal/heuristica")
 devtools::load_all() # For development work.
-#library("heuristica")
+library("heuristica")
 ```
 
 Now we can load the German cities dataset which is included in the heuristica package.  The criterion column may change depending on your data set, so set it correctly!
