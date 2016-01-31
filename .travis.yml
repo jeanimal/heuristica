@@ -1,4 +1,8 @@
-# Simple .travis.yml for R projects
+# Configures the travis continueous build.
 
-language: r
+language: R
 sudo: required
+
+before_deploy:
+  - R -e "install.packages('roxygen2', repos = 'http://cran.rstudio.com')"
+  - R -e "staticdocs::build_site(examples = TRUE)"
