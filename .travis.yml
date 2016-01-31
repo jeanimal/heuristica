@@ -2,6 +2,8 @@
 
 language: R
 sudo: required
-r_github_packages:
-#  - hadley/testthat
-  - klutometis/roxygen
+#r_github_packages:
+#  - klutometis/roxygen
+
+r_packages:
+  - rmarkdown
