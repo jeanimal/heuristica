@@ -2,8 +2,7 @@
 
 language: R
 sudo: required
-#r_github_packages:
-#  - klutometis/roxygen
+warnings_are_errors: true
 
 r_packages:
   - roxygen2
