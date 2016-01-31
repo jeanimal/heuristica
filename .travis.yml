@@ -6,4 +6,4 @@ sudo: required
 #  - klutometis/roxygen
 
 r_packages:
-  - roxygen
+  - roxygen2
