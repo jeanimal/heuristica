@@ -2,7 +2,6 @@
 
 language: R
 sudo: required
-
-before_deploy:
-  - R -e "install.packages('roxygen2', repos = 'http://cran.rstudio.com')"
-  - R -e "staticdocs::build_site(examples = TRUE)"
+r_github_packages:
+#  - hadley/testthat
+  - klutometis/roxygen
