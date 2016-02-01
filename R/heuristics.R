@@ -410,6 +410,11 @@ logRegData <- function(train_data, criterion_col, cols_to_fit) {
 #'
 #' This version assumes you do not want to include the intercept.
 #' 
+#' For a discussion of how logistic regression works, see:
+#' http://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
+#' Note that our criterion is the probability that row 1 is greater than row 2 when
+#' a pair is encountered.
+#' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
 #' @param row_pairs Optional matrix.  TODO(jean): share documentation.
@@ -454,13 +459,15 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit, row_pairs=NULL,
 #' @export
 coef.logRegModel <- function(object, ...) object$linear_coef
 
+sigmoid <- function(z) { 1/(1+exp(-z)) }
+
 predictRoot.logRegModel <- function(object, row1, row2) {
-  return(
-    predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
-  #direction_plus_minus_1 <- getWeightedCuePairDirections(object$col_weights_clean, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  #return(rescale0To1(direction_plus_minus_1))
+  #return(
+  #  predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
+  # TODO(Jean): Find the right shared function to call.
+  #raw_predict <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
+  raw_predict <- (row1-row2) %*% object$col_weights_clean
+  return(sigmoid(raw_predict))
 }
 
 
