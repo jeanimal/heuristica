@@ -1,4 +1,8 @@
-# Simple .travis.yml for R projects
+# Configures the travis continueous build.
 
-language: r
+language: R
 sudo: required
+warnings_are_errors: true
+
+r_packages:
+  - roxygen2
