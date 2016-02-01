@@ -139,9 +139,7 @@ For 0 random cues, the models will be using the cue with 75% validity.  You migh
 Below we see all models earn 60% accuracy.  They are equally good at fitting the cue with a "signal" in it.
 
 ```{r}
-# TODO(Jean): Re-add logRegModel.
-# model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regModel)
-model_list <- list(dawesModel, franklinModel, ttbModel, regModel)
+model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regModel)
 multiPredict75(model_list, 0)
 ```
 
