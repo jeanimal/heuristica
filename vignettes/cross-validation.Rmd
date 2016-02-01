@@ -114,10 +114,10 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
 ```
 
 ** High school drop-outs **
-Now do the same analysis for the school drop-out data set.  It has more real-valued cues rather than binary cues.
+Now do the same analysis for the school drop-out data set.  It has more real-valued cues rather than binary cues.  Note that this data set has na's, so we use na.omit to clean them because not all heuristics can handle them properly.
 ```{r}
 data(highschool_dropout)
-data_set <- highschool_dropout
+data_set <- na.omit(highschool_dropout)
 criterion_col <- 4
 cols_to_fit <- 6:ncol(data_set)
 trainVec <- seq(0.1,0.8,0.1)
