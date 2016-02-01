@@ -461,9 +461,9 @@ coef.logRegModel <- function(object, ...) object$linear_coef
 
 sigmoid <- function(z) { 1/(1+exp(-z)) }
 
+# This is equivalent to the glm predict like this:
+# predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
 predictRoot.logRegModel <- function(object, row1, row2) {
-  #return(
-  #  predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
   # TODO(Jean): Find the right shared function to call.
   #raw_predict <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
   raw_predict <- (row1-row2) %*% object$col_weights_clean
