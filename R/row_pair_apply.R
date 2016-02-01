@@ -133,6 +133,15 @@ createFunction.heuristics <- function(object, test_data) {
     for (implementer in object$predictRoot_implementers) {
       #print(class(implementer))
       out <- predictRoot(implementer, row1, row2)
+      # TODO(Jeanw): Test the checks below.
+      if (out < 0) {
+        stop(paste("ERROR heuristic of class",class(implementer),"predicted",
+                   out,", which is < 0"))
+      }
+      if (out > 1) {
+        stop(paste("ERROR heuristic of class",class(implementer),"predicted",
+                   out,", which is > 1"))
+      }
       y <- y+1
       out_all[[y]] <- out
     }
