@@ -15,7 +15,7 @@ This document provides a simple example of how to compare the predictive perform
 
 ```{r}
 # Use this seed to exactly replicate my tables and graphs below.
-set.seed(3)
+set.seed(1)
 # Remove it to see a new sampling-- and whether my overall conclusions still
 # hold.
 
@@ -65,12 +65,17 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
 
     training_set <- x[train,]
     test_set <- x[test,]
+    
+    # If a regression is overdetermined (e.g. has too many columns(), it will
+    # drop the right-most columns.  To instead make it drop random columns,
+    # we shuffle the column order.
+    shuffled_cols_to_fit <- sample(cols_to_fit)
 
     models<-list()
     y <- 0
     for (mod in vec_of_models) { #fit the models to the training_set
       y <- y+1
-      models[[y]] <- mod(training_set, criterion_col, cols_to_fit)
+      models[[y]] <- mod(training_set, criterion_col, shuffled_cols_to_fit)
     }
 
     #calculate percentage of correct predictions
@@ -140,4 +145,4 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
      geom_point() + xlab("Size of training set") + ylab("Percent correct")
 ```
 
-Franklin model and dawes model do really well at all training set sizes.  Take the Best is not far behind and catches up at about 40% of the training set size.  Regresssion and logistic regression are noticeably weaker, scoring barely above chance for small training sets, when there are more rows than the 23 columns.  They do better as the training set gets larger, and logistic regression is eventually able to beat regression by a bit, although it does not catch up to the heuristics.
+Franklin model and dawes model do really well at all training set sizes.  Take the Best is not far behind and catches up at about 40% of the training set size.  Regresssion and logistic regression are noticeably weaker, scoring barely above chance for small training sets, when there are more rows than the 23 columns.  They do better as the training set gets larger.  Surprisingly logistic regression does not particularly outperform regression, despite seeming like a more natural fit for two-alternative choice.
