@@ -15,7 +15,7 @@ This document provides a simple example of how to compare the predictive perform
 
 ```{r}
 # Use this seed to exactly replicate my tables and graphs below.
-set.seed(1)
+set.seed(3)
 # Remove it to see a new sampling-- and whether my overall conclusions still
 # hold.
 
