@@ -114,7 +114,9 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
 ```
 
 ** High school drop-outs **
-Now do the same analysis for the school drop-out data set.  It has more real-valued cues rather than binary cues.  Note that this data set has na's, so we use na.omit to clean them because not all heuristics can handle them properly.
+Now do the same analysis for the school drop-out data set.  It has  real-valued cues rather than binary cues.  Also, it has a whopping 23 cues for the 63 Chicago public high schools.
+
+Note that this data set has na's, so we use na.omit to clean them because not all heuristics can handle them properly.
 ```{r}
 data(highschool_dropout)
 data_set <- na.omit(highschool_dropout)
@@ -138,4 +140,4 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
      geom_point() + xlab("Size of training set") + ylab("Percent correct")
 ```
 
-Franklin model and dawes model do really well at all training set sizes.
+Franklin model and dawes model do really well at all training set sizes.  Take the Best is not far behind and catches up at about 40% of the training set size.  Regresssion and logistic regression are noticeably weaker, scoring barely above chance for small training sets, when there are more rows than the 23 columns.  They do better as the training set gets larger, and logistic regression is eventually able to beat regression by a bit, although it does not catch up to the heuristics.
