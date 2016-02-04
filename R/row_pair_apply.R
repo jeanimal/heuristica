@@ -106,7 +106,17 @@ heuristics <- function(...) {
   return(heuristicsList(implementers))
 }
 
-
+# Give it a function of the form fn(row1, row2).  It creates a
+# function of the form fn(index_pair) that refer to two row indices,
+# e.g. f(c(1,2)) or f(c(2,4)).
+bindFunctionToRowPairs <- function(data, fn_to_bind) {
+  new_fn <- function(index_pair) {
+    row1 <- oneRow(data, index_pair[1])
+    row2 <- oneRow(data, index_pair[2])
+    return(fn_to_bind(row1, row2))
+  }
+  return(new_fn)
+}
 
 #' Create function for heuristics prediction with allRowPairApply.
 #'

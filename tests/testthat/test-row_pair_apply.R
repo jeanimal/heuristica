@@ -3,6 +3,21 @@ context("row_pair_apply")
 # require('testthat')
 
 #
+# bindFunctionToRowPairs
+#
+
+test_that("bindFunctionToRowPairs easy sum", {
+  data <- cbind(y=c(5,4), x1=c(1,0))
+  fn1 <- bindFunctionToRowPairs(data, sum)
+  expected_1_2 <- sum(oneRow(data, 1), oneRow(data, 2))
+  expect_equal(expected_1_2, fn1(c(1, 2)))
+  expected_1_1 <- sum(oneRow(data, 1), oneRow(data, 1))
+  expect_equal(expected_1_1, fn1(c(1, 1)))
+  expected_2_2 <- sum(oneRow(data, 1), oneRow(data, 2))
+  expect_equal(4+4, fn1(c(2, 2)))
+})
+
+#
 #  allRowPairApply
 #
 
