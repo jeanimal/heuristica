@@ -17,6 +17,8 @@ test_that("bindFunctionToRowPairs easy sum", {
   expect_equal(4+4, fn1(c(2, 2)))
 })
 
+# TODO: Test row index out of range.  Should that live in oneRow?
+
 #
 #  allRowPairApply
 #

@@ -2,10 +2,10 @@ context("aggregators")
 
 # require('testthat')
 
-# stopIfAnyValueOutsideRange
+# stopIfNonProbability
 # When functions work, we test within range worked, so here we only
 # need to test that outside of range works.
-test_that("stopIfAnyValueOutsideRange ", {
+test_that("stopIfNonProbability ", {
   test_data <- cbind(x1=c(0.1,0.9), x2=c(1.1,0.5), c3=c(0.5,0.5), c4=c(-0.001, 0.2))
   stopIfNonProbability(test_data, c(1,3))
   expect_error(stopIfNonProbability(test_data, c(1,2)), "<= 1 are not all TRUE")
