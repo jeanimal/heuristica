@@ -20,6 +20,29 @@ test_that("bindFunctionToRowPairs easy sum", {
 # TODO: Test row index out of range.  Should that live in oneRow?
 
 #
+# applyFunctionToRowPairs
+#
+
+test_that("applyFunctionToRowPairs diff", {
+  data <- cbind(y=c(5,4,4), x1=c(10,0,0))
+  diff <- function(row1, row2) row1 - row2
+  out <- applyFunctionToRowPairs(data, diff)
+  expect_equal(3, nrow(out))
+  expect_equal(cbind(c(1), c(10)), out[1,])  # Row 1 - Row 2
+  expect_equal(cbind(c(1), c(10)), out[2,])  # Row 1 - Row 3
+  expect_equal(cbind(c(0),  c(0)), out[3,])  # Row 2 - Row 2
+})
+
+test_that("applyFunctionToRowPairs sum has one-column output", {
+  data <- cbind(y=c(5,4,4), x1=c(10,0,0))
+  out <- applyFunctionToRowPairs(data, sum)
+  expect_equal(3, nrow(out))
+  expect_equal(c(19), out[1,])  # 5 + 10 + 4 + 0
+  expect_equal(c(19), out[2,])  # 5 + 10 + 4 + 0
+  expect_equal( c(8), out[3,])  # 4 +  4 + 0+ 0
+})
+
+#
 #  allRowPairApply
 #
 
