@@ -393,6 +393,9 @@ predictRoot.regModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
+rowDiff <- function(row1, row2) row1 - row2
+#transform <- applyFunctionToRowPairs(train_data[,c(criterion_col,cols_to_fit)], rowDiff)
+
 logRegData <- function(train_data, criterion_col, cols_to_fit) {
   n <- nrow(train_data)
   all_pairs <- rowPairGenerator(n)
