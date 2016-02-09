@@ -28,9 +28,9 @@ test_that("applyFunctionToRowPairs diff", {
   diff <- function(row1, row2) row1 - row2
   out <- applyFunctionToRowPairs(data, diff)
   expect_equal(3, nrow(out))
-  #expect_equal(cbind(c(1), c(10)), out[1,])  # Row 1 - Row 2
-  #expect_equal(cbind(c(1), c(10)), out[2,])  # Row 1 - Row 3
-  #expect_equal(cbind(c(0),  c(0)), out[3,])  # Row 2 - Row 2
+  expect_equal(c(1,10), out[1,])  # Row 1 - Row 2
+  expect_equal(c(1,10), out[2,])  # Row 1 - Row 3
+  expect_equal(c(0,0), out[3,])  # Row 2 - Row 2
 })
 
 test_that("applyFunctionToRowPairs sum has one-column output", {
