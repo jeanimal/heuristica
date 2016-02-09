@@ -30,7 +30,7 @@ test_that("applyFunctionToRowPairs diff", {
   expect_equal(3, nrow(out))
   expect_equal(c(1,10), out[1,])  # Row 1 - Row 2
   expect_equal(c(1,10), out[2,])  # Row 1 - Row 3
-  expect_equal(c(0,0), out[3,])  # Row 2 - Row 2
+  expect_equal(c(0,0),  out[3,])  # Row 2 - Row 2
 })
 
 test_that("applyFunctionToRowPairs sum has one-column output", {
