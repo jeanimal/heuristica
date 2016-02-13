@@ -113,7 +113,12 @@ bindFunctionToRowPairs <- function(data, fn_to_bind) {
   new_fn <- function(index_pair) {
     row1 <- oneRow(data, index_pair[1])
     row2 <- oneRow(data, index_pair[2])
-    return(c(fn_to_bind(row1, row2)))
+    out <- fn_to_bind(row1, row2)
+    if (is.null(dim(out))) {
+      return(c(out))
+    } else {
+      return(out)
+    }
   }
   return(new_fn)
 }

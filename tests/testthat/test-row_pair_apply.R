@@ -13,9 +13,20 @@ test_that("bindFunctionToRowPairs easy sum", {
   expect_equal(expected_1_2, fn1(c(1, 2)))
   expected_1_1 <- sum(oneRow(data, 1), oneRow(data, 1))
   expect_equal(expected_1_1, fn1(c(1, 1)))
-  expected_2_2 <- sum(oneRow(data, 1), oneRow(data, 2))
   expect_equal(4+4, fn1(c(2, 2)))
 })
+
+test_that("bindFunctionToRowPairs diff preserve column names", {
+  data <- cbind(y=c(5,4), x1=c(1,0))
+  my_diff <- function(row1, row2) row1 - row2
+  fn1 <- bindFunctionToRowPairs(data, my_diff)
+  expected_1_2 <- my_diff(oneRow(data, 1), oneRow(data, 2))
+  out_1_2 <- fn1(c(1, 2))
+  expect_equal(expected_1_2, out_1_2)
+  expect_equal(colnames(data), colnames(out_1_2))
+})
+
+# TODO: bindFunctionToRowPairs preserves column names if possible.
 
 # TODO: Test row index out of range.  Should that live in oneRow?
 
@@ -31,6 +42,8 @@ test_that("applyFunctionToRowPairs diff", {
   expect_equal(c(1,10), out[1,])  # Row 1 - Row 2
   expect_equal(c(1,10), out[2,])  # Row 1 - Row 3
   expect_equal(c(0,0),  out[3,])  # Row 2 - Row 2
+  # applyFunctionToRowPairs should not lose the column names.
+  expect_equal(c("y", "x1"), colnames(out))
 })
 
 test_that("applyFunctionToRowPairs sum has one-column output", {

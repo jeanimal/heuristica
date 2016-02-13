@@ -2,8 +2,8 @@
 
 language: R
 sudo: required
-# TODO(Jean): Re-add warnings_are_errors after line length fixed.
-# warnings_are_errors: true
+# TODO(Jean): Set warnings_are_errors to false after document line length fixed.
+warnings_are_errors: false
 
 r_packages:
   - roxygen2
