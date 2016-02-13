@@ -739,9 +739,11 @@ test_that("logRegModel predictRowPair 2x3 fit train_data", {
                                  oneRow(train_data, 1), model))
 })
 
+## logRegData ##
+
 test_that("logRegData simple", {
   train_data <- cbind(y=c(5,4), x1=c(1,0), x2=c(1,1))
-  out <- logRegData(train_data, 1, c(2,3))
+  out <- logRegData(train_data, 1, c(2,3), rowDiff)
   # Check criterion
   expect_equal(c(1,0), out[,1])
   # Check predictors
@@ -753,7 +755,7 @@ test_that("logRegData simple", {
 
 test_that("logRegData data.frame", {
   train_data <- data.frame(y=c(5,4), x1=c(1,0), x2=c(1,1))
-  out <- logRegData(train_data, 1, c(2,3))
+  out <- logRegData(train_data, 1, c(2,3), rowDiff)
   # Check criterion
   expect_equal(c(1,0), out[,1])
   # Check predictors

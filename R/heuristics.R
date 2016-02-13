@@ -395,8 +395,8 @@ predictRoot.regModel <- function(object, row1, row2) {
 
 rowDiff <- function(row1, row2) row1 - row2
 
-toRowPairData <- function(train_data, criterion_col, cols_to_fit) {
-  transform <- applyFunctionToRowPairs(train_data[,c(criterion_col,cols_to_fit)], rowDiff)
+toRowPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
+  transform <- applyFunctionToRowPairs(train_data[,c(criterion_col,cols_to_fit)], row_pair_fn)
   # The criterion has been moved to the first colum.  But it should not be a diff--
   # it is the probability row 1 is greater, which is 1 if row 1 is greater,
   # 0 if row2 is greater, and 0.5 if they are the same size.
@@ -404,10 +404,12 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit) {
   return(transform)
 }
 
-logRegData <- function(train_data, criterion_col, cols_to_fit) {
-  forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit)
+logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
+  forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
+                                row_pair_fn)
   n <- nrow(train_data)
-  backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col, cols_to_fit)
+  backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col,
+                                 cols_to_fit, row_pair_fn)
   return(rbind(forwardPairs, backwardPairs))
 }
 
@@ -431,7 +433,7 @@ logRegData <- function(train_data, criterion_col, cols_to_fit) {
 logRegModel <- function(train_data, criterion_col, cols_to_fit, row_pairs=NULL,
                         suppress_warnings=TRUE){
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  training_set <- logRegData(train_data, criterion_col, cols_to_fit)
+  training_set <- logRegData(train_data, criterion_col, cols_to_fit, rowDiff)
   training_set <- as.data.frame(training_set)
   
   formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
