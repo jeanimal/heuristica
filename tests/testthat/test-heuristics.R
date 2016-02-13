@@ -747,6 +747,8 @@ test_that("logRegData simple", {
   # Check predictors
   expect_equal(c(1,-1), out[,2])
   expect_equal(c(0,0), out[,3])
+  # Check column names
+  expect_equal(c("y", "x1", "x2"), colnames(out))
 })
 
 test_that("logRegModel predictRowPair 2x3 fit train_data 2nd cue useless", {
