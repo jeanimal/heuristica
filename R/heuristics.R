@@ -411,20 +411,6 @@ logRegData <- function(train_data, criterion_col, cols_to_fit) {
   return(rbind(forwardPairs, backwardPairs))
 }
 
-# No longer used.
-# TODO: delete.
-logRegData2 <- function(train_data, criterion_col, cols_to_fit) {
-  stop("do not use this")
-  n <- nrow(train_data)
-  all_pairs <- rowPairGenerator(n)
-  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
-  # The criterion has been moved to the first colum.  But it is not a diff--
-  # it is the probability row 1 is greater, which is 1 if row 1 is greater,
-  # 0 if row2 is greater, and 0.5 if they are the same size.
-  transform[,1] <- rescale0To1(sign(transform[,1]))
-  return(transform)
-}
-
 #' Logistic Regression model without intercept usign cue differences as predictors
 #'
 #' Create a logistic regression model by specifying columns and a dataset.  It fits the model
