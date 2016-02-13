@@ -404,14 +404,17 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit) {
   return(transform)
 }
 
-logRegData2 <- function(train_data, criterion_col, cols_to_fit) {
+logRegData <- function(train_data, criterion_col, cols_to_fit) {
   forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit)
   n <- nrow(train_data)
   backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col, cols_to_fit)
   return(rbind(forwardPairs, backwardPairs))
 }
 
-logRegData <- function(train_data, criterion_col, cols_to_fit) {
+# No longer used.
+# TODO: delete.
+logRegData2 <- function(train_data, criterion_col, cols_to_fit) {
+  stop("do not use this")
   n <- nrow(train_data)
   all_pairs <- rowPairGenerator(n)
   transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]

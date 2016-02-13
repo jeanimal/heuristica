@@ -47,6 +47,21 @@ test_that("applyFunctionToRowPairs diff", {
   expect_equal(cbind(y=c(0), x1=c(0)), oneRow(out, 3))
 })
 
+test_that("applyFunctionToRowPairs diff data.frame", {
+  data <- data.frame(y=c(5,4,4), x1=c(10,0,0))
+  diff <- function(row1, row2) row1 - row2
+  out <- applyFunctionToRowPairs(data, diff)
+  expect_equal(3, nrow(out))
+  # applyFunctionToRowPairs should not lose the column names.
+  expect_equal(c("y", "x1"), colnames(out))
+  # Row 1 - Row 2
+  expect_equal(cbind(y=c(1), x1=c(10)), oneRow(out, 1))
+  # Row 1 - Row 3
+  expect_equal(cbind(y=c(1), x1=c(10)), oneRow(out, 2))
+  # Row 2 - Row 2
+  expect_equal(cbind(y=c(0), x1=c(0)), oneRow(out, 3))
+})
+
 test_that("applyFunctionToRowPairs sum has one-column output", {
   data <- cbind(y=c(5,4,4), x1=c(10,0,0))
   out <- applyFunctionToRowPairs(data, sum)

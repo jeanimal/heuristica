@@ -109,17 +109,14 @@ heuristics <- function(...) {
 # Give it a function of the form fn(row1, row2).  It creates a
 # function of the form fn(index_pair) that refer to two row indices,
 # e.g. f(c(1,2)) or f(c(2,4)).
-bindFunctionToRowPairs <- function(data, fn_to_bind) {
+# The data will be forced to be a matrix rather than a data.frame,
+# so you cannot use data.frame functions (like $col) in fn_to_bind.
+bindFunctionToRowPairs <- function(raw_data, fn_to_bind) {
+  data <- as.matrix(raw_data)
   new_fn <- function(index_pair) {
     row1 <- oneRow(data, index_pair[1])
     row2 <- oneRow(data, index_pair[2])
-    out <- fn_to_bind(row1, row2)
-    #if (is.null(dim(out))) {
-    #  return(c(out))
-    #} else {
-    #  return(out)
-    #}
-    return(out)
+    return(fn_to_bind(row1, row2))
   }
   return(new_fn)
 }
@@ -133,20 +130,11 @@ applyFunctionToRowPairs <- function(data, fn) {
   # R drops dimensions so we need different handling here.
   if (length(dim(results_array))==1) {
     results <- t(t(results_array))
-    colnames(results) <- colnames(temp)
   } else {
     results <- t(results_array[1,,])
-    colnames(results) <- colnames(temp)
   }
+  colnames(results) <- colnames(temp)
   return(results)
-  #results <- results_array[1,,]
-  # R drops dimensions if there's only one, so make consistent dimensions here.
-  #if (length(temp) > 1) {
-  #  results <- t(results)
-  #} else {
-  #  results <- t(t(results))
-  #}
-  #return(results)
 }
 
 #' Create function for heuristics prediction with allRowPairApply.
