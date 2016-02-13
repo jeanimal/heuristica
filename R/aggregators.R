@@ -53,7 +53,7 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
 #' @param fitted_heuristic_list List of heuristics that implement the generic function
 #'  predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.
 #' @param test_data Data to try to predict; must match columns in fit.
-#' @return Same matrix as predictAlternative but with columns on correctness
+#' @return Same matrix as predictPair but with columns on correctness
 #' @seealso
 #' \code{\link{predictRowPair}}
 #' @export
