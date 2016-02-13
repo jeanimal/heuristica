@@ -26,8 +26,6 @@ test_that("bindFunctionToRowPairs diff preserve column names", {
   expect_equal(colnames(data), colnames(out_1_2))
 })
 
-# TODO: bindFunctionToRowPairs preserves column names if possible.
-
 # TODO: Test row index out of range.  Should that live in oneRow?
 
 #
