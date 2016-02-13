@@ -6,3 +6,5 @@ warnings_are_errors: true
 
 r_packages:
   - roxygen2
+
+after_failure: "cat /home/travis/build/jeanimal/heuristica/heuristica.Rcheck/00check.log"
