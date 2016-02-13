@@ -126,18 +126,19 @@ bindFunctionToRowPairs <- function(data, fn_to_bind) {
 
 applyFunctionToRowPairs <- function(data, fn) {
   fn_with_data <- bindFunctionToRowPairs(data, fn)
-  # TODO(jean): Remove this hack.
+  # TODO(jean): Remove this hack for column names.
   temp <- fn_with_data(c(1,1))
   #print(temp)
   results_array <- combn(nrow(data), 2, fn_with_data)
   # R drops dimensions so we need different handling here.
   if (length(dim(results_array))==1) {
-    return(t(t(results_array)))
+    results <- t(t(results_array))
+    colnames(results) <- colnames(temp)
   } else {
     results <- t(results_array[1,,])
     colnames(results) <- colnames(temp)
-    return(results)
   }
+  return(results)
   #results <- results_array[1,,]
   # R drops dimensions if there's only one, so make consistent dimensions here.
   #if (length(temp) > 1) {
