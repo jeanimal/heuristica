@@ -400,7 +400,7 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit) {
   # The criterion has been moved to the first colum.  But it should not be a diff--
   # it is the probability row 1 is greater, which is 1 if row 1 is greater,
   # 0 if row2 is greater, and 0.5 if they are the same size.
-  transform[,1] <- rescale0To1(sign(transform[,1]))
+  transform[,1] <- rescale0To1(sign(transform[,1,drop=FALSE]))
   return(transform)
 }
 
