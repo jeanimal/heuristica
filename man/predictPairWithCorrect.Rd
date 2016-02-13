@@ -13,7 +13,7 @@ predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.}
 \item{test_data}{Data to try to predict; must match columns in fit.}
 }
 \value{
-Same matrix as predictAlternative but with columns on correctness
+Same matrix as predictPair but with columns on correctness
 }
 \description{
 This geneartes a column of correct output (whether row 1 or row 2 is greater) from
