@@ -114,11 +114,12 @@ bindFunctionToRowPairs <- function(data, fn_to_bind) {
     row1 <- oneRow(data, index_pair[1])
     row2 <- oneRow(data, index_pair[2])
     out <- fn_to_bind(row1, row2)
-    if (is.null(dim(out))) {
-      return(c(out))
-    } else {
-      return(out)
-    }
+    #if (is.null(dim(out))) {
+    #  return(c(out))
+    #} else {
+    #  return(out)
+    #}
+    return(out)
   }
   return(new_fn)
 }
@@ -128,14 +129,23 @@ applyFunctionToRowPairs <- function(data, fn) {
   # TODO(jean): Remove this hack.
   temp <- fn_with_data(c(1,1))
   #print(temp)
-  results <- combn(nrow(data), 2, fn_with_data)
-  # R drops dimensions if there's only one, so make consistent dimensions here.
-  if (length(temp) > 1) {
-    results <- t(results)
+  results_array <- combn(nrow(data), 2, fn_with_data)
+  # R drops dimensions so we need different handling here.
+  if (length(dim(results_array))==1) {
+    return(t(t(results_array)))
   } else {
-    results <- t(t(results))
+    results <- t(results_array[1,,])
+    colnames(results) <- colnames(temp)
+    return(results)
   }
-  return(results)
+  #results <- results_array[1,,]
+  # R drops dimensions if there's only one, so make consistent dimensions here.
+  #if (length(temp) > 1) {
+  #  results <- t(results)
+  #} else {
+  #  results <- t(t(results))
+  #}
+  #return(results)
 }
 
 #' Create function for heuristics prediction with allRowPairApply.
