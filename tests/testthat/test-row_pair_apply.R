@@ -39,7 +39,7 @@ test_that("applyFunctionToRowPairs sum has one-column output", {
   expect_equal(3, nrow(out))
   expect_equal(c(19), out[1,])  # 5 + 10 + 4 + 0
   expect_equal(c(19), out[2,])  # 5 + 10 + 4 + 0
-  expect_equal( c(8), out[3,])  # 4 +  4 + 0+ 0
+  expect_equal( c(8), out[3,])  # 4 +  4 + 0 + 0
 })
 
 #
