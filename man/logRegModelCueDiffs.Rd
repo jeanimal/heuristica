@@ -4,7 +4,7 @@
 \alias{logRegModelCueDiffs}
 \title{Logistic Regression model without intercept uses the sign of the difference of cues as predictors}
 \usage{
-logRegModelCueDiffs(train_data, criterion_col, cols_to_fit, row_pairs = NULL,
+logRegModelCueDiffs(train_data, criterion_col, cols_to_fit,
   suppress_warnings = TRUE)
 }
 \arguments{
@@ -14,9 +14,8 @@ logRegModelCueDiffs(train_data, criterion_col, cols_to_fit, row_pairs = NULL,
 
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 
-\item{row_pairs}{Optional matrix.  TODO(jean): share documentation.}
-
-\item{suppress_warnings}{Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.}
+\item{suppress_warnings}{Optional argument specifying whether glm warnings
+should be suppressed or not. Default is TRUE.}
 }
 \value{
 An object of class logRegModelCueDiffs.

@@ -393,13 +393,20 @@ predictRoot.regModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
+### Data munging functions ###
+
 rowDiff <- function(row1, row2) row1 - row2
 
+rowDiffSign <- function(row1, row2) sign(row1 - row2)
+
+# The row_pair_function has the signature function(row1, row2).  Examples are
+# rowDiff and rowDiffSign.
 toRowPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
-  transform <- applyFunctionToRowPairs(train_data[,c(criterion_col,cols_to_fit)], row_pair_fn)
-  # The criterion has been moved to the first colum.  But it should not be a diff--
-  # it is the probability row 1 is greater, which is 1 if row 1 is greater,
-  # 0 if row2 is greater, and 0.5 if they are the same size.
+  transform <- applyFunctionToRowPairs(
+    train_data[,c(criterion_col,cols_to_fit)], row_pair_fn)
+  # The criterion has been moved to the first colum.  But it should not be a
+  # diff-- it is the probability row 1 is greater, which is 1 if row 1 is
+  # greater, 0 if row2 is greater, and 0.5 if they are the same size.
   transform[,1] <- rescale0To1(sign(transform[,1,drop=FALSE]))
   return(transform)
 }
@@ -411,6 +418,45 @@ logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col,
                                  cols_to_fit, row_pair_fn)
   return(rbind(forwardPairs, backwardPairs))
+}
+
+### Logistic regression ###
+
+# Logistic regression constructor that can use different row_pair_functions.
+logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
+                               row_pair_fn, class_name,
+                               suppress_warnings=TRUE) {
+  stopIfTrainingSetHasLessThanTwoRows(train_data)
+  training_set <- logRegData(train_data, criterion_col, cols_to_fit, row_pair_fn)
+  training_set <- as.data.frame(training_set)
+  
+  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
+  # Do not fit intercept by default.
+  formula <- paste(formula, "-1")
+  
+  if(suppress_warnings) {
+    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
+  } else { 
+    model <- glm(formula,family=binomial,data=training_set)  
+  }
+  
+  col_weights <- coef(model)
+  
+  # Make clean weights that can be easily used in predictRoot.
+  col_weights_clean <- col_weights
+  # Set na to zero.
+  col_weights_clean[is.na(col_weights_clean)] <- 0
+  # Because the intercept is 0 for row1 and ro2, ignore it.
+  if ("(Intercept)" %in% names(col_weights_clean)) {
+    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
+    col_weights_clean <- col_weights_clean[-intercept_index]
+  }
+  
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 linear_coef=col_weights,
+                 col_weights_clean=col_weights_clean,
+                 model=model, row_pair_fn=row_pair_fn),
+            class=class_name)
 }
 
 #' Logistic Regression model using cue differences as predictors
@@ -431,41 +477,12 @@ logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
 #' should be suppressed or not. Default is TRUE.
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,
-                        suppress_warnings=TRUE){
-  stopIfTrainingSetHasLessThanTwoRows(train_data)
-  training_set <- logRegData(train_data, criterion_col, cols_to_fit, rowDiff)
-  training_set <- as.data.frame(training_set)
-  
-  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
-  # Do not fit intercept by default.
-  formula <- paste(formula, "-1")
-  
-  if(suppress_warnings) {
-    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
-  } else { 
-    model <- glm(formula,family=binomial,data=training_set)  
-  }
-    
-  col_weights <- coef(model)
-  
-  # Make clean weights that can be easily used in predictRoot.
-  col_weights_clean <- col_weights
-  # Set na to zero.
-  col_weights_clean[is.na(col_weights_clean)] <- 0
-  # Because the intercept is 0 for row1 and ro2, ignore it.
-  if ("(Intercept)" %in% names(col_weights_clean)) {
-    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
-    col_weights_clean <- col_weights_clean[-intercept_index]
-  }
-  
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 linear_coef=col_weights,
-                 col_weights_clean=col_weights_clean,
-                 model=model),
-            class="logRegModel")
+                        suppress_warnings=TRUE) {
+  return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
+                            rowDiff, "logRegModel"))
 }
 
-
+#TODO: Fix the coef of both logRegModels
 #' @export
 coef.logRegModel <- function(object, ...) object$linear_coef
 
@@ -474,9 +491,8 @@ sigmoid <- function(z) { 1/(1+exp(-z)) }
 # This is equivalent to the glm predict like this:
 # predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
 predictRoot.logRegModel <- function(object, row1, row2) {
-  # TODO(Jean): Find the right shared function to call.
-  #raw_predict <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
-  raw_predict <- (row1-row2) %*% object$col_weights_clean
+  fn <- object$row_pair_fn  # e.g. row1 - row2
+  raw_predict <- fn(row1, row2) %*% object$col_weights_clean
   return(sigmoid(raw_predict))
 }
 
@@ -490,70 +506,25 @@ predictRoot.logRegModel <- function(object, row1, row2) {
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModelCueDiffs.
-#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
-#' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
+#' @param suppress_warnings Optional argument specifying whether glm warnings
+#' should be suppressed or not. Default is TRUE.
 #' @export
 logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,
-                                row_pairs=NULL, suppress_warnings=TRUE){
-  stopIfTrainingSetHasLessThanTwoRows(train_data)
-  if (is.null(row_pairs)) {
-    n <- nrow(train_data)
-    all_pairs <- rowPairGenerator(n)
-  } else {
-    all_pairs <- row_pairs
-  }
-  
-  transform <- train_data[all_pairs[,1],c(criterion_col,cols_to_fit)] - train_data[all_pairs[,2],c(criterion_col,cols_to_fit)]
-  criterion <- transform[,1]
-  criterion <- ifelse(criterion>0,1,ifelse(criterion==0,0.5,0))
-  
-  predictors <- transform[,2:ncol(transform)]
-  # The two lines below are how it differs from logRegModel.
-  # TODO: Write a shared function with a variable to switch on these two lines.
-  predictors[predictors<0] <- -1
-  predictors[predictors>0] <- 1
-  
-  training_set <- cbind(criterion,predictors)
-  training_set <- as.data.frame(training_set)
-  
-  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
-  # Do not fit intercept by default.
-  formula <- paste(formula, "-1")
-  
-  if(suppress_warnings){
-    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
-  } else { 
-    model <- glm(formula,family=binomial,data=training_set)  
-  }
-  
-  col_weights <- coef(model)
-  
-  # Make clean weights that can be easily used in predictRoot.
-  col_weights_clean <- col_weights
-  # Set na to zero.
-  col_weights_clean[is.na(col_weights_clean)] <- 0
-  # Because the intercept is 0 for row1 and ro2, ignore it.
-  if ("(Intercept)" %in% names(col_weights_clean)) {
-    intercept_index <- which(names(col_weights_clean)=="(Intercept)")
-    col_weights_clean <- col_weights_clean[-intercept_index]
-  }
-  
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 linear_coef=col_weights,
-                 col_weights_clean=col_weights_clean,
-                 model=model),
-            class="logRegModelCueDiffs")
+                                suppress_warnings=TRUE){
+  return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
+                            rowDiffSign, "logRegModelCueDiffs"))
 }
 
-
-#' @export
+#' @export  
 coef.logRegModelCueDiffs <- function(object, ...) object$linear_coef
 
+# This is equivalent to the glm predict like this:
+# predict(object$model, newdata=as.data.frame(sign(row1 - row2)),
+#  type="response"))
 predictRoot.logRegModelCueDiffs <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
+  fn <- object$row_pair_fn  # sign(row1 - row2)
+  raw_predict <- fn(row1, row2) %*% object$col_weights_clean
+  return(sigmoid(raw_predict))
 }
 
 

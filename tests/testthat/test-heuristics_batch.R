@@ -128,7 +128,7 @@ test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
 test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv=FALSE)})
 test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 1, has_cv=FALSE)})
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
-test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs, 0, has_cv=FALSE)})
+test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs, 0.5, has_cv=FALSE)})
 # minModel
 
 
