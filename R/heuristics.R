@@ -427,10 +427,9 @@ logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
-#' @param row_pairs Optional matrix.  TODO(jean): share documentation.
 #' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
 #' @export
-logRegModel <- function(train_data, criterion_col, cols_to_fit, row_pairs=NULL,
+logRegModel <- function(train_data, criterion_col, cols_to_fit,
                         suppress_warnings=TRUE){
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   training_set <- logRegData(train_data, criterion_col, cols_to_fit, rowDiff)
