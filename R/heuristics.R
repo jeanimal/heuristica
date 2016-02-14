@@ -413,21 +413,22 @@ logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   return(rbind(forwardPairs, backwardPairs))
 }
 
-#' Logistic Regression model without intercept usign cue differences as predictors
+#' Logistic Regression model using cue differences as predictors
 #'
-#' Create a logistic regression model by specifying columns and a dataset.  It fits the model
-#' with R's glm function.
+#' Create a logistic regression model by specifying columns and a dataset.  It
+#' fits the model with R's glm function.
 #'
 #' This version assumes you do not want to include the intercept.
 #' 
 #' For a discussion of how logistic regression works, see:
 #' http://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
-#' Note that our criterion is the probability that row 1 is greater than row 2 when
-#' a pair is encountered.
+#' Note that our criterion is the probability that row 1 is greater than row 2
+#' when a pair is encountered.
 #' 
 #' @inheritParams heuristicaModel
 #' @return An object of class logRegModel.
-#' @param suppress_warnings Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.
+#' @param suppress_warnings Optional argument specifying whether glm warnings
+#' should be suppressed or not. Default is TRUE.
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,
                         suppress_warnings=TRUE){

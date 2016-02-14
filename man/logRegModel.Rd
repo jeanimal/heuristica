@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{logRegModel}
 \alias{logRegModel}
-\title{Logistic Regression model without intercept usign cue differences as predictors}
+\title{Logistic Regression model using cue differences as predictors}
 \usage{
 logRegModel(train_data, criterion_col, cols_to_fit, suppress_warnings = TRUE)
 }
@@ -13,21 +13,22 @@ logRegModel(train_data, criterion_col, cols_to_fit, suppress_warnings = TRUE)
 
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
 
-\item{suppress_warnings}{Optional argument specifying whether glm warnings should be suppressed or not. Default is TRUE.}
+\item{suppress_warnings}{Optional argument specifying whether glm warnings
+should be suppressed or not. Default is TRUE.}
 }
 \value{
 An object of class logRegModel.
 }
 \description{
-Create a logistic regression model by specifying columns and a dataset.  It fits the model
-with R's glm function.
+Create a logistic regression model by specifying columns and a dataset.  It
+fits the model with R's glm function.
 }
 \details{
 This version assumes you do not want to include the intercept.
 
 For a discussion of how logistic regression works, see:
 http://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
-Note that our criterion is the probability that row 1 is greater than row 2 when
-a pair is encountered.
+Note that our criterion is the probability that row 1 is greater than row 2
+when a pair is encountered.
 }
 
