@@ -23,5 +23,5 @@ test_that("logRegData data.frame", {
   expect_equal(c(0,0), out[,3])
   # Check column names
   expect_equal(c("y", "x1", "x2"), colnames(out))
-})`
+})
 
