@@ -394,33 +394,6 @@ predictRoot.regModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
-### Data munging functions ###
-
-rowDiff <- function(row1, row2) row1 - row2
-
-rowDiffSign <- function(row1, row2) sign(row1 - row2)
-
-# The row_pair_function has the signature function(row1, row2).  Examples are
-# rowDiff and rowDiffSign.
-toRowPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
-  transform <- applyFunctionToRowPairs(
-    train_data[,c(criterion_col,cols_to_fit)], row_pair_fn)
-  # The criterion has been moved to the first colum.  But it should not be a
-  # diff-- it is the probability row 1 is greater, which is 1 if row 1 is
-  # greater, 0 if row2 is greater, and 0.5 if they are the same size.
-  transform[,1] <- rescale0To1(sign(transform[,1,drop=FALSE]))
-  return(transform)
-}
-
-logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
-  forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
-                                row_pair_fn)
-  n <- nrow(train_data)
-  backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col,
-                                 cols_to_fit, row_pair_fn)
-  return(rbind(forwardPairs, backwardPairs))
-}
-
 ### Logistic regression ###
 
 # This is a shared function for predictions.
