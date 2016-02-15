@@ -422,6 +422,9 @@ logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
 
 ### Logistic regression ###
 
+# This is a shared function for predictions.
+sigmoid <- function(z) { 1/(1+exp(-z)) }
+
 # Logistic regression constructor that can use different row_pair_functions.
 logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
                                row_pair_fn, class_name,
@@ -452,11 +455,18 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
     col_weights_clean <- col_weights_clean[-intercept_index]
   }
   
-  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 linear_coef=col_weights,
-                 col_weights_clean=col_weights_clean,
-                 model=model, row_pair_fn=row_pair_fn),
-            class=class_name)
+  # This will inherit all functionality from the glm model (such as
+  # coef and predict) and add to it.
+  class(model) <- c(class_name, class(model))
+  # All models in this package must track criterion_col and cols_to_fit.
+  model$criterion_col <- criterion_col
+  model$cols_to_fit <- cols_to_fit
+  # Col_weights_clean and row_pair_fn are needed for faster prediction
+  # than using the "predict" function.
+  model$col_weights_clean <- col_weights_clean
+  model$row_pair_fn <- row_pair_fn
+  
+  return(model)
 }
 
 #' Logistic Regression model using cue differences as predictors
@@ -482,12 +492,6 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,
                             rowDiff, "logRegModel"))
 }
 
-#TODO: Fix the coef of both logRegModels
-#' @export
-coef.logRegModel <- function(object, ...) object$linear_coef
-
-sigmoid <- function(z) { 1/(1+exp(-z)) }
-
 # This is equivalent to the glm predict like this:
 # predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
 predictRoot.logRegModel <- function(object, row1, row2) {
@@ -495,7 +499,6 @@ predictRoot.logRegModel <- function(object, row1, row2) {
   raw_predict <- fn(row1, row2) %*% object$col_weights_clean
   return(sigmoid(raw_predict))
 }
-
 
 #' Logistic Regression model without intercept uses the sign of the difference of cues as predictors
 #'
@@ -514,9 +517,6 @@ logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,
   return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
                             rowDiffSign, "logRegModelCueDiffs"))
 }
-
-#' @export  
-coef.logRegModelCueDiffs <- function(object, ...) object$linear_coef
 
 # This is equivalent to the glm predict like this:
 # predict(object$model, newdata=as.data.frame(sign(row1 - row2)),

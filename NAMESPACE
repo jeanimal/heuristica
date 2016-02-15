@@ -2,8 +2,6 @@
 
 S3method(coef,dawesModel)
 S3method(coef,franklinModel)
-S3method(coef,logRegModel)
-S3method(coef,logRegModelCueDiffs)
 S3method(coef,minModel)
 S3method(coef,singleCueModel)
 S3method(coef,ttbModel)
