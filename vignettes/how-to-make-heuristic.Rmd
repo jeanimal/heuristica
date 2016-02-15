@@ -52,7 +52,7 @@ myModel <- function(train_data, criterion_col, cols_to_fit) {
 }
 ```
 
-The class name will tell heuristica how to find the predicting function.  But if you are curious, you can read more about classes at __.
+The class name will tell heuristica how to find the predicting function.  But if you are curious, you can read more about S3 classes at http://adv-r.had.co.nz/OO-essentials.html.
 
 ### Predicting function
 

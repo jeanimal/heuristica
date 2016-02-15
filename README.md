@@ -9,14 +9,14 @@ This R package implements heuristic decision models, such as a unit-weighted lin
 
 Take the Best was originally proposed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a university or a soccer team in order to infer the __criterion__, population size.
 
-The key function heuristics must implement is __predictAlternative__ rather than the __predict__ function R users are more famliar with.  PredictAlternative compares a pair of rows in the data set, indicating which row will be higher on the criterion, e.g. which of two cities has a greater population.  See the vignettes for more details.  
+The key function heuristics must implement is __predictRoot__ rather than the __predict__ function R users are more famliar with.  This function compares a pair of rows in the data set, indicating which row will be higher on the criterion, e.g. which of two cities has a greater population.  See the vignette [how to make a heuristic](vignettes/how-to-make-heuristic.Rmd) for more details.  
 
 ## Key helper functions
 * [Cue validity](http://en.wikipedia.org/wiki/Cue_validity): A number from 0 to 1 indicating how often the cue would correctly predict the criterion in a two-alternative choice task.
-* pctCorrectOfPredictAlternative: Given a list of fitted models (which implement predictAlternative) and test data, returns a row with percent correct for each heuristic. 
+* pctCorrectOfPredictPair: Given a list of fitted models (which implement predictPair) and test data, returns a row with percent correct for each heuristic. 
 
 ## Models
-The package comes with the following models that implement predictAlternative. 
+The package comes with the following models that implement predictPair. 
 * __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
 * __dawesModel__: a.k.a. Dawes' Rule, which uses weights of +1 or -1 only.  That is, it is a version of a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  (Excpetion: A cue with no variance-- every value is the same-- gets a weight of 0.)  This was named after psychologist Robyn Dawes-- see citation below.
 * __franklinModel__: A cue-validity-weighted linear model.  This was named after Ben Franklin, who described a weighted decision method similar to this.
@@ -24,7 +24,7 @@ The package comes with the following models that implement predictAlternative.
 * __regNoIModel__: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
 * __logRegModel__: A logistic regression model, a wrapper around R's glm.
 
-You can add your own models by also implementing __predictAlternative__.
+You can add your own models by also implementing __predictPair__.
 
 ## Data
 

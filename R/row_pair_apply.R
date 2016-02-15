@@ -299,13 +299,15 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 #' out1 <- allRowPairApplyList(city_population, list(heuristics(ttb, reg)))
 #' head(out1)
 #' nrow(out1)
-#' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
+#' ## returns a matrix of 2 columns, named ttbModel and regModel
 #' 
-#' ## Generate a matrix with the correct values and the heuristics' predictions:
-#' out2 <- allRowPairApplyList(city_population, list(criterion(3), heuristics(reg, ttb)))
+#' ## Generate a matrix with the correct values and the heuristics'
+#' ## predictions:
+#' out2 <- allRowPairApplyList(city_population,
+#'                             list(criterion(3), heuristics(reg, ttb)))
 #' head(out2)
 #' nrow(out2)
-#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
+#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel
 #'
 #' @seealso
 #' \code{\link{createFunction}} which must be implemented by the objects
@@ -371,7 +373,8 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 #' 
 #' ## Generate a matrix with the correct values and the heuristics' predictions:
-#' out2 <- allRowPairApply(city_population, criterion(3), heuristics(reg, ttb))
+#' out2 <- allRowPairApply(city_population, criterion(3),
+#'                         heuristics(reg, ttb))
 #' head(out2)
 #' nrow(out2)
 #' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
