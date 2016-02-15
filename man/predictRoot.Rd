@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{predictRoot}
 \alias{predictRoot}
-\title{Generic function to predict which of a pair of rows has a higher criterion.}
+\title{Generic function to predict which of a pair of rows has higher criterion.}
 \usage{
 predictRoot(object, row1, row2)
 }
@@ -15,10 +15,11 @@ one-row matrix.}
 \item{row2}{The second row of cues.}
 }
 \value{
-A value from 0 to 1, representing the probability that row1's criterion
-  is greater than row2's criterion.
+A value from 0 to 1, representing the probability that row1's
+  criterion is greater than row2's criterion.
 }
 \description{
-Implement this for every heuristic.
+Implement this for every heuristic in order to use with row_pair and
+aggregate functions.
 }
 
