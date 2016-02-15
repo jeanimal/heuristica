@@ -128,7 +128,7 @@ test_that("d_useless_cue_3 franklin", {d_useless_cue_3(franklinModel,  0.5)})
 test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv=FALSE)})
 test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 1, has_cv=FALSE)})
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
-test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegModelCueDiffs, 0.5, has_cv=FALSE)})
+test_that("d_useless_cue_3 logRegCueDiffs",   {d_useless_cue_3(logRegSignModel, 0.5, has_cv=FALSE)})
 # minModel
 
 
@@ -158,6 +158,6 @@ test_that("a_reordered_columns franklin", {a_reordered_columns(franklinModel)})
 test_that("a_reordered_columns reg",      {a_reordered_columns(regModel)})
 test_that("a_reordered_columns regIntercept", {a_reordered_columns(regInterceptModel)})
 test_that("a_reordered_columns logReg",   {a_reordered_columns(logRegModel)})
-test_that("a_reordered_columns logRegCueDiffs", {a_reordered_columns(logRegModelCueDiffs)})
+test_that("a_reordered_columns logRegCueDiffs", {a_reordered_columns(logRegSignModel)})
 # minModel
 
