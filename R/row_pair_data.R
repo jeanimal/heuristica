@@ -7,6 +7,8 @@ rowDiff <- function(row1, row2) row1 - row2
 
 rowDiffSign <- function(row1, row2) sign(row1 - row2)
 
+# Apply row_pair_fn to all rows with criterion_col and cols_to fit.
+# Criterion_col will then get special treatment, rescaled to 0 to 1.
 # The row_pair_function has the signature function(row1, row2).  Examples are
 # rowDiff and rowDiffSign.
 toRowPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
@@ -19,6 +21,7 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   return(transform)
 }
 
+# Forward and backward row pairs.
 logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
                                 row_pair_fn)

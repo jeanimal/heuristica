@@ -474,28 +474,28 @@ predictRoot.logRegModel <- function(object, row1, row2) {
   return(sigmoid(raw_predict))
 }
 
-#' Logistic Regression model without intercept uses the sign of the difference of cues as predictors
+#' Logistic Regression model using the sign of the difference of cues
 #'
-#' Create a logistic regression model by specifying columns and a dataset.  It fits the model
-#' with R's glm function.
+#' Create a logistic regression model by specifying columns and a dataset.
+#' It fits the model with R's glm function.
 #'
 #' This version assumes you do not want to include the intercept.
 #' 
 #' @inheritParams heuristicaModel
-#' @return An object of class logRegModelCueDiffs.
+#' @return An object of class logRegSignModel.
 #' @param suppress_warnings Optional argument specifying whether glm warnings
 #' should be suppressed or not. Default is TRUE.
 #' @export
-logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,
+logRegSignModel <- function(train_data, criterion_col, cols_to_fit,
                                 suppress_warnings=TRUE){
   return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                            rowDiffSign, "logRegModelCueDiffs"))
+                            rowDiffSign, "logRegSignModel"))
 }
 
 # This is equivalent to the glm predict like this:
 # predict(model, newdata=as.data.frame(sign(row1 - row2)),
 #  type="response"))
-predictRoot.logRegModelCueDiffs <- function(object, row1, row2) {
+predictRoot.logRegSignModel <- function(object, row1, row2) {
   fn <- object$row_pair_fn  # sign(row1 - row2)
   raw_predict <- fn(row1, row2) %*% object$col_weights_clean
   return(sigmoid(raw_predict))
