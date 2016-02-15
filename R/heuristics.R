@@ -5,16 +5,17 @@
 
 ## New generics ##
 
-#' Generic function to predict which of a pair of rows has a higher criterion.
+#' Generic function to predict which of a pair of rows has higher criterion.
 #' 
-#' Implement this for every heuristic.
+#' Implement this for every heuristic in order to use with row_pair and
+#' aggregate functions.
 #'
 #' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param row1 The first row of cues (object$cols_to_fit columns), as a
 #'   one-row matrix.
 #' @param row2 The second row of cues.
-#' @return A value from 0 to 1, representing the probability that row1's criterion
-#'   is greater than row2's criterion.
+#' @return A value from 0 to 1, representing the probability that row1's
+#'   criterion is greater than row2's criterion.
 #' @export
 predictRoot <- function(object, row1, row2) UseMethod("predictRoot")
 
@@ -493,7 +494,7 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,
 }
 
 # This is equivalent to the glm predict like this:
-# predict(object$model, newdata=as.data.frame(row1 - row2), type="response"))
+# predict(model, newdata=as.data.frame(row1 - row2), type="response"))
 predictRoot.logRegModel <- function(object, row1, row2) {
   fn <- object$row_pair_fn  # e.g. row1 - row2
   raw_predict <- fn(row1, row2) %*% object$col_weights_clean
@@ -519,7 +520,7 @@ logRegModelCueDiffs <- function(train_data, criterion_col, cols_to_fit,
 }
 
 # This is equivalent to the glm predict like this:
-# predict(object$model, newdata=as.data.frame(sign(row1 - row2)),
+# predict(model, newdata=as.data.frame(sign(row1 - row2)),
 #  type="response"))
 predictRoot.logRegModelCueDiffs <- function(object, row1, row2) {
   fn <- object$row_pair_fn  # sign(row1 - row2)
