@@ -19,7 +19,8 @@ cannot be calculated.}
 The cue validity, a value in the range [0,1].
 }
 \description{
-Calculate the \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
+Calculate the
+\href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
 for a pair of vectors.
 }
 

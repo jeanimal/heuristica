@@ -3,7 +3,8 @@
 
 #' Calculate the cue validity
 #'
-#' Calculate the \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
+#' Calculate the
+#' \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
 #' for a pair of vectors.
 #'
 #' @param criterion A vector of values to be predicted.
@@ -38,7 +39,8 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 matrixCueValidity <- function(data, criterion_col, cols_to_fit, 
                               replaceNanWith=0.5) {
   out <- sapply(cols_to_fit, function(col) {
-    cueValidity(data[,criterion_col], data[,col], replaceNanWith=replaceNanWith)
+    cueValidity(data[,criterion_col], data[,col],
+                replaceNanWith=replaceNanWith)
   })
   out <- c(out)
   if (length(names(data)) > 0) {
