@@ -7,9 +7,9 @@
 reversingModel(reverse_cues = TRUE)
 }
 \arguments{
-\item{reverse_cues}{Optional parameter to reverse cues as needed.  By default, 
-the model will reverse the cue values for cues with cue validity < 0.5, so a cue
-with validity 0 becomes a cue with validity 1.
+\item{reverse_cues}{Optional parameter to reverse cues as needed.  By
+default, the model will reverse the cue values for cues with cue validity
+< 0.5, so a cue with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \description{

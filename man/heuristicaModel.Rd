@@ -9,9 +9,11 @@ heuristicaModel(train_data, criterion_col, cols_to_fit)
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
 
-\item{criterion_col}{The index of the colum in train_data that has the criterion.}
+\item{criterion_col}{The index of the colum in train_data that has the
+criterion.}
 
-\item{cols_to_fit}{A vector of column indices in train_data, used to fit the criterion.}
+\item{cols_to_fit}{A vector of column indices in train_data, used to fit
+the criterion.}
 }
 \description{
 Documentation stub.

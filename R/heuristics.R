@@ -20,19 +20,21 @@
 predictRoot <- function(object, row1, row2) UseMethod("predictRoot")
 
 ### Shared documentation stubs ###
-## TODO: Find a way so these do not show up in actual documenentation themselves.
+## TODO: Find a way so these do not show up in actual documenentation.
 
 #' Documentation stub.
 #' @param train_data Training/fitting data as a matrix or data.frame.
-#' @param criterion_col The index of the colum in train_data that has the criterion.
-#' @param cols_to_fit A vector of column indices in train_data, used to fit the criterion.
+#' @param criterion_col The index of the colum in train_data that has the
+#'   criterion.
+#' @param cols_to_fit A vector of column indices in train_data, used to fit
+#'   the criterion.
 # Private.  This is just an easy way to share parameter documentation.
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
 #' Documentation stub.
-#' @param reverse_cues Optional parameter to reverse cues as needed.  By default, 
-#' the model will reverse the cue values for cues with cue validity < 0.5, so a cue
-#' with validity 0 becomes a cue with validity 1.
+#' @param reverse_cues Optional parameter to reverse cues as needed.  By
+#' default, the model will reverse the cue values for cues with cue validity
+#' < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 #' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
 # Private.  This is just an easy way to share parameter documentation.
 reversingModel <- function(reverse_cues=TRUE) NULL
@@ -70,25 +72,30 @@ reverseAsNeeded <- function(cue_validities) {
 #' Take The Best
 #'
 #' An implementation of the Take The Best heuristic.
-#' It sorts cues in order of \code{\link{cueValidity}}, making a decision based on the first cue that
-#' discriminates (has differing values on the two objects).
+#' It sorts cues in order of \code{\link{cueValidity}}, making a decision
+#' based on the first cue that discriminates (has differing values on the
+#' two objects).
 #'
 #' It does NOT implement predict on purpose.
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #'
-#' @return An object of \code{\link[base]{class}} ttbModel.  This is a list containing at least the following components:
+#' @return An object of \code{\link[base]{class}} ttbModel.  This is a list
+#'   containing at least the following components:
 #'   \itemize{
-#'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+#'    \item "cue_validities": A list of cue validities for the cues in order of
+#'      cols_to_fit.
 #'   }
 #'
 #' @examples
-#' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+#' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
+#' ## validity 0.
 #' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 #' ttb <- ttbModel(train_matrix, 1, c(2,3))
 #' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
-#' ## But this test data results in an incorrect prediction because x1 is unexpected.
+#' ## But this test data results in an incorrect prediction because x1 is
+#' ## unexpected.
 #' test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
 #' predictRowPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 #'
