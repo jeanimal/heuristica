@@ -7,21 +7,23 @@
 pctCorrectOfPredictPairNonSymmetric(fitted_heuristic_list, test_data)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data, e.g. ttbModel.}
+\item{fitted_heuristic_list}{A list of heuristics already fitted to data,
+e.g. ttbModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 }
 \value{
-A one-row matrix of numbers from 0 to 1 indicating the percent correct.
-  Each column is named with the heuristic's class.
+A one-row matrix of numbers from 0 to 1, meaning proportion
+  correct.  Each column is named with the heuristic's class.
 }
 \description{
-Same as pctCorrectOfPredictPair but for weird heuristics that do not consistently
-choose the same row.  If a symmetric heuristics says row1 > row2, then it will also
-says row2 < row1.  Those can be used with pctCorrectOfPredictPair.  All heuristics
-built into heuristica quality.  They will get the same answers for pctCorrectOfPredictPair
-and pctCorrectOfPredictPairNonSymmetric.  But a non-symmetric heuristic will only
-get correct answers for pctCorrectOfPredictPairNonSymmetric.
+Same as pctCorrectOfPredictPair but for weird heuristics that do not
+consistently choose the same row.  If a symmetric heuristics says
+row1 > row2, then it will also says row2 < row1.  Those can be used
+with pctCorrectOfPredictPair.  All heuristics built into heuristica
+quality.  They will get the same answers for pctCorrectOfPredictPair
+and pctCorrectOfPredictPairNonSymmetric.  But a non-symmetric heuristic
+will only get correct answers for pctCorrectOfPredictPairNonSymmetric.
 }
 \seealso{
 \code{\link{pctCorrectOfPredictPair}} for prediction.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{logRegSignModel}
 \alias{logRegSignModel}
-\title{Logistic Regression model without intercept uses the sign of the difference of cues as predictors}
+\title{Logistic Regression model using the sign of the difference of cues}
 \usage{
 logRegSignModel(train_data, criterion_col, cols_to_fit,
   suppress_warnings = TRUE)
@@ -21,8 +21,8 @@ should be suppressed or not. Default is TRUE.}
 An object of class logRegSignModel.
 }
 \description{
-Create a logistic regression model by specifying columns and a dataset.  It fits the model
-with R's glm function.
+Create a logistic regression model by specifying columns and a dataset.
+It fits the model with R's glm function.
 }
 \details{
 This version assumes you do not want to include the intercept.

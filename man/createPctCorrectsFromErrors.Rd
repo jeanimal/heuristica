@@ -2,18 +2,18 @@
 % Please edit documentation in R/aggregators.R
 \name{createPctCorrectsFromErrors}
 \alias{createPctCorrectsFromErrors}
-\title{Converts output of createErrorsFromPredicts to percent correct for each column.}
+\title{Converts errors to percent correct for each column.}
 \usage{
 createPctCorrectsFromErrors(errors_raw)
 }
 \arguments{
-\item{errors_raw}{A dataframe of heuristic errors to calculate with.  Assumes data
-starts in column 4. (First 3 are Row1, Row2, and correct.)}
+\item{errors_raw}{A dataframe of heuristic errors to calculate with.
+Assumes data starts in column 4. (First 3 are Row1, Row2, and correct.)}
 }
 \value{
 A dataframe with one row and the last column as a percent correct.
 }
 \description{
-Converts output of createErrorsFromPredicts to percent correct for each column.
+The errors should be the output of createErrorsFromPredicts.
 }
 

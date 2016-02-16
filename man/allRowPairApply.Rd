@@ -36,7 +36,8 @@ nrow(out1)
 ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 
 ## Generate a matrix with the correct values and the heuristics' predictions:
-out2 <- allRowPairApply(city_population, criterion(3), heuristics(reg, ttb))
+out2 <- allRowPairApply(city_population, criterion(3),
+                        heuristics(reg, ttb))
 head(out2)
 nrow(out2)
 ## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.

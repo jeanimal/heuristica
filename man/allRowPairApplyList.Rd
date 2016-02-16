@@ -34,13 +34,15 @@ reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 out1 <- allRowPairApplyList(city_population, list(heuristics(ttb, reg)))
 head(out1)
 nrow(out1)
-## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
+## returns a matrix of 2 columns, named ttbModel and regModel
 
-## Generate a matrix with the correct values and the heuristics' predictions:
-out2 <- allRowPairApplyList(city_population, list(criterion(3), heuristics(reg, ttb)))
+## Generate a matrix with the correct values and the heuristics'
+## predictions:
+out2 <- allRowPairApplyList(city_population,
+                            list(criterion(3), heuristics(reg, ttb)))
 head(out2)
 nrow(out2)
-## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
+## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel
 
 }
 \seealso{

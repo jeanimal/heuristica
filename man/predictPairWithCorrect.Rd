@@ -7,8 +7,9 @@
 predictPairWithCorrect(fitted_heuristic_list, test_data)
 }
 \arguments{
-\item{fitted_heuristic_list}{List of heuristics that implement the generic function
-predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.}
+\item{fitted_heuristic_list}{List of heuristics that implement the
+generic function predictPair, e.g. ttbModel.  All heuristics must
+agree on the criterion_col.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 }
@@ -16,9 +17,10 @@ predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.}
 Same matrix as predictPair but with columns on correctness
 }
 \description{
-This geneartes a column of correct output (whether row 1 or row 2 is greater) from
-the test matrix, then runs all the heuristics in order, generating a column of
-predictions for each, naming each column from the heuristic class.
+This geneartes a column of correct output (whether row 1 or row 2 is
+greater) from the test matrix, then runs all the heuristics in order,
+generating a column of predictions for each, naming each column from the
+heuristic class.
 }
 \seealso{
 \code{\link{predictRowPair}}

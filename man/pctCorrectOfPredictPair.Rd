@@ -7,21 +7,22 @@
 pctCorrectOfPredictPair(fitted_heuristic_list, test_data)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data, e.g. ttbModel.}
+\item{fitted_heuristic_list}{A list of heuristics already fitted to data,
+e.g. ttbModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
 }
 \value{
-A one-row matrix of numbers from 0 to 1 indicating the percent correct.
-  Each column is named with the heuristic's class.
+A one-row matrix of numbers from 0 to 1, meaning proportion
+  correct.  Each column is named with the heuristic's class.
 }
 \description{
 Combines other functons to 
 1. Create predictions of row pairs for all heuristics in the list.
 2. Get errors of those predictions.
 3. Calculate overall percent correct for each heuristic.
-Assumes the heuristics passed in have already been fitted to training data
-and all have the same criterion column.
+Assumes the heuristics passed in have already been fitted to training
+data and all have the same criterion column.
 }
 \examples{
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))

@@ -1,4 +1,5 @@
-fitAllModels <- function(vec_of_models, training_set, criterion_col, cols_to_fit) {
+fitAllModels <- function(vec_of_models, training_set, criterion_col,
+                         cols_to_fit) {
   models<-list()
   y <- 0
   for (mod in vec_of_models) {
@@ -46,12 +47,14 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
 
 #' Generates a matrix of all predictRowPair predictions plus correct output.
 #'
-#' This geneartes a column of correct output (whether row 1 or row 2 is greater) from
-#' the test matrix, then runs all the heuristics in order, generating a column of
-#' predictions for each, naming each column from the heuristic class.
+#' This geneartes a column of correct output (whether row 1 or row 2 is
+#' greater) from the test matrix, then runs all the heuristics in order,
+#' generating a column of predictions for each, naming each column from the
+#' heuristic class.
 #'
-#' @param fitted_heuristic_list List of heuristics that implement the generic function
-#'  predictPair, e.g. ttbModel.  All heuristics must agree on the criterion_col.
+#' @param fitted_heuristic_list List of heuristics that implement the
+#'  generic function predictPair, e.g. ttbModel.  All heuristics must
+#'  agree on the criterion_col.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @return Same matrix as predictPair but with columns on correctness
 #' @seealso
@@ -69,11 +72,12 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
 
 #' Creates an error matrix from a matrix of predictions.
 #' 
-#' Given a matrix where the first 3 columns are basic info and the others are
-#' predictions, with these values ranging from 0 to 1, returns the error of each.
+#' Given a matrix where the first 3 columns are basic info and the others
+#' are predictions, with these values ranging from 0 to 1, returns the error
+#' of each.
 #' 
-#' @param df A dataframe to convert.  Assumes it has a column named correctProb
-#'  and predictions are in all but the first 3 columns.
+#' @param df A dataframe to convert.  Must have a column named correctProb
+#'  and predictions in all but the first 3 columns.
 #'  (First 3 are Row1, Row2, and correct.) 
 #' @return A dataframe with the last column converted to:
 #'   0: if it matched correctProb
@@ -100,10 +104,12 @@ createErrorsFromPredicts2 <- function(data, reference_col, cols_to_compare) {
   return(data)
 }
 
-#' Converts output of createErrorsFromPredicts to percent correct for each column.
+#' Converts errors to percent correct for each column.
 #' 
-#' @param errors_raw A dataframe of heuristic errors to calculate with.  Assumes data
-#'  starts in column 4. (First 3 are Row1, Row2, and correct.)
+#' The errors should be the output of createErrorsFromPredicts.
+#' 
+#' @param errors_raw A dataframe of heuristic errors to calculate with.
+#'  Assumes data starts in column 4. (First 3 are Row1, Row2, and correct.)
 #' @return A dataframe with one row and the last column as a percent correct.
 #' @export
 createPctCorrectsFromErrors <- function(errors_raw) {
@@ -133,13 +139,14 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' 1. Create predictions of row pairs for all heuristics in the list.
 #' 2. Get errors of those predictions.
 #' 3. Calculate overall percent correct for each heuristic.
-#' Assumes the heuristics passed in have already been fitted to training data
-#' and all have the same criterion column.
+#' Assumes the heuristics passed in have already been fitted to training
+#' data and all have the same criterion column.
 #'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbModel.
+#' @param fitted_heuristic_list A list of heuristics already fitted to data,
+#'   e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
-#'   Each column is named with the heuristic's class.
+#' @return A one-row matrix of numbers from 0 to 1, meaning proportion
+#'   correct.  Each column is named with the heuristic's class.
 #' @examples
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 #' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
@@ -159,21 +166,24 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
 
 #' pctCorrectOfPredictPair for non-symmetric heuristics
 #'
-#' Same as pctCorrectOfPredictPair but for weird heuristics that do not consistently
-#' choose the same row.  If a symmetric heuristics says row1 > row2, then it will also
-#' says row2 < row1.  Those can be used with pctCorrectOfPredictPair.  All heuristics
-#' built into heuristica quality.  They will get the same answers for pctCorrectOfPredictPair
-#' and pctCorrectOfPredictPairNonSymmetric.  But a non-symmetric heuristic will only
-#' get correct answers for pctCorrectOfPredictPairNonSymmetric.
+#' Same as pctCorrectOfPredictPair but for weird heuristics that do not
+#' consistently choose the same row.  If a symmetric heuristics says
+#' row1 > row2, then it will also says row2 < row1.  Those can be used
+#' with pctCorrectOfPredictPair.  All heuristics built into heuristica
+#' quality.  They will get the same answers for pctCorrectOfPredictPair
+#' and pctCorrectOfPredictPairNonSymmetric.  But a non-symmetric heuristic
+#' will only get correct answers for pctCorrectOfPredictPairNonSymmetric.
 #'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data, e.g. ttbModel.
+#' @param fitted_heuristic_list A list of heuristics already fitted to data,
+#'   e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row matrix of numbers from 0 to 1 indicating the percent correct.
-#'   Each column is named with the heuristic's class.
+#' @return A one-row matrix of numbers from 0 to 1, meaning proportion
+#'   correct.  Each column is named with the heuristic's class.
 #' @seealso
 #' \code{\link{pctCorrectOfPredictPair}} for prediction.
 #' @export
-pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list, test_data) {
+pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list,
+                                                test_data) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.

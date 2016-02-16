@@ -7,8 +7,8 @@
 createErrorsFromPredicts(df)
 }
 \arguments{
-\item{df}{A dataframe to convert.  Assumes it has a column named correctProb
-and predictions are in all but the first 3 columns.
+\item{df}{A dataframe to convert.  Must have a column named correctProb
+and predictions in all but the first 3 columns.
 (First 3 are Row1, Row2, and correct.)}
 }
 \value{
@@ -19,7 +19,8 @@ A dataframe with the last column converted to:
  This is technically a measure of error.
 }
 \description{
-Given a matrix where the first 3 columns are basic info and the others are
-predictions, with these values ranging from 0 to 1, returns the error of each.
+Given a matrix where the first 3 columns are basic info and the others
+are predictions, with these values ranging from 0 to 1, returns the error
+of each.
 }
 
