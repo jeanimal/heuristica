@@ -18,26 +18,32 @@ the criterion.}
 \item{reverse_cues}{Optional parameter to reverse cues as needed.}
 }
 \value{
-An object of \code{\link[base]{class}} dawesModel.  This is a list containing at least the following components:
+An object of \code{\link[base]{class}} dawesModel.  This is a list
+containing at least the following components:
   \itemize{
-   \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+   \item "cue_validities": A list of cue validities for the cues in order of
+     cols_to_fit.
    \item "linear_coef": A list of linear model coefficents (-1 or +1)
-          for the cues in order of cols_to_fit.  (It can only return -1's if reverse_cues=TRUE.)
+          for the cues in order of cols_to_fit.  (It can only return -1's if
+          reverse_cues=TRUE.)
   }
 }
 \description{
 DawesModel is a unit-weight linear model inspired by Robyn Dawes.
-Dawes Model assigns unit (+1 or -1) weights based on \code{\link{cueValidity}}.
+Dawes Model assigns unit (+1 or -1) weights based on
+\code{\link{cueValidity}}.
   \itemize{
     \item A cue validity > 0.5 results in a weight of +1.
     \item A cue validity < 0.5 results in a weight of -1.
   }
-This version differs from others in that it uses a weight of 0 if cue validity is 0.5
-(rather than randomly assigning +1 or -1) to give faster convergence of average accuracy.
+This version differs from others in that it uses a weight of 0 if cue
+validity is 0.5 (rather than randomly assigning +1 or -1) to give faster
+convergence of average accuracy.
 }
 \seealso{
 \code{\link{predictRowPair}} for predicting among a pair of alternatives.
 
-Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
+Wikipedia's entry on
+\url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 }
 

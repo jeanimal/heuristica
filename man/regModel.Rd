@@ -7,11 +7,13 @@
 regModel(train_matrix, criterion_col, cols_to_fit)
 }
 \arguments{
-\item{train_matrix}{A matrix (or data.frame) of data to train (fit) the model with.}
+\item{train_matrix}{A matrix (or data.frame) of data to train (fit) the
+model with.}
 
 \item{criterion_col}{The index of the criterion column-- "y" in the formula.}
 
-\item{cols_to_fit}{A vector of column indexes to fit-- the "x's" in the formula.}
+\item{cols_to_fit}{A vector of column indexes to fit-- the "x's" in the
+formula.}
 }
 \value{
 An object of class regModel, which is a subclass of lm.
@@ -24,9 +26,9 @@ other models in heuristica.
 }
 \details{
 This version assumes you do NOT want to include the intercept.
-Excluding the intercept typically has higher out-of-sample accuracy if the goal is
-predicting rank order because the intercept does not affect the ranking, but
-estimating it wastes a degree of freedom.
+Excluding the intercept typically has higher out-of-sample accuracy if the
+goal is predicting rank order because the intercept does not affect the
+ranking, but estimating it wastes a degree of freedom.
 }
 \seealso{
 \code{\link{regInterceptModel}} for a version that includes the intercept.

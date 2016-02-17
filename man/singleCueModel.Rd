@@ -28,7 +28,8 @@ the highest validity, then on each prediction it randomly selects which one
 to use (so it might not give the same answer every time).
 }
 \examples{
-##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
+## validity 0.
 train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 singlecue <- singleCueModel(train_matrix, 1, c(2,3))
 predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue) 

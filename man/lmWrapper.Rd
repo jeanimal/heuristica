@@ -2,23 +2,26 @@
 % Please edit documentation in R/heuristics.R
 \name{lmWrapper}
 \alias{lmWrapper}
-\title{A wrapper to create a lm model just specifying columns, generating a formula for you.}
+\title{Create an lm model just specifying columns, generating a formula for you.}
 \usage{
 lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept = TRUE)
 }
 \arguments{
-\item{train_matrix}{A matrix (or data.frame) of data to train (fit) the model with.}
+\item{train_matrix}{A matrix (or data.frame) of data to train (fit) the
+model with.}
 
 \item{criterion_col}{The index of the criterion column-- "y" in the formula.}
 
-\item{cols_to_fit}{A vector of column indexes to fit-- the "x's" in the formula.}
+\item{cols_to_fit}{A vector of column indexes to fit-- the "x's" in the
+formula.}
 
-\item{include_intercept}{A boolean of whether to include an intercept in the formula.}
+\item{include_intercept}{A boolean of whether to include an intercept in
+the formula.}
 }
 \value{
 An object of class lm.
 }
 \description{
-A wrapper to create a lm model just specifying columns, generating a formula for you.
+Create an lm model just specifying columns, generating a formula for you.
 }
 

@@ -21,14 +21,17 @@ default, the model will reverse the cue values for cues with cue validity
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \value{
-An object of \code{\link[base]{class}} franklinModel.  This is a list containing at least the following components:
+An object of \code{\link[base]{class}} franklinModel.  This is a
+list containing at least the following components:
   \itemize{
-   \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+   \item "cue_validities": A list of cue validities for the cues in order of
+     cols_to_fit.
    \item "linear_coef": Same as cue validities for this model.
   }
 }
 \description{
-Franklin's Model is a linear model with weights calculated by \code{\link{cueValidity}}.
+Franklin's Model is a linear model with weights calculated by
+\code{\link{cueValidity}}.
 The name is because it was inspired by a method used by Ben Franklin.
 }
 \seealso{

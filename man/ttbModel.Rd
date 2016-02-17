@@ -52,6 +52,7 @@ predictRowPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 \seealso{
 \code{\link{predictRowPair}} for prediction.
 
-Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
+Wikipedia's entry on
+\url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 }
 

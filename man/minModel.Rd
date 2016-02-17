@@ -21,10 +21,13 @@ default, the model will reverse the cue values for cues with cue validity
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 }
 \description{
-Fit the Minimalist heuristic by specifying columns and a dataset. It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two objects).
+Fit the Minimalist heuristic by specifying columns and a dataset. It
+searches cues in a random order, making a decision based on the first cue
+that discriminates (has differing values on the two objects).
 }
 \examples{
-##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
+## validity 0.
 train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
 min <- minModel(train_matrix, 1, c(2,3))
 predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
