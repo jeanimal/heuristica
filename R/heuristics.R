@@ -102,10 +102,12 @@ reverseAsNeeded <- function(cue_validities) {
 #' @seealso
 #' \code{\link{predictRowPair}} for prediction.
 #' @seealso
-#' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
+#' Wikipedia's entry on
+#' \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
 #' @export
-ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+ttbModel <- function(train_data, criterion_col, cols_to_fit,
+                     reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -119,7 +121,8 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
   raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
-  unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  unsigned_linear_coef <- sapply(cue_ranks,
+                                 function(n) 2^(length(cue_ranks)-n) )
   # Now give negative signs for cues pointing the other way.
   linear_coef <- cue_directions * unsigned_linear_coef
   
@@ -139,7 +142,8 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 coef.ttbModel <- function(object, ...) object$linear_coef
 
 predictRoot.ttbModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -151,32 +155,39 @@ predictRoot.ttbModel <- function(object, row1, row2) {
 #' DawesModel, a unit-weight linear model
 #'
 #' DawesModel is a unit-weight linear model inspired by Robyn Dawes.
-#' Dawes Model assigns unit (+1 or -1) weights based on \code{\link{cueValidity}}.
+#' Dawes Model assigns unit (+1 or -1) weights based on
+#' \code{\link{cueValidity}}.
 #'   \itemize{
 #'     \item A cue validity > 0.5 results in a weight of +1.
 #'     \item A cue validity < 0.5 results in a weight of -1.
 #'   }
-#' This version differs from others in that it uses a weight of 0 if cue validity is 0.5
-#' (rather than randomly assigning +1 or -1) to give faster convergence of average accuracy.
+#' This version differs from others in that it uses a weight of 0 if cue
+#' validity is 0.5 (rather than randomly assigning +1 or -1) to give faster
+#' convergence of average accuracy.
 #'
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #'
-#' @return An object of \code{\link[base]{class}} dawesModel.  This is a list containing at least the following components:
+#' @return An object of \code{\link[base]{class}} dawesModel.  This is a list
+#' containing at least the following components:
 #'   \itemize{
-#'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+#'    \item "cue_validities": A list of cue validities for the cues in order of
+#'      cols_to_fit.
 #'    \item "linear_coef": A list of linear model coefficents (-1 or +1)
-#'           for the cues in order of cols_to_fit.  (It can only return -1's if reverse_cues=TRUE.)
+#'           for the cues in order of cols_to_fit.  (It can only return -1's if
+#'           reverse_cues=TRUE.)
 #'   }
 #'
 #' @seealso
 #' \code{\link{predictRowPair}} for predicting among a pair of alternatives.
 #' @seealso
-#' Wikipedia's entry on \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
+#' Wikipedia's entry on
+#' \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 #'
 #' @param reverse_cues Optional parameter to reverse cues as needed.
 #' @export
-dawesModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+dawesModel <- function(train_data, criterion_col, cols_to_fit,
+                       reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   
@@ -201,7 +212,8 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE
 coef.dawesModel <- function(object, ...) object$linear_coef
 
 predictRoot.dawesModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -212,22 +224,26 @@ predictRoot.dawesModel <- function(object, row1, row2) {
 
 #' Franklin's Model, a linear model weighted by cue validities
 #' 
-#' Franklin's Model is a linear model with weights calculated by \code{\link{cueValidity}}.
+#' Franklin's Model is a linear model with weights calculated by
+#' \code{\link{cueValidity}}.
 #' The name is because it was inspired by a method used by Ben Franklin.
 #'
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #'
-#' @return An object of \code{\link[base]{class}} franklinModel.  This is a list containing at least the following components:
+#' @return An object of \code{\link[base]{class}} franklinModel.  This is a
+#' list containing at least the following components:
 #'   \itemize{
-#'    \item "cue_validities": A list of cue validities for the cues in order of cols_to_fit.
+#'    \item "cue_validities": A list of cue validities for the cues in order of
+#'      cols_to_fit.
 #'    \item "linear_coef": Same as cue validities for this model.
 #'   }
 #'
 #' @seealso
 #' \code{\link{predictRowPair}} for predicting among a pair of rows.
 #' @export 
-franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+franklinModel <- function(train_data, criterion_col, cols_to_fit,
+                          reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -251,7 +267,8 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=T
 coef.franklinModel <- function(object, ...) object$linear_coef
 
 predictRoot.franklinModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -261,24 +278,30 @@ predictRoot.franklinModel <- function(object, row1, row2) {
 
 #' Just to share documentation
 #'
-#' @param train_matrix A matrix (or data.frame) of data to train (fit) the model with.
+#' @param train_matrix A matrix (or data.frame) of data to train (fit) the
+#'   model with.
 #' @param criterion_col The index of the criterion column-- "y" in the formula.
-#' @param cols_to_fit A vector of column indexes to fit-- the "x's" in the formula.
+#' @param cols_to_fit A vector of column indexes to fit-- the "x's" in the
+#'   formula.
 # Private
-regInterceptModelForDocumentation <- function(train_matrix, criterion_col, cols_to_fit) NULL
+regInterceptModelForDocumentation <- function(train_matrix, criterion_col,
+                                              cols_to_fit) NULL
 
-#' A wrapper to create a lm model just specifying columns, generating a formula for you.
+#' Create an lm model just specifying columns, generating a formula for you.
 #' 
 #' @inheritParams regInterceptModelForDocumentation 
-#' @param include_intercept A boolean of whether to include an intercept in the formula.
+#' @param include_intercept A boolean of whether to include an intercept in
+#' the formula.
 #'
 #' @return An object of class lm.
 #'
 # Private because the exported versions are below.
-lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE) {
+lmWrapper <- function(train_matrix, criterion_col, cols_to_fit,
+                      include_intercept=TRUE) {
   train_df = as.data.frame(train_matrix)
   formula_str = paste(colnames(train_df)[criterion_col], "~",
-                            paste(colnames(train_df)[cols_to_fit], collapse = "+"),
+                            paste(colnames(train_df)[cols_to_fit],
+                                  collapse = "+"),
                         sep = "")
    if (include_intercept == FALSE) {
     formula_str = paste(formula_str, "-1", sep = "")
@@ -289,8 +312,8 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #' Linear regression wrapper for hueristica
 #'
 #' A wrapper to create a lm model just specifying columns, generating
-#' a model formula for you.  This makes it easier to run automated comparisons with
-#' other models in heuristica.
+#' a model formula for you.  This makes it easier to run automated comparisons
+#' with other models in heuristica.
 #'
 #' This version assumes you always want to include the intercept.
 #' 
@@ -308,9 +331,10 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit, include_intercep
 #' @export
 regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   stopIfTrainingSetHasLessThanTwoRows(train_matrix)
-  model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=TRUE)
+  model <- lmWrapper(train_matrix, criterion_col, cols_to_fit,
+                     include_intercept=TRUE)
   class(model) <- c("regInterceptModel", class(model))
-  # Functions in this package assume all models track criterion_col and cols_to_fit.
+  # Functions in this package require criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
 
@@ -331,6 +355,7 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
 # If you have a model that implements predict, you can confirm you
 # implemented predictRoot correctly using this, which is too slow
 # to use in practice.
+# TODO: use this in tests to compare with hand-coded predictions.
 predictRootUsingPredict <- function(object, row1, row2) {
   p1 <- predict(object, as.data.frame(row1))
   p2 <- predict(object, as.data.frame(row2))
@@ -345,9 +370,8 @@ predictRootUsingPredict <- function(object, row1, row2) {
 
 # This does the equivalent of predictPairUsingPredict but faster.
 predictRoot.regInterceptModel <- function(object, row1, row2) {
-  # When we subtract rows predictions, the intercept cancels out.  So it's safe to exclude
-  # the intercept from the weights below.
-  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean,
+                                                    row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -361,9 +385,9 @@ predictRoot.regInterceptModel <- function(object, row1, row2) {
 #' other models in heuristica.
 #'
 #' This version assumes you do NOT want to include the intercept.
-#' Excluding the intercept typically has higher out-of-sample accuracy if the goal is
-#' predicting rank order because the intercept does not affect the ranking, but
-#' estimating it wastes a degree of freedom.
+#' Excluding the intercept typically has higher out-of-sample accuracy if the
+#' goal is predicting rank order because the intercept does not affect the
+#' ranking, but estimating it wastes a degree of freedom.
 #' 
 #' @inheritParams regInterceptModelForDocumentation 
 #'
@@ -378,9 +402,10 @@ predictRoot.regInterceptModel <- function(object, row1, row2) {
 #'
 #' @export
 regModel <- function(train_matrix, criterion_col, cols_to_fit) {
-  model <- lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept=FALSE)
+  model <- lmWrapper(train_matrix, criterion_col, cols_to_fit,
+                     include_intercept=FALSE)
   class(model) <- c("regModel", class(model))
-  # Functions in this package assume all models track criterion_col and cols_to_fit.
+  # Functions in this package require criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
   # Make clean weights that can be easily used in predictRoot.
@@ -393,9 +418,10 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
 
 # This does the equivalent of predictPairUsingPredict but faster.
 predictRoot.regModel <- function(object, row1, row2) {
-  # When we subtract rows predictions, the intercept cancels out.  So it's safe to exclude
-  # the intercept from the weights below.
-  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean, row1, row2)
+  # When we subtract rows predictions, the intercept cancels out.  So it's
+  # safe to exclude the intercept from the weights below.
+  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean,
+                                                    row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -411,10 +437,12 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
                                row_pair_fn, class_name,
                                suppress_warnings=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  training_set <- logRegData(train_data, criterion_col, cols_to_fit, row_pair_fn)
+  training_set <- logRegData(train_data, criterion_col, cols_to_fit,
+                             row_pair_fn)
   training_set <- as.data.frame(training_set)
   
-  formula <- paste(colnames(training_set)[1], "~",paste(colnames(training_set)[-1], collapse = "+"),sep = "")
+  cue_formula <- paste(colnames(training_set)[-1], collapse = "+")
+  formula <- paste(colnames(training_set)[1], "~", cue_formula, sep = "")
   # Do not fit intercept by default.
   formula <- paste(formula, "-1")
   
@@ -521,7 +549,8 @@ predictRoot.logRegSignModel <- function(object, row1, row2) {
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #' @examples
-#' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+#' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
+#' ## validity 0.
 #' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 #' singlecue <- singleCueModel(train_matrix, 1, c(2,3))
 #' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue) 
@@ -530,7 +559,8 @@ predictRoot.logRegSignModel <- function(object, row1, row2) {
 #' @seealso
 #'
 #' @export
-singleCueModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+singleCueModel <- function(train_data, criterion_col, cols_to_fit,
+                           reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -562,7 +592,8 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=
 coef.singleCueModel <- function(object, ...) object$linear_coef
 
 predictRoot.singleCueModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef, row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -570,13 +601,16 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 
 #' Minimalist Model
 #'
-#' Fit the Minimalist heuristic by specifying columns and a dataset. It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two objects).
+#' Fit the Minimalist heuristic by specifying columns and a dataset. It
+#' searches cues in a random order, making a decision based on the first cue
+#' that discriminates (has differing values on the two objects).
 #'
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #' @examples
-#' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1), validity 0.
+#' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
+#' ## validity 0.
 #' train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
 #' min <- minModel(train_matrix, 1, c(2,3))
 #' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
@@ -586,7 +620,8 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 #' @seealso
 #'
 #' @export
-minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) {
+minModel <- function(train_data, criterion_col, cols_to_fit,
+                     reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -602,7 +637,8 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
   cue_ranks <- as.numeric(cue_ranks)
-  unsigned_linear_coef <- sapply(cue_ranks, function(n) 2^(length(cue_ranks)-n) )
+  unsigned_linear_coef <- sapply(cue_ranks,
+                                 function(n) 2^(length(cue_ranks)-n) )
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cue_validities, cue_directions=cue_directions,
@@ -621,9 +657,11 @@ minModel <- function(train_data, criterion_col, cols_to_fit, reverse_cues=TRUE) 
 coef.minModel <- function(object, ...) return(object$unsigned_linear_coef)
 
 predictRoot.minModel <- function(object, row1, row2) {
-  random_order_coefficients <- object$cue_sample_fn(object$unsigned_linear_coef)
+  random_order_coefficients <- object$cue_sample_fn(
+    object$unsigned_linear_coef)
   coefficients <- object$cue_directions * random_order_coefficients
-  direction_plus_minus_1 <- sign(getCuePairDirections(row1, row2) %*% coefficients)
+  direction_plus_minus_1 <- sign(
+    getCuePairDirections(row1, row2) %*% coefficients)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
