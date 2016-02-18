@@ -2,7 +2,7 @@
 
 language: R
 sudo: required
-# TODO(Jean): Set warnings_are_errors to false after document line length fixed.
+# TODO(Jean): Set warnings_are_errors to true after other issues are fixed.
 warnings_are_errors: false
 
 r_packages:
