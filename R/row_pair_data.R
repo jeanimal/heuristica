@@ -11,7 +11,8 @@ rowDiffSign <- function(row1, row2) sign(row1 - row2)
 # Criterion_col will then get special treatment, rescaled to 0 to 1.
 # The row_pair_function has the signature function(row1, row2).  Examples are
 # rowDiff and rowDiffSign.
-toRowPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
+toRowPairData <- function(train_data, criterion_col, cols_to_fit,
+                          row_pair_fn) {
   transform <- applyFunctionToRowPairs(
     train_data[,c(criterion_col,cols_to_fit)], row_pair_fn)
   # The criterion has been moved to the first colum.  But it should not be a
