@@ -7,16 +7,18 @@
 predictRowPair(row1, row2, object)
 }
 \arguments{
-\item{row1}{The first row of cues (will apply cols_to_fit for you, based on object).}
+\item{row1}{The first row of cues (will apply cols_to_fit for you, based on
+object).}
 
-\item{row2}{The second row (will apply cols_to_fit for you, based on object).}
+\item{row2}{The second row (will apply cols_to_fit for you, based on
+object).}
 
 \item{object}{The object that implements predictPair, e.g. a fitted ttbModel
-or regInterceptModel.}
+or regModel.}
 }
 \value{
-A double from 0 to 1, representing the probability
-  that row1's criterion is greater than row2's criterion.
+A double from 0 to 1, representing the probability that row1's
+  criterion is greater than row2's criterion.
 }
 \description{
 Assumes the object implements predictRoot and has $cols_to_fit.

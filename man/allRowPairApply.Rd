@@ -7,18 +7,20 @@
 allRowPairApply(test_data, ...)
 }
 \arguments{
-\item{test_data}{The data to apply the functions to as a matrix or data.frame.
-Heuristics must have already been fitted to trying data and must include the
-same criterion_col and cols_to_fit.}
+\item{test_data}{The data to apply the functions to as a matrix or
+data.frame.  Heuristics must have already been fitted to trying data and
+must include the same criterion_col and cols_to_fit.}
 
-\item{...}{The objects that generate the functions to apply, using createFunction.
-For example, heuristics(ttb), criterion(col), or colPairValues.}
+\item{...}{The objects that generate the functions to apply, using
+createFunction.  For example, heuristics(ttb), criterion(col), or
+colPairValues.}
 }
 \value{
-A matrix of outputs from the functions.  The number of rows is based on
-   the number of row pairs in test_data.  If the input has N rows, the output
-   will have N x (N-1) rows.  The number of columns will be at least the number
-   of functions but may be more as some functions may output more than one column.
+A matrix of outputs from the functions.  The number of rows is based
+  on the number of row pairs in test_data.  If the input has N rows, the
+  output will have N x (N-1) rows.  The number of columns will be at least
+  the number of functions but may be more as some functions may output more
+  than one column.
 }
 \description{
 Apply functions like heuristic predictions to all row pairs in a matrix
@@ -35,12 +37,12 @@ head(out1)
 nrow(out1)
 ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 
-## Generate a matrix with the correct values and the heuristics' predictions:
+## Generate a matrix with correct values and the heuristics' predictions:
 out2 <- allRowPairApply(city_population, criterion(3),
                         heuristics(reg, ttb))
 head(out2)
 nrow(out2)
-## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
+## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
 
 }
 \seealso{

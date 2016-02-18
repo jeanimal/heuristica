@@ -66,7 +66,7 @@ heuristicsList <- function(list_of_fitted_heuristics) {
   # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
   # Use the first-level class as the name of the implementer.
-  # e.g. Regression has class [regInterceptModel, lm], so it will use regInterceptModel.
+  # e.g. Regression has class [regModel, lm], so it will use RegModel.
   names <- sapply(implementers, function(x) { head(class(x), 1) })
   structure(list(predictRoot_implementers=implementers,
                  cols_to_fit=cols_to_fit,
@@ -231,7 +231,8 @@ createFunction.criterion <- function(object, test_data) {
 #' @export
 rowIndexes <- function(rowIndexColNames=c("Row1", "Row2")) {
   if (length(rowIndexColNames) != 2) {
-    stop(paste("Expected only 2 column names but got: ", length(rowIndexColNames)))
+    stop(paste("Expected only 2 column names but got: ",
+               length(rowIndexColNames)))
   }
   structure(list(column_names=rowIndexColNames),
             class="rowIndexes")
@@ -256,7 +257,8 @@ createFunction.colPairValues<- function(object, test_data) {
   # The column value might not be numeric, so do not convert to a matrix.
   column_df <- test_data[, object$input_column_index, drop=FALSE]
   column_fn <- function(index_pair)
-    c(column_df[index_pair[1], , drop=FALSE], column_df[index_pair[2], , drop=FALSE])
+    c(column_df[index_pair[1], , drop=FALSE],
+      column_df[index_pair[2], , drop=FALSE])
   return(column_fn)
 }
 
@@ -279,16 +281,17 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 #' Apply functions like heuristic predictions to all row pairs in a matrix
 #' or data.frame.
 #' 
-#' @param test_data The data to apply the functions to as a matrix or data.frame.
-#'    Heuristics must have already been fitted to trying data and must include the
-#'    same criterion_col and cols_to_fit.
-#' @param function_creator_list List of the objects that generate the functions to
-#'    apply, using createFunction.  For example,
+#' @param test_data The data to apply the functions to as a matrix or
+#'   data.frame.  Heuristics must have already been fitted to trying data and
+#'   must include the same criterion_col and cols_to_fit.
+#' @param function_creator_list List of the objects that generate the functions
+#'   to apply, using createFunction.  For example,
 #'    list(heuristics(ttb, reg), criterion(col), rowIndexes()).
-#' @return A matrix of outputs from the functions.  The number of rows is based on
-#'    the number of row pairs in test_data.  If the input has N rows, the output
-#'    will have N x (N-1) rows.  The number of columns will be at least the number
-#'    of functions but may be more as some functions may output more than one column.
+#' @return A matrix of outputs from the functions.  The number of rows is based
+#'   on the number of row pairs in test_data.  If the input has N rows, the
+#'   output will have N x (N-1) rows.  The number of columns will be at least
+#'   the number of functions but may be more as some functions may output more
+#'   than one column.
 #
 #' @examples
 #' ## Fit two models to the city_population data set.
@@ -318,8 +321,8 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 #'
 #' @export
 allRowPairApplyList <- function(test_data, function_creator_list) {
-  # TODO(jean): Make a version that handles non-numeric as a data.frame.  It will
-  #             be slower, but it's a nice option to have for debugging.
+  # TODO(jean): Make a version that handles non-numeric as a data.frame.
+  #  It will be slower, but it's a nice option to have for debugging.
   column_names <- vector()
   function_list <- vector()
   for (function_creator in function_creator_list) {
@@ -351,15 +354,17 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' Apply functions like heuristic predictions to all row pairs in a matrix
 #' or data.frame.
 #' 
-#' @param test_data The data to apply the functions to as a matrix or data.frame.
-#'    Heuristics must have already been fitted to trying data and must include the
-#'    same criterion_col and cols_to_fit.
-#' @param ... The objects that generate the functions to apply, using createFunction.
-#'    For example, heuristics(ttb), criterion(col), or colPairValues.
-#' @return A matrix of outputs from the functions.  The number of rows is based on
-#'    the number of row pairs in test_data.  If the input has N rows, the output
-#'    will have N x (N-1) rows.  The number of columns will be at least the number
-#'    of functions but may be more as some functions may output more than one column.
+#' @param test_data The data to apply the functions to as a matrix or
+#'   data.frame.  Heuristics must have already been fitted to trying data and
+#'   must include the same criterion_col and cols_to_fit.
+#' @param ... The objects that generate the functions to apply, using
+#'   createFunction.  For example, heuristics(ttb), criterion(col), or
+#'   colPairValues.
+#' @return A matrix of outputs from the functions.  The number of rows is based
+#'   on the number of row pairs in test_data.  If the input has N rows, the
+#'   output will have N x (N-1) rows.  The number of columns will be at least
+#'   the number of functions but may be more as some functions may output more
+#'   than one column.
 #
 #' @examples
 #' ## Fit two models to the city_population data set.
@@ -372,12 +377,12 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' nrow(out1)
 #' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 #' 
-#' ## Generate a matrix with the correct values and the heuristics' predictions:
+#' ## Generate a matrix with correct values and the heuristics' predictions:
 #' out2 <- allRowPairApply(city_population, criterion(3),
 #'                         heuristics(reg, ttb))
 #' head(out2)
 #' nrow(out2)
-#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regInterceptModel.
+#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
 #'
 #' @seealso
 #' \code{\link{createFunction}} which must be implemented by the objects
@@ -400,8 +405,9 @@ allRowPairApply <- function(test_data, ...) {
 assert_single_row <- function(row) {
   num_rows <- nrow(row)
   if (is.null(num_rows)) {
-    stop(paste("Error: Object does not have row dimension.  To get one row of a",
-               "matrix, be sure to use drop=FALSE, e.g. my_matrix[row_num, , drop=FALSE]"))
+    stop(paste("Error: Object does not have row dimension.  To get one row ",
+                "of a matrix, be sure to use drop=FALSE, e.g. ",
+                "my_matrix[row_num, , drop=FALSE]"))
   } else if (num_rows != 1) {
     stop(paste("Error: Expected a single row but got", num_rows, "rows."))
   }
@@ -413,16 +419,20 @@ assert_single_column <- function(obj) {
   if (is.null(num_cols)) {
     stop(paste("Error: Object does not have column dimension."))
   } else if (num_cols != 1) {
-    stop(paste("Error: Expected a single column but got", num_cols, "columns."))
+    stop(paste("Error: Expected a single column but got", num_cols,
+               "columns."))
   }
 }
 
 #' Apply all functions to the row pair.
 #'
-#' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
-#' @param row2 The second row (will apply cols_to_fit for you, based on object).
-#' @param ... The objects that generate the functions to apply, using createFunction.
-#'    For example, heuristics(ttb), criterion(col), or colPairValues.
+#' @param row1 The first row of cues (will apply cols_to_fit for you, based
+#'   on object).
+#' @param row2 The second row (will apply cols_to_fit for you, based on
+#'   object).
+#' @param ... The objects that generate the functions to apply, using
+#'   createFunction.  For example, heuristics(ttb), criterion(col), or
+#'   colPairValues.
 #' @return A matrix of function outputs.
 #' @export
 rowPairApply <- function(row1, row2, ...) {
@@ -439,12 +449,14 @@ rowPairApply <- function(row1, row2, ...) {
 #'
 #' Assumes the object implements predictRoot and has $cols_to_fit.
 #'
-#' @param row1 The first row of cues (will apply cols_to_fit for you, based on object).
-#' @param row2 The second row (will apply cols_to_fit for you, based on object).
+#' @param row1 The first row of cues (will apply cols_to_fit for you, based on
+#'   object).
+#' @param row2 The second row (will apply cols_to_fit for you, based on
+#'   object).
 #' @param object The object that implements predictPair, e.g. a fitted ttbModel
-#'   or regInterceptModel.
-#' @return A double from 0 to 1, representing the probability
-#'   that row1's criterion is greater than row2's criterion.
+#'   or regModel.
+#' @return A double from 0 to 1, representing the probability that row1's
+#'   criterion is greater than row2's criterion.
 #' @export
 predictRowPair <- function(row1, row2, object) {
   out <- rowPairApply(row1, row2, heuristics(object))

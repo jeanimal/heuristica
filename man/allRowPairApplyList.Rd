@@ -7,19 +7,20 @@
 allRowPairApplyList(test_data, function_creator_list)
 }
 \arguments{
-\item{test_data}{The data to apply the functions to as a matrix or data.frame.
-Heuristics must have already been fitted to trying data and must include the
-same criterion_col and cols_to_fit.}
+\item{test_data}{The data to apply the functions to as a matrix or
+data.frame.  Heuristics must have already been fitted to trying data and
+must include the same criterion_col and cols_to_fit.}
 
-\item{function_creator_list}{List of the objects that generate the functions to
-apply, using createFunction.  For example,
-list(heuristics(ttb, reg), criterion(col), rowIndexes()).}
+\item{function_creator_list}{List of the objects that generate the functions
+to apply, using createFunction.  For example,
+ list(heuristics(ttb, reg), criterion(col), rowIndexes()).}
 }
 \value{
-A matrix of outputs from the functions.  The number of rows is based on
-   the number of row pairs in test_data.  If the input has N rows, the output
-   will have N x (N-1) rows.  The number of columns will be at least the number
-   of functions but may be more as some functions may output more than one column.
+A matrix of outputs from the functions.  The number of rows is based
+  on the number of row pairs in test_data.  If the input has N rows, the
+  output will have N x (N-1) rows.  The number of columns will be at least
+  the number of functions but may be more as some functions may output more
+  than one column.
 }
 \description{
 Apply functions like heuristic predictions to all row pairs in a matrix

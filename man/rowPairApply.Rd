@@ -7,12 +7,15 @@
 rowPairApply(row1, row2, ...)
 }
 \arguments{
-\item{row1}{The first row of cues (will apply cols_to_fit for you, based on object).}
+\item{row1}{The first row of cues (will apply cols_to_fit for you, based
+on object).}
 
-\item{row2}{The second row (will apply cols_to_fit for you, based on object).}
+\item{row2}{The second row (will apply cols_to_fit for you, based on
+object).}
 
-\item{...}{The objects that generate the functions to apply, using createFunction.
-For example, heuristics(ttb), criterion(col), or colPairValues.}
+\item{...}{The objects that generate the functions to apply, using
+createFunction.  For example, heuristics(ttb), criterion(col), or
+colPairValues.}
 }
 \value{
 A matrix of function outputs.
