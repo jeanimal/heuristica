@@ -2,8 +2,7 @@
 
 language: R
 sudo: required
-# TODO(Jean): Set warnings_are_errors to true after other issues are fixed.
-warnings_are_errors: false
+warnings_are_errors: true
 
 r_packages:
   - roxygen2
