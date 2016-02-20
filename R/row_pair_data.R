@@ -22,18 +22,26 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit,
   return(transform)
 }
 
-# Forward and backward row pairs.
+# Applies row_pair_fn to all unique pairs of rows-- except a row with itself.
+# If the rows are A, B, C, then this returns
+# row_pair_fn(A, B)
+# row_pair_fn(A, C)
+# row_pair_fn(B, C)
 logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
                                 row_pair_fn)
   return(forwardPairs)
-  #n <- nrow(train_data)
-  #backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col,
-  #                               cols_to_fit, row_pair_fn)
-  #return(rbind(forwardPairs, backwardPairs))
 }
 
-# If you require symmetric data.
+# If you require symmetric data, this returns all unique pairs and permutations
+# of pairs of rows-- except a row with itself.
+# If the rows are A, B, C, then this returns
+# row_pair_fn(A, B)
+# row_pair_fn(A, C)
+# row_pair_fn(B, C)
+# row_pair_fn(C, B)
+# row_pair_fn(C, A)
+# row_pair_fn(B, A)
 allPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
                                 row_pair_fn)
