@@ -26,6 +26,17 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit,
 logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
   forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
                                 row_pair_fn)
+  return(forwardPairs)
+  #n <- nrow(train_data)
+  #backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col,
+  #                               cols_to_fit, row_pair_fn)
+  #return(rbind(forwardPairs, backwardPairs))
+}
+
+# If you require symmetric data.
+allPairData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
+  forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
+                                row_pair_fn)
   n <- nrow(train_data)
   backwardPairs <- toRowPairData(train_data[c(n:1),], criterion_col,
                                  cols_to_fit, row_pair_fn)
