@@ -11,6 +11,11 @@ rowDiffSign <- function(row1, row2) sign(row1 - row2)
 # Criterion_col will then get special treatment, rescaled to 0 to 1.
 # The row_pair_function has the signature function(row1, row2).  Examples are
 # rowDiff and rowDiffSign.
+# Applies row_pair_fn to all unique pairs of rows-- except a row with itself.
+# If the rows are A, B, C, then this returns
+# row_pair_fn(A, B)
+# row_pair_fn(A, C)
+# row_pair_fn(B, C)
 toRowPairData <- function(train_data, criterion_col, cols_to_fit,
                           row_pair_fn) {
   transform <- applyFunctionToRowPairs(
@@ -20,17 +25,6 @@ toRowPairData <- function(train_data, criterion_col, cols_to_fit,
   # greater, 0 if row2 is greater, and 0.5 if they are the same size.
   transform[,1] <- rescale0To1(sign(transform[,1,drop=FALSE]))
   return(transform)
-}
-
-# Applies row_pair_fn to all unique pairs of rows-- except a row with itself.
-# If the rows are A, B, C, then this returns
-# row_pair_fn(A, B)
-# row_pair_fn(A, C)
-# row_pair_fn(B, C)
-logRegData <- function(train_data, criterion_col, cols_to_fit, row_pair_fn) {
-  forwardPairs <- toRowPairData(train_data, criterion_col, cols_to_fit,
-                                row_pair_fn)
-  return(forwardPairs)
 }
 
 # If you require symmetric data, this returns all unique pairs and permutations

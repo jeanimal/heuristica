@@ -437,7 +437,7 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
                                row_pair_fn, class_name,
                                suppress_warnings=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  training_set <- logRegData(train_data, criterion_col, cols_to_fit,
+  training_set <- toRowPairData(train_data, criterion_col, cols_to_fit,
                              row_pair_fn)
   training_set <- as.data.frame(training_set)
   
