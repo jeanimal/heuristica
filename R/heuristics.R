@@ -433,12 +433,13 @@ predictRoot.regModel <- function(object, row1, row2) {
 sigmoid <- function(z) { 1/(1+exp(-z)) }
 
 # Logistic regression constructor that can use different row_pair_functions.
+# cue
 logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
                                row_pair_fn, class_name,
                                suppress_warnings=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   training_set <- toRowPairData(train_data, criterion_col, cols_to_fit,
-                             row_pair_fn)
+                                row_pair_fn)
   training_set <- as.data.frame(training_set)
   
   cue_formula <- paste(colnames(training_set)[-1], collapse = "+")
