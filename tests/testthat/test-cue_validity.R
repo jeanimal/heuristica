@@ -36,8 +36,16 @@ expect_equal(c(1,0), matrixCueValidity(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3)) 
 expect_equal(c(1,0), matrixCueValidity(matrix(c(1,0,5,4,0,1), 2, 3), 2, c(1,3)), tolerance=1)
 expect_equal(c(1,0), matrixCueValidity(matrix(c(5,4,0,1), 2, 2), 1, c(1, 2)),tolerance=1 )
 
+test_that("matrixCueValidity 5x4 names", {
+  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,0,0,0,1),
+                   b=c(1,1,1,0,0), c=c(1,1,1,0,1))
+  cv <- matrixCueValidity(df, 1, c(2,3,4)) 
+  expect_equal(c(a=0.5, b=1.0, c=0.75), cv)
+})
+
 test_that("matrixCueValidity 3x3 names shifted criterion", {
-  df <- data.frame(matrix(c(99, 99, 99, 5,4,3,1,0,1), 3, 3))
+  df <- data.frame(Garbage=c(99, 99, 99), Criterion=c(5,4,3),
+                   Cue=c(1,0,1))
   names(df) <- c('Garbage', 'Criterion', 'Cue')
   cv <- matrixCueValidity(df, 2, c(3)) 
   expect_equal(c(0.5), unname(cv),tolerance=0.1)

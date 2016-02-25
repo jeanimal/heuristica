@@ -800,6 +800,75 @@ test_that("logRegModel error when train_data one row", {
                fixed=TRUE)
 })
 
+# Test helper functions that allow logRegModel to better handle overspecified
+# data.
+test_that("rankByCueValidity", {
+  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,0,0,0,1),
+                   b=c(1,1,1,0,0), c=c(1,1,1,0,1))
+  # cue validities are a=0.5, b=1.0, c=0.75, so the 2nd cue should be used
+  # first, then the 3rd cue, then the 1st cue.
+  expect_equal(c(3,1,2), rankByCueValidity(df, 1, c(2:4)))
+})
+
+test_that("keepOrder so simple I could not mess this up, right", {
+  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,0,0,0,1),
+                   b=c(1,1,1,0,0), c=c(1,1,1,0,1))
+  expect_equal(c(1,2,3), keepOrder(df, 1, c(2:4)))
+})
+
+test_that("rankByCorrelation", {
+  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,0,0,0,1),
+                   b=c(1,1,1,0,0), c=c(1,1,1,0,1))
+  # correlations are a=0, b=0.866, c=0.354, so the 2nd cue should be used
+  # first, then the 3rd cue, then the 1st cue.
+  expect_equal(c(3,1,2), rankByCorrelation(df, 1, c(2:4)))
+})
+
+test_that("logRegModel predictRowPair cue order by validity", {
+  train_data <- cbind(y=c(5,4), x1=c(1,1), x2=c(1,0))
+  model_2_3 <- logRegModel(train_data, 1, c(2, 3))
+  expect_equal(c(2,3), model_2_3$cols_to_fit)
+  # The stronger cue, x2, should be ordered first.
+  expect_equal(c(3,2), model_2_3$sorted_cols_to_fit)
+  expect_equal(c(2,1), model_2_3$cue_ordering)
+
+  model_3_2 <- logRegModel(train_data, 1, c(3, 2))
+  # The stronger cue, x2, should be ordered first.
+  expect_equal(c(3,2), model_3_2$cols_to_fit)
+  
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model_2_3))
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model_3_2))
+})
+
+test_that("logRegModel predictRowPair cue order by validity shifted", {
+  train_data <- data.frame(y=c(5,4), name=c("a", "b"), x1=c(1,1), x2=c(1,0))
+  model_2_3 <- logRegModel(train_data, 1, c(3, 4))
+  # The stronger cue, x2, should be ordered first.
+  expect_equal(c(3,4), model_2_3$cols_to_fit)
+  expect_equal(c(4,3), model_2_3$sorted_cols_to_fit)
+  expect_equal(c(2,1), model_2_3$cue_ordering)
+  
+  expect_equal(1, predictRowPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model_2_3))
+})
+
+test_that("logRegModel predictRowPair keepOrder", {
+  train_data <- cbind(y=c(5,4), x1=c(1,1), x2=c(1,0))
+  model_2_3 <- logRegModel(train_data, 1, c(2, 3),
+                           cue_order_fn=keepOrder)
+  expect_equal(c(2 ,3), model_2_3$cols_to_fit)
+  
+  model_3_2 <- logRegModel(train_data, 1, c(3, 2),
+                           cue_order_fn=keepOrder)
+  expect_equal(c(3, 2), model_3_2$cols_to_fit)
+  
+  #expect_equal(1, predictRowPair(oneRow(train_data, 1),
+  #                               oneRow(train_data, 2), model_2_3))
+  #expect_equal(0.5, predictRowPair(oneRow(train_data, 1),
+  #                               oneRow(train_data, 2), model_3_2))
+})
 
 ## singleCueModel
 

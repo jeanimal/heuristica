@@ -432,13 +432,56 @@ predictRoot.regModel <- function(object, row1, row2) {
 # This is a shared function for predictions.
 sigmoid <- function(z) { 1/(1+exp(-z)) }
 
+# An implementation of cue_order_fn that ranks cues by cue validity.
+rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
+  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  reverse_info = reverseAsNeeded(cue_validities)
+  # rank by default ranks in ascending order.  A trick to get a ranking in
+  # descending order is to pass it the negative of the data.
+  cue_ranks <- rank(-reverse_info$cue_validities_with_reverse,
+                    ties.method="random")
+  return(unname(cue_ranks))
+}
+
+# An implementation of cue_order_fn that ranks by each cue's correlation with
+# the criterion.  WARNING: This should perhaps be applied to data transformed
+# to row pairs, if you are using it for logRegModel.
+rankByCorrelation <- function(train_data, criterion_col, cols_to_fit) {
+  data_columns <- train_data[,c(criterion_col, cols_to_fit)]
+  # Get correlations for all pairs, then limit to criterion column.
+  all_cor_with_criterion <- cor(data_columns)[,1]
+  # Drop correlation of criterion with itself.
+  cue_cor_with_criterion <- all_cor_with_criterion[-1]
+  # rank by default ranks in ascending order.  A trick to get a ranking in
+  # descending order is to pass it the negative of the data.
+  cue_ranks <- rank(-cue_cor_with_criterion, ties.method="random")
+  return(unname(cue_ranks))
+}
+
+# An implementation of cue_order_fn that keeps the order the same as
+# cols_to_fit.
+keepOrder <- function(train_data, criterion_col, cols_to_fit) {
+  return(c(1:length(cols_to_fit)))
+}
+
+# An implementation of cue_order_fn that uses a random order of cues so
+# that there is no bias to the order that happened to come in the data set.
+randomOrder <- function(train_data, criterion_col, cols_to_fit) {
+  return(sample(c(1:length(cols_to_fit))))
+}
+
 # Logistic regression constructor that can use different row_pair_functions.
 # cue
 logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
                                row_pair_fn, class_name,
+                               cue_order_fn,
                                suppress_warnings=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  training_set <- toRowPairData(train_data, criterion_col, cols_to_fit,
+  
+  cue_ordering <- cue_order_fn(train_data, criterion_col, cols_to_fit)
+  sorted_cols_to_fit <- cols_to_fit[cue_ordering]
+  
+  training_set <- toRowPairData(train_data, criterion_col, sorted_cols_to_fit,
                                 row_pair_fn)
   training_set <- as.data.frame(training_set)
   
@@ -471,6 +514,10 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
   # All models in this package must track criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
+  # Cue_ordering is useful when already restricted to cols_to_fit.
+  model$cue_ordering <- cue_ordering
+  # If you have raw data, you can go straight to sorted_cols_to_fit.
+  model$sorted_cols_to_fit <- sorted_cols_to_fit
   # Col_weights_clean and row_pair_fn are needed for faster prediction
   # than using the "predict" function.
   model$col_weights_clean <- col_weights_clean
@@ -492,22 +539,49 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
 #' when a pair is encountered.
 #' 
 #' @inheritParams heuristicaModel
-#' @return An object of class logRegModel.
+#' @param cue_order_fn Optional argument as a function that orders cues.  This
+#'   affects which cues are dropped for underspecified models. The rightmost
+#'   cues in the order are dropped first, so the function rankByCueValidity
+#'   means cues with the lowest cueValidity in the training set will be
+#'   be dropped first.  The function must have the signature
+#'   function(train_data, criterion_col, cols_to_fit).
 #' @param suppress_warnings Optional argument specifying whether glm warnings
-#' should be suppressed or not. Default is TRUE.
+#'   should be suppressed or not. Default is TRUE.
+#' @return An object of class logRegModel.
 #' @export
 logRegModel <- function(train_data, criterion_col, cols_to_fit,
+                        cue_order_fn=rankByCueValidity,
                         suppress_warnings=TRUE) {
   return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                            rowDiff, "logRegModel"))
+                            rowDiff, "logRegModel", cue_order_fn,
+                            suppress_warnings))
+}
+
+generalPredictRootLogReg <- function(row1_raw, row2_raw, cue_ordering,
+                                     col_weights_clean, row_pair_fn) {
+  row1 <- row1_raw[, cue_ordering, drop=FALSE]
+  row2 <- row2_raw[, cue_ordering, drop=FALSE]
+  raw_predict <- row_pair_fn(row1, row2) %*% col_weights_clean
+  return(sigmoid(raw_predict))
 }
 
 # This is equivalent to the glm predict like this:
 # predict(model, newdata=as.data.frame(row1 - row2), type="response"))
 predictRoot.logRegModel <- function(object, row1, row2) {
-  fn <- object$row_pair_fn  # e.g. row1 - row2
-  raw_predict <- fn(row1, row2) %*% object$col_weights_clean
-  return(sigmoid(raw_predict))
+  generalPredictRootLogReg(row1, row2, object$cue_ordering, 
+                           object$col_weights_clean, object$row_pair_fn)
+}
+
+logRegKeepModel <- function(train_data, criterion_col, cols_to_fit,
+                           suppress_warnings=TRUE) {
+  return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
+                            rowDiff, "logRegKeepModel", keepOrder,
+                            suppress_warnings))
+}
+
+predictRoot.logRegKeepModel <- function(object, row1, row2) {
+  generalPredictRootLogReg(row1, row2, object$cue_ordering, 
+                           object$col_weights_clean, object$row_pair_fn)
 }
 
 #' Logistic Regression model using the sign of the difference of cues
@@ -518,23 +592,30 @@ predictRoot.logRegModel <- function(object, row1, row2) {
 #' This version assumes you do not want to include the intercept.
 #' 
 #' @inheritParams heuristicaModel
-#' @return An object of class logRegSignModel.
+#' @param cue_order_fn Optional argument as a function that orders cues.  This
+#'   affects which cues are dropped for underspecified models. The rightmost
+#'   cues in the order are dropped first, so the function rankByCueValidity
+#'   means cues with the lowest cueValidity in the training set will be
+#'   be dropped first.  The function must have the signature
+#'   function(train_data, criterion_col, cols_to_fit).
 #' @param suppress_warnings Optional argument specifying whether glm warnings
-#' should be suppressed or not. Default is TRUE.
+#'   should be suppressed or not. Default is TRUE.
+#' @return An object of class logRegModel.
 #' @export
 logRegSignModel <- function(train_data, criterion_col, cols_to_fit,
-                                suppress_warnings=TRUE){
+                            cue_order_fn=keepOrder,
+                            suppress_warnings=TRUE){
   return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                            rowDiffSign, "logRegSignModel"))
+                            rowDiffSign, "logRegSignModel", cue_order_fn,
+                            suppress_warnings))
 }
 
 # This is equivalent to the glm predict like this:
 # predict(model, newdata=as.data.frame(sign(row1 - row2)),
 #  type="response"))
 predictRoot.logRegSignModel <- function(object, row1, row2) {
-  fn <- object$row_pair_fn  # sign(row1 - row2)
-  raw_predict <- fn(row1, row2) %*% object$col_weights_clean
-  return(sigmoid(raw_predict))
+  generalPredictRootLogReg(row1, row2, object$cue_ordering, 
+                           object$col_weights_clean, object$row_pair_fn)
 }
 
 
