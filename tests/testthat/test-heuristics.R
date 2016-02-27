@@ -870,6 +870,12 @@ test_that("logRegModel predictRowPair keepOrder", {
   #                               oneRow(train_data, 2), model_3_2))
 })
 
+test_that("logRegModel pctCorrectOfPredictPair easy 100%", {
+  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(5,4,3,2,1))
+  model <- logRegModel(df, 1, c(2))
+  expect_equal(1, out[, "logRegModel"])
+})
+
 ## singleCueModel
 
 test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
