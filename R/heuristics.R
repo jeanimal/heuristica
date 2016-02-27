@@ -55,6 +55,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
   sign((row1 - row2) %*% coefficients)
 }
 
+# Input should be a range from -1 to 1.  Output is a range from 0 to 1.
 rescale0To1 <- function(direction_plus_minus_1) {
   0.5 * (direction_plus_minus_1 + 1)
 }
@@ -562,7 +563,11 @@ generalPredictRootLogReg <- function(row1_raw, row2_raw, cue_ordering,
   row1 <- row1_raw[, cue_ordering, drop=FALSE]
   row2 <- row2_raw[, cue_ordering, drop=FALSE]
   raw_predict <- row_pair_fn(row1, row2) %*% col_weights_clean
-  return(sigmoid(raw_predict))
+  prob_row1_greater <- sigmoid(raw_predict)
+  rounded_prob <- round(prob_row1_greater, digits=2)
+  prediction <- ifelse(rounded_prob > 0.5, 1,
+                       ifelse(rounded_prob==0.5, 0.5 ,0 ))
+  return(prediction)
 }
 
 # This is equivalent to the glm predict like this:

@@ -2,6 +2,8 @@
 # Turn regular data into row pairs #
 ####################################
 
+# TODO: rescale0To1is defined in heuristics.R, which creates a circular
+# dependency.  Fix that.
 
 rowDiff <- function(row1, row2) row1 - row2
 

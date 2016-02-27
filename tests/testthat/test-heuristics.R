@@ -771,7 +771,7 @@ test_that("logRegModel pctCorrectOfPredictPair", {
   train_data <- cbind(y=c(5:1), x=c(1,1,1,0,1))
   model <- logRegModel(train_data, 1, c(2))
   fit_accuracy <- pctCorrectOfPredictPair(list(model), train_data)
-  expect_equal(0.55, fit_accuracy$logRegModel, tolerance=0.001)
+  expect_equal(0.6, fit_accuracy$logRegModel, tolerance=0.001)
 })
 
 test_that("logRegModel predictRowPair 2x2 data.frame", {
@@ -873,21 +873,21 @@ test_that("logRegModel predictRowPair keepOrder", {
 # TODO: Move tests below to a new batch test file.
 
 test_that("logRegModel pctCorrectOfPredictPair easy 100%", {
-  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(5,4,3,2,1))
+  df <- data.frame(Criterion=c(5,4,3,2,1), a1=c(5,4,3,2,1), a2=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
   out <- pctCorrectOfPredictPair(list(mod), df)
   expect_equal(1, out[, "logRegModel"])
 })
 
 test_that("logRegModel pctCorrectOfPredictPair cue reverse easy 100%", {
-  df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,2,3,4,5))
+  df <- data.frame(Criterion=c(5,4,3,2,1), a1=c(1,2,3,4,5), a2=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
   out <- pctCorrectOfPredictPair(list(model), df)
   expect_equal(1, out[, "logRegModel"])
 })
 
 test_that("logRegModel pctCorrectOfPredictPair criterion reverse easy 100%", {
-  df <- data.frame(Criterion=c(1,2,3,4,5), a=c(5,4,3,2,1))
+  df <- data.frame(Criterion=c(1,2,3,4,5), a2=c(1,2,3,4,5), a2=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
   out <- pctCorrectOfPredictPair(list(model), df)
   expect_equal(1, out[, "logRegModel"])
