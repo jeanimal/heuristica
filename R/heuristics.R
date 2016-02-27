@@ -430,9 +430,6 @@ predictRoot.regModel <- function(object, row1, row2) {
 
 ### Logistic regression ###
 
-# This is a shared function for predictions.
-sigmoid <- function(z) { 1/(1+exp(-z)) }
-
 # An implementation of cue_order_fn that ranks cues by cue validity.
 rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
   cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
@@ -557,6 +554,9 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,
                             rowDiff, "logRegModel", cue_order_fn,
                             suppress_warnings))
 }
+
+# This is a shared function for predictions.
+sigmoid <- function(z) { 1/(1+exp(-z)) }
 
 generalPredictRootLogReg <- function(row1_raw, row2_raw, cue_ordering,
                                      col_weights_clean, row_pair_fn) {
