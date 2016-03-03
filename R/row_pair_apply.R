@@ -468,11 +468,6 @@ predictPair <- function(row1, row2, object) {
   }
   fn2 <- bindFunctionToRowPairs(data, fn1)
   raw_matrix <- t(pairMatrix(nrow(data), fn2))
-  # R drops dimensions if there's only one, so make consistent dimensions here.
-  #if (length(column_names) == 1) {
-  #  raw_matrix <- t(raw_matrix)
-  #}
-  #colnames(raw_matrix) <- column_names
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(raw_matrix)
   assert_single_column(raw_matrix)
