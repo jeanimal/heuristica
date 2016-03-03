@@ -17,6 +17,14 @@ oneRow <- function(matrix_or_data_frame, row_index) {
   matrix_or_data_frame[row_index,,drop=FALSE]
 }
 
+# Input should be a range from -1 to 1.  Output is a range from 0 to 1.
+# rescale0to1(-1) is 0
+# rescale0to1(0) is 0.5
+# rescale0to1(1) is 1
+rescale0To1 <- function(direction_plus_minus_1) {
+  0.5 * (direction_plus_minus_1 + 1)
+}
+
 # private
 stopIfTrainingSetHasLessThanTwoRows <- function(train_data) {
   if (nrow(train_data) == 0) {

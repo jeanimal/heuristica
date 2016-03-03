@@ -19,6 +19,24 @@
 #' @export
 predictRoot <- function(object, row1, row2) UseMethod("predictRoot")
 
+# TODO(jean): rename the above function predictProbInternal.
+
+#' Generic function to predict which of a pair of rows has higher criterion.
+#' 
+#' Implement this for every heuristic in order to use with row_pair and
+#' aggregate functions.
+#'
+#' @param object The object that implements predictPair, e.g. a ttb model.
+#' @param row1 The first row of cues (object$cols_to_fit columns), as a
+#'   one-row matrix.
+#' @param row2 The second row of cues.
+#' @return A number in the set {-1, 0, 1}, where 1 means row1 is predicted to
+#'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
+#' @export
+predictPairInternal <- function(object, row1, row2) {
+  UseMethod("predictPairInternal")
+}
+
 ### Shared documentation stubs ###
 ## TODO: Find a way so these do not show up in actual documenentation.
 
@@ -53,11 +71,6 @@ getWeightedCuePairDirections <- function(coefficients, row1, row2) {
 # Do not take the sign of the difference of row pairs.
 getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
   sign((row1 - row2) %*% coefficients)
-}
-
-# Input should be a range from -1 to 1.  Output is a range from 0 to 1.
-rescale0To1 <- function(direction_plus_minus_1) {
-  0.5 * (direction_plus_minus_1 + 1)
 }
 
 # Private for now. Will export and test when I settle on a name.
@@ -141,6 +154,12 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
 #' @inheritParams stats::coef
 #' @export
 coef.ttbModel <- function(object, ...) object$linear_coef
+
+predictPairInternal.ttbModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
+  return(direction_plus_minus_1)
+}
 
 predictRoot.ttbModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
@@ -577,14 +596,14 @@ predictRoot.logRegModel <- function(object, row1, row2) {
                            object$col_weights_clean, object$row_pair_fn)
 }
 
-logRegKeepModel <- function(train_data, criterion_col, cols_to_fit,
+logRegCorrModel <- function(train_data, criterion_col, cols_to_fit,
                            suppress_warnings=TRUE) {
   return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                            rowDiff, "logRegKeepModel", keepOrder,
+                            rowDiff, "logRegCorrModel", rankByCorrelation,
                             suppress_warnings))
 }
 
-predictRoot.logRegKeepModel <- function(object, row1, row2) {
+predictRoot.logRegCorrModel <- function(object, row1, row2) {
   generalPredictRootLogReg(row1, row2, object$cue_ordering, 
                            object$col_weights_clean, object$row_pair_fn)
 }

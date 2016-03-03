@@ -449,6 +449,40 @@ rowPairApply <- function(row1, row2, ...) {
 #'
 #' Assumes the object implements predictRoot and has $cols_to_fit.
 #'
+#' @param row1 The first row of data.  The cues object$cols_to_fit will be
+#'   passed to the heuristic.
+#' @param row2 The second row of data.  The cues object$cols_to_fit will be
+#'   passed to the heuristic.
+#' @param object The object that implements predictPairInternal, e.g. a fitted
+#'   ttbModel or logRegModel.
+#' @return A number in the set {-1, 0, 1}, where 1 means row1 is predicted to
+#'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
+#' @export
+predictPair <- function(row1, row2, object) {
+  #out <- rowPairApply(row1, row2, heuristics(object))
+  data <- rbind(row1, row2)
+  fn1 <- function(row1, row2) {
+    row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
+    row2_cues <- row2[,object$cols_to_fit, drop=FALSE]
+    predictPairInternal(object, row1_cues, row2_cues)
+  }
+  fn2 <- bindFunctionToRowPairs(data, fn1)
+  raw_matrix <- t(pairMatrix(nrow(data), fn2))
+  # R drops dimensions if there's only one, so make consistent dimensions here.
+  #if (length(column_names) == 1) {
+  #  raw_matrix <- t(raw_matrix)
+  #}
+  #colnames(raw_matrix) <- column_names
+  # The asserts below ensure predictPairInternal returned just one value.
+  assert_single_row(raw_matrix)
+  assert_single_column(raw_matrix)
+  return(unname(raw_matrix[1,1]))
+}
+
+#' Predict which of a pair of rows has a higher criterion.
+#'
+#' Assumes the object implements predictRoot and has $cols_to_fit.
+#'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on
 #'   object).
 #' @param row2 The second row (will apply cols_to_fit for you, based on

@@ -15,7 +15,8 @@
 #' @return The cue validity, a value in the range [0,1].
 #' @export
 cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
-  out <- Hmisc::rcorr.cens(criterion, cue, outx=TRUE)
+  #out <- Hmisc::rcorr.cens(criterion, cue, outx=TRUE)
+  out <- Hmisc::rcorr.cens(cue, criterion, outx=TRUE)
   justDxy <- as.double(out["Dxy"])
   cv <- 0.5 + 0.5*justDxy
   if (is.nan(cv)) { 

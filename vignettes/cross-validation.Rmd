@@ -44,6 +44,7 @@ cols_to_fit <- 4:ncol(data_set)
 Let's enter the models we want to test:
 ```{r}
 vec_of_models <-c(ttbModel, dawesModel, franklinModel, regModel, logRegModel)
+vec_of_models <-c(ttbModel, singleCueModel)
 ```
 Next we define the size of the training and test sets.
 ```{r}
@@ -61,6 +62,9 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     test <- setdiff(1:nrow(x), train)
     # Keep test set a constant size for comparable statistics.
     # Note that head will use all data if it has less than max_test_size
+    if (max_test_size > length(test)) {
+      max_test_size = length(test)
+    }
     test <- sample(test, max_test_size)
 
     training_set <- x[train,]
@@ -127,7 +131,7 @@ data(highschool_dropout)
 data_set <- na.omit(highschool_dropout)
 criterion_col <- 4
 cols_to_fit <- 6:ncol(data_set)
-trainVec <- seq(0.1,0.8,0.1)
+trainVec <- seq(0.1,0.9,0.1)
 trainS <- round(nrow(data_set)*trainVec)
 testS <- nrow(data_set)-trainS
 accuracy<-vector()
