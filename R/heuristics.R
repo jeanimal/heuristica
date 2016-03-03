@@ -230,14 +230,18 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit,
 #' @export
 coef.dawesModel <- function(object, ...) object$linear_coef
 
-predictRoot.dawesModel <- function(object, row1, row2) {
+predictPairInternal.dawesModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
+  return(direction_plus_minus_1)
+}
+
+predictRoot.dawesModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.dawesModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
 }
-
 
 ### Franklin's Model ###
 
@@ -285,9 +289,14 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit,
 #' @export
 coef.franklinModel <- function(object, ...) object$linear_coef
 
-predictRoot.franklinModel <- function(object, row1, row2) {
+predictPairInternal.franklinModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
+  return(direction_plus_minus_1)
+}
+
+predictRoot.franklinModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.franklinModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
@@ -385,6 +394,19 @@ predictRootUsingPredict <- function(object, row1, row2) {
   } else {
     return(0.5)
   }
+}
+
+predictPairInternal.regInterceptModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
+  return(direction_plus_minus_1)
+}
+
+predictRoot.regInterceptModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.regInterceptModel(object, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # probability that row 1 > row 2.
+  return(rescale0To1(direction_plus_minus_1))
 }
 
 # This does the equivalent of predictPairUsingPredict but faster.
