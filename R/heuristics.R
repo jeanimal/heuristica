@@ -337,6 +337,8 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit,
   return(lm(as.formula(formula_str), data=train_df))
 }
 
+# TODO(jean): A general fitting model for both regModel and regInterceptModel.
+
 #' Linear regression wrapper for hueristica
 #'
 #' A wrapper to create a lm model just specifying columns, generating
@@ -448,13 +450,15 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   return(model)
 }
 
-# This does the equivalent of predictPairUsingPredict but faster.
-predictRoot.regModel <- function(object, row1, row2) {
-  # When we subtract rows predictions, the intercept cancels out.  So it's
-  # safe to exclude the intercept from the weights below.
+predictPairInternal.regModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean,
                                                     row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  return(direction_plus_minus_1)
+}
+
+predictRoot.regModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.regModel(object, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
 }
