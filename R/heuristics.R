@@ -397,23 +397,14 @@ predictRootUsingPredict <- function(object, row1, row2) {
 }
 
 predictPairInternal.regInterceptModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
-                                                         row1, row2)
+  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean,
+                                                    row1, row2)
   return(direction_plus_minus_1)
 }
 
 predictRoot.regInterceptModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.regInterceptModel(object, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
-}
-
-# This does the equivalent of predictPairUsingPredict but faster.
-predictRoot.regInterceptModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean,
-                                                    row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
+  # Convert from the range [-1, 1] to the range [0, 1], which is the
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
 }
