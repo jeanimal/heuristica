@@ -15,8 +15,7 @@
 #' @return The cue validity, a value in the range [0,1].
 #' @export
 cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
-  #out <- Hmisc::rcorr.cens(criterion, cue, outx=TRUE)
-  out <- Hmisc::rcorr.cens(cue, criterion, outx=TRUE)
+  out <- Hmisc::rcorr.cens(criterion, cue, outx=TRUE)
   justDxy <- as.double(out["Dxy"])
   cv <- 0.5 + 0.5*justDxy
   if (is.nan(cv)) { 
@@ -50,3 +49,25 @@ matrixCueValidity <- function(data, criterion_col, cols_to_fit,
   return(out)
 }
 
+cueAccuracy <- function(criterion, cue, replaceNanWith=0.5) {
+  out <- Hmisc::rcorr.cens(cue, criterion, outx=FALSE)
+  justDxy <- as.double(out["Dxy"])
+  cv <- 0.5 + 0.5*justDxy
+  if (is.nan(cv)) {
+    cv <- replaceNanWith
+  }
+  return(cv)
+}
+
+cueAccuracyMatrix  <- function(data, criterion_col, cols_to_fit,
+                               replaceNanWith=0.5) {
+  out <- sapply(cols_to_fit, function(col) {
+    cueAccuracy(data[,criterion_col], data[,col],
+                replaceNanWith=replaceNanWith)
+  })
+  out <- c(out)
+  if (length(names(data)) > 0) {
+    names(out) <- names(data)[cols_to_fit]
+  }
+  return(out)
+}

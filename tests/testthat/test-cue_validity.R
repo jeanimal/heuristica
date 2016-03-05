@@ -52,3 +52,34 @@ test_that("matrixCueValidity 3x3 names shifted criterion", {
   expect_equal(c('Cue'), names(cv),tolernace=1)
 })
 
+# cueAccuracy
+
+# cueValidity == cueAccuracy in the cases below.
+expect_equal(1, cueAccuracy(c(5,4), c(1,0)))
+expect_equal(0.5, cueAccuracy(c(5,4), c(1,1)))
+expect_equal(0.5, cueAccuracy(c(5,4), c(0,0)))
+expect_equal(0, cueAccuracy(c(5,4), c(0,1)))
+# Below has a cueValidity of 1.0.  But ties are handled differently for
+# cueAccuracy.
+# Row 1 vs. 2 is correct -> 1.0
+# Row 1 vs. 3 is correct -> 1.0
+# Row 1 vs. 2 is a tie,  -> 0.5
+# The average of these is 2.5 / 3 = 0.8333
+expect_equal(0.8333, cueAccuracy(c(5,4,3), c(1,0,0)), tolerance=0.001)
+expect_equal(0.8333, cueAccuracy(c(5,4,3), c(1,1,0)), tolerance=0.001)
+# Reversed cue:  (0 + 0 + 0.5) / 3 = 0.1666667
+expect_equal(0.16667, cueAccuracy(c(5,4,3), c(0,1,1)), tolerance=0.001)
+expect_equal(0.16667, cueAccuracy(c(5,4,3), c(0,0,1)), tolerance=0.001)
+# Real-valued cue has no ties, so it's still 1.0.
+expect_equal(1, cueAccuracy(c(5,4,3), c(3.3, 2.2, 1.1)), tolerance=0.001)
+# Real values and a tie.
+# (3*1 + 2*1 + 1*0.5)/6 = 5.5/6
+expect_equal(0.916667, cueAccuracy(c(5,4,3,2), c(3.3, 2.2, 1, 1)), tolerance=0.001)
+expect_equal(1.0, cueValidity(c(5,4,3,2), c(3.3, 2.2, 1, 1)), tolerance=0.001)
+# Same but mix it up a bit for lower accuracy.
+# (3*1 + 0 + 0.5 + 1)/6 = 4.5/6
+expect_equal(0.75, cueAccuracy(c(5,4,3,2), c(3.3, 1, 2.2, 1)), tolerance=0.001)
+# cueValidity ignores the tie
+# (3*1 + -1 + __ + 1)/4 = 3/5
+expect_equal(0.8, cueValidity(c(5,4,3,2), c(3.3, 1, 2.2, 1)), tolerance=0.001)
+
