@@ -593,20 +593,37 @@ logRegModel <- function(train_data, criterion_col, cols_to_fit,
 # This is a shared function for predictions.
 sigmoid <- function(z) { 1/(1+exp(-z)) }
 
-generalPredictRootLogReg <- function(row1_raw, row2_raw, cue_ordering,
+generalPredictPairInternalLogReg <- function(row1_raw, row2_raw, cue_ordering,
                                      col_weights_clean, row_pair_fn) {
   row1 <- row1_raw[, cue_ordering, drop=FALSE]
   row2 <- row2_raw[, cue_ordering, drop=FALSE]
   raw_predict <- row_pair_fn(row1, row2) %*% col_weights_clean
   prob_row1_greater <- sigmoid(raw_predict)
+  return(prob_row1_greater)
+}
+
+generalPredictRootLogReg <- function(row1_raw, row2_raw, cue_ordering,
+                                     col_weights_clean, row_pair_fn) {
+  prob_row1_greater <- generalPredictPairInternalLogReg(
+    row1_raw, row2_raw, cue_ordering, col_weights_clean, row_pair_fn)
   rounded_prob <- round(prob_row1_greater, digits=2)
   prediction <- ifelse(rounded_prob > 0.5, 1,
                        ifelse(rounded_prob==0.5, 0.5 ,0 ))
   return(prediction)
 }
 
+# TODO(jean): Tests for predictPairInternal.logRegModel
+
 # This is equivalent to the glm predict like this:
 # predict(model, newdata=as.data.frame(row1 - row2), type="response"))
+predictPairInternal.logRegModel <- function(object, row1, row2) {
+  generalPredictPairInternalLogReg(row1, row2, object$cue_ordering, 
+                                   object$col_weights_clean, object$row_pair_fn)
+}
+
+# This is equivalent to the glm predict like this:
+# predict(model, newdata=as.data.frame(row1 - row2), type="response"))
+# And then probabilities > 0.5 return 1 while probabilities < 0.5 return 0.
 predictRoot.logRegModel <- function(object, row1, row2) {
   generalPredictRootLogReg(row1, row2, object$cue_ordering, 
                            object$col_weights_clean, object$row_pair_fn)
