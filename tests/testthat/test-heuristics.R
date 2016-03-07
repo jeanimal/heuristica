@@ -720,6 +720,19 @@ test_that("logRegModel predictRowPair 2x2 fit train_data", {
   expect_equal(1, nrow(out))
 })
 
+test_that("logRegModel predictPair 2x2 fit train_data", {
+  tol <- 0.0001
+  train_data <- cbind(y=c(5,4), x1=c(1,0))
+  model <- logRegModel(train_data, 1, c(2))
+  expect_equal(1, predictPair(oneRow(train_data, 1),
+                                 oneRow(train_data, 2), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 2),
+                                 oneRow(train_data, 1), model))
+  out <- allRowPairApply(train_data, heuristics(model))
+  # There is only one unique pair.
+  expect_equal(1, nrow(out))
+})
+
 test_that("logRegModel predictRowPair 2x2 fit train_data reverse cue", {
   tol <- 0.0001
   train_data <- cbind(y=c(5,4), x1=c(1,0))

@@ -602,23 +602,28 @@ generalPredictPairInternalLogReg <- function(row1_raw, row2_raw, cue_ordering,
   return(prob_row1_greater)
 }
 
+# This is equivalent to the glm predict like this:
+# predict(model, newdata=as.data.frame(row1 - row2), type="response"))
+# BUT then we round to 0, 0.5, or 1.  (That will change)
 generalPredictRootLogReg <- function(row1_raw, row2_raw, cue_ordering,
                                      col_weights_clean, row_pair_fn) {
   prob_row1_greater <- generalPredictPairInternalLogReg(
     row1_raw, row2_raw, cue_ordering, col_weights_clean, row_pair_fn)
+  # TODO(Jean): When aggregate accuracy is moved off of this, stop
+  # doing the rounding.  Just return the probability.
   rounded_prob <- round(prob_row1_greater, digits=2)
   prediction <- ifelse(rounded_prob > 0.5, 1,
-                       ifelse(rounded_prob==0.5, 0.5 ,0 ))
+                       ifelse(rounded_prob==0.5, 0.5 , 0))
   return(prediction)
 }
 
-# TODO(jean): Tests for predictPairInternal.logRegModel
-
-# This is equivalent to the glm predict like this:
-# predict(model, newdata=as.data.frame(row1 - row2), type="response"))
 predictPairInternal.logRegModel <- function(object, row1, row2) {
-  generalPredictPairInternalLogReg(row1, row2, object$cue_ordering, 
+  prob_row1_greater <-  generalPredictPairInternalLogReg(row1, row2, object$cue_ordering, 
                                    object$col_weights_clean, object$row_pair_fn)
+  rounded_prob <- round(prob_row1_greater, digits=2)
+  prediction <- ifelse(rounded_prob > 0.5, 1,
+                       ifelse(rounded_prob==0.5, 0 , -1))
+  return(prediction)
 }
 
 # This is equivalent to the glm predict like this:
