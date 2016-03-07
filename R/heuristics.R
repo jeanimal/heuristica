@@ -123,7 +123,7 @@ reverseAsNeeded <- function(cue_validities) {
 ttbModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
     cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
@@ -208,7 +208,7 @@ predictRoot.ttbModel <- function(object, row1, row2) {
 dawesModel <- function(train_data, criterion_col, cols_to_fit,
                        reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   
   if (reverse_cues == TRUE){ 
     reverse_info = reverseAsNeeded(cue_validities)
@@ -268,7 +268,7 @@ predictRoot.dawesModel <- function(object, row1, row2) {
 franklinModel <- function(train_data, criterion_col, cols_to_fit,
                           reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
     cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
@@ -467,7 +467,7 @@ predictRoot.regModel <- function(object, row1, row2) {
 
 # An implementation of cue_order_fn that ranks cues by cue validity.
 rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   reverse_info = reverseAsNeeded(cue_validities)
   # rank by default ranks in ascending order.  A trick to get a ranking in
   # descending order is to pass it the negative of the data.
@@ -684,7 +684,7 @@ predictRoot.logRegSignModel <- function(object, row1, row2) {
 singleCueModel <- function(train_data, criterion_col, cols_to_fit,
                            reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
     cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
@@ -745,7 +745,7 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 minModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cue_validities <- matrixCueValidity(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
     cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse

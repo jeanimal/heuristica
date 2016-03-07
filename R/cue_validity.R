@@ -36,7 +36,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
 #' @export
-matrixCueValidity <- function(data, criterion_col, cols_to_fit, 
+cueValidityMatrix <- function(data, criterion_col, cols_to_fit, 
                               replaceNanWith=0.5) {
   out <- sapply(cols_to_fit, function(col) {
     cueValidity(data[,criterion_col], data[,col],
