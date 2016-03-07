@@ -4,6 +4,34 @@
 
 context("heuristics_batch")
 
+test_cue_reorder <- function(model, has_cv=TRUE) {
+  train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))
+  #    criterion   a  b
+  #  1         9 101 59
+  #  2         8 101 58
+  #  3         7   2  5
+  #  4         6   2 59
+  fitted_model <- model(train_df, 1, c(2, 3))
+  fitted_model_rev <- model(train_df, 1, c(3, 2))
+  # Checking fit only applies to some heuristics.
+  if (has_cv) {
+    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities, tolerance=0.001)
+    expect_equal(c(b=0.6, a=1), fitted_model_rev$cue_validities, tolerance=0.001)
+  }
+  # Make sure models still agree on outputs.
+  out <- allRowPairApply(train_df, heuristics(fitted_model))
+  out_rev <- allRowPairApply(train_df, heuristics(fitted_model_rev))
+  expect_equal(out, out_rev)
+}
+
+test_that("test_cue_reorder ttb",      {test_cue_reorder(ttbModel)})
+test_that("test_cue_reorder singleCue",{test_cue_reorder(singleCueModel)})
+test_that("test_cue_reorder dawes",    {test_cue_reorder(dawesModel)})
+test_that("test_cue_reorder franklin", {test_cue_reorder(franklinModel)})
+test_that("test_cue_reorder reg",      {test_cue_reorder(regModel, has_cv=FALSE)})
+test_that("test_cue_reorder regIntercept", {test_cue_reorder(regInterceptModel, has_cv=FALSE)})
+test_that("test_cue_reorder logReg",   {test_cue_reorder(logRegModel, has_cv=FALSE)})
+
 # This test is named by the cue validities of the two cues, 1.0 and 0.6.
 test_10_06 <- function(model, expected, has_cv=TRUE) {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))
