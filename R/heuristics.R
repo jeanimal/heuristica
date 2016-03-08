@@ -690,6 +690,7 @@ predictRoot.logRegSignModel <- function(object, row1, row2) {
 #' the highest validity, then on each prediction it randomly selects which one
 #' to use (so it might not give the same answer every time).
 #' 
+#' Reference: Hogarth, R. & Karelaia, N. (2007). Heuristic and Linear Models of Judgment: Matching Rules and Environments. Psychological Review. 114(3), pp.733-758.
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #' @examples
