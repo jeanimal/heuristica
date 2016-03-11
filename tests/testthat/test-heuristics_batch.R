@@ -82,9 +82,9 @@ test_10_06 <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.001)
   }
   # Check output.
-  expect_equal(expected, predictRowPair(oneRow(train_df, 1),
+  expect_equal(expected, predictPairProb(oneRow(train_df, 1),
                                         oneRow(train_df, 2), fitted_model), tolerance=0.001)
-  expect_equal(1-expected, predictRowPair(oneRow(train_df, 2),
+  expect_equal(1-expected, predictPairProb(oneRow(train_df, 2),
                                           oneRow(train_df, 1), fitted_model), tolerance=0.001)
 }
 
@@ -116,9 +116,9 @@ test_00_04_rc <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.001)
   }
   # Check output.
-  expect_equal(expected, predictRowPair(oneRow(train_df, 1),
+  expect_equal(expected, predictPairProb(oneRow(train_df, 1),
                                         oneRow(train_df, 2), fitted_model), tolerance=0.001)
-  expect_equal(1-expected, predictRowPair(oneRow(train_df, 2),
+  expect_equal(1-expected, predictPairProb(oneRow(train_df, 2),
                                           oneRow(train_df, 1), fitted_model), tolerance=0.001)
 }
 
@@ -146,9 +146,9 @@ test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.002)
   }
   # Check prediction.
-  expect_equal(expected, predictRowPair(oneRow(train_df, 3),
+  expect_equal(expected, predictPairProb(oneRow(train_df, 3),
                                         oneRow(train_df, 4), fitted_model))
-  expect_equal(1-expected, predictRowPair(oneRow(train_df, 4),
+  expect_equal(1-expected, predictPairProb(oneRow(train_df, 4),
                                           oneRow(train_df, 3), fitted_model))
 }
 
@@ -174,9 +174,9 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.002)
   }
   # Check prediction.
-  expect_equal(expected, predictRowPair(oneRow(train_df, 1),
+  expect_equal(expected, predictPairProb(oneRow(train_df, 1),
                                         oneRow(train_df, 2), fitted_model))
-  expect_equal(1-expected, predictRowPair(oneRow(train_df, 2),
+  expect_equal(1-expected, predictPairProb(oneRow(train_df, 2),
                                           oneRow(train_df, 1), fitted_model))
   
 }

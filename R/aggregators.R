@@ -45,7 +45,7 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
   return(df[(df$row1==row1) & (df$row2==row2),])
 }
 
-#' Generates a matrix of all predictRowPair predictions plus correct output.
+#' Generates a matrix of all predictPairProb predictions plus correct output.
 #'
 #' This geneartes a column of correct output (whether row 1 or row 2 is
 #' greater) from the test matrix, then runs all the heuristics in order,
@@ -58,7 +58,7 @@ getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @return Same matrix as predictPair but with columns on correctness
 #' @seealso
-#' \code{\link{predictRowPair}}
+#' \code{\link{predictPairProb}}
 #' @export
 predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
   # Assume the criterion_col is same for all heuristics.

@@ -90,7 +90,7 @@ row1 <- oneRow(schools, 1)
 row1
 row2 <- oneRow(schools, 2)
 row2
-predictRowPair(row1, row2, myFit)
+predictPairProb(row1, row2, myFit)
 ```
 
 We can see in the original data.frame that Austin had the higher dropout rate, meaning 1.0 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be 0 or 1.  (An exception is when the criterion is equal for both values, in which case the correct output is defined as 0.5.)
@@ -171,7 +171,7 @@ predictRoot.lassoModel <- function(object, row1, row2) {
 First, prove we can predict one row pair.
 
 ```{r}
-predictRowPair(oneRow(my_data, 1), oneRow(my_data, 2), lasso)
+predictPairProb(oneRow(my_data, 1), oneRow(my_data, 2), lasso)
 ```
 
 Now predict all row pairs in our data set.  It got 91% correct-- pretty good!

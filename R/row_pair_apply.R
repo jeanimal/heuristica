@@ -25,7 +25,7 @@
 #'   is not normally used by ordinary users.
 #' 
 #' @seealso
-#' \code{\link{predictRowPair}} for a simpler way to generate predictions
+#' \code{\link{predictPairProb}} for a simpler way to generate predictions
 #'   from fitted models.
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
@@ -50,7 +50,7 @@ createFunction <- function(object, test_data) UseMethod("createFunction")
 #' ## Under the hood, it calls ttb's predictRoot.
 #' 
 #' @seealso
-#' \code{\link{predictRowPair}} for a simpler way to generate predictions
+#' \code{\link{predictPairProb}} for a simpler way to generate predictions
 #'   from fitted models.
 #' \code{\link{heuristics}} for a non-list version of this function.
 #' @seealso
@@ -91,7 +91,7 @@ heuristicsList <- function(list_of_fitted_heuristics) {
 #' ## Under the hood, it calls ttb's predictRoot.
 #' 
 #' @seealso
-#' \code{\link{predictRowPair}} for a simpler way to generate predictions
+#' \code{\link{predictPairProb}} for a simpler way to generate predictions
 #'   from fitted models.
 #' @seealso
 #' \code{\link{predictRoot}} which must be implemented by heuristics in
@@ -487,7 +487,7 @@ predictPair <- function(row1, row2, object) {
 #' @return A double from 0 to 1, representing the probability that row1's
 #'   criterion is greater than row2's criterion.
 #' @export
-predictRowPair <- function(row1, row2, object) {
+predictPairProb <- function(row1, row2, object) {
   out <- rowPairApply(row1, row2, heuristics(object))
   # The asserts below ensure predictRoot had a reasonable implementation.
   assert_single_row(out)

@@ -107,14 +107,14 @@ reverseAsNeeded <- function(cue_validities) {
 #' ## validity 0.
 #' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 #' ttb <- ttbModel(train_matrix, 1, c(2,3))
-#' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
+#' predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
 #' ## But this test data results in an incorrect prediction because x1 is
 #' ## unexpected.
 #' test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
-#' predictRowPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
+#' predictPairProb(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 #'
 #' @seealso
-#' \code{\link{predictRowPair}} for prediction.
+#' \code{\link{predictPairProb}} for prediction.
 #' @seealso
 #' Wikipedia's entry on
 #' \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
@@ -198,7 +198,7 @@ predictRoot.ttbModel <- function(object, row1, row2) {
 #'   }
 #'
 #' @seealso
-#' \code{\link{predictRowPair}} for predicting among a pair of alternatives.
+#' \code{\link{predictPairProb}} for predicting among a pair of alternatives.
 #' @seealso
 #' Wikipedia's entry on
 #' \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
@@ -263,7 +263,7 @@ predictRoot.dawesModel <- function(object, row1, row2) {
 #'   }
 #'
 #' @seealso
-#' \code{\link{predictRowPair}} for predicting among a pair of rows.
+#' \code{\link{predictPairProb}} for predicting among a pair of rows.
 #' @export 
 franklinModel <- function(train_data, criterion_col, cols_to_fit,
                           reverse_cues=TRUE) {
@@ -356,7 +356,7 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit,
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso
-#' \code{\link{predictRowPair}} for predicting between a pair of rows.
+#' \code{\link{predictPairProb}} for predicting between a pair of rows.
 #'
 #' @export
 regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
@@ -432,7 +432,7 @@ predictRoot.regInterceptModel <- function(object, row1, row2) {
 #' @seealso
 #' \code{\link{predict.lm}} for prediction.
 #' @seealso
-#' \code{\link{predictRowPair}} for predicting between a pair of alternatives.
+#' \code{\link{predictPairProb}} for predicting between a pair of alternatives.
 #'
 #' @export
 regModel <- function(train_matrix, criterion_col, cols_to_fit) {
@@ -703,9 +703,9 @@ predictRoot.logRegSignModel <- function(object, row1, row2) {
 #' ## validity 0.
 #' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 #' singlecue <- singleCueModel(train_matrix, 1, c(2,3))
-#' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue) 
+#' predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue) 
 #' @seealso
-#' \code{\link{predictRowPair}} for prediction.
+#' \code{\link{predictPairProb}} for prediction.
 #' @seealso
 #'
 #' @export
@@ -768,10 +768,10 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 #' ## validity 0.
 #' train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
 #' min <- minModel(train_matrix, 1, c(2,3))
-#' predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
+#' predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
 #'
 #' @seealso
-#' \code{\link{predictRowPair}} for prediction.
+#' \code{\link{predictPairProb}} for prediction.
 #' @seealso
 #'
 #' @export
