@@ -965,6 +965,11 @@ test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
                                    oneRow(train_df, 2), model))
   expect_equal(0.5, predictRowPair(oneRow(train_df, 2),
                                    oneRow(train_df, 1), model))
+  
+  expect_equal(0, predictPair(oneRow(train_df, 1),
+                              oneRow(train_df, 2), model))
+  expect_equal(0, predictPair(oneRow(train_df, 2),
+                              oneRow(train_df, 1), model))
 })
 
 test_that("singleCueModel 4x3 real value cue c dominates", {
@@ -983,6 +988,11 @@ test_that("singleCueModel 4x3 real value cue c dominates", {
                                  oneRow(train_df, 4), model))
   expect_equal(0, predictRowPair(oneRow(train_df, 4),
                                  oneRow(train_df, 3), model))
+  
+  expect_equal(1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 4),
+                               oneRow(train_df, 3), model))
 })
 
 test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
