@@ -1022,6 +1022,11 @@ test_that("minModel predictRowPair 2x2 forward", {
                                  oneRow(train_data, 2), model))
   expect_equal(0, predictRowPair(oneRow(train_data, 2),
                                  oneRow(train_data, 1), model))
+  
+  expect_equal(1, predictPair(oneRow(train_data, 1),
+                              oneRow(train_data, 2), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 2),
+                               oneRow(train_data, 1), model))
 })
 
 test_that("minModel predictRowPair 2x2 reverse cue", {
@@ -1031,6 +1036,11 @@ test_that("minModel predictRowPair 2x2 reverse cue", {
                                  oneRow(train_data, 2), model))
   expect_equal(0, predictRowPair(oneRow(train_data, 2),
                                  oneRow(train_data, 1), model))
+  
+  expect_equal(1, predictPair(oneRow(train_data, 1),
+                              oneRow(train_data, 2), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 2),
+                               oneRow(train_data, 1), model))
 })
 
 test_that("minModel predictRowPair 5x4 all cues same after reverse", {

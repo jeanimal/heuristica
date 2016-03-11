@@ -811,12 +811,17 @@ minModel <- function(train_data, criterion_col, cols_to_fit,
 #' @export
 coef.minModel <- function(object, ...) return(object$unsigned_linear_coef)
 
-predictRoot.minModel <- function(object, row1, row2) {
+predictPairInternal.minModel <- function(object, row1, row2) {
   random_order_coefficients <- object$cue_sample_fn(
     object$unsigned_linear_coef)
   coefficients <- object$cue_directions * random_order_coefficients
   direction_plus_minus_1 <- sign(
     getCuePairDirections(row1, row2) %*% coefficients)
+  return(direction_plus_minus_1)
+}
+
+predictRoot.minModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.minModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
