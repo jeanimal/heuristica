@@ -31,6 +31,6 @@ This version assumes you always want to include the intercept.
 
 \code{\link{predict.lm}} for prediction.
 
-\code{\link{predictRowPair}} for predicting between a pair of rows.
+\code{\link{predictPairProb}} for predicting between a pair of rows.
 }
 

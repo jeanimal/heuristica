@@ -41,7 +41,7 @@ validity is 0.5 (rather than randomly assigning +1 or -1) to give faster
 convergence of average accuracy.
 }
 \seealso{
-\code{\link{predictRowPair}} for predicting among a pair of alternatives.
+\code{\link{predictPairProb}} for predicting among a pair of alternatives.
 
 Wikipedia's entry on
 \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.

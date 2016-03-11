@@ -30,11 +30,11 @@ that discriminates (has differing values on the two objects).
 ## validity 0.
 train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
 min <- minModel(train_matrix, 1, c(2,3))
-predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
+predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
 
 }
 \seealso{
-\code{\link{predictRowPair}} for prediction.
+\code{\link{predictPairProb}} for prediction.
 
 
 }

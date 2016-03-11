@@ -27,7 +27,7 @@ head(out)
 
 }
 \seealso{
-\code{\link{predictRowPair}} for a simpler way to generate predictions
+\code{\link{predictPairProb}} for a simpler way to generate predictions
   from fitted models.
 \code{\link{heuristics}} for a non-list version of this function.
 

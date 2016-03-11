@@ -474,9 +474,10 @@ predictPair <- function(row1, row2, object) {
   return(unname(raw_matrix[1,1]))
 }
 
-#' Predict which of a pair of rows has a higher criterion.
+#' Predict the probablity that row1 has a higher criterion than row2.
 #'
-#' Assumes the object implements predictRoot and has $cols_to_fit.
+#' It uses the passed-in object to do the prediction, assuming the object
+#' implements predictRoot and has $cols_to_fit.
 #'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on
 #'   object).

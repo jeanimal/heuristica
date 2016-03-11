@@ -35,6 +35,6 @@ Franklin's Model is a linear model with weights calculated by
 The name is because it was inspired by a method used by Ben Franklin.
 }
 \seealso{
-\code{\link{predictRowPair}} for predicting among a pair of rows.
+\code{\link{predictPairProb}} for predicting among a pair of rows.
 }
 

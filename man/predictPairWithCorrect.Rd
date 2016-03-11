@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{predictPairWithCorrect}
 \alias{predictPairWithCorrect}
-\title{Generates a matrix of all predictRowPair predictions plus correct output.}
+\title{Generates a matrix of all predictPairProb predictions plus correct output.}
 \usage{
 predictPairWithCorrect(fitted_heuristic_list, test_data)
 }
@@ -23,6 +23,6 @@ generating a column of predictions for each, naming each column from the
 heuristic class.
 }
 \seealso{
-\code{\link{predictRowPair}}
+\code{\link{predictPairProb}}
 }
 

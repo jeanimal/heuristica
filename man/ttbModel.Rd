@@ -42,15 +42,15 @@ It does NOT implement predict on purpose.
 ## validity 0.
 train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 ttb <- ttbModel(train_matrix, 1, c(2,3))
-predictRowPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
+predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
 ## But this test data results in an incorrect prediction because x1 is
 ## unexpected.
 test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
-predictRowPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
+predictPairProb(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 
 }
 \seealso{
-\code{\link{predictRowPair}} for prediction.
+\code{\link{predictPairProb}} for prediction.
 
 Wikipedia's entry on
 \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
