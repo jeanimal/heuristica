@@ -17,6 +17,10 @@ validity for}
 \item{replaceNanWith}{The value to return as cue validity in case it
 cannot be calculated.}
 }
+\value{
+A vector of cue validities applying to each of the columns in
+        cols_to_fit, in that order.
+}
 \description{
 If you know you want cue validities for many columns in your data,
 this function makes it easy.
