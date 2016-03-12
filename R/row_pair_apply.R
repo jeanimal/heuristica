@@ -445,6 +445,17 @@ rowPairApply <- function(row1, row2, ...) {
   return(out)
 }
 
+makeFunc <- function(row1, row2, object) {
+  data <- rbind(row1, row2)
+  fn1 <- function(row1, row2) {
+    row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
+    row2_cues <- row2[,object$cols_to_fit, drop=FALSE]
+    predictPairInternal(object, row1_cues, row2_cues)
+  }
+  fn2 <- bindFunctionToRowPairs(data, fn1)
+  return(fn2)
+}
+
 #' Predict which of a pair of rows has a higher criterion.
 #'
 #' Assumes the object implements predictRoot and has $cols_to_fit.
@@ -459,14 +470,8 @@ rowPairApply <- function(row1, row2, ...) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
-  data <- rbind(row1, row2)
-  fn1 <- function(row1, row2) {
-    row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
-    row2_cues <- row2[,object$cols_to_fit, drop=FALSE]
-    predictPairInternal(object, row1_cues, row2_cues)
-  }
-  fn2 <- bindFunctionToRowPairs(data, fn1)
-  raw_matrix <- t(pairMatrix(nrow(data), fn2))
+  fn2 <- makeFunc(row1, row2, object)
+  raw_matrix <- t(pairMatrix(2, fn2))
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(raw_matrix)
   assert_single_column(raw_matrix)
