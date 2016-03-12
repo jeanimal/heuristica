@@ -459,7 +459,6 @@ rowPairApply <- function(row1, row2, ...) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
-  #out <- rowPairApply(row1, row2, heuristics(object))
   data <- rbind(row1, row2)
   fn1 <- function(row1, row2) {
     row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
