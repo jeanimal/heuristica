@@ -40,6 +40,12 @@ test_that("combineIntoOneFn", {
   expect_equal(c(100, 101, 102), fn_all(100))
 })
 
+test_that("combineIntoOneFn two column functions", {
+  plusOneAndPlusTwo <- function(a) return(c(a+1, a+2))
+  fn_all <- combineIntoOneFn(list(identity, plusOneAndPlusTwo, identity))
+  expect_equal(c(100, 101, 102, 100), fn_all(100))
+})
+
 #
 # applyFunctionToRowPairs
 #
