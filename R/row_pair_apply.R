@@ -445,15 +445,14 @@ rowPairApply <- function(row1, row2, ...) {
   return(out)
 }
 
-makeRowPairFunction <- function(data, object, internalFn) {
+makeRowPairFunctionForObject <- function(data, object, internalFn) {
   fn1 <- function(row1, row2) {
     row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
     row2_cues <- row2[,object$cols_to_fit, drop=FALSE]
     # e.g. predictPairInternal(object, row1_cues, row2_cues)
     internalFn(object, row1_cues, row2_cues)
   }
-  fn2 <- bindFunctionToRowPairs(data, fn1)
-  return(fn2)
+  return(fn1)
 }
 
 #' Predict which of a pair of rows has a higher criterion.
@@ -471,7 +470,10 @@ makeRowPairFunction <- function(data, object, internalFn) {
 #' @export
 predictPair <- function(row1, row2, object) {
   data <- rbind(row1, row2)
-  fn2 <- makeRowPairFunction(data, object, predictPairInternal)
+  # fn1 is the extra step needed by heuristics.
+  # TODO: how get column names for other functions?
+  fn1 <- makeRowPairFunctionForObject(data, object, predictPairInternal)
+  fn2 <- bindFunctionToRowPairs(data, fn1)
   raw_matrix <- t(pairMatrix(2, fn2))
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(raw_matrix)
