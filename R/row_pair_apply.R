@@ -275,7 +275,7 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 # Combines all functions in function_list into one function that can
 # be passed into an apply on data.  Output of functions is put in columns.
 # Functions can generate more than one column of output.
-make_all_fn <- function(function_list) {
+combineIntoOneFn <- function(function_list) {
   all_fn <- function(x) {
     out_all <- c()
     y <- 0
@@ -346,7 +346,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
     function_list <- c(function_list, fn)
     column_names <- c(column_names, function_creator$column_names)
   }
-  all_fn <- make_all_fn(function_list)
+  all_fn <- combineIntoOneFn(function_list)
   raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
   # R drops dimensions if there's only one, so make consistent dimensions here.
   if (length(column_names) == 1) {

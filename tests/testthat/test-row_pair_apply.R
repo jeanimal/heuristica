@@ -28,6 +28,18 @@ test_that("bindFunctionToRowPairs diff preserve column names", {
 
 # TODO: Test row index out of range.  Should that live in oneRow?
 
+test_that("combineIntoOneFn", {
+  expect_equal(111, identity(111)) # A sanity check
+  fn_all <- combineIntoOneFn(list(identity))
+  expect_equal(c(222), fn_all(222))
+  fn_all <- combineIntoOneFn(list(identity, identity))
+  expect_equal(c(333, 333), fn_all(333))
+  plusOne <- function(a) return(a+1)
+  plusTwo <- function(a) return(a+2)
+  fn_all <- combineIntoOneFn(list(identity, plusOne, plusTwo))
+  expect_equal(c(100, 101, 102), fn_all(100))
+})
+
 #
 # applyFunctionToRowPairs
 #
