@@ -445,8 +445,7 @@ rowPairApply <- function(row1, row2, ...) {
   return(out)
 }
 
-makeFunc <- function(row1, row2, object) {
-  data <- rbind(row1, row2)
+makeFunc <- function(data, object) {
   fn1 <- function(row1, row2) {
     row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
     row2_cues <- row2[,object$cols_to_fit, drop=FALSE]
@@ -470,7 +469,8 @@ makeFunc <- function(row1, row2, object) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
-  fn2 <- makeFunc(row1, row2, object)
+  data <- rbind(row1, row2)
+  fn2 <- makeFunc(data, object)
   raw_matrix <- t(pairMatrix(2, fn2))
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(raw_matrix)
