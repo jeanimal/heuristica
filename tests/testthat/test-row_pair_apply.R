@@ -28,22 +28,35 @@ test_that("bindFunctionToRowPairs diff preserve column names", {
 
 # TODO: Test row index out of range.  Should that live in oneRow?
 
-test_that("combineIntoOneFn", {
+test_that("combineIntoOneFn identity once and twice", {
   expect_equal(111, identity(111)) # A sanity check
   fn_all <- combineIntoOneFn(list(identity))
-  expect_equal(c(222), fn_all(222))
+  expect_equal(cbind(out=222), fn_all(222))
   fn_all <- combineIntoOneFn(list(identity, identity))
-  expect_equal(c(333, 333), fn_all(333))
+  expect_equal(cbind(333, 333), unname(fn_all(333)))
+})
+
+test_that("combineIntoOneFn plus functions", {
   plusOne <- function(a) return(a+1)
   plusTwo <- function(a) return(a+2)
   fn_all <- combineIntoOneFn(list(identity, plusOne, plusTwo))
-  expect_equal(c(100, 101, 102), fn_all(100))
+  expect_equal(cbind(100, 101, 102), unname(fn_all(100)))
 })
 
 test_that("combineIntoOneFn two column functions", {
-  plusOneAndPlusTwo <- function(a) return(c(a+1, a+2))
+  plusOneAndPlusTwo <- function(a) return(cbind(a+1, a+2))
   fn_all <- combineIntoOneFn(list(identity, plusOneAndPlusTwo, identity))
-  expect_equal(c(100, 101, 102, 100), fn_all(100))
+  expect_equal(cbind(100, 101, 102, 100), unname(fn_all(100)))
+})
+
+test_that("combineIntoOneFn two column function with header", {
+  plusOneAndPlusTwoWithHeader <- function(a) {
+    return(cbind(x1=a+1, x2=a+2))
+  }
+  # sanity check
+  expect_equal(cbind(x1=101, x2=102), plusOneAndPlusTwoWithHeader(100))
+  fn_all <- combineIntoOneFn(list(plusOneAndPlusTwoWithHeader))
+  expect_equal(cbind(x1=101, x2=102), fn_all(100))
 })
 
 #

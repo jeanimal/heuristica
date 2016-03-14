@@ -157,12 +157,11 @@ createFunction.heuristics <- function(object, test_data) {
   all_predictRoot_fn <- function(index_pair) {
     row1 <- oneRow(test_data_trim, index_pair[1])
     row2 <- oneRow(test_data_trim, index_pair[2])
-    out_all <- vector()
-    y <- 0
+    out_all <- NULL
     for (implementer in object$predictRoot_implementers) {
-      #print(class(implementer))
+      # print(class(implementer))
       out <- predictRoot(implementer, row1, row2)
-      # TODO(Jeanw): Test the checks below.
+      # TODO(Jean): Test the checks below.
       if (out < 0) {
         stop(paste("ERROR heuristic of class",class(implementer),"predicted",
                    out,", which is < 0"))
@@ -171,8 +170,11 @@ createFunction.heuristics <- function(object, test_data) {
         stop(paste("ERROR heuristic of class",class(implementer),"predicted",
                    out,", which is > 1"))
       }
-      y <- y+1
-      out_all[[y]] <- out
+      if (is.null(out_all)) {
+        out_all <- cbind(out)
+      } else {
+        out_all <- cbind(out_all, out)
+      }
     }
     return(out_all)
   }
@@ -239,7 +241,7 @@ rowIndexes <- function(rowIndexColNames=c("Row1", "Row2")) {
 }
 
 createFunction.rowIndexes<- function(object, test_data) {
-  row_index_fn <- function(index_pair) c(index_pair[1], index_pair[2])
+  row_index_fn <- function(index_pair) cbind(index_pair[1], index_pair[2])
   return(row_index_fn)
 }
 
@@ -257,8 +259,8 @@ createFunction.colPairValues<- function(object, test_data) {
   # The column value might not be numeric, so do not convert to a matrix.
   column_df <- test_data[, object$input_column_index, drop=FALSE]
   column_fn <- function(index_pair)
-    c(column_df[index_pair[1], , drop=FALSE],
-      column_df[index_pair[2], , drop=FALSE])
+    cbind(column_df[index_pair[1], , drop=FALSE],
+          column_df[index_pair[2], , drop=FALSE])
   return(column_fn)
 }
 
@@ -269,12 +271,17 @@ createFunction.colPairValues<- function(object, test_data) {
 #' @return A matrix of the output of the function for all unique row pairs:
 #'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
 pairMatrix <- function(num_row, pair_evaluator_fn) {
-  as.matrix(combn(num_row, 2, pair_evaluator_fn))
+  out <- combn(num_row, 2, pair_evaluator_fn)
+  rows <- dim(out)[[3]]
+  cols <- dim(out)[[2]]
+  return(matrix(out, rows, cols, byrow=TRUE))
 }
 
-# Combines all functions in function_list into one function that can
-# be passed into an apply on data.  Output of functions is put in columns.
-# Functions can generate more than one column of output.
+# Combines all functions in function_list into one function that can be
+# passed into an apply on data.  Output is one-row matrix with the results of
+# functions in columns.  A function can generate more than one column but in
+# that case MUST output a row rather than a vector.  Column headers are
+# included in output.
 combineIntoOneFn <- function(function_list) {
   all_fn <- function(x) {
     out_all <- c()
@@ -282,7 +289,11 @@ combineIntoOneFn <- function(function_list) {
     for (fun in function_list) {
       out <- fun(x)
       y <- y+1
-      out_all <- c(out_all, out)
+      if (is.null(out_all)) {
+        out_all <- cbind(out)
+      } else {
+        out_all <- cbind(out_all, out)
+      }
     }
     return(out_all)
   }
@@ -347,11 +358,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
     column_names <- c(column_names, function_creator$column_names)
   }
   all_fn <- combineIntoOneFn(function_list)
-  raw_matrix <- t(pairMatrix(nrow(test_data), all_fn))
-  # R drops dimensions if there's only one, so make consistent dimensions here.
-  if (length(column_names) == 1) {
-    raw_matrix <- t(raw_matrix)
-  }
+  raw_matrix <- pairMatrix(nrow(test_data), all_fn)
   colnames(raw_matrix) <- column_names
   return(raw_matrix)
 }
