@@ -285,10 +285,8 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 combineIntoOneFn <- function(function_list) {
   all_fn <- function(x) {
     out_all <- c()
-    y <- 0
     for (fun in function_list) {
       out <- fun(x)
-      y <- y+1
       if (is.null(out_all)) {
         out_all <- cbind(out)
       } else {
