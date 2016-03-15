@@ -721,9 +721,11 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit,
     cue_validities_with_reverse <- cue_validities
     cue_directions <- rep(1, length(cue_validities_with_reverse))
   }
+  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
+  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
+  unsigned_linear_coef <- sapply(cue_ranks, function(v)
+   if (v==1) 1 else 0)
 
-  unsigned_linear_coef <- sapply(cue_validities_with_reverse, function(v)
-    if (v==max(cue_validities_with_reverse)) 1 else 0)
   linear_coef <- cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
