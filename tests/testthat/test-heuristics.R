@@ -1013,6 +1013,18 @@ test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
                                  oneRow(train_df, 3), model))
 })
 
+
+test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
+  train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59))
+  # Cue a and b have validity 2/3, the model should pick one cue at random rather than using both
+  model <- singleCueModel(train_df, 1, c(2:3))
+
+  expect_equal(0, predictPairProb(oneRow(train_df, 3),
+                                  oneRow(train_df, 4), model))
+  expect_equal(1, predictPairProb(oneRow(train_df, 4),
+                                  oneRow(train_df, 3), model))
+})
+
 ## minModel
 
 test_that("minModel predictPairProb 2x2 forward", {
