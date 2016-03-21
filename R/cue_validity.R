@@ -24,6 +24,30 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
+# Proof of concept.  Not in use yet.
+cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
+  data <- cbind(criterion, cue)
+  correctIncorrectFn <- function(row1, row2) {
+    sign_diff <- sign(row1 - row2)
+    if (sign_diff[,2,drop = FALSE] == 0) {
+      return(cbind(0,0))
+    } else if (sign_diff[,2,drop = FALSE] == sign_diff[,1,drop = FALSE]) {
+      return(cbind(1,0))
+    } else {
+      return(cbind(0,1))
+    }
+  }
+  fn2 <- bindFunctionToRowPairs(data, correctIncorrectFn)
+  correct_incorrect <- pairMatrix(nrow(data), fn2)
+  correct <- sum(correct_incorrect[,1,drop = FALSE])
+  incorrect <- sum(correct_incorrect[,2,drop = FALSE])
+  cv <- correct / (correct + incorrect)
+  if (is.nan(cv)) {
+    cv <- replaceNanWith
+  }
+  return(cv)
+}
+
 #' Calculate the cue validity for all specified columns
 #'
 #' If you know you want cue validities for many columns in your data,
@@ -49,6 +73,27 @@ cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
     names(out) <- names(data)[cols_to_fit]
   }
   return(out)
+}
+
+agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
+  # The line below puts the criterion into column 1.
+  trim_data <- data[,c(criterion_col, cols_to_fit), drop=FALSE]
+  sign_diffs <- applyFunctionToRowPairs(trim_data, rowDiffSign)
+  # Multiply the criterion column by the rest.  Easy matrix math requires
+  # repeating the criterion column, one for each cue.
+  cue_cols <- seq(length(cols_to_fit)) + 1      # e.g. 2,3,4
+  criterion_cols <- rep(1, length(cols_to_fit)) # e.g. 1,1,1
+  # Multiply by cue_col first to preserve its column name.
+  concordance <- sign_diffs[,cue_cols, drop=FALSE] *
+    sign_diffs[,criterion_cols, drop=FALSE]
+  return(concordance)
+}
+
+cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWith=0.5) {
+  agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
+  pos <- apply(agreement, 2, function(x) { sum(x[x>0]) })
+  neg <- apply(agreement, 2, function(x) { sum(abs(x[x<0])) })
+  return(pos / (pos+neg))
 }
 
 cueAccuracy <- function(criterion, cue, replaceNanWith=0.5) {

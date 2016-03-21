@@ -103,4 +103,60 @@ test_that("cueAccuracyMatrix with 3-cue data.frame", {
   expect_equal(c(x1=1.0, x2=0, x3=0.5), cv)
 })
 
+# agreementWithCriterionMatrix
+
+test_that("agreementWithCriterionMatrix simple 1", {
+  matrix <- cbind(y=c(2,1), x=c(1,0))
+  agreement <- agreementWithCriterionMatrix(matrix, 1, c(2))
+  expect_equal(cbind(x=1), oneRow(agreement, 1))
+})
+
+test_that("agreementWithCriterionMatrix simple 1 reverse", {
+  # Both the criterion and cue are reversed, so they still agree.
+  matrix <- cbind(y=c(1,2), x=c(0,1))
+  agreement <- agreementWithCriterionMatrix(matrix, 1, c(2))
+  expect_equal(cbind(x=1), oneRow(agreement, 1))
+})
+
+test_that("agreementWithCriterionMatrix simple 0", {
+  matrix <- cbind(y=c(2,1), x=c(1,1))
+  agreement <- agreementWithCriterionMatrix(matrix, 1, c(2))
+  expect_equal(cbind(x=0), oneRow(agreement, 1))
+})
+
+test_that("agreementWithCriterionMatrix simple -1", {
+  matrix <- cbind(y=c(2,1), x=c(0,1))
+  agreement <- agreementWithCriterionMatrix(matrix, 1, c(2))
+  expect_equal(cbind(x=-1), oneRow(agreement, 1))
+})
+
+test_that("agreementWithCriterionMatrix 2 columns", {
+  # The criterion is not the first column.
+  matrix <- cbind(y=c(2,1), x1=c(0,1), x2=c(1,0))
+  agreement <- agreementWithCriterionMatrix(matrix, 1, c(2,3))
+  expect_equal(cbind(x1=-1, x2=1), oneRow(agreement, 1))
+})
+
+test_that("agreementWithCriterionMatrix 2 mixed up columns data.frame", {
+  # There is a non-data column, and the criterion is not the first column.
+  df <- data.frame(ignore=c("a", "b"), x1=c(0,1), y=c(2,1), x2=c(1,0))
+  agreement <- agreementWithCriterionMatrix(df, 3, c(2,4))
+  expect_equal(cbind(x1=-1, x2=1), oneRow(agreement, 1))
+})
+
+test_that("agreementWithCriterionMatrix realistic 5 rows 2 cues", {
+  # x1 and x2 both have validity 0.75 but x2 has more rights and wrongs
+  # (higher discrimination).
+  matrix <- cbind(y=c(5:1), x1=c(1,1,1,0,1), x2=c(12,10,6,6,10))
+  agreement <- agreementWithCriterionMatrix(matrix, 1, 2:3)
+  # TODO: Make it easier to match row pair indexes to row.
+  # Row 1 vs. 2, x1 can't discriminate, x2 is right.
+  expect_equal(cbind(x1=0, x2=1), oneRow(agreement, 1))
+  # Row 1 vs. 3, same.
+  expect_equal(cbind(x1=0, x2=1), oneRow(agreement, 2))
+  # Row 1 vs. 4, both right.
+  expect_equal(cbind(x1=1, x2=1), oneRow(agreement, 3))
+  # Row 4 vs. 5, both wrong.
+  expect_equal(cbind(x1=-1, x2=-1), oneRow(agreement, 10))
+})
 
