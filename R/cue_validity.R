@@ -89,6 +89,7 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
   return(concordance)
 }
 
+# If I switch to this, the only thing that makes tests fail is named columns or not.
 cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWith=0.5) {
   agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
   pos <- apply(agreement, 2, function(x) { sum(x[x>0]) })
