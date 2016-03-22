@@ -160,3 +160,41 @@ test_that("agreementWithCriterionMatrix realistic 5 rows 2 cues", {
   expect_equal(cbind(x1=-1, x2=-1), oneRow(agreement, 10))
 })
 
+ # conditionalCueValidityMatrix
+ # TODO: Have all cue validity stuff return column names.
+
+test_that("conditionalCueValidityMatrix 1 cue same as cueValidity", {
+  matrix <- cbind(y=c(6:1), x1=c(15,0,2,0,12,1))
+  out <- conditionalCueValidityMatrix(matrix, 1, c(2))
+  cv <- cueValidityMatrix(matrix, 1, c(2))
+  expect_equal(cv, out$cue_validities)
+})
+
+test_that("conditionalCueValidityMatrix 1 cue will reverse", {
+  matrix <- cbind(y=c(4:1), x1=c(0, 0, 0, 1))
+  out <- conditionalCueValidityMatrix(matrix, 1, c(2))
+  expect_equal(1, out$cue_validities)
+  expect_equal(-1, out$cue_directions)
+  # Below for comparison
+  cv <- cueValidityMatrix(matrix, 1, c(2))
+  expect_equal(0, cv)
+})
+
+test_that("conditionalCueValidityMatrix 2 cues", {
+  # x2 has initial validity 0.5, then validity -1.0 after x1 is chosen.
+  matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+  out <- conditionalCueValidityMatrix(matrix, 1, c(2:3))
+  expect_equal(c(1, 1), out$cue_validities)
+  expect_equal(c(1, 2), out$cue_ranks)
+  expect_equal(c(1, -1), out$cue_directions)
+})
+
+test_that("conditionalCueValidityMatrix too many cues", {
+  matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1), x3=c(0,0,0))
+  out <- conditionalCueValidityMatrix(matrix, 1, c(2:4))
+  # TODO: Convert NA to defaults, e.g. validity is 0.5.
+  # That can be applied for all cue performance functions.
+  expect_equal(c(1, 1, NA), out$cue_validities)
+  expect_equal(c(1, 2, NA), out$cue_ranks)
+  expect_equal(c(1, -1, NA), out$cue_directions)
+})
