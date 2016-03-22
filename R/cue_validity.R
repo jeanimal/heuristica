@@ -98,7 +98,7 @@ cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWi
   return(pos / (pos+neg))
 }
 
-conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit, replaceNanWith=0.5) {
+conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
   original_agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
   conditional_cue_validities <- rep(NA, length(cols_to_fit))
   conditional_cue_ranks <- rep(NA, length(cols_to_fit))
