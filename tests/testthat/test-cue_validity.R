@@ -189,6 +189,17 @@ test_that("conditionalCueValidityMatrix 2 cues", {
   expect_equal(c(1, -1), out$cue_directions)
 })
 
+test_that("conditionalCueValidityMatrix 2 same cues", {
+  matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,0))
+  out <- conditionalCueValidityMatrix(matrix, 1, c(2:3))
+  # Either cue could be chosen as the one with cue validity 1.  The other cue
+  # will have validity NA because it does not discriminate on anything new.
+  # Below output is sorted to make it consistent.
+  expect_equal(c(1, NA), sort(out$cue_validities, na.last=TRUE))
+  expect_equal(c(1, NA), sort(out$cue_ranks, na.last=TRUE))
+  expect_equal(c(1, NA), sort(out$cue_directions, na.last=TRUE))
+})
+
 test_that("conditionalCueValidityMatrix too many cues", {
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1), x3=c(0,0,0))
   out <- conditionalCueValidityMatrix(matrix, 1, c(2:4))
