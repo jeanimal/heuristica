@@ -137,6 +137,10 @@ conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
               cue_directions=conditional_cue_directions))
 }
 
+# Cue validity counts only correct and incorrect inferences, ignoring
+# cases where a cue does not discriminate.  Cue accuracy gives those
+# cases a weight of 0.5, which is the prediction accuracy if forced to
+# use the cue to make a prediction.
 cueAccuracy <- function(criterion, cue, replaceNanWith=0.5) {
   out <- Hmisc::rcorr.cens(cue, criterion, outx=FALSE)
   justDxy <- as.double(out["Dxy"])
