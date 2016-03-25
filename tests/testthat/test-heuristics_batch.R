@@ -27,6 +27,7 @@ test_cue_reorder <- function(model, has_cv=TRUE) {
 }
 
 test_that("test_cue_reorder ttb",      {test_cue_reorder(ttbModel)})
+test_that("test_cue_reorder ttbGreedy",{test_cue_reorder(ttbGreedyModel, has_cv=FALSE)})
 test_that("test_cue_reorder singleCue",{test_cue_reorder(singleCueModel)})
 test_that("test_cue_reorder dawes",    {test_cue_reorder(dawesModel)})
 test_that("test_cue_reorder franklin", {test_cue_reorder(franklinModel)})
@@ -57,6 +58,7 @@ test_row_reorder <- function(model, has_cv=TRUE) {
 }
 
 test_that("test_row_reorder ttb",      {test_row_reorder(ttbModel)})
+test_that("test_row_reorder ttbGreedy",{test_row_reorder(ttbGreedyModel, has_cv=FALSE)})
 test_that("test_row_reorder singleCue",{test_row_reorder(singleCueModel)})
 test_that("test_row_reorder dawes",    {test_row_reorder(dawesModel)})
 test_that("test_row_reorder franklin", {test_row_reorder(franklinModel)})
