@@ -439,7 +439,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame R
 
 ### ttbModel on same data as ttbGreedyModel ###
 
-test_that("ttbModel on 3x3 where differs from greedy", {
+test_that("ttbModel on 3x3 where differs from greedy ttb", {
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
   model <- ttbModel(matrix, 1, c(2:3))
   expect_equal(1, predictPairProb(oneRow(matrix, 1),
@@ -450,6 +450,16 @@ test_that("ttbModel on 3x3 where differs from greedy", {
   expect_equal(0.5, predictPairProb(oneRow(matrix, 2),
                                     oneRow(matrix, 3), model))
   expect_equal(c(1.0, 0.5), model$cue_validities_with_reverse)
+})
+
+test_that("ttbModel on 2 same cues- differs from greedy ttb", {
+  matrix <- cbind(y=c(2:1), x1=c(1,0), x2=c(1,0))
+  model <- ttbModel(matrix, 1, c(2:3))
+  full_matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,1,0))
+  out <- pctCorrectOfPredictPair(list(model), full_matrix)
+  # TTB uses both cues, so it can get 100% correct.
+  expect_equal(1, out$ttbModel)
+  expect_equal(c(1.0, 1.0), model$cue_validities_with_reverse)
 })
 
 ### ttbGreedyModel ###
@@ -467,6 +477,19 @@ test_that("ttbGreedyModel on 3x3 where differs from regular ttb", {
   # After using x1, it sees only last two rows of x2.  It reverses them
   # to get a validity 1.0 cue, which is why it predicts 2 vs. 3 correctly.
   expect_equal(c(1.0, 1.0), model$cue_validities_with_reverse)
+})
+
+test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
+  matrix <- cbind(y=c(2:1), x1=c(1,0), x2=c(1,0))
+  model <- ttbGreedyModel(matrix, 1, c(2:3))
+  full_matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,1,0))
+  out <- pctCorrectOfPredictPair(list(model), full_matrix)
+  # Greedy TTB uses only one cue (random which one), so it has to guess on
+  # one row pair.  Accuracy = (1+1+0.5)/3.
+  expect_equal(0.83333, out$ttbGreedyModel, tolerance=0.0001)
+  # One cue has NA, but we don't know which one.
+  expect_equal(c(1.0, NA), sort(model$cue_validities_with_reverse,
+                                na.last=TRUE))
 })
 
 ### dawesModel ###
