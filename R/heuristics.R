@@ -168,6 +168,40 @@ predictRoot.ttbModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
+### Greedy Take The Best Model ###
+
+ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
+  out <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
+  unsigned_linear_coef <- sapply(out$cue_ranks,
+                                 function(n) 2^(length(out$ue_ranks)-n) )
+  # Now give negative signs for cues pointing the other way.
+  linear_coef <- out$cue_directions * unsigned_linear_coef
+  # Replace NA with zero.
+  linear_coef[which(is.na(linear_coef))] <- 0
+
+  structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 cue_ranks=out$cue_ranks,
+                 cue_validities=out$cue_validities,
+                 cue_validities_with_reverse=out$cue_validities,
+                 linear_coef=linear_coef),
+            class="ttbGreedyModel")
+  
+}
+
+coef.ttbGreedyModel <- function(object, ...) object$linear_coef
+
+predictPairInternal.ttbGreedyModell <- function(object, row1, row2) {
+  direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
+                                                         row1, row2)
+  return(direction_plus_minus_1)
+}
+
+predictRoot.ttbGreedyModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.ttbModel(object, row1, row2)
+  # Convert from the range [-1, 1] to the range [0, 1], which is the
+  # probability that row 1 > row 2.
+  return(rescale0To1(direction_plus_minus_1))
+}
 
 ### Dawes Model ###
 

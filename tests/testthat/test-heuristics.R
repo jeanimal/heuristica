@@ -437,6 +437,38 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame R
                                  oneRow(train_df, 3), model))
 })
 
+### ttbModel on same data as ttbGreedyModel ###
+
+test_that("ttbModel on 3x3 where differs from greedy", {
+  matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+  model <- ttbModel(matrix, 1, c(2:3))
+  expect_equal(1, predictPairProb(oneRow(matrix, 1),
+                                  oneRow(matrix, 2), model))
+  expect_equal(1, predictPairProb(oneRow(matrix, 1),
+                                  oneRow(matrix, 3), model))
+  # Below is the row pair that differs from greedy ttb.
+  expect_equal(0.5, predictPairProb(oneRow(matrix, 2),
+                                    oneRow(matrix, 3), model))
+  expect_equal(c(1.0, 0.5), model$cue_validities_with_reverse)
+})
+
+### ttbGreedyModel ###
+
+test_that("ttbGreedyModel on 3x3 where differs from regular ttb", {
+  matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+  model <- ttbGreedyModel(matrix, 1, c(2:3))
+  expect_equal(1, predictPairProb(oneRow(matrix, 1),
+                                  oneRow(matrix, 2), model))
+  expect_equal(1, predictPairProb(oneRow(matrix, 1),
+                                  oneRow(matrix, 3), model))
+  # Below is the row pair that differs from regular ttb.
+  expect_equal(1, predictPairProb(oneRow(matrix, 2),
+                                  oneRow(matrix, 3), model))
+  # After using x1, it sees only last two rows of x2.  It reverses them
+  # to get a validity 1.0 cue, which is why it predicts 2 vs. 3 correctly.
+  expect_equal(c(1.0, 1.0), model$cue_validities_with_reverse)
+})
+
 ### dawesModel ###
 
 test_that("dawesModel 2x3 pos neg", {
