@@ -61,3 +61,22 @@ getPrediction_raw <- function(prediction_matrix, row_pair) {
     return(1-val)
   }
 }
+
+# Makes a Guttman binary data set.  E.g.
+# > makeGuttman(3)
+#        vec vec vec
+# [1,] 4   1   1   1
+# [2,] 3   0   1   1
+# [3,] 2   0   0   1
+# [4,] 1   0   0   0
+# Not efficient, but it works.
+makeGuttman <- function(num_cues) { 
+  num_rows <- num_cues + 1
+  mat <- cbind(c(num_rows:1))
+  for (num_1s in 1:num_cues) {
+    num_0s <- num_rows - num_1s
+    vec <- c(rep(1, num_1s), rep(0, num_0s))
+    mat <- cbind(mat, vec)
+  }
+  return(mat)
+}
