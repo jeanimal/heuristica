@@ -457,6 +457,9 @@ rowPairApply <- function(row1, row2, ...) {
   return(out)
 }
 
+# Given a fitted heuristic object and a function that can be called on that
+# object, returns a function with just the signature function(row1, row2)
+# where the rows have just the cols_to_fit.
 makeRowPairFunctionForObject <- function(object, internalFn) {
   fn1 <- function(row1, row2) {
     row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
