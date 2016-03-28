@@ -276,7 +276,7 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
   # simple matrix by assuming the dimensions of every list element are the
   # same as the first list element.
   if (length(out) < 1) {
-    stop("pairMatrix got no output from XXX_TODO to process")
+    stop("pairMatrix got no output to process")
   }
   rows <- length(out) * nrow(out[[1]])
   cols <- ncol(out[[1]])
