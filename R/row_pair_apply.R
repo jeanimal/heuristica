@@ -271,10 +271,21 @@ createFunction.colPairValues<- function(object, test_data) {
 #' @return A matrix of the output of the function for all unique row pairs:
 #'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
 pairMatrix <- function(num_row, pair_evaluator_fn) {
-  out <- combn(num_row, 2, pair_evaluator_fn)
-  rows <- dim(out)[[3]]
-  cols <- dim(out)[[2]]
-  return(matrix(out, rows, cols, byrow=TRUE))
+  out <- combn(num_row, 2, pair_evaluator_fn, simplify=FALSE)
+  #rows <- dim(out)[[3]]
+  #cols <- dim(out)[[2]]
+  # The output of combn is a complicated nested mess.  Below we make it a
+  # simple matrix by assuming the dimensions of every list element are the
+  # same as the first list element.
+  if (length(out) < 1) {
+    stop("pairMatrix got no output from XXX_TODO to process")
+  }
+  rows <- length(out) * nrow(out[[1]])
+  cols <- ncol(out[[1]])
+  out_matrix <- matrix(unlist(out), rows, cols, byrow=TRUE)
+  # TODO: Update tests so I can name the columns here.
+  # colnames(out_matrix) <- colnames(out[[1]])
+  return(out_matrix)
 }
 
 # Combines all functions in function_list into one function that can be
@@ -459,7 +470,8 @@ rowPairApply <- function(row1, row2, ...) {
 
 # Given a fitted heuristic object and a function that can be called on that
 # object, returns a function with just the signature function(row1, row2)
-# where the rows have just the cols_to_fit.
+# where the rows have just the cols_to_fit.  The output should be a matrix
+# row with one column.
 makeRowPairFunctionForObject <- function(object, internalFn) {
   fn1 <- function(row1, row2) {
     row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
@@ -493,7 +505,7 @@ predictPair <- function(row1, row2, object) {
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(raw_matrix)
   assert_single_column(raw_matrix)
-  return(unname(raw_matrix[1,1]))
+  return(raw_matrix[1,1])
 }
 
 #' Predict the probablity that row1 has a higher criterion than row2.

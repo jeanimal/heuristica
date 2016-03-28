@@ -158,6 +158,7 @@ coef.ttbModel <- function(object, ...) object$linear_coef
 predictPairInternal.ttbModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
+  colnames(direction_plus_minus_1) <- "ttb" # TODO: object$col_names.
   return(direction_plus_minus_1)
 }
 
@@ -193,6 +194,7 @@ coef.ttbGreedyModel <- function(object, ...) object$linear_coef
 predictPairInternal.ttbGreedyModell <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
+  colnames(direction_plus_minus_1) <- "ttbG" # TODO: object$col_names.
   return(direction_plus_minus_1)
 }
 
