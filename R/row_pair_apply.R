@@ -284,7 +284,7 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
   cols <- ncol(out[[1]])
   out_matrix <- matrix(unlist(out), rows, cols, byrow=TRUE)
   # TODO: Update tests so I can name the columns here.
-  # colnames(out_matrix) <- colnames(out[[1]])
+  colnames(out_matrix) <- colnames(out[[1]])
   return(out_matrix)
 }
 
