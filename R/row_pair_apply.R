@@ -272,8 +272,6 @@ createFunction.colPairValues<- function(object, test_data) {
 #'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
 pairMatrix <- function(num_row, pair_evaluator_fn) {
   out <- combn(num_row, 2, pair_evaluator_fn, simplify=FALSE)
-  #rows <- dim(out)[[3]]
-  #cols <- dim(out)[[2]]
   # The output of combn is a complicated nested mess.  Below we make it a
   # simple matrix by assuming the dimensions of every list element are the
   # same as the first list element.
