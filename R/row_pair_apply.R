@@ -560,16 +560,7 @@ createProbGreaterFn <- function(criterionIndex) {
 }
 
 #TODO(Jean): Make a version that accepts a list of objects.
-heuristicWrapperFn <- function(object) {
-  fn1 <- makeRowPairFunctionForObject(object, predictPairInternal)
-  fn3 <- function(index_pair, data) {
-    fn2 <- bindFunctionToRowPairs(data, fn1)
-    out <- fn2(index_pair)
-    colnames(out) <- c(class(object))
-    return(out)
-  }
-  return(fn3)
-}
+
 
 heuristicWrapperFn2 <- function(data, object) {
   fn1 <- makeTrimRowPairFunctionForObject(object, predictPairInternal)
