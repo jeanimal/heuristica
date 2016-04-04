@@ -201,10 +201,18 @@ test_that("simpleRowPairApplyList and heuristicWrapperFn", {
 # simpleRowPairApply(city_population, heuristicWrapperFn2(city_population, ttb)))
 # head(simpleRowPairApply(city_population, createHeuristicWrapperFn2(ttb)))
 
-test_that("simpleRowPairApplyList and createHeuristicWrapperFn2", {
+test_that("simpleRowPairApply and createHeuristicWrapperFn2", {
   m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(m, 1, c(2:3))
-  dawes <- dawesModel(m, 1, c(2:3))
   out <- simpleRowPairApply(m, createHeuristicWrapperFn2(ttb))
   expect_equal(c(1,1,0), out[,"ttbModel"])
+})
+
+test_that("simpleRowPairApply and createrRowIndexPairFn", {
+  m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(m, 1, c(2:3))
+  out <- simpleRowPairApply(m, createrRowIndexPairFn())
+  expect_equal(cbind(Row1=1, Row2=2), oneRow(out, 1))
+  expect_equal(cbind(Row1=1, Row2=3), oneRow(out, 2))
+  expect_equal(cbind(Row1=2, Row2=3), oneRow(out, 3))
 })
