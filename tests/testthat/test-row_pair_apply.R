@@ -199,3 +199,4 @@ test_that("simpleRowPairApplyList", {
 })
 
 # simpleRowPairApply(city_population, heuristicWrapperFn2(city_population, ttb)))
+# head(simpleRowPairApply(city_population, createHeuristicWrapperFn2(ttb)))
