@@ -575,7 +575,7 @@ heuristicWrapperFn2 <- function(data, object) {
   fn1 <- makeTrimRowPairFunctionForObject(object, predictPairInternal)
   trim_data <- as.matrix(data[, object$cols_to_fit, drop=FALSE])
   fn2 <- bindFunctionToRowPairs(trim_data, fn1)
-  fn3 <- function(index_pair, ignored_data) {
+  fn3 <- function(index_pair) {
     out <- fn2(index_pair)
     colnames(out) <- c(class(object))
     return(out)
@@ -587,7 +587,7 @@ heuristicWrapperFn2 <- function(data, object) {
 # function(index_pair, data) where index_pair is a vector of two integer
 # row indexes into the data.
 simpleRowPairApply <- function(data, pair_evaluator_fn) {
-  out <- combn(nrow(data), 2, pair_evaluator_fn, simplify=FALSE, data)
+  out <- combn(nrow(data), 2, pair_evaluator_fn, simplify=FALSE)
   # The output of combn is a complicated nested mess.  Below we make it a
   # simple matrix by assuming the dimensions of every list element are the
   # same as the first list element.
