@@ -578,11 +578,11 @@ createHeuristicWrapperFn2 <- function(object) {
   structure(list(binding_function=heuristicWrapperFn2, extra_args=object), class="bindToData")
 }
 
-convertClassBindToData <- function(data, pair_evaluator_fn) {
-  if (class(pair_evaluator_fn) == "bindToData") {
-    fn <- pair_evaluator_fn$binding_function(data, pair_evaluator_fn$extra_args)
+convertClassBindToData <- function(fn, data) {
+  if (class(fn) == "bindToData") {
+    return(fn$binding_function(data, fn$extra_args))
   } else {
-    fn <- pair_evaluator_fn
+    return(fn)
   }
 }
 
@@ -590,7 +590,7 @@ convertClassBindToData <- function(data, pair_evaluator_fn) {
 # function(index_pair, data) where index_pair is a vector of two integer
 # row indexes into the data.
 simpleRowPairApply <- function(data, pair_evaluator_fn) {
-  fn <- convertClassBindToData(data, pair_evaluator_fn)
+  fn <- convertClassBindToData(pair_evaluator_fn, data)
   out <- combn(nrow(data), 2, fn, simplify=FALSE)
   # The output of combn is a complicated nested mess.  Below we make it a
   # simple matrix by assuming the dimensions of every list element are the
@@ -606,6 +606,7 @@ simpleRowPairApply <- function(data, pair_evaluator_fn) {
 }
 
 simpleRowPairApplyList <- function(test_data, function_list) {
-  all_fn <- combineIntoOneFn(function_list)
+  converted_function_list <- lapply(function_list, convertClassBindToData, test_data)
+  all_fn <- combineIntoOneFn(converted_function_list)
   simpleRowPairApply(test_data, all_fn)
 }

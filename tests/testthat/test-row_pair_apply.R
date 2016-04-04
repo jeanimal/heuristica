@@ -210,9 +210,18 @@ test_that("simpleRowPairApply and createHeuristicWrapperFn2", {
 
 test_that("simpleRowPairApply and createrRowIndexPairFn", {
   m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
-  ttb <- ttbModel(m, 1, c(2:3))
   out <- simpleRowPairApply(m, createrRowIndexPairFn())
   expect_equal(cbind(Row1=1, Row2=2), oneRow(out, 1))
   expect_equal(cbind(Row1=1, Row2=3), oneRow(out, 2))
   expect_equal(cbind(Row1=2, Row2=3), oneRow(out, 3))
+})
+
+test_that("simpleRowPairApplyList createHeuristicWrapperFn2 createrRowIndexPairFn", {
+  m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(m, 1, c(2:3))
+  out <- simpleRowPairApplyList(m, list(createrRowIndexPairFn(),
+                                        createHeuristicWrapperFn2(ttb)))
+  expect_equal(cbind(Row1=1, Row2=2, ttbModel=1), oneRow(out, 1))
+  expect_equal(cbind(Row1=1, Row2=3, ttbModel=1), oneRow(out, 2))
+  expect_equal(cbind(Row1=2, Row2=3, ttbModel=0), oneRow(out, 3))
 })
