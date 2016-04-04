@@ -479,6 +479,13 @@ makeRowPairFunctionForObject <- function(object, internalFn) {
   return(fn1)
 }
 
+makeTrimRowPairFunctionForObject <- function(object, internalFn) {
+  fn1 <- function(row1_cues, row2_cues) {
+    internalFn(object, row1_cues, row2_cues)
+  }
+  return(fn1)
+}
+
 #' Predict which of a pair of rows has a higher criterion.
 #'
 #' Assumes the object implements predictRoot and has $cols_to_fit.
@@ -557,6 +564,18 @@ heuristicWrapperFn <- function(object) {
   fn1 <- makeRowPairFunctionForObject(object, predictPairInternal)
   fn3 <- function(index_pair, data) {
     fn2 <- bindFunctionToRowPairs(data, fn1)
+    out <- fn2(index_pair)
+    colnames(out) <- c(class(object))
+    return(out)
+  }
+  return(fn3)
+}
+
+heuristicWrapperFn2 <- function(data, object) {
+  fn1 <- makeTrimRowPairFunctionForObject(object, predictPairInternal)
+  trim_data <- as.matrix(data[, object$cols_to_fit, drop=FALSE])
+  fn2 <- bindFunctionToRowPairs(trim_data, fn1)
+  fn3 <- function(index_pair, ignored_data) {
     out <- fn2(index_pair)
     colnames(out) <- c(class(object))
     return(out)

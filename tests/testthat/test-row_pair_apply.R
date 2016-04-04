@@ -198,3 +198,4 @@ test_that("simpleRowPairApplyList", {
   expect_equal(c(1,1,1), out[,"ProbGreater"])
 })
 
+# simpleRowPairApply(city_population, heuristicWrapperFn2(city_population, ttb)))
