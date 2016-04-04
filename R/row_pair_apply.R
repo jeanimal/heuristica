@@ -536,7 +536,6 @@ predictPairProb <- function(row1, row2, object) {
 
 #
 # Below are experimental functions.  They avoid an extra level of indirection.
-# And they work.  But are they too slow?
 #
 
 createrRowIndexPairFn <- function() {
@@ -548,6 +547,7 @@ createrRowIndexPairFn <- function() {
   }
 }
 
+# TODO: Change this to work like heuristicWrapperFn2.
 createProbGreaterFn <- function(criterionIndex) {
   probGreater_fn <- function(index_pair, data) {
     criterion_matrix <- as.matrix(data[, criterionIndex, drop=FALSE])
@@ -558,9 +558,6 @@ createProbGreaterFn <- function(criterionIndex) {
   }
   return(probGreater_fn)
 }
-
-#TODO(Jean): Make a version that accepts a list of objects.
-
 
 heuristicWrapperFn2 <- function(data, object) {
   fn1 <- makeTrimRowPairFunctionForObject(object, predictPairInternal)
