@@ -291,10 +291,10 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
 # that case MUST output a row rather than a vector.  Column headers are
 # included in output.
 combineIntoOneFn <- function(function_list) {
-  all_fn <- function(x) {
+  all_fn <- function(...) {
     out_all <- c()
     for (fun in function_list) {
-      out <- fun(x)
+      out <- fun(...)
       if (is.null(out_all)) {
         out_all <- cbind(out)
       } else {
@@ -525,4 +525,64 @@ predictPairProb <- function(row1, row2, object) {
   assert_single_row(out)
   assert_single_column(out)
   return(unname(out[1,1]))
+}
+
+#
+# Below are experimental functions.  They avoid an extra level of indirection.
+# And they work.  But are they too slow?
+#
+
+createrRowIndexPairFn <- function() {
+  # Data is ignored.
+  rowIndexPairFn <- function(index_pair, data) {
+    rowIndexPair <- cbind(index_pair[1], index_pair[2])
+    colnames(rowIndexPair) <- c("Row1", "Row2")
+    return(rowIndexPair)
+  }
+}
+
+createProbGreaterFn <- function(criterionIndex) {
+  probGreater_fn <- function(index_pair, data) {
+    criterion_matrix <- as.matrix(data[, criterionIndex, drop=FALSE])
+    probGreater <- rescale0To1(sign(criterion_matrix[index_pair[1], , drop=FALSE]
+                                    - criterion_matrix[index_pair[2], , drop=FALSE]))
+    colnames(probGreater) <- c("ProbGreater")
+    return(probGreater)
+  }
+  return(probGreater_fn)
+}
+
+#TODO(Jean): Make a version that accepts a list of objects.
+heuristicWrapperFn <- function(object) {
+  fn1 <- makeRowPairFunctionForObject(object, predictPairInternal)
+  fn3 <- function(index_pair, data) {
+    fn2 <- bindFunctionToRowPairs(data, fn1)
+    out <- fn2(index_pair)
+    colnames(out) <- c(class(object))
+    return(out)
+  }
+  return(fn3)
+}
+
+# The signature of pair_evaluator_fn should be
+# function(index_pair, data) where index_pair is a vector of two integer
+# row indexes into the data.
+simpleRowPairApply <- function(data, pair_evaluator_fn) {
+  out <- combn(nrow(data), 2, pair_evaluator_fn, simplify=FALSE, data)
+  # The output of combn is a complicated nested mess.  Below we make it a
+  # simple matrix by assuming the dimensions of every list element are the
+  # same as the first list element.
+  if (length(out) < 1) {
+    stop("pairMatrix got no output to process")
+  }
+  rows <- length(out) * nrow(out[[1]])
+  cols <- ncol(out[[1]])
+  out_matrix <- matrix(unlist(out), rows, cols, byrow=TRUE)
+  colnames(out_matrix) <- colnames(out[[1]])
+  return(out_matrix)
+}
+
+simpleRowPairApplyList <- function(test_data, function_list) {
+  all_fn <- combineIntoOneFn(function_list)
+  simpleRowPairApply(test_data, all_fn)
 }

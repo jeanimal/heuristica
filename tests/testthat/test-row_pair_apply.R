@@ -186,3 +186,15 @@ test_that("allRowPairApply colPairValues function numeric", {
   expect_equal(4, ncol(out2))
 })
 
+## Testing new functions not yet integrated with the rest of the package.
+
+test_that("simpleRowPairApplyList", {
+  m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(m, 1, c(2:3))
+  dawes <- dawesModel(m, 1, c(2:3))
+  out <- simpleRowPairApplyList(m, list(heuristicWrapperFn(ttb),
+                                        createProbGreaterFn(1)))
+  expect_equal(c(1,1,0), out[,"ttbModel"])
+  expect_equal(c(1,1,1), out[,"ProbGreater"])
+})
+
