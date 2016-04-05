@@ -92,7 +92,7 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
-heuristicsList <- function(list_of_fitted_heuristics) {
+heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
   implementers <- list_of_fitted_heuristics
   # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
@@ -101,7 +101,7 @@ heuristicsList <- function(list_of_fitted_heuristics) {
   names <- sapply(implementers, function(x) { head(class(x), 1) })
   structure(list(predictRoot_implementers=implementers,
                  cols_to_fit=cols_to_fit,
-                 column_names=names),
+                 column_names=names, fn=fn),
             class="heuristics")
 }
 
@@ -132,9 +132,9 @@ heuristicsList <- function(list_of_fitted_heuristics) {
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
-heuristics <- function(...) {
+heuristics <- function(..., fn=predictRoot) {
   implementers <- list(...)
-  return(heuristicsList(implementers))
+  return(heuristicsList(implementers, fn=fn))
 }
 
 #' Create function for heuristics prediction with allRowPairApply.
@@ -160,12 +160,12 @@ createFunction.heuristics <- function(object, test_data) {
     out_all <- NULL
     for (implementer in object$predictRoot_implementers) {
       # print(class(implementer))
-      out <- predictRoot(implementer, row1, row2)
+      out <- object$fn(implementer, row1, row2)
       # TODO(Jean): Test the checks below.
-      if (out < 0) {
-        stop(paste("ERROR heuristic of class",class(implementer),"predicted",
-                   out,", which is < 0"))
-      }
+      #if (out < 0) {
+      #  stop(paste("ERROR heuristic of class",class(implementer),"predicted",
+      #             out,", which is < 0"))
+      #}
       if (out > 1) {
         stop(paste("ERROR heuristic of class",class(implementer),"predicted",
                    out,", which is > 1"))

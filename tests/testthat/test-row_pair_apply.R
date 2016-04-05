@@ -186,6 +186,15 @@ test_that("allRowPairApply colPairValues function numeric", {
   expect_equal(4, ncol(out2))
 })
 
+test_that("allRowPairApply heuristics with fn", {
+  train_matrix <- cbind(y=c(5,4), x1=c(1,1))
+  model <- ttbModel(train_matrix, 1, c(2))
+  out <- allRowPairApply(train_matrix, heuristics(model, fn=predictRoot),
+                         heuristics(model, fn=predictPairInternal))
+  # predictRoot guesses wtih 0.5.  predictPairInternal guesses with 0.
+  expect_equal(cbind(0.5, 0), unname(out))
+})
+
 ## Testing new functions not yet integrated with the rest of the package.
 
 test_that("simpleRowPairApplyList and heuristicWrapperFn", {
