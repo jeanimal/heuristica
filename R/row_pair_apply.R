@@ -32,6 +32,37 @@
 #' @export
 createFunction <- function(object, test_data) UseMethod("createFunction")
 
+# Give it a function of the form fn(row1, row2).  It creates a
+# function of the form fn(index_pair) that refer to two row indices,
+# e.g. f(c(1,2)) or f(c(2,4)).
+# The data will be forced to be a matrix rather than a data.frame,
+# so you cannot use data.frame functions (like $col) in fn_to_bind.
+bindFunctionToRowPairs <- function(raw_data, fn_to_bind) {
+  data <- as.matrix(raw_data)
+  new_fn <- function(index_pair) {
+    row1 <- oneRow(data, index_pair[1])
+    row2 <- oneRow(data, index_pair[2])
+    return(fn_to_bind(row1, row2))
+  }
+  return(new_fn)
+}
+
+applyFunctionToRowPairs <- function(data, fn) {
+  fn_with_data <- bindFunctionToRowPairs(data, fn)
+  # TODO(jean): Remove this hack for column names.
+  temp <- fn_with_data(c(1,1))
+  #print(temp)
+  results_array <- combn(nrow(data), 2, fn_with_data)
+  # R drops dimensions so we need different handling here.
+  if (length(dim(results_array))==1) {
+    results <- t(t(results_array))
+  } else {
+    results <- t(results_array[1,,])
+  }
+  colnames(results) <- colnames(temp)
+  return(results)
+}
+
 #' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
@@ -104,37 +135,6 @@ heuristicsList <- function(list_of_fitted_heuristics) {
 heuristics <- function(...) {
   implementers <- list(...)
   return(heuristicsList(implementers))
-}
-
-# Give it a function of the form fn(row1, row2).  It creates a
-# function of the form fn(index_pair) that refer to two row indices,
-# e.g. f(c(1,2)) or f(c(2,4)).
-# The data will be forced to be a matrix rather than a data.frame,
-# so you cannot use data.frame functions (like $col) in fn_to_bind.
-bindFunctionToRowPairs <- function(raw_data, fn_to_bind) {
-  data <- as.matrix(raw_data)
-  new_fn <- function(index_pair) {
-    row1 <- oneRow(data, index_pair[1])
-    row2 <- oneRow(data, index_pair[2])
-    return(fn_to_bind(row1, row2))
-  }
-  return(new_fn)
-}
-
-applyFunctionToRowPairs <- function(data, fn) {
-  fn_with_data <- bindFunctionToRowPairs(data, fn)
-  # TODO(jean): Remove this hack for column names.
-  temp <- fn_with_data(c(1,1))
-  #print(temp)
-  results_array <- combn(nrow(data), 2, fn_with_data)
-  # R drops dimensions so we need different handling here.
-  if (length(dim(results_array))==1) {
-    results <- t(t(results_array))
-  } else {
-    results <- t(results_array[1,,])
-  }
-  colnames(results) <- colnames(temp)
-  return(results)
 }
 
 #' Create function for heuristics prediction with allRowPairApply.
