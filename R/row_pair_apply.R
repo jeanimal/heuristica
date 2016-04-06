@@ -68,8 +68,11 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' One or more fitted heuristics can be passed in.  They must all implement
 #' predictRoot.  Users will generally not use the output directly.
 #' 
-#' @param list_of_fitted_heuristics A list of predictRoot implementers,
-#'   e.g. a fitted ttb model.
+#' @param list_of_fitted_heuristics Normally a list of predictRoot
+#'   implementers, e.g. a fitted ttb model.
+#' @param fn The function to be called on the heuristics, which is predictRoot
+#'   by default, but it can be any function implemented by the heuristics
+#'   with the signature function(object, row1, row2).
 #' @return An object of class heuristics, which implements createFunction.
 #'   Users will generally not use this directly-- allRowPairApply will.
 #' 
@@ -111,6 +114,9 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
 #' predictRoot.  Users will generally not use the output directly.
 #' 
 #' @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
+#' @param fn The function to be called on the heuristics, which is predictRoot
+#'   by default, but it can be any function implemented by the heuristics
+#'   with the signature function(object, row1, row2).
 #' @return An object of class heuristics, which implements createFunction.
 #'   Users will generally not use this directly-- allRowPairApply will.
 #' 

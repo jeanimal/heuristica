@@ -4,11 +4,15 @@
 \alias{heuristicsList}
 \title{Wrapper for fitted heuristics to generate predictions with allRowPairApply.}
 \usage{
-heuristicsList(list_of_fitted_heuristics)
+heuristicsList(list_of_fitted_heuristics, fn = predictRoot)
 }
 \arguments{
-\item{list_of_fitted_heuristics}{A list of predictRoot implementers,
-e.g. a fitted ttb model.}
+\item{list_of_fitted_heuristics}{Normally a list of predictRoot
+implementers, e.g. a fitted ttb model.}
+
+\item{fn}{The function to be called on the heuristics, which is predictRoot
+by default, but it can be any function implemented by the heuristics
+with the signature function(object, row1, row2).}
 }
 \value{
 An object of class heuristics, which implements createFunction.
