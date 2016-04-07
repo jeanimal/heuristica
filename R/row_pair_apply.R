@@ -571,7 +571,7 @@ heuristicWrapperFn2 <- function(data, object) {
   fn2 <- bindFunctionToRowPairs(trim_data, fn1)
   fn3 <- function(index_pair) {
     out <- fn2(index_pair)
-    colnames(out) <- c(class(object))
+    colnames(out) <- c(class(object)[[1]])
     return(out)
   }
   return(fn3)

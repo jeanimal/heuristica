@@ -28,7 +28,7 @@ test_that("Benchmark ttbModel on city_population NEW simpleRowPairApply", {
   print("ttb NEW simpleRowPairApply")
   print(times)
   
-  # On 11 Jan on Jean's macbook:
+  # In April 2016 on Jean's macbook:
   #    user  system elapsed
   #   0.118   0.003   0.122
 })
@@ -43,6 +43,18 @@ test_that("Benchmark regInterceptModel on city_population", {
   # On 11 Jan on Jean's macbook:
   #    user  system elapsed
   #   0.138   0.001   0.139
+})
+
+test_that("Benchmark regInterceptModel on city_population NEW simpleRowPairApply", {
+  model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+  times <- system.time(simpleRowPairApply(city_population,
+                                          createHeuristicWrapperFn2(model)))
+  print("regInterceptModel NEW simpleRowPairApply")
+  print(times)
+
+  # In April 2016 on Jean's macbook:
+  #    user  system elapsed
+  #   0.115   0.001   0.116
 })
 
 
