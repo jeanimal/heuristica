@@ -132,6 +132,15 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
   return(newDf)
 }
 
+aggregatePredictPair <- function(fitted_heuristic_list, test_data) {
+  # Assume the criterion_col is same for all heuristics.
+  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  # TODO: Check and stop if a heuristics disagrees with criterion_col.
+  all_fn_creator_list <- list(criterion(criterion_col),
+                              heuristicsList(fitted_heuristic_list))
+  predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
+  return(predictions)
+}
 
 #' Predicts with heuristics for all row pairs and caclulates percent correct.
 #'
@@ -153,12 +162,7 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' pctCorrectOfPredictPair(list(ttb, reg), city_population)
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
-  # Assume the criterion_col is same for all heuristics.
-  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
-  # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(criterion(criterion_col),
-                              heuristicsList(fitted_heuristic_list))
-  predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
+  predictions <- aggregatePredictPair(fitted_heuristic_list, test_data)
   errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
   df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)
