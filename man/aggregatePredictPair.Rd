@@ -4,13 +4,15 @@
 \alias{aggregatePredictPair}
 \title{Predicts with heuristics and criterion, returning all row pairs.}
 \usage{
-aggregatePredictPair(fitted_heuristic_list, test_data)
+aggregatePredictPair(fitted_heuristic_list, test_data, ...)
 }
 \arguments{
 \item{fitted_heuristic_list}{A list of heuristics already fitted to data,
 e.g. ttbModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
+
+\item{...}{Optionally additional row pair functions, e.g. rowIndexes().}
 }
 \value{
 A one-row matrix of numbers from 0 to 1, meaning proportion

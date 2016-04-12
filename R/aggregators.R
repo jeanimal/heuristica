@@ -137,6 +137,7 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
 #'   e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
+#' @param ... Optionally additional row pair functions, e.g. rowIndexes().
 #' @return A one-row matrix of numbers from 0 to 1, meaning proportion
 #'   correct.  Each column is named with the heuristic's class.
 #' @examples
@@ -144,12 +145,12 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' aggregatePredictPair(list(ttb, reg), city_population)
 #' @export
-aggregatePredictPair <- function(fitted_heuristic_list, test_data) {
+aggregatePredictPair <- function(fitted_heuristic_list, test_data, ...) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.
   all_fn_creator_list <- list(criterion(criterion_col),
-                              heuristicsList(fitted_heuristic_list))
+                              heuristicsList(fitted_heuristic_list), ...)
   predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
   return(predictions)
 }
