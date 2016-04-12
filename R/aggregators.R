@@ -132,6 +132,18 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
   return(newDf)
 }
 
+#' Predicts with heuristics and criterion, returning all row pairs.
+#'
+#' @param fitted_heuristic_list A list of heuristics already fitted to data,
+#'   e.g. ttbModel.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @return A one-row matrix of numbers from 0 to 1, meaning proportion
+#'   correct.  Each column is named with the heuristic's class.
+#' @examples
+#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
+#' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+#' aggregatePredictPair(list(ttb, reg), city_population)
+#' @export
 aggregatePredictPair <- function(fitted_heuristic_list, test_data) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
