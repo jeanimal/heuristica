@@ -196,12 +196,12 @@ createFunction.heuristics <- function(object, test_data) {
 #' the test_data.  It can do this using the criterion column passed in.
 #' By default, the output column is called "ProbGreater," but you
 #' can override the name with output_column_name.
-#' 
+#'
 #' @param criterion_col The integer index of the criterion in test_data.
 #' @param output_column_name An optional string
-#' @return An object of class heuristics, which implements createFunction.
+#' @return An object that implements createFunction.
 #'   Users will generally not use this directly-- allRowPairApply will.
-#' 
+#'
 #' @seealso
 #' \code{\link{createFunction}} which is what the returned object implements.
 #' @seealso
@@ -221,6 +221,29 @@ createFunction.probGreater <- function(object, test_data) {
   return(correct_fn)
 }
 
+# correctGreater (criterion function)
+
+#' Creates function for one column indicating whether row1 is greater.
+#'
+#' Using allRowPairApply, this can generate a column indicating the
+#' the correct direction of the criterion in comparing row 1 vs. row2 for
+#' all row pairs in test_data.
+#'   1 indicates row 1's criterion > row 2's criterion
+#'   0 indicates they are equal
+#'  -1 indicaties row 2's criterion is greater
+#' By default, the output column is called "CorrectGreater," but you
+#' can override the name with output_column_name.
+#'
+#' @param criterion_col The integer index of the criterion in test_data.
+#' @param output_column_name An optional string
+#' @return An object that implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#'
+#' @seealso
+#' \code{\link{createFunction}} which is what the returned object implements.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
 correctGreater <- function(criterion_col, output_column_name="CorrectGreater") {
   structure(list(criterion_col=criterion_col,
                  column_names=c(output_column_name)),
