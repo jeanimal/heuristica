@@ -96,7 +96,7 @@ predictPairProb(row1, row2, myFit)
 We can see in the original data.frame that Austin had the higher dropout rate, meaning 1.0 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be 0 or 1.  (An exception is when the criterion is equal for both values, in which case the correct output is defined as 0.5.)
 ```{r}
 myFit <- myModel(schools, 2, c(3:5))
-rowPairApply(oneRow(schools, 1), oneRow(schools, 2), criterion(2), heuristics(myFit))
+rowPairApply(oneRow(schools, 1), oneRow(schools, 2), probGreater(2), heuristics(myFit))
 ```
 
 Heuristica makes this sort of assessment easy-- it can check your model against all row pairs and calculate the percent correct.  Here we do myModel for all pairs of schools in our subset data.  Not surprisingly, it earns roughly 50% correct.
@@ -181,7 +181,7 @@ pctCorrectOfPredictPair(list(lasso), my_data)
 
 Which comparison did it miss?  Check out the helper function below.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
 ```{r}
-allRowPairApply(my_data, rowIndexes(), heuristics(lasso), criterion(lasso$criterion_col))
+allRowPairApply(my_data, rowIndexes(), heuristics(lasso), probGreater(lasso$criterion_col))
 ```
 
 ### Improving performance

@@ -187,14 +187,14 @@ createFunction.heuristics <- function(object, test_data) {
   return(all_predictRoot_fn)
 }
 
-# criterion
+# probGreater (criterion function)
 
-#' Wrapper to get a column of correct probabilities with allRowPairApply.
+#' Creates function for one column with correct probability row1 is greater.
 #'
 #' Using allRowPairApply, this can generate a column with
 #' the correct probability that row 1 > row 2 for each row pair in 
 #' the test_data.  It can do this using the criterion column passed in.
-#' By default, the output column is called ProbGreater, but you
+#' By default, the output column is called "ProbGreater," but you
 #' can override the name with output_column_name.
 #' 
 #' @param criterion_col The integer index of the criterion in test_data.
@@ -207,13 +207,13 @@ createFunction.heuristics <- function(object, test_data) {
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
-criterion <- function(criterion_col, output_column_name="ProbGreater") {
+probGreater <- function(criterion_col, output_column_name="ProbGreater") {
   structure(list(criterion_col=criterion_col,
                  column_names=c(output_column_name)),
-            class="criterion")
+            class="probGreater")
 }
 
-createFunction.criterion <- function(object, test_data) {
+createFunction.probGreater <- function(object, test_data) {
   criterion_matrix <- as.matrix(test_data[, object$criterion_col, drop=FALSE])
   correct_fn <- function(index_pair)
     rescale0To1(sign(criterion_matrix[index_pair[1], , drop=FALSE]
@@ -325,7 +325,7 @@ combineIntoOneFn <- function(function_list) {
 #'   must include the same criterion_col and cols_to_fit.
 #' @param function_creator_list List of the objects that generate the functions
 #'   to apply, using createFunction.  For example,
-#'    list(heuristics(ttb, reg), criterion(col), rowIndexes()).
+#'    list(heuristics(ttb, reg), probGreater(col), rowIndexes()).
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
 #'   output will have N x (N-1) rows.  The number of columns will be at least
@@ -346,7 +346,7 @@ combineIntoOneFn <- function(function_list) {
 #' ## Generate a matrix with the correct values and the heuristics'
 #' ## predictions:
 #' out2 <- allRowPairApplyList(city_population,
-#'                             list(criterion(3), heuristics(reg, ttb)))
+#'                             list(probGreater(3), heuristics(reg, ttb)))
 #' head(out2)
 #' nrow(out2)
 #' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel
@@ -384,7 +384,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #'   data.frame.  Heuristics must have already been fitted to trying data and
 #'   must include the same criterion_col and cols_to_fit.
 #' @param ... The objects that generate the functions to apply, using
-#'   createFunction.  For example, heuristics(ttb), criterion(col), or
+#'   createFunction.  For example, heuristics(ttb), probGreater(col), or
 #'   colPairValues.
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
@@ -404,7 +404,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 #' 
 #' ## Generate a matrix with correct values and the heuristics' predictions:
-#' out2 <- allRowPairApply(city_population, criterion(3),
+#' out2 <- allRowPairApply(city_population, probGreater(3),
 #'                         heuristics(reg, ttb))
 #' head(out2)
 #' nrow(out2)
@@ -457,7 +457,7 @@ assert_single_column <- function(obj) {
 #' @param row2 The second row (will apply cols_to_fit for you, based on
 #'   object).
 #' @param ... The objects that generate the functions to apply, using
-#'   createFunction.  For example, heuristics(ttb), criterion(col), or
+#'   createFunction.  For example, heuristics(ttb), probGreater(col), or
 #'   colPairValues.
 #' @return A matrix of function outputs.
 #' @export

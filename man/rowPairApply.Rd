@@ -14,7 +14,7 @@ on object).}
 object).}
 
 \item{...}{The objects that generate the functions to apply, using
-createFunction.  For example, heuristics(ttb), criterion(col), or
+createFunction.  For example, heuristics(ttb), probGreater(col), or
 colPairValues.}
 }
 \value{

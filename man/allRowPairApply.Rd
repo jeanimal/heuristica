@@ -12,7 +12,7 @@ data.frame.  Heuristics must have already been fitted to trying data and
 must include the same criterion_col and cols_to_fit.}
 
 \item{...}{The objects that generate the functions to apply, using
-createFunction.  For example, heuristics(ttb), criterion(col), or
+createFunction.  For example, heuristics(ttb), probGreater(col), or
 colPairValues.}
 }
 \value{
@@ -38,7 +38,7 @@ nrow(out1)
 ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 
 ## Generate a matrix with correct values and the heuristics' predictions:
-out2 <- allRowPairApply(city_population, criterion(3),
+out2 <- allRowPairApply(city_population, probGreater(3),
                         heuristics(reg, ttb))
 head(out2)
 nrow(out2)

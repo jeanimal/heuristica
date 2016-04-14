@@ -13,7 +13,7 @@ must include the same criterion_col and cols_to_fit.}
 
 \item{function_creator_list}{List of the objects that generate the functions
 to apply, using createFunction.  For example,
- list(heuristics(ttb, reg), criterion(col), rowIndexes()).}
+ list(heuristics(ttb, reg), probGreater(col), rowIndexes()).}
 }
 \value{
 A matrix of outputs from the functions.  The number of rows is based
@@ -40,7 +40,7 @@ nrow(out1)
 ## Generate a matrix with the correct values and the heuristics'
 ## predictions:
 out2 <- allRowPairApplyList(city_population,
-                            list(criterion(3), heuristics(reg, ttb)))
+                            list(probGreater(3), heuristics(reg, ttb)))
 head(out2)
 nrow(out2)
 ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel

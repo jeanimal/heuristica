@@ -64,7 +64,7 @@ predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(rowIndexes(), criterion(criterion_col),
+  all_fn_creator_list <- list(rowIndexes(), probGreater(criterion_col),
                               heuristicsList(fitted_heuristic_list))
   predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
   return(predictions)
@@ -152,7 +152,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data, ...) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(criterion(criterion_col),
+  all_fn_creator_list <- list(probGreater(criterion_col),
                               heuristicsList(fitted_heuristic_list), ...)
   predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
   return(predictions)
@@ -207,7 +207,7 @@ pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list,
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(criterion(criterion_col),
+  all_fn_creator_list <- list(probGreater(criterion_col),
                               heuristicsList(fitted_heuristic_list))
   predictions_fwd <- allRowPairApplyList(test_data, all_fn_creator_list)
   test_data_rev <- test_data[c(nrow(test_data):1),]
