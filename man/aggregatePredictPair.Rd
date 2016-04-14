@@ -24,6 +24,9 @@ Predicts with heuristics and criterion, returning all row pairs.
 \examples{
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
-aggregatePredictPair(list(ttb, reg), city_population)
+# which row pairs is ttb better on?
+out <- aggregatePredictPair(list(ttb, reg), city_population, rowIndexes())
+out_df <- data.frame(out)
+head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
 }
 

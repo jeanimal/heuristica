@@ -143,7 +143,10 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' @examples
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 #' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
-#' aggregatePredictPair(list(ttb, reg), city_population)
+#' # which row pairs is ttb better on?
+#' out <- aggregatePredictPair(list(ttb, reg), city_population, rowIndexes())
+#' out_df <- data.frame(out)
+#' head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
 #' @export
 aggregatePredictPair <- function(fitted_heuristic_list, test_data, ...) {
   # Assume the criterion_col is same for all heuristics.
