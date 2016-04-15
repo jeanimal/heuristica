@@ -68,6 +68,25 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
 
 })
 
+
+# aggregatePredictPair
+
+test_that("aggregatePredictPair 3 models", {
+  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(data, 1, c(2:3))
+  ttbG <- ttbGreedyModel(data, 1, c(2:3))
+  reg <- regModel(data, 1, c(2:3))
+  out <- aggregatePredictPair(list(ttb, ttbG, reg), data)
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
+                     regModel=c(1)), oneRow(out, 1))
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
+                     regModel=c(1)), oneRow(out, 2))
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0.5), ttbGreedyModel=c(1),
+                     regModel=c(0)), oneRow(out, 3))
+})
+
+# pctCorrectOfPredictPair
+
 test_that("end to end test ttb vs. logistic regression input data.frame", {
   train_df <- data.frame(y=c(5,4,3), x=c(1,0,0), name=c("jo", "bo", "da"))
   ttb <- ttbModel(train_df, 1, c(2))
