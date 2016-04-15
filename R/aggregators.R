@@ -137,6 +137,9 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
 #'   e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
+#' @param goal_type String identifying the goal of the models and criterion.
+#'   'ProbGreater' indicates to use probGreater and predictRoot.
+#'   ChooseGreater' indicates to use correctGrater and predictPairInternal.
 #' @param ... Optionally additional row pair functions, e.g. rowIndexes().
 #' @return A one-row matrix of numbers from 0 to 1, meaning proportion
 #'   correct.  Each column is named with the heuristic's class.
@@ -148,12 +151,22 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' out_df <- data.frame(out)
 #' head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
 #' @export
-aggregatePredictPair <- function(fitted_heuristic_list, test_data, ...) {
+aggregatePredictPair <- function(fitted_heuristic_list, test_data,
+                                 goal_type='ProbGreater', ...) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(probGreater(criterion_col),
-                              heuristicsList(fitted_heuristic_list), ...)
+  if (goal_type=='ProbGreater') {
+    all_fn_creator_list <- list(probGreater(criterion_col),
+                                heuristicsList(fitted_heuristic_list,
+                                               fn=predictRoot), ...)
+  } else if (goal_type=='ChooseGreater') {
+    all_fn_creator_list <- list(correctGreater(criterion_col),
+                                heuristicsList(fitted_heuristic_list,
+                                               fn=predictPairInternal), ...)
+  } else {
+    stop(paste("Unrecognized goal_type: ", goal_type))
+  }
   predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
   return(predictions)
 }

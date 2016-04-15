@@ -4,13 +4,18 @@
 \alias{aggregatePredictPair}
 \title{Predicts with heuristics and criterion, returning all row pairs.}
 \usage{
-aggregatePredictPair(fitted_heuristic_list, test_data, ...)
+aggregatePredictPair(fitted_heuristic_list, test_data,
+  goal_type = "ProbGreater", ...)
 }
 \arguments{
 \item{fitted_heuristic_list}{A list of heuristics already fitted to data,
 e.g. ttbModel.}
 
 \item{test_data}{Data to try to predict; must match columns in fit.}
+
+\item{goal_type}{String identifying the goal of the models and criterion.
+'ProbGreater' indicates to use probGreater and predictRoot.
+ChooseGreater' indicates to use correctGrater and predictPairInternal.}
 
 \item{...}{Optionally additional row pair functions, e.g. rowIndexes().}
 }
