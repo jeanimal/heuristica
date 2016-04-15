@@ -147,12 +147,14 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 #' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' # which row pairs is ttb better on?
-#' out <- aggregatePredictPair(list(ttb, reg), city_population, rowIndexes())
+#' goal_type <- 'ProbGreater'
+#' out <- aggregatePredictPair(list(ttb, reg), city_population, goal_type,
+#'   rowIndexes())
 #' out_df <- data.frame(out)
 #' head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
 #' @export
 aggregatePredictPair <- function(fitted_heuristic_list, test_data,
-                                 goal_type='ProbGreater', ...) {
+                                 goal_type, ...) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   # TODO: Check and stop if a heuristics disagrees with criterion_col.
@@ -191,7 +193,9 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' pctCorrectOfPredictPair(list(ttb, reg), city_population)
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
-  predictions <- aggregatePredictPair(fitted_heuristic_list, test_data)
+  goal_type <- 'ProbGreater'
+  predictions <- aggregatePredictPair(fitted_heuristic_list, test_data,
+                                      goal_type)
   errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
   df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)

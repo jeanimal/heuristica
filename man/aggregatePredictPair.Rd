@@ -4,8 +4,7 @@
 \alias{aggregatePredictPair}
 \title{Predicts with heuristics and criterion, returning all row pairs.}
 \usage{
-aggregatePredictPair(fitted_heuristic_list, test_data,
-  goal_type = "ProbGreater", ...)
+aggregatePredictPair(fitted_heuristic_list, test_data, goal_type, ...)
 }
 \arguments{
 \item{fitted_heuristic_list}{A list of heuristics already fitted to data,
@@ -30,7 +29,9 @@ Predicts with heuristics and criterion, returning all row pairs.
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 # which row pairs is ttb better on?
-out <- aggregatePredictPair(list(ttb, reg), city_population, rowIndexes())
+goal_type <- 'ProbGreater'
+out <- aggregatePredictPair(list(ttb, reg), city_population, goal_type,
+  rowIndexes())
 out_df <- data.frame(out)
 head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
 }
