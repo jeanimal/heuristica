@@ -104,6 +104,14 @@ createErrorsFromPredicts2 <- function(data, reference_col, cols_to_compare) {
   return(data)
 }
 
+# Note: goal_type affects which "stop" checks we do.
+classificationErrorsFromPredicts <- function(data, reference_col, cols_to_compare) {
+  for (col in cols_to_compare) {
+    data[,col] <- (data[,col] != data[,reference_col] )
+  }
+  return(data)
+}
+
 #' Converts errors to percent correct for each column.
 #' 
 #' The errors should be the output of createErrorsFromPredicts.
