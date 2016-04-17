@@ -480,7 +480,7 @@ test_that("ttbGreedyModel on 3x3 where differs from regular ttb", {
                                   oneRow(matrix, 3), model))
   # After using x1, it sees only last two rows of x2.  It reverses them
   # to get a validity 1.0 cue, which is why it predicts 2 vs. 3 correctly.
-  expect_equal(c(1.0, 1.0), model$cue_validities_with_reverse)
+  expect_equal(c(x1=1.0, x2=1.0), model$cue_validities_with_reverse)
 })
 
 test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
@@ -492,7 +492,7 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
   # one row pair.  Accuracy = (1+1+0.5)/3.
   expect_equal(0.83333, out$ttbGreedyModel, tolerance=0.0001)
   # One cue has NA, but we don't know which one.
-  expect_equal(c(1.0, NA), sort(model$cue_validities_with_reverse,
+  expect_equal(c(1.0, NA), sort(unname(model$cue_validities_with_reverse),
                                 na.last=TRUE))
 })
 

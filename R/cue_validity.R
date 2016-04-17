@@ -189,6 +189,12 @@ conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
   # TODO: For other cue validity calculations, return cue_validities
   # and original_cue_validities, not cue_validities_with_reverse.
 
+  # Preserve column names.
+  names <- colnames(data)[cols_to_fit]
+  names(conditional_cue_validities) <- names
+  names(conditional_cue_ranks) <- names
+  names(conditional_cue_directions) <- names
+
   return(list(cue_validities=conditional_cue_validities,
               cue_ranks=conditional_cue_ranks,
               cue_directions=conditional_cue_directions))
