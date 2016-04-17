@@ -76,7 +76,6 @@ cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
     cueValidity(data[,criterion_col], data[,col],
                 replaceNanWith=replaceNanWith)
   })
-  out <- c(out)
   if (length(colnames(data)) > 0) {
     names(out) <- colnames(data)[cols_to_fit]
   }
