@@ -1,6 +1,14 @@
 # install.packages("Hmisc")
 # library("Hmisc")
 
+#' Documentation stub.
+#' @param reverse_cues Optional parameter to reverse cues as needed.  By
+#' default, the model will reverse the cue values for cues with cue validity
+#' < 0.5, so a cue with validity 0 becomes a cue with validity 1.
+#' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
+# Private.  This is just an easy way to share parameter documentation.
+reversingModel <- function(reverse_cues=TRUE) NULL
+
 #' Calculate the cue validity
 #'
 #' Calculate the
@@ -64,22 +72,39 @@ cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
 #'   validity for.
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
+#' @inheritParams reversingModel
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
 #' @references
 #' Wikipedia's entry on
 #' \url{https://en.wikipedia.org/wiki/Cue_validity}
 #' @export
-cueValidityMatrix <- function(data, criterion_col, cols_to_fit, 
-                              replaceNanWith=0.5) {
-  out <- sapply(cols_to_fit, function(col) {
+cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
+                              replaceNanWith=0.5,
+                              reverse_cues=FALSE) {
+  cue_validities <- sapply(cols_to_fit, function(col) {
     cueValidity(data[,criterion_col], data[,col],
                 replaceNanWith=replaceNanWith)
   })
   if (length(colnames(data)) > 0) {
-    names(out) <- colnames(data)[cols_to_fit]
+    names(cue_validities) <- colnames(data)[cols_to_fit]
   }
-  return(list(cue_validities=out))
+  if (reverse_cues) {
+    reverse_info = reverseAsNeeded(cue_validities)
+    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
+    cue_directions <- reverse_info$cue_directions
+  } else {
+    cue_validities_with_reverse <- cue_validities
+    cue_directions <- rep(1, length(cue_validities_with_reverse))
+  }
+  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
+  # Reverse ranks so first is last.
+  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
+
+  return(list(cue_validities=cue_validities_with_reverse,
+              cue_validities_unreversed=cue_validities,
+              cue_ranks=cue_ranks,
+              cue_directions=cue_directions))
   #return(out)
 }
 

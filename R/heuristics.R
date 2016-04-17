@@ -49,14 +49,6 @@ predictPairInternal <- function(object, row1, row2) {
 # Private.  This is just an easy way to share parameter documentation.
 heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
 
-#' Documentation stub.
-#' @param reverse_cues Optional parameter to reverse cues as needed.  By
-#' default, the model will reverse the cue values for cues with cue validity
-#' < 0.5, so a cue with validity 0 becomes a cue with validity 1.
-#' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
-# Private.  This is just an easy way to share parameter documentation.
-reversingModel <- function(reverse_cues=TRUE) NULL
-
 
 ### Helper functions ###
 
@@ -129,27 +121,17 @@ reverseAsNeeded <- function(cue_validities) {
 ttbModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE, fit_name="ttbModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
-  cue_validities <- out$cue_validities
-  if (reverse_cues) {
-    reverse_info = reverseAsNeeded(cue_validities)
-    cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
-    cue_directions <- reverse_info$cue_directions
-  } else {
-    cue_validities_with_reverse <- cue_validities
-    cue_directions <- rep(1, length(cue_validities_with_reverse))
-  }
-  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
-  # Reverse ranks so first is last.
-  cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
-  unsigned_linear_coef <- sapply(cue_ranks,
-                                 function(n) 2^(length(cue_ranks)-n) )
-  # Now give negative signs for cues pointing the other way.
-  linear_coef <- cue_directions * unsigned_linear_coef
+  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+                           reverse_cues=reverse_cues)
+
+  unsigned_linear_coef <- sapply(out$cue_ranks,
+                                 function(n) 2^(length(out$cue_ranks)-n) )
+  # Give negative weights to cues pointing the other way.
+  linear_coef <- out$cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cue_validities,
-                 cue_validities_with_reverse=cue_validities_with_reverse,
+                 cue_validities=out$cue_validities_unreversed,
+                 cue_validities_with_reverse=out$cue_validities,
                  linear_coef=linear_coef, fit_name=fit_name),
             class="ttbModel")
 }
