@@ -92,10 +92,9 @@ reverseAsNeeded <- function(cue_validities) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @param col_name Name of output column other functions should use.  Defaults
-#'   to the class name ("ttbModel").  It's useful to change this to a unique
-#'   name if you are making multiple fits, e.g. "ttb1", "ttb2",
-#'   "ttbNoReverse."
+#' @param fit_name Optional name other functions can use to label output.  It
+#'   defaults to the class name.  It is useful to change this to a unique name
+#'   if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."
 #'
 #' @return An object of \code{\link[base]{class}} ttbModel.  This is a list
 #'   containing at least the following components:
@@ -128,7 +127,7 @@ reverseAsNeeded <- function(cue_validities) {
 #'
 #' @export
 ttbModel <- function(train_data, criterion_col, cols_to_fit,
-                     reverse_cues=TRUE, col_name="ttbModel") {
+                     reverse_cues=TRUE, fit_name="ttbModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cue_validities <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
   if (reverse_cues) {
@@ -150,7 +149,7 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cue_validities,
                  cue_validities_with_reverse=cue_validities_with_reverse,
-                 linear_coef=linear_coef, col_name=col_name),
+                 linear_coef=linear_coef, fit_name=fit_name),
             class="ttbModel")
 }
 
