@@ -40,9 +40,6 @@ It sorts cues in order of \code{\link{cueValidity}}, making a decision
 based on the first cue that discriminates (has differing values on the
 two objects).
 }
-\details{
-It does NOT implement predict on purpose.
-}
 \examples{
 ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
 ## validity 0.
@@ -55,10 +52,16 @@ test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
 predictPairProb(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 
 }
-\seealso{
-\code{\link{predictPairProb}} for prediction.
+\references{
+Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal
+ way: Models of bounded rationality". Psychological Review, 103, 650-669.
 
 Wikipedia's entry on
 \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
+}
+\seealso{
+\code{\link{cueValidity}} for the metric used to sort cues.
+
+\code{\link{predictPairProb}} for prediction.
 }
 

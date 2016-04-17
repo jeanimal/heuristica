@@ -89,8 +89,6 @@ reverseAsNeeded <- function(cue_validities) {
 #' It sorts cues in order of \code{\link{cueValidity}}, making a decision
 #' based on the first cue that discriminates (has differing values on the
 #' two objects).
-#'
-#' It does NOT implement predict on purpose.
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
@@ -118,8 +116,13 @@ reverseAsNeeded <- function(cue_validities) {
 #' predictPairProb(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 #'
 #' @seealso
-#' \code{\link{predictPairProb}} for prediction.
+#' \code{\link{cueValidity}} for the metric used to sort cues.
 #' @seealso
+#' \code{\link{predictPairProb}} for prediction.
+#' @references
+#' Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal
+#'  way: Models of bounded rationality". Psychological Review, 103, 650-669.
+#' @references
 #' Wikipedia's entry on
 #' \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
@@ -173,6 +176,7 @@ predictRoot.ttbModel <- function(object, row1, row2) {
 }
 
 ### Greedy Take The Best Model ###
+
 
 ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
   out <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)

@@ -5,7 +5,9 @@
 #'
 #' Calculate the
 #' \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
-#' for a pair of vectors.
+#' for a pair of vectors.  Roughly speaking, what is the proportion of
+#' cases where this cue correctly predicts which row will have a larger
+#' criterion?
 #'
 #' @param criterion A vector of values to be predicted.
 #' @param cue A vector of values to predict with.  Should have the same
@@ -13,6 +15,9 @@
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
 #' @return The cue validity, a value in the range [0,1].
+#' @references
+#' Wikipedia's entry on
+#' \url{https://en.wikipedia.org/wiki/Cue_validity}
 #' @export
 cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   out <- Hmisc::rcorr.cens(criterion, cue, outx=TRUE)
@@ -24,7 +29,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-# Proof of concept.  Not in use yet.
+# Proof of concept.  Not in use.
 cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
   data <- cbind(criterion, cue)
   correctIncorrectFn <- function(row1, row2) {
@@ -48,7 +53,7 @@ cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-#' Calculate the cue validity for all specified columns
+#' Calculate the cue validity for cols_to_fit predicting the criterion.
 #'
 #' If you know you want cue validities for many columns in your data,
 #' this function makes it easy.  
@@ -56,11 +61,14 @@ cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
 #' @param data The matrix or data.frame whose columns are treated as cues.
 #' @param criterion_col The index of the column used as criterion.
 #' @param cols_to_fit A vector of indexes of the columns to calculate cue
-#'   validity for
+#'   validity for.
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
 #' @return A vector of cue validities applying to each of the columns in
-#'         cols_to_fit, in that order.
+#'         cols_to_fit.
+#' @references
+#' Wikipedia's entry on
+#' \url{https://en.wikipedia.org/wiki/Cue_validity}
 #' @export
 cueValidityMatrix <- function(data, criterion_col, cols_to_fit, 
                               replaceNanWith=0.5) {
@@ -98,6 +106,32 @@ cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWi
   return(pos / (pos+neg))
 }
 
+#' Calculate conditional cue validity for cols_to_fit predicting criterion.
+#'
+#' Conditional cue validity is the validity of a cue taking into account
+#' decisions already made by higher-validity cues.  For a single cue, it
+#' is the same as cue validity.  For two cues, the higher validity cue will
+#' have conditional cue validity = cue validity.  However, the remaining cue
+#' will have its validity re-calculated on just those pairs of object where
+#' cue validity did not discriminate.  In the case of binary data, there will
+#' be many pairs where the first cue did not discriminate.  With real-valued
+#' data, there may be no such cases.
+#'
+#' @param data The matrix or data.frame whose columns are treated as cues.
+#' @param criterion_col The index of the column used as criterion.
+#' @param cols_to_fit A vector of indexes of the columns to calculate cue
+#'   validity for.
+#' @return A vector of cue validities applying to each of the columns in
+#'         cols_to_fit.  This *will* return Nan if the validity cannot
+#'         be calculated (e.g. higher-validity cues make all the decisions).
+#'         Your code must handle the NaN correctly.
+#'
+#' @seealso
+#' \code{\link{cueValidity}} for the unconditional version.
+#' @references
+#' Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
+#' heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
+#' export
 conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
   original_agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
   conditional_cue_validities <- rep(NA, length(cols_to_fit))

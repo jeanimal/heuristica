@@ -21,6 +21,12 @@ The cue validity, a value in the range [0,1].
 \description{
 Calculate the
 \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
-for a pair of vectors.
+for a pair of vectors.  Roughly speaking, what is the proportion of
+cases where this cue correctly predicts which row will have a larger
+criterion?
+}
+\references{
+Wikipedia's entry on
+\url{https://en.wikipedia.org/wiki/Cue_validity}
 }
 

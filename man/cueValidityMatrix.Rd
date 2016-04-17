@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{cueValidityMatrix}
 \alias{cueValidityMatrix}
-\title{Calculate the cue validity for all specified columns}
+\title{Calculate the cue validity for cols_to_fit predicting the criterion.}
 \usage{
 cueValidityMatrix(data, criterion_col, cols_to_fit, replaceNanWith = 0.5)
 }
@@ -12,17 +12,21 @@ cueValidityMatrix(data, criterion_col, cols_to_fit, replaceNanWith = 0.5)
 \item{criterion_col}{The index of the column used as criterion.}
 
 \item{cols_to_fit}{A vector of indexes of the columns to calculate cue
-validity for}
+validity for.}
 
 \item{replaceNanWith}{The value to return as cue validity in case it
 cannot be calculated.}
 }
 \value{
 A vector of cue validities applying to each of the columns in
-        cols_to_fit, in that order.
+        cols_to_fit.
 }
 \description{
 If you know you want cue validities for many columns in your data,
 this function makes it easy.
+}
+\references{
+Wikipedia's entry on
+\url{https://en.wikipedia.org/wiki/Cue_validity}
 }
 
