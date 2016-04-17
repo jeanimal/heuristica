@@ -44,7 +44,6 @@ cols_to_fit <- 4:ncol(data_set)
 Let's enter the models we want to test:
 ```{r}
 vec_of_models <-c(ttbModel, dawesModel, franklinModel, regModel, logRegModel)
-vec_of_models <-c(ttbModel, singleCueModel)
 ```
 Next we define the size of the training and test sets.
 ```{r}
