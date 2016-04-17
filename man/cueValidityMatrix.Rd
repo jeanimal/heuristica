@@ -18,8 +18,8 @@ validity for.}
 cannot be calculated.}
 }
 \value{
-A vector of cue validities applying to each of the columns in
-        cols_to_fit.
+A list where $cue_validities has a vector of validities for
+  each of the columns in cols_to_fit.
 }
 \description{
 If you know you want cue validities for many columns in your data,

@@ -30,17 +30,22 @@ expect_equal(0.75,  cueValidity(c(5,4,3,2,1), c(1,1,1,0,1), replaceNanWith=-10),
 
 # cueValidityMatrix
 
-expect_equal(c(1), cueValidityMatrix(matrix(c(5,4,1,0), 2, 2), 1, c(2)) ,tolerance=1)
-expect_equal(c(1), cueValidityMatrix(matrix(c(5,4,1,0,0,1), 2, 2), 1, c(2)) ,tolerance=1)
-expect_equal(c(1,0), cueValidityMatrix(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3)) ,tolerance=1)
-expect_equal(c(1,0), cueValidityMatrix(matrix(c(1,0,5,4,0,1), 2, 3), 2, c(1,3)), tolerance=1)
-expect_equal(c(1,0), cueValidityMatrix(matrix(c(5,4,0,1), 2, 2), 1, c(1, 2)),tolerance=1 )
+expect_equal(c(1), cueValidityMatrix(
+  matrix(c(5,4,1,0), 2, 2), 1, c(2))$cue_validities, tolerance=0.001)
+expect_equal(c(1), cueValidityMatrix(
+  matrix(c(5,4,1,0,0,1), 2, 2), 1, c(2))$cue_validities, tolerance=0.001)
+expect_equal(c(1,0), cueValidityMatrix(
+  matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))$cue_validities, tolerance=0.001)
+expect_equal(c(1,0), cueValidityMatrix(
+  matrix(c(1,0,5,4,0,1), 2, 3), 2, c(1,3))$cue_validities, tolerance=0.001)
+expect_equal(c(1,0), cueValidityMatrix(
+  matrix(c(5,4,0,1), 2, 2), 1, c(1, 2))$cue_validities, tolerance=0.001)
 
 test_that("cueValidityMatrix 5x4 names", {
   df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,0,0,0,1),
                    b=c(1,1,1,0,0), c=c(1,1,1,0,1))
   cv <- cueValidityMatrix(df, 1, c(2,3,4)) 
-  expect_equal(c(a=0.5, b=1.0, c=0.75), cv)
+  expect_equal(c(a=0.5, b=1.0, c=0.75), cv$cue_validities)
 })
 
 test_that("cueValidityMatrix 3x3 names shifted criterion", {
@@ -48,8 +53,7 @@ test_that("cueValidityMatrix 3x3 names shifted criterion", {
                    Cue=c(1,0,1))
   names(df) <- c('Garbage', 'Criterion', 'Cue')
   cv <- cueValidityMatrix(df, 2, c(3)) 
-  expect_equal(c(0.5), unname(cv),tolerance=0.1)
-  expect_equal(c('Cue'), names(cv),tolernace=1)
+  expect_equal(c(Cue=0.5), cv$cue_validities)
 })
 
 # cueAccuracy
@@ -167,7 +171,7 @@ test_that("conditionalCueValidityMatrix 1 cue same as cueValidity", {
   matrix <- cbind(y=c(6:1), x1=c(15,0,2,0,12,1))
   out <- conditionalCueValidityMatrix(matrix, 1, c(2))
   cv <- cueValidityMatrix(matrix, 1, c(2))
-  expect_equal(cv, out$cue_validities)
+  expect_equal(cv$cue_validities, out$cue_validities)
 })
 
 test_that("conditionalCueValidityMatrix 1 cue will reverse", {
@@ -177,7 +181,7 @@ test_that("conditionalCueValidityMatrix 1 cue will reverse", {
   expect_equal(c(x1=-1), out$cue_directions)
   # Below for comparison
   cv <- cueValidityMatrix(matrix, 1, c(2))
-  expect_equal(c(x1=0), cv)
+  expect_equal(c(x1=0), cv$cue_validities)
 })
 
 test_that("conditionalCueValidityMatrix 2 cues", {
