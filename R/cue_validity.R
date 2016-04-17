@@ -77,8 +77,8 @@ cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
                 replaceNanWith=replaceNanWith)
   })
   out <- c(out)
-  if (length(names(data)) > 0) {
-    names(out) <- names(data)[cols_to_fit]
+  if (length(colnames(data)) > 0) {
+    names(out) <- colnames(data)[cols_to_fit]
   }
   return(out)
 }
@@ -188,6 +188,7 @@ conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
   # Random rank, I guess.
   # TODO: For other cue validity calculations, return cue_validities
   # and original_cue_validities, not cue_validities_with_reverse.
+
   return(list(cue_validities=conditional_cue_validities,
               cue_ranks=conditional_cue_ranks,
               cue_directions=conditional_cue_directions))

@@ -167,7 +167,7 @@ test_that("conditionalCueValidityMatrix 1 cue same as cueValidity", {
   matrix <- cbind(y=c(6:1), x1=c(15,0,2,0,12,1))
   out <- conditionalCueValidityMatrix(matrix, 1, c(2))
   cv <- cueValidityMatrix(matrix, 1, c(2))
-  expect_equal(cv, out$cue_validities)
+  expect_equal(unname(cv), out$cue_validities) # TODO: remove unname
 })
 
 test_that("conditionalCueValidityMatrix 1 cue will reverse", {
@@ -177,7 +177,7 @@ test_that("conditionalCueValidityMatrix 1 cue will reverse", {
   expect_equal(-1, out$cue_directions)
   # Below for comparison
   cv <- cueValidityMatrix(matrix, 1, c(2))
-  expect_equal(0, cv)
+  expect_equal(0, unname(cv)) # TODO: remove unname
 })
 
 test_that("conditionalCueValidityMatrix 2 cues", {
