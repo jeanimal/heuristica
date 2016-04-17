@@ -15,10 +15,14 @@ conditionalCueValidityMatrix(data, criterion_col, cols_to_fit)
 validity for.}
 }
 \value{
-A vector of cue validities applying to each of the columns in
-        cols_to_fit.  This *will* return Nan if the validity cannot
-        be calculated (e.g. higher-validity cues make all the decisions).
-        Your code must handle the NaN correctly.
+A list of vectors with values for each column in cols_to_fit:
+$cue_validities: The validities based on reversed value, numbers ranging
+  from 0 to 1.  It will include NA if the validity cannot be calculated
+  (e.g. higher-validity cues made decisions for all cases in the data set).
+$cue_ranks: Rank order from 1 to # of cues in cols_to_fit.  Will be NA if 
+  validity was NA.
+$cue_directions: 1 if cue is in same direction as criterion, -1 if
+  reversed.  Will be NA if validity was NA.
 }
 \description{
 Conditional cue validity is the validity of a cue taking into account
@@ -30,10 +34,28 @@ cue validity did not discriminate.  In the case of binary data, there will
 be many pairs where the first cue did not discriminate.  With real-valued
 data, there may be no such cases.
 }
+\examples{
+# The data below differentiates between cue validity and conditional cue
+# validity.  Cue validity of x1 is 1.0.  Cue validity of x2 is 0.5.
+# But after you've chosen x1 as the highest-validity cue, only row2
+# vs. row3 is undecided  x2 predictions correctly on those, so its
+# conditional cue validity is 1.0 (conditional on x1 being first).
+data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
+out <- conditionalCueValidityMatrix(data, 1, c(2:3))
+# This tells you both cues had validity 1-- it returns 1, 1.
+out$cue_validities
+# This tells you to choose x1 first-- it returns 1, 0.
+out$cue_ranks
+# This tells you they already point in the correct direction.
+out$cue_directions
+# For a case with a negative cue direction, try this data:
+data2 <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
+conditionalCueValidityMatrix(data2, 1, c(2:3))
+
+}
 \references{
 Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
 heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
-export
 }
 \seealso{
 \code{\link{cueValidity}} for the unconditional version.
