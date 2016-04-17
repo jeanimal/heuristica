@@ -116,6 +116,14 @@ test_that("aggregatePredictPair 3 models ChooseGreater", {
                      regModel=c(-1)), oneRow(out, 3))
 })
 
+# So far only ttb has this implemented, but I will do it for all models.
+test_that("aggregatePredictPair custom model col_name", {
+  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(data, 1, c(2:3), reverse_cues=FALSE, col_name="ttbNoRev")
+  out <- aggregatePredictPair(list(ttb), data, 'ChooseGreater')
+  expect_equal(colnames(out), c('CorrectGreater', 'ttbNoRev'))
+})
+
 # pctCorrectOfPredictPair
 
 test_that("end to end test ttb vs. logistic regression input data.frame", {

@@ -4,7 +4,8 @@
 \alias{ttbModel}
 \title{Take The Best}
 \usage{
-ttbModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE)
+ttbModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
+  col_name = "ttbModel")
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -19,6 +20,11 @@ the criterion.}
 default, the model will reverse the cue values for cues with cue validity
 < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
+
+\item{col_name}{Name of output column other functions should use.  Defaults
+to the class name ("ttbModel").  It's useful to change this to a unique
+name if you are making multiple fits, e.g. "ttb1", "ttb2",
+"ttbNoReverse."}
 }
 \value{
 An object of \code{\link[base]{class}} ttbModel.  This is a list

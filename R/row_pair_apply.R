@@ -99,9 +99,15 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
   implementers <- list_of_fitted_heuristics
   # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
-  # Use the first-level class as the name of the implementer.
-  # e.g. Regression has class [regModel, lm], so it will use RegModel.
-  names <- sapply(implementers, function(x) { head(class(x), 1) })
+  # If no col_name is set, use the first-level class as the name.
+  # e.g. Regression has class [regModel, lm], so it will use regModel.
+  names <- sapply(implementers, function(implementer) {
+      if (is.null(implementer$col_name)) {
+        return(c(class(implementer)[[1]]))
+      } else {
+        return(c(implementer$col_name))
+      }
+    })
   structure(list(predictRoot_implementers=implementers,
                  cols_to_fit=cols_to_fit,
                  column_names=names, fn=fn),
