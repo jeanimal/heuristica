@@ -183,7 +183,7 @@ ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
                                  function(n) 2^(length(out$ue_ranks)-n) )
   # Now give negative signs for cues pointing the other way.
   linear_coef <- out$cue_directions * unsigned_linear_coef
-  # Replace NA with zero.
+  # Replace NA with zero weight.
   linear_coef[which(is.na(linear_coef))] <- 0
 
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
