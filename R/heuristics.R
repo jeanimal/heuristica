@@ -121,17 +121,17 @@ reverseAsNeeded <- function(cue_validities) {
 ttbModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE, fit_name="ttbModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
 
-  unsigned_linear_coef <- sapply(out$cue_ranks,
-                                 function(n) 2^(length(out$cue_ranks)-n) )
+  unsigned_linear_coef <- sapply(cv$cue_ranks,
+                                 function(n) 2^(length(cv$cue_ranks)-n) )
   # Give negative weights to cues pointing the other way.
-  linear_coef <- out$cue_directions * unsigned_linear_coef
+  linear_coef <- cv$cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=out$cue_validities_unreversed,
-                 cue_validities_with_reverse=out$cue_validities,
+                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef, fit_name=fit_name),
             class="ttbModel")
 }
@@ -161,18 +161,18 @@ predictRoot.ttbModel <- function(object, row1, row2) {
 
 
 ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
-  out <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
-  unsigned_linear_coef <- sapply(out$cue_ranks,
-                                 function(n) 2^(length(out$ue_ranks)-n) )
+  cv <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
+  unsigned_linear_coef <- sapply(cv$cue_ranks,
+                                 function(n) 2^(length(cv$ue_ranks)-n) )
   # Now give negative signs for cues pointing the other way.
-  linear_coef <- out$cue_directions * unsigned_linear_coef
+  linear_coef <- cv$cue_directions * unsigned_linear_coef
   # Replace NA with zero weight.
   linear_coef[which(is.na(linear_coef))] <- 0
 
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_ranks=out$cue_ranks,
-                 cue_validities=out$cue_validities,
-                 cue_validities_with_reverse=out$cue_validities,
+                 cue_ranks=cv$cue_ranks,
+                 cue_validities=cv$cue_validities,
+                 cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef),
             class="ttbGreedyModel")
   
@@ -232,14 +232,14 @@ predictRoot.ttbGreedyModel <- function(object, row1, row2) {
 dawesModel <- function(train_data, criterion_col, cols_to_fit,
                        reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
 
-  linear_coef <- out$cue_directions
+  linear_coef <- cv$cue_directions
 
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=out$cue_validities_unreversed,
-                 cue_validities_with_reverse=out$cue_validities,
+                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef), class="dawesModel")
 }
 
@@ -285,13 +285,13 @@ predictRoot.dawesModel <- function(object, row1, row2) {
 franklinModel <- function(train_data, criterion_col, cols_to_fit,
                           reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
 
-  linear_coef <- out$cue_directions * out$cue_validities
+  linear_coef <- cv$cue_directions * cv$cue_validities
   structure(list(criterion_col = criterion_col, cols_to_fit = cols_to_fit,
-                 cue_validities=out$cue_validities_unreversed,
-                 cue_validities_with_reverse=out$cue_validities,
+                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_with_reverse=cv$cue_validities,
                  linear_coef = linear_coef),
             class="franklinModel")
 }
@@ -478,8 +478,8 @@ predictRoot.regModel <- function(object, row1, row2) {
 
 # An implementation of cue_order_fn that ranks cues by cue validity.
 rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
-  cue_validities <- out$cue_validities
+  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
+  cue_validities <- cv$cue_validities
   reverse_info = reverseAsNeeded(cue_validities)
   # rank by default ranks in ascending order.  A trick to get a ranking in
   # descending order is to pass it the negative of the data.
@@ -724,16 +724,16 @@ predictRoot.logRegSignModel <- function(object, row1, row2) {
 singleCueModel <- function(train_data, criterion_col, cols_to_fit,
                            reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
-  unsigned_linear_coef <- sapply(out$cue_ranks, function(v)
+  unsigned_linear_coef <- sapply(cv$cue_ranks, function(v)
    if (v==1) 1 else 0)
 
-  linear_coef <- out$cue_directions * unsigned_linear_coef
+  linear_coef <- cv$cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=out$cue_validities_unreversed,
-                 cue_validities_with_reverse=out$cue_validities,
+                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef),
             class="singleCueModel")
 }
@@ -783,16 +783,16 @@ predictRoot.singleCueModel <- function(object, row1, row2) {
 minModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  out <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
   
-  unsigned_linear_coef <- sapply(out$cue_ranks,
-                                 function(n) 2^(length(out$cue_ranks)-n) )
+  unsigned_linear_coef <- sapply(cv$cue_ranks,
+                                 function(n) 2^(length(cv$cue_ranks)-n) )
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=out$cue_validities_unreversed,
-                 cue_validities_with_reverse=out$cue_validities,
-                 cue_directions=out$cue_directions,
+                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_with_reverse=cv$cue_validities,
+                 cue_directions=cv$cue_directions,
                  unsigned_linear_coef=unsigned_linear_coef,
                  cue_sample_fn=sample),
             class="minModel")
