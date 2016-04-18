@@ -479,13 +479,7 @@ predictRoot.regModel <- function(object, row1, row2) {
 # An implementation of cue_order_fn that ranks cues by cue validity.
 rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
   cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
-  cue_validities <- cv$cue_validities
-  reverse_info = reverseAsNeeded(cue_validities)
-  # rank by default ranks in ascending order.  A trick to get a ranking in
-  # descending order is to pass it the negative of the data.
-  cue_ranks <- rank(-reverse_info$cue_validities_with_reverse,
-                    ties.method="random")
-  return(unname(cue_ranks))
+  return(unname(cv$cue_ranks))
 }
 
 # An implementation of cue_order_fn that ranks by each cue's correlation with
