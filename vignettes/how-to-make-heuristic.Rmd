@@ -56,7 +56,7 @@ The class name will tell heuristica how to find the predicting function.  But if
 
 ### Predicting function
 
-To make predictions with heuristica, implement a function called predictRoot, then a dot, then your class name.  Inputs:
+To make predictions with heuristica, implement a function called predictProbInternal, then a dot, then your class name.  Inputs:
 * object, which will have everything returned by your fitting function
 * row1, one row of a matrix or data.frame having just the columns in cols_to_fit
 * row2, another row of a matrix or data.frame having just the columns in cols_to_fit
@@ -66,7 +66,7 @@ The output should be:
 For our bare-bones example, we will randomly guess 0 or 1.  1 means we predict the criterion in row1 will be greater.  0 means we predict the criterion in row2 will be greter.
 
 ```{r}
-predictRoot.myModel <- function(object, row1, row2) {
+predictProbInternal.myModel <- function(object, row1, row2) {
   return(sample(c(0,1), 1))
 }
 ```
@@ -151,9 +151,9 @@ predict(lasso, my_data[,lasso$cols_to_fit])
 
 ### Predicting function
 
-The task is selecting between two rows.  so lasso should predict each row and choose the one with the higher criterion.  Below is an example implementation or predictRoot that will work, although it is not very efficient.
+The task is selecting between two rows.  so lasso should predict each row and choose the one with the higher criterion.  Below is an example implementation or predictProbInternal that will work, although it is not very efficient.
 ```{r}
-predictRoot.lassoModel <- function(object, row1, row2) {
+predictProbInternal.lassoModel <- function(object, row1, row2) {
   p1 <- predict(object, as.matrix(row1))
   p2 <- predict(object, as.matrix(row2))
   if (p1 > p2) {

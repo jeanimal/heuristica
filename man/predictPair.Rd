@@ -21,6 +21,6 @@ A number in the set {-1, 0, 1}, where 1 means row1 is predicted to
   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 }
 \description{
-Assumes the object implements predictRoot and has $cols_to_fit.
+Assumes the object implements predictProbInternal and has $cols_to_fit.
 }
 

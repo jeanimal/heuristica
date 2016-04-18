@@ -50,7 +50,7 @@ nrow(out2)
 \code{\link{createFunction}} which must be implemented by the objects
    passed in the "..." argument, along with the attribute $column_names.
 
-\code{\link{predictRoot}} which must be implemented by heuristics in
+\code{\link{predictProbInternal}} which must be implemented by heuristics in
    order to use them with the heuristics() wrapper function.
 }
 

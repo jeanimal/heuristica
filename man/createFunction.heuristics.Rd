@@ -19,7 +19,7 @@ A function that can easily be used by allRowPairApply to
 }
 \description{
 Creates a function that takes an index pair and returns a prediction
-for each of the predictRoot implementers.
+for each of the predictProbInternal implementers.
 }
 \seealso{
 \code{\link{ttbModel}} for example code.

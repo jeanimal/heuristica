@@ -13,7 +13,7 @@ e.g. ttbModel.}
 \item{test_data}{Data to try to predict; must match columns in fit.}
 
 \item{goal_type}{String identifying the goal of the models and criterion.
-'ProbGreater' indicates to use probGreater and predictRoot.
+'ProbGreater' indicates to use probGreater and predictProbInternal.
 ChooseGreater' indicates to use correctGrater and predictPairInternal.}
 
 \item{...}{Optionally additional row pair functions, e.g. rowIndexes().}

@@ -4,12 +4,12 @@
 \alias{heuristics}
 \title{Wrapper for fitted heuristics to generate predictions with allRowPairApply.}
 \usage{
-heuristics(..., fn = predictRoot)
+heuristics(..., fn = predictProbInternal)
 }
 \arguments{
-\item{...}{A list of predictRoot implementers, e.g. a fitted ttb model.}
+\item{...}{A list of predictProbInternal implementers, e.g. a fitted ttb model.}
 
-\item{fn}{The function to be called on the heuristics, which is predictRoot
+\item{fn}{The function to be called on the heuristics, which is predictProbInternal
 by default, but it can be any function implemented by the heuristics
 with the signature function(object, row1, row2).}
 }
@@ -19,21 +19,21 @@ An object of class heuristics, which implements createFunction.
 }
 \description{
 One or more fitted heuristics can be passed in.  They must all implement
-predictRoot.  Users will generally not use the output directly.
+predictProbInternal.  Users will generally not use the output directly.
 }
 \examples{
 ## This is typical usage:
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 out <- allRowPairApply(city_population, heuristics(ttb))
 head(out)
-## Under the hood, it calls ttb's predictRoot.
+## Under the hood, it calls ttb's predictProbInternal.
 
 }
 \seealso{
 \code{\link{predictPairProb}} for a simpler way to generate predictions
   from fitted models.
 
-\code{\link{predictRoot}} which must be implemented by heuristics in
+\code{\link{predictProbInternal}} which must be implemented by heuristics in
    order to use them with the heuristics() wrapper function.
 
 \code{\link{createFunction}} which is what the returned object implements.

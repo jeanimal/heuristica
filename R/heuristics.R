@@ -17,7 +17,7 @@
 #' @return A value from 0 to 1, representing the probability that row1's
 #'   criterion is greater than row2's criterion.
 #' @export
-predictRoot <- function(object, row1, row2) UseMethod("predictRoot")
+predictProbInternal <- function(object, row1, row2) UseMethod("predictProbInternal")
 
 # TODO(jean): rename the above function predictProbInternal.
 
@@ -150,7 +150,7 @@ predictPairInternal.ttbModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.ttbModel <- function(object, row1, row2) {
+predictProbInternal.ttbModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.ttbModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
@@ -186,7 +186,7 @@ predictPairInternal.ttbGreedyModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.ttbGreedyModel <- function(object, row1, row2) {
+predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.ttbModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the
   # probability that row 1 > row 2.
@@ -253,7 +253,7 @@ predictPairInternal.dawesModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.dawesModel <- function(object, row1, row2) {
+predictProbInternal.dawesModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.dawesModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
@@ -306,7 +306,7 @@ predictPairInternal.franklinModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.franklinModel <- function(object, row1, row2) {
+predictProbInternal.franklinModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.franklinModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
@@ -379,7 +379,7 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
 
-  # Make clean weights that can be easily used in predictRoot.
+  # Make clean weights that can be easily used in predictProbInternal.
   col_weights_clean <- coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
@@ -394,10 +394,10 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
 }
 
 # If you have a model that implements predict, you can confirm you
-# implemented predictRoot correctly using this, which is too slow
+# implemented predictProbInternal correctly using this, which is too slow
 # to use in practice.
 # TODO: use this in tests to compare with hand-coded predictions.
-predictRootUsingPredict <- function(object, row1, row2) {
+predictProbInternalUsingPredict <- function(object, row1, row2) {
   p1 <- predict(object, as.data.frame(row1))
   p2 <- predict(object, as.data.frame(row2))
   if (p1 > p2) {
@@ -415,7 +415,7 @@ predictPairInternal.regInterceptModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.regInterceptModel <- function(object, row1, row2) {
+predictProbInternal.regInterceptModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.regInterceptModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the
   # probability that row 1 > row 2.
@@ -453,7 +453,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   # Functions in this package require criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
-  # Make clean weights that can be easily used in predictRoot.
+  # Make clean weights that can be easily used in predictProbInternal.
   col_weights_clean <- coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
@@ -467,7 +467,7 @@ predictPairInternal.regModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.regModel <- function(object, row1, row2) {
+predictProbInternal.regModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.regModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the
   # probability that row 1 > row 2.
@@ -537,7 +537,7 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
   
   col_weights <- coef(model)
   
-  # Make clean weights that can be easily used in predictRoot.
+  # Make clean weights that can be easily used in predictProbInternal.
   col_weights_clean <- col_weights
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
@@ -635,7 +635,7 @@ predictPairInternal.logRegModel <- function(object, row1, row2) {
 # This is equivalent to the glm predict like this:
 # predict(model, newdata=as.data.frame(row1 - row2), type="response"))
 # And then probabilities > 0.5 return 1 while probabilities < 0.5 return 0.
-predictRoot.logRegModel <- function(object, row1, row2) {
+predictProbInternal.logRegModel <- function(object, row1, row2) {
   generalPredictRootLogReg(row1, row2, object$cue_ordering, 
                            object$col_weights_clean, object$row_pair_fn)
 }
@@ -647,7 +647,7 @@ logRegCorrModel <- function(train_data, criterion_col, cols_to_fit,
                             suppress_warnings))
 }
 
-predictRoot.logRegCorrModel <- function(object, row1, row2) {
+predictProbInternal.logRegCorrModel <- function(object, row1, row2) {
   generalPredictRootLogReg(row1, row2, object$cue_ordering, 
                            object$col_weights_clean, object$row_pair_fn)
 }
@@ -681,7 +681,7 @@ logRegSignModel <- function(train_data, criterion_col, cols_to_fit,
 # This is equivalent to the glm predict like this:
 # predict(model, newdata=as.data.frame(sign(row1 - row2)),
 #  type="response"))
-predictRoot.logRegSignModel <- function(object, row1, row2) {
+predictProbInternal.logRegSignModel <- function(object, row1, row2) {
   generalPredictRootLogReg(row1, row2, object$cue_ordering, 
                            object$col_weights_clean, object$row_pair_fn)
 }
@@ -746,7 +746,7 @@ predictPairInternal.singleCueModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.singleCueModel <- function(object, row1, row2) {
+predictProbInternal.singleCueModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.singleCueModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
@@ -809,7 +809,7 @@ predictPairInternal.minModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictRoot.minModel <- function(object, row1, row2) {
+predictProbInternal.minModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- predictPairInternal.minModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.

@@ -66,11 +66,11 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
-#' predictRoot.  Users will generally not use the output directly.
+#' predictProbInternal.  Users will generally not use the output directly.
 #' 
-#' @param list_of_fitted_heuristics Normally a list of predictRoot
+#' @param list_of_fitted_heuristics Normally a list of predictProbInternal
 #'   implementers, e.g. a fitted ttb model.
-#' @param fn The function to be called on the heuristics, which is predictRoot
+#' @param fn The function to be called on the heuristics, which is predictProbInternal
 #'   by default, but it can be any function implemented by the heuristics
 #'   with the signature function(object, row1, row2).
 #' @return An object of class heuristics, which implements createFunction.
@@ -81,21 +81,21 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 #' out <- allRowPairApply(city_population, heuristics(ttb))
 #' head(out)
-#' ## Under the hood, it calls ttb's predictRoot.
+#' ## Under the hood, it calls ttb's predictProbInternal.
 #' 
 #' @seealso
 #' \code{\link{predictPairProb}} for a simpler way to generate predictions
 #'   from fitted models.
 #' \code{\link{heuristics}} for a non-list version of this function.
 #' @seealso
-#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
 #' @seealso
 #' \code{\link{createFunction}} which is what the returned object implements.
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
-heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
+heuristicsList <- function(list_of_fitted_heuristics, fn=predictProbInternal) {
   implementers <- list_of_fitted_heuristics
   # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
@@ -108,7 +108,7 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
         return(c(implementer$fit_name))
       }
     })
-  structure(list(predictRoot_implementers=implementers,
+  structure(list(predictProbInternal_implementers=implementers,
                  cols_to_fit=cols_to_fit,
                  column_names=names, fn=fn),
             class="heuristics")
@@ -117,10 +117,10 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
 #' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
-#' predictRoot.  Users will generally not use the output directly.
+#' predictProbInternal.  Users will generally not use the output directly.
 #' 
-#' @param ... A list of predictRoot implementers, e.g. a fitted ttb model.
-#' @param fn The function to be called on the heuristics, which is predictRoot
+#' @param ... A list of predictProbInternal implementers, e.g. a fitted ttb model.
+#' @param fn The function to be called on the heuristics, which is predictProbInternal
 #'   by default, but it can be any function implemented by the heuristics
 #'   with the signature function(object, row1, row2).
 #' @return An object of class heuristics, which implements createFunction.
@@ -131,20 +131,20 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictRoot) {
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 #' out <- allRowPairApply(city_population, heuristics(ttb))
 #' head(out)
-#' ## Under the hood, it calls ttb's predictRoot.
+#' ## Under the hood, it calls ttb's predictProbInternal.
 #' 
 #' @seealso
 #' \code{\link{predictPairProb}} for a simpler way to generate predictions
 #'   from fitted models.
 #' @seealso
-#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
 #' @seealso
 #' \code{\link{createFunction}} which is what the returned object implements.
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
-heuristics <- function(..., fn=predictRoot) {
+heuristics <- function(..., fn=predictProbInternal) {
   implementers <- list(...)
   return(heuristicsList(implementers, fn=fn))
 }
@@ -152,7 +152,7 @@ heuristics <- function(..., fn=predictRoot) {
 #' Create function for heuristics prediction with allRowPairApply.
 #'
 #' Creates a function that takes an index pair and returns a prediction
-#' for each of the predictRoot implementers.
+#' for each of the predictProbInternal implementers.
 #'
 #' @param object A heuristics object.
 #' @inheritParams createFunction
@@ -166,11 +166,11 @@ heuristics <- function(..., fn=predictRoot) {
 #' @export
 createFunction.heuristics <- function(object, test_data) {
   test_data_trim <- as.matrix(test_data[, object$cols_to_fit, drop=FALSE])
-  all_predictRoot_fn <- function(index_pair) {
+  all_predictProbInternal_fn <- function(index_pair) {
     row1 <- oneRow(test_data_trim, index_pair[1])
     row2 <- oneRow(test_data_trim, index_pair[2])
     out_all <- NULL
-    for (implementer in object$predictRoot_implementers) {
+    for (implementer in object$predictProbInternal_implementers) {
       # print(class(implementer))
       out <- object$fn(implementer, row1, row2)
       # TODO(Jean): Test the checks below.
@@ -190,7 +190,7 @@ createFunction.heuristics <- function(object, test_data) {
     }
     return(out_all)
   }
-  return(all_predictRoot_fn)
+  return(all_predictProbInternal_fn)
 }
 
 # probGreater (criterion function)
@@ -398,7 +398,7 @@ combineIntoOneFn <- function(function_list) {
 #' \code{\link{createFunction}} which must be implemented by the objects
 #'    passed in the "..." argument, along with the attribute $column_names.
 #' @seealso
-#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
 #'
 #' @export
@@ -457,7 +457,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' \code{\link{createFunction}} which must be implemented by the objects
 #'    passed in the "..." argument, along with the attribute $column_names.
 #' @seealso
-#' \code{\link{predictRoot}} which must be implemented by heuristics in
+#' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
 #'
 #' @export
@@ -537,7 +537,7 @@ makeTrimRowPairFunctionForObject <- function(object, internalFn) {
 
 #' Predict which of a pair of rows has a higher criterion.
 #'
-#' Assumes the object implements predictRoot and has $cols_to_fit.
+#' Assumes the object implements predictProbInternal and has $cols_to_fit.
 #'
 #' @param row1 The first row of data.  The cues object$cols_to_fit will be
 #'   passed to the heuristic.
@@ -564,7 +564,7 @@ predictPair <- function(row1, row2, object) {
 #' Predict the probablity that row1 has a higher criterion than row2.
 #'
 #' It uses the passed-in object to do the prediction, assuming the object
-#' implements predictRoot and has $cols_to_fit.
+#' implements predictProbInternal and has $cols_to_fit.
 #'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on
 #'   object).
@@ -577,7 +577,7 @@ predictPair <- function(row1, row2, object) {
 #' @export
 predictPairProb <- function(row1, row2, object) {
   out <- rowPairApply(row1, row2, heuristics(object))
-  # The asserts below ensure predictRoot had a reasonable implementation.
+  # The asserts below ensure predictProbInternal had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)
   return(unname(out[1,1]))

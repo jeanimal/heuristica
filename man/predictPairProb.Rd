@@ -22,6 +22,6 @@ A double from 0 to 1, representing the probability that row1's
 }
 \description{
 It uses the passed-in object to do the prediction, assuming the object
-implements predictRoot and has $cols_to_fit.
+implements predictProbInternal and has $cols_to_fit.
 }
 

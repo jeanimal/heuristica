@@ -236,9 +236,9 @@ test_that("allRowPairApply colPairValues function numeric", {
 test_that("allRowPairApply heuristics with fn", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,1))
   model <- ttbModel(train_matrix, 1, c(2))
-  out <- allRowPairApply(train_matrix, heuristics(model, fn=predictRoot),
+  out <- allRowPairApply(train_matrix, heuristics(model, fn=predictProbInternal),
                          heuristics(model, fn=predictPairInternal))
-  # predictRoot guesses wtih 0.5.  predictPairInternal guesses with 0.
+  # predictProbInternal guesses wtih 0.5.  predictPairInternal guesses with 0.
   expect_equal(cbind(0.5, 0), unname(out))
 })
 
