@@ -19,8 +19,6 @@
 #' @export
 predictProbInternal <- function(object, row1, row2) UseMethod("predictProbInternal")
 
-# TODO(jean): rename the above function predictProbInternal.
-
 #' Generic function to predict which of a pair of rows has higher criterion.
 #' 
 #' Implement this for every heuristic in order to use with row_pair and
