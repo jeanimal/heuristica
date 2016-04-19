@@ -139,7 +139,7 @@ For 0 random cues, the models will be using the cue with 75% validity.  You migh
 Below we see all models earn 60% accuracy.  They are equally good at fitting the cue with a "signal" in it.
 
 ```{r}
-model_list <- list(dawesModel, franklinModel, ttbModel, logRegModel, regModel)
+model_list <- list(dawesModel, validityWeightModel, ttbModel, logRegModel, regModel)
 multiPredict75(model_list, 0)
 ```
 
@@ -181,7 +181,7 @@ ggplot(out_summary, aes(x=num_rand_col, y=accuracy, colour=model)) +
      geom_point() + xlab("number of random cues")
 ```
 
-It shows model accuracy decreasing as more random cues are added, which is not a surprise.  In general, regModel, dawesModel, and franklinModel are best.  ttbModel does pretty badly.
+It shows model accuracy decreasing as more random cues are added, which is not a surprise.  In general, regModel, dawesModel, and validityWeightModel are best.  ttbModel does pretty badly.
 
 More good news is that most heuristics continue to maintain above-chance performance (above 50%) even with 8 additional random cues.  They are champions of picking out signals amidst the noise!
 
@@ -189,6 +189,6 @@ More good news is that most heuristics continue to maintain above-chance perform
 
 I think ttbModel does badly with a lot of random cues because it puts so much emphasis on the first discriminating high-validity cue.  But with random data, we will generate some cues that appear to have a validity well above 75%, and ttb will incorrectly rely on those, ignoring the rest.
 
-In contrast, models like dawesModel-- unit linear, so every cue's weight is +1 or -1-- and franklinModel-- where cue weights are their cue validities except validities below 0.5 are reversed-- let the noise of additional cues cancel each other out.  For example, for dawesModel, if there are 100 random cues, 50 of them are likely to get +1 weights and 50 are likely to get -1 weights.  In fact, the more random cues are added, the more likely they are to cancel out!  Unfortunately, the weight of the one signal cue becomes a smaller percentage of the total weight, and its signal eventually gets lost anyway.
+In contrast, models like dawesModel-- unit linear, so every cue's weight is +1 or -1-- and validityWeightModel-- where cue weights are their cue validities except validities below 0.5 are reversed-- let the noise of additional cues cancel each other out.  For example, for dawesModel, if there are 100 random cues, 50 of them are likely to get +1 weights and 50 are likely to get -1 weights.  In fact, the more random cues are added, the more likely they are to cancel out!  Unfortunately, the weight of the one signal cue becomes a smaller percentage of the total weight, and its signal eventually gets lost anyway.
 
 But if there were multiple signal cues-- e.g. if 10% of the added cues were signal cues rather than noise cues-- then dawesModel could maintain its good performance with 100's of extra cues.  In contrast, ttb would increasingly choose cues which seemed to have a validity of 1.0 but were actually pure noise cues.
