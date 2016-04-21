@@ -148,4 +148,4 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
      geom_point() + xlab("Size of training set") + ylab("Percent correct")
 ```
 
-Franklin model and dawes model do really well at all training set sizes.  Take the Best is not far behind and catches up at about 40% of the training set size.  Regresssion and logistic regression are noticeably weaker, scoring barely above chance for small training sets, when there are more rows than the 23 columns.  They do better as the training set gets larger.  Surprisingly logistic regression does not particularly outperform regression, despite seeming like a more natural fit for two-alternative choice.
+Validity weight model and dawes model do really well at all training set sizes.  Take the Best is not far behind and catches up at about 40% of the training set size.  Regresssion and logistic regression are noticeably weaker, scoring barely above chance for small training sets, when there are more rows than the 23 columns.  They do better as the training set gets larger.  Surprisingly logistic regression does not particularly outperform regression, despite seeming like a more natural fit for two-alternative choice.
