@@ -258,18 +258,17 @@ predictProbInternal.dawesModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
-### Franklin's Model ###
+### Validity Weight Model ###
 
-#' Franklin's Model, a linear model weighted by cue validities
+#' Validity Weight Model, a linear model weighted by cue validities
 #' 
-#' Franklin's Model is a linear model with weights calculated by
+#' Validity Weight Model is a linear model with weights calculated by
 #' \code{\link{cueValidity}}.
-#' The name is because it was inspired by a method used by Ben Franklin.
 #'
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #'
-#' @return An object of \code{\link[base]{class}} franklinModel.  This is a
+#' @return An object of \code{\link[base]{class}} validityWeightModel.  This is a
 #' list containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of
@@ -280,7 +279,7 @@ predictProbInternal.dawesModel <- function(object, row1, row2) {
 #' @seealso
 #' \code{\link{predictPairProb}} for predicting among a pair of rows.
 #' @export 
-franklinModel <- function(train_data, criterion_col, cols_to_fit,
+validityWeightModel <- function(train_data, criterion_col, cols_to_fit,
                           reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
@@ -291,21 +290,21 @@ franklinModel <- function(train_data, criterion_col, cols_to_fit,
                  cue_validities=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
                  linear_coef = linear_coef),
-            class="franklinModel")
+            class="validityWeightModel")
 }
 
 #' @inheritParams stats::coef
 #' @export
-coef.franklinModel <- function(object, ...) object$linear_coef
+coef.validityWeightModel <- function(object, ...) object$linear_coef
 
-predictPairInternal.franklinModel <- function(object, row1, row2) {
+predictPairInternal.validityWeightModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
   return(direction_plus_minus_1)
 }
 
-predictProbInternal.franklinModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- predictPairInternal.franklinModel(object, row1, row2)
+predictProbInternal.validityWeightModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.validityWeightModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
