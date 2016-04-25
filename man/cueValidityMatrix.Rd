@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{cueValidityMatrix}
 \alias{cueValidityMatrix}
-\title{Calculate the cue validity for cols_to_fit predicting the criterion.}
+\title{Calculate cue validity for cols_to_fit predicting the criterion.}
 \usage{
 cueValidityMatrix(data, criterion_col, cols_to_fit, replaceNanWith = 0.5,
   reverse_cues = FALSE)
@@ -28,8 +28,16 @@ A list where $cue_validities has a vector of validities for
   each of the columns in cols_to_fit.
 }
 \description{
-If you know you want cue validities for many columns in your data,
-this function makes it easy.
+This provides a vector of cue_validities and potentially other useufl
+information, particularly if reverse_cues=TRUE.  For example, education
+is negatively associated with number of felonies.  If reverse_cues=FALSE,
+education will get validity < 0.5.  If reverse_cues=TRUE, then LESS
+education will be used as a predictor, resulting in:
+1) cue_validity > 0.5
+2) cue_direction == -1
+To use the cue for prediction, be sure to multiply it by the cue_direction.
+For ranking, based heuristics, cue_ranks gives the rank order of cues where
+highest validity = rank 1 (after reversing, if any).
 }
 \references{
 Wikipedia's entry on

@@ -61,11 +61,49 @@ cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-#' Calculate the cue validity for cols_to_fit predicting the criterion.
+#' Calculate just cue validity for cols_to_fit predicting the criterion.
 #'
-#' If you know you want cue validities for many columns in your data,
-#' this function makes it easy.  
+#' This returns only the cue validities, without reversing when a cue
+#' points in the wrong direction-- e.g. education is negatively associated
+#' with number of felonies, so we should use LESS education as a predictor.
+#' Use cueValidityMatrix for help with that.
 #'
+#' @param data The matrix or data.frame whose columns are treated as cues.
+#' @param criterion_col The index of the column used as criterion.
+#' @param cols_to_fit A vector of indexes of the columns to calculate cue
+#'   validity for.
+#' @param replaceNanWith The value to return as cue validity in case it
+#'         cannot be calculated.
+#' @inheritParams reversingModel
+#' @return A list where $cue_validities has a vector of validities for
+#'   each of the columns in cols_to_fit.
+#' @seealso
+#' \code{\link{cueValidityMatrix}} for more complete output.
+#' @references
+#' Wikipedia's entry on
+#' \url{https://en.wikipedia.org/wiki/Cue_validity}
+#' @export
+cueValidityMatrixValidities <- function(data, criterion_col, cols_to_fit,
+                                        replaceNanWith=0.5) {
+  sapply(cols_to_fit, function(col) {
+    cueValidity(data[,criterion_col], data[,col],
+                replaceNanWith=replaceNanWith)
+  })
+}
+
+#' Calculate cue validity for cols_to_fit predicting the criterion.
+#'
+#' This provides a vector of cue_validities and potentially other useufl
+#' information, particularly if reverse_cues=TRUE.  For example, education
+#' is negatively associated with number of felonies.  If reverse_cues=FALSE,
+#' education will get validity < 0.5.  If reverse_cues=TRUE, then LESS
+#' education will be used as a predictor, resulting in:
+#' 1) cue_validity > 0.5
+#' 2) cue_direction == -1
+#' To use the cue for prediction, be sure to multiply it by the cue_direction.
+#' For ranking, based heuristics, cue_ranks gives the rank order of cues where
+#' highest validity = rank 1 (after reversing, if any).
+#' 
 #' @param data The matrix or data.frame whose columns are treated as cues.
 #' @param criterion_col The index of the column used as criterion.
 #' @param cols_to_fit A vector of indexes of the columns to calculate cue
@@ -82,10 +120,8 @@ cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
 cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
                               replaceNanWith=0.5,
                               reverse_cues=FALSE) {
-  cue_validities <- sapply(cols_to_fit, function(col) {
-    cueValidity(data[,criterion_col], data[,col],
-                replaceNanWith=replaceNanWith)
-  })
+  cue_validities <- cueValidityMatrixValidities(
+    data, criterion_col, cols_to_fit, replaceNanWith)
   if (length(colnames(data)) > 0) {
     names(cue_validities) <- colnames(data)[cols_to_fit]
   }
@@ -105,7 +141,6 @@ cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
               cue_validities_unreversed=cue_validities,
               cue_ranks=cue_ranks,
               cue_directions=cue_directions))
-  #return(out)
 }
 
 agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {

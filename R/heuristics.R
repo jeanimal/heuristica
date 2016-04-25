@@ -221,7 +221,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #'
 #' @seealso
 #' \code{\link{predictPairProb}} for predicting among a pair of alternatives.
-#' @seealso
+#' @references
 #' Wikipedia's entry on
 #' \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 #'

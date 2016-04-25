@@ -40,10 +40,11 @@ This version differs from others in that it uses a weight of 0 if cue
 validity is 0.5 (rather than randomly assigning +1 or -1) to give faster
 convergence of average accuracy.
 }
-\seealso{
-\code{\link{predictPairProb}} for predicting among a pair of alternatives.
-
+\references{
 Wikipedia's entry on
 \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
+}
+\seealso{
+\code{\link{predictPairProb}} for predicting among a pair of alternatives.
 }
 
