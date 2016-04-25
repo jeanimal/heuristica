@@ -158,6 +158,7 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
 }
 
 # If I switch to this, the only thing that makes tests fail is named columns or not.
+# Bad: It is about 10 times slower than cueValidityMatrixValidities.
 # TODO: Use this for conditional cue validity.
 cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWith=0.5) {
   agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
