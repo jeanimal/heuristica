@@ -496,31 +496,31 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
                                 na.last=TRUE))
 })
 
-### dawesModel ###
+### unitWeightModel ###
 
-test_that("dawesModel 2x3 pos neg", {
-  model <- dawesModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
+test_that("unitWeightModel 2x3 pos neg", {
+  model <- unitWeightModel(matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))
   expect_equal(c(1,0),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])  
   expect_equal(-1,  coef(model)[[2]])  
   expect_equal(2, length(coef(model))) 
 })
 
-test_that("dawesModel 5x1 75", {
-  model <- dawesModel(matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2), 1, c(2))
+test_that("unitWeightModel 5x1 75", {
+  model <- unitWeightModel(matrix(c(5,4,3,2,1,1,1,1,0,1), 5, 2), 1, c(2))
   expect_equal(c(0.75),  model$cue_validities) 
   expect_equal(1,  coef(model)[[1]])
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("dawesModel 5x1 25", {
-  model <- dawesModel(matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2), 1, c(2))
+test_that("unitWeightModel 5x1 25", {
+  model <- unitWeightModel(matrix(c(5,4,3,2,1,1,0,1,1,1), 5, 2), 1, c(2))
   expect_equal(c(0.25),  model$cue_validities) 
   expect_equal(-1,  coef(model)[[1]])
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("dawesModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue", {
+test_that("unitWeightModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue", {
   train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1),
                          c=c(0,0,0,0.1))
   # How this data looks:
@@ -535,7 +535,7 @@ test_that("dawesModel 4x4 predictPairProb 3nd cue dominates non-binary reverse c
   # but that validity is 1.0 when reversed.
   # Cue c predicts Row 3 > Row 4.
   # But if you sum all cue weights, predict Row 4 > Row 3
-  model <- dawesModel(train_df, 1, c(2:4))
+  model <- unitWeightModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities, tolerance=0.002)
   #TODO(jean): Return cue reversal.
   #expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)

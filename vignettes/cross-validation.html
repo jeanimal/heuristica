@@ -76,7 +76,7 @@ data_set &lt;-<span class="st"> </span>city_population
 criterion_col &lt;-<span class="st"> </span><span class="dv">3</span>
 cols_to_fit &lt;-<span class="st"> </span><span class="dv">4</span>:<span class="kw">ncol</span>(data_set)</code></pre>
 <p>Let’s enter the models we want to test:</p>
-<pre class="sourceCode r"><code class="sourceCode r">vec_of_models &lt;-<span class="kw">c</span>(ttbModel, dawesModel, franklinModel, regModel, logRegModel)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">vec_of_models &lt;-<span class="kw">c</span>(ttbModel, unitWeightModel, validityWeightModel, regModel, logRegModel)</code></pre>
 <p>Next we define the size of the training and test sets.</p>
 <pre class="sourceCode r"><code class="sourceCode r">trainVec &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="fl">0.1</span>,<span class="fl">0.9</span>,<span class="fl">0.1</span>)
 trainS &lt;-<span class="st"> </span><span class="kw">round</span>(<span class="kw">nrow</span>(data_set)*trainVec)
