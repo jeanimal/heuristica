@@ -29,7 +29,7 @@ test_cue_reorder <- function(model, has_cv=TRUE) {
 test_that("test_cue_reorder ttb",      {test_cue_reorder(ttbModel)})
 test_that("test_cue_reorder ttbGreedy",{test_cue_reorder(ttbGreedyModel, has_cv=FALSE)})
 test_that("test_cue_reorder singleCue",{test_cue_reorder(singleCueModel)})
-test_that("test_cue_reorder dawes",    {test_cue_reorder(dawesModel)})
+test_that("test_cue_reorder dawes",    {test_cue_reorder(unitWeightModel)})
 test_that("test_cue_reorder validityWeight", {test_cue_reorder(validityWeightModel)})
 test_that("test_cue_reorder reg",      {test_cue_reorder(regModel, has_cv=FALSE)})
 test_that("test_cue_reorder regIntercept", {test_cue_reorder(regInterceptModel, has_cv=FALSE)})
@@ -60,7 +60,7 @@ test_row_reorder <- function(model, has_cv=TRUE) {
 test_that("test_row_reorder ttb",      {test_row_reorder(ttbModel)})
 test_that("test_row_reorder ttbGreedy",{test_row_reorder(ttbGreedyModel, has_cv=FALSE)})
 test_that("test_row_reorder singleCue",{test_row_reorder(singleCueModel)})
-test_that("test_row_reorder dawes",    {test_row_reorder(dawesModel)})
+test_that("test_row_reorder dawes",    {test_row_reorder(unitWeightModel)})
 test_that("test_row_reorder validityWeight", {test_row_reorder(validityWeightModel)})
 test_that("test_row_reorder reg",      {test_row_reorder(regModel, has_cv=FALSE)})
 test_that("test_row_reorder regIntercept", {test_row_reorder(regInterceptModel, has_cv=FALSE)})
@@ -93,7 +93,7 @@ test_10_06 <- function(model, expected, has_cv=TRUE) {
 # The correct answer is 1, but we confirm each model works as designed.
 test_that("test_10_06 ttb",      {test_10_06(ttbModel,       1)})
 test_that("test_10_06 singleCue",{test_10_06(singleCueModel, 0.5)})
-test_that("test_10_06 dawes",    {test_10_06(dawesModel,     1)})
+test_that("test_10_06 dawes",    {test_10_06(unitWeightModel,     1)})
 test_that("test_10_06 validityWeight", {test_10_06(validityWeightModel,  1)})
 test_that("test_10_06 reg",      {test_10_06(regModel,    1, has_cv=FALSE)})
 test_that("test_10_06 regIntercept", {test_10_06(regInterceptModel,       0, has_cv=FALSE)})
@@ -127,7 +127,7 @@ test_00_04_rc <- function(model, expected, has_cv=TRUE) {
 # The correct answer is 0, but we confirm each model works as designed.
 test_that("test_00_04_rc ttb",      {test_00_04_rc(ttbModel,       0)})
 test_that("test_00_04_rc singleCue",{test_00_04_rc(singleCueModel, 0.5)})
-test_that("test_00_04_rc dawes",    {test_00_04_rc(dawesModel,     0)})
+test_that("test_00_04_rc dawes",    {test_00_04_rc(unitWeightModel,     0)})
 test_that("test_00_04_rc validityWeight", {test_00_04_rc(validityWeightModel,  0)})
 #TODO(jean): Why do reg models get this wrong?
 test_that("test_00_04_rc reg",      {test_00_04_rc(regModel,       1, has_cv=FALSE)})
@@ -157,7 +157,7 @@ test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
 # The correct answer is 0, but we confirm each model works as designed.
 test_that("test_ab_vs_c ttb",      {test_ab_vs_c(ttbModel,       1)})
 test_that("test_ab_vs_c singleCue",{test_ab_vs_c(singleCueModel, 1)})
-test_that("test_ab_vs_c dawes",    {test_ab_vs_c(dawesModel,     0)})
+test_that("test_ab_vs_c dawes",    {test_ab_vs_c(unitWeightModel,     0)})
 test_that("test_ab_vs_c validityWeight", {test_ab_vs_c(validityWeightModel,  0)})
 test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       1, has_cv=FALSE)})
 test_that("test_ab_vs_c regIntercept", {test_ab_vs_c(regInterceptModel,       1, has_cv=FALSE)})
@@ -187,7 +187,7 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 #TODO(jean): Find a way to test ttb and singleCue despite random order of x1 and x2.
 #test_that("d_useless_cue_3 ttb",      {d_useless_cue_3(ttbModel,       #random(0,1))})
 #test_that("d_useless_cue_3 singleCue",{d_useless_cue_3(singleCueModel, #random(0,1))})
-test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(dawesModel,     0.5)})
+test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(unitWeightModel,     0.5)})
 test_that("d_useless_cue_3 validityWeight", {d_useless_cue_3(validityWeightModel,  0.5)})
 test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv=FALSE)})
 test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 1, has_cv=FALSE)})
@@ -217,7 +217,7 @@ a_reordered_columns <- function(model) {
 
 test_that("a_reordered_columns ttb",      {a_reordered_columns(ttbModel)})
 test_that("a_reordered_columns singleCue",{a_reordered_columns(singleCueModel)})
-test_that("a_reordered_columns dawes",    {a_reordered_columns(dawesModel)})
+test_that("a_reordered_columns dawes",    {a_reordered_columns(unitWeightModel)})
 test_that("a_reordered_columns validityWeight", {a_reordered_columns(validityWeightModel)})
 test_that("a_reordered_columns reg",      {a_reordered_columns(regModel)})
 test_that("a_reordered_columns regIntercept", {a_reordered_columns(regInterceptModel)})

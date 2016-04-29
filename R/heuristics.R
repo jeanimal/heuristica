@@ -191,12 +191,12 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
   return(rescale0To1(direction_plus_minus_1))
 }
 
-### Dawes Model ###
+### Unit Weight Model ###
 
-#' DawesModel, a unit-weight linear model
+#' Unit WeightModel, a unit-weight linear model
 #'
-#' DawesModel is a unit-weight linear model inspired by Robyn Dawes.
-#' Dawes Model assigns unit (+1 or -1) weights based on
+#' Unit WeightModel is a unit-weight linear model inspired by Robyn Unit Weight.
+#' Unit Weight Model assigns unit (+1 or -1) weights based on
 #' \code{\link{cueValidity}}.
 #'   \itemize{
 #'     \item A cue validity > 0.5 results in a weight of +1.
@@ -209,7 +209,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
 #'
-#' @return An object of \code{\link[base]{class}} dawesModel.  This is a list
+#' @return An object of \code{\link[base]{class}} unitWeightModel.  This is a list
 #' containing at least the following components:
 #'   \itemize{
 #'    \item "cue_validities": A list of cue validities for the cues in order of
@@ -227,7 +227,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #'
 #' @param reverse_cues Optional parameter to reverse cues as needed.
 #' @export
-dawesModel <- function(train_data, criterion_col, cols_to_fit,
+unitWeightModel <- function(train_data, criterion_col, cols_to_fit,
                        reverse_cues=TRUE) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
@@ -238,21 +238,21 @@ dawesModel <- function(train_data, criterion_col, cols_to_fit,
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
-                 linear_coef=linear_coef), class="dawesModel")
+                 linear_coef=linear_coef), class="unitWeightModel")
 }
 
 #' @inheritParams stats::coef
 #' @export
-coef.dawesModel <- function(object, ...) object$linear_coef
+coef.unitWeightModel <- function(object, ...) object$linear_coef
 
-predictPairInternal.dawesModel <- function(object, row1, row2) {
+predictPairInternal.unitWeightModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
   return(direction_plus_minus_1)
 }
 
-predictProbInternal.dawesModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- predictPairInternal.dawesModel(object, row1, row2)
+predictProbInternal.unitWeightModel <- function(object, row1, row2) {
+  direction_plus_minus_1 <- predictPairInternal.unitWeightModel(object, row1, row2)
   # Convert from the range [-1, 1] to the range [0, 1], which is the 
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))

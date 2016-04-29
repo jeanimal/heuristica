@@ -247,7 +247,7 @@ test_that("allRowPairApply heuristics with fn", {
 test_that("simpleRowPairApplyList and heuristicWrapperFn", {
   m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(m, 1, c(2:3))
-  dawes <- dawesModel(m, 1, c(2:3))
+  dawes <- unitWeightModel(m, 1, c(2:3))
   #out <- simpleRowPairApplyList(m, list(heuristicWrapperFn(ttb),
   #                                      createProbGreaterFn(1)))
   #expect_equal(c(1,1,0), out[,"ttbModel"])
