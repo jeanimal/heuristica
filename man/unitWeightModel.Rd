@@ -29,7 +29,7 @@ containing at least the following components:
   }
 }
 \description{
-Unit WeightModel is a unit-weight linear model inspired by Robyn Unit Weight.
+Unit WeightModel is a unit-weight linear model inspired by Robyn Dawes.
 Unit Weight Model assigns unit (+1 or -1) weights based on
 \code{\link{cueValidity}}.
   \itemize{
