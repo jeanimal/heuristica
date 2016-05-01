@@ -107,3 +107,8 @@ test_that("accuracyFromConfusionMatrix guess 0.5", {
   expect_equal(0.5, accuracyFromConfusionMatrix(
     cbind(c(0,0,0), c(3,0,1), c(0,0,0))))
 })
+
+# TODO(jeanw): What about this?
+# > accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,2,1), c(0,0,0)))
+# [1] 0.6666667
+
