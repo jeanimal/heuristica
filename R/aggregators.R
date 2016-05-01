@@ -210,12 +210,24 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' pctCorrectOfPredictPair(list(ttb, reg), city_population)
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
+  return(pctCorrectOfPredictPairOLD(fitted_heuristic_list, test_data))
+}
+
+pctCorrectOfPredictPairOLD <- function(fitted_heuristic_list, test_data) {
   goal_type <- 'ProbGreater'
   predictions <- aggregatePredictPair(fitted_heuristic_list, test_data,
                                       goal_type)
   errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
   df <- createPctCorrectsFromErrors2(errors, 2)
   return(df)
+}
+
+#TODO(jeanw) Some tests fail when I try to migrate to this.
+pctCorrectOfPredictPairNEW <- function(fitted_heuristic_list, test_data) {
+  goal_type <- 'ChooseGreater'
+  predictions <- aggregatePredictPair(fitted_heuristic_list, test_data,
+                                      goal_type)
+  return(categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
 }
 
 #' pctCorrectOfPredictPair for non-symmetric heuristics

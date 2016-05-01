@@ -106,4 +106,14 @@ accuracyFromConfusionMatrix <- function(confusion_matrix, zero_as_guess=TRUE) {
   sum(correct, guessed_correct) / sum(confusion_matrix)
 }
 
-
+categoryAccuracyAll <- function(data, reference_col, cols_to_compare) {
+  accuracy <- matrix(rep(NA, length(cols_to_compare)), 1, length(cols_to_compare))
+  i <- 1
+  for (col in cols_to_compare) {
+    confusion_matrix <- confusionMatrixPairPredict(data[,reference_col], data[,col])
+    accuracy[,i] <- accuracyFromConfusionMatrix(confusion_matrix)
+    i <- i+1
+  }
+  colnames(accuracy) <- colnames(data)[cols_to_compare]
+  return(accuracy)
+}
