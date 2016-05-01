@@ -108,7 +108,8 @@ test_that("accuracyFromConfusionMatrix guess 0.5", {
     cbind(c(0,0,0), c(3,0,1), c(0,0,0))))
 })
 
-# TODO(jeanw): What about this?
+# TODO(jeanw): What about this?  The 2 is on-diagonal, and that guess
+# is treated as automatically correct.  Should it be?
 # > accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,2,1), c(0,0,0)))
 # [1] 0.6666667
 
