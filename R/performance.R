@@ -1,4 +1,4 @@
-# Functions for measuring the performance of predictions vs. actual data.
+# Functions for measuring the performance of model predictions vs. actual data.
 
 # A general-ish function that always returns a square matrix with dimensions
 # the length of required_categories.
