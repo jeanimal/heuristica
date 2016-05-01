@@ -2,6 +2,8 @@ context("performance")
 
 # require('testthat')
 
+# confusionMatrix
+
 test_that("confusionMatrix match all factors in data", {
   data1 <- c(0,1,1)
   data2 <- c(0,1,1)
@@ -62,7 +64,15 @@ test_that("confusionMatrix missing 1 factor in data2", {
   expect_equal(c("0", "1"), dimnames(out)[[2]])
 })
 
+
+# confusionMatrixPairPredict
+# (Most tests of this are via the more generic (but non-public)
+# confusionMatrix function.)
+
 test_that("confusionMatrixPairPredict missing -1 factor in data", {
+  # Below, the correct outcome is always 1, so only the last row of the
+  # confusion matrix has non-zero counts.  But the predictor makes a few
+  # mistakes, so some non-zero counts are off the diagonal.
   out <- confusionMatrixPairPredict(c(1,1,1), c(1,0,0))
   expected <- cbind(c(0,0,0), c(0,0,2), c(0,0,1))
   expect_equal(expected, matrix(out, 3, 3))
@@ -70,3 +80,30 @@ test_that("confusionMatrixPairPredict missing -1 factor in data", {
   expect_equal(c("-1", "0", "1"), dimnames(out)[[2]])
 })
 
+# accuracyFromConfusionMatrix
+
+test_that("accuracyFromConfusionMatrix 1", {
+  # Below accuracy is 1 (100% correct) because 4 -1's were correctly predicted,
+  # and 2 1's were correctly predicted.  (On-diagonal elements are correct
+   # predictions.)
+  expect_equal(1, accuracyFromConfusionMatrix(
+    cbind("-1"=c(4,0,0), "0"=c(0,0,0), "1"=c(0,0,2))))
+})
+
+test_that("accuracyFromConfusionMatrix 0", {
+  # 3 wrong and 3 more wrong for 0 accuracy.
+  expect_equal(0, accuracyFromConfusionMatrix(
+    cbind(c(0,0,3), c(0,0,0), c(3,0,0))))
+})
+
+test_that("accuracyFromConfusionMatrix 0.9", {
+  # Below is 4 + 5 correct, 1 incorrect, for 9/10 = 0.9 accuracy.
+  expect_equal(0.9, accuracyFromConfusionMatrix(
+    cbind(c(4,0,1), c(0,0,0), c(0,0,5))))
+})
+
+test_that("accuracyFromConfusionMatrix guess 0.5", {
+  # Below has 3+1=4 guesses, and 0.5 are assigned correct.
+  expect_equal(0.5, accuracyFromConfusionMatrix(
+    cbind(c(0,0,0), c(3,0,1), c(0,0,0))))
+})
