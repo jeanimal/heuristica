@@ -10,9 +10,9 @@ confusionMatrix <- function(data_1, data_2, required_categories) {
 
 predict_pair_categories <- c(-1,0,1)
 
-#' Confusion matrix for categories -1, 0, 1, the output of pairPredict.
+#' Confusion matrix for categories -1, 0, 1, the output of predictPair.
 #' 
-#' Measuring accuracy of predicting categories, where in the pairPredict paradigm
+#' Measuring accuracy of predicting categories, where in the predictPair paradigm
 #' the categories are the relative ranks of a pair of rows.  The categories are:
 #' -1 means Row2 is bigger
 #' 0 means the rows are equal or guess
@@ -53,7 +53,7 @@ confusionMatrixPairPredict <- function(ref_data, predicted_data) {
   return(confusionMatrix(ref_data, predicted_data, predict_pair_categories))
 }
 
-#' Accuracy based on a pairPredict confusion matrix.
+#' Accuracy based on a predictPair confusion matrix.
 #' 
 #' Given a confusion matrix from pair predict (the output of
 #' confusionMatrixPairPredict), calculate an accuracy.  By default assumes
