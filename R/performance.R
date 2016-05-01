@@ -27,7 +27,7 @@ predict_pair_categories <- c(-1,0,1)
 #' # Below, the correct outcome is always 1, so only the last row of the
 #' # confusion matrix has non-zero counts.  But the predictor makes a few
 #' # mistakes, so some non-zero counts are off the diagonal.
-#' confusionMatrixPairPredict(c(1,1,1), c(1,-1,-1))
+#' confusionMatrixPredictPair(c(1,1,1), c(1,-1,-1))
 #' # outputs:
 #' #    -1 0 1
 #' # -1  0 0 0
@@ -37,7 +37,7 @@ predict_pair_categories <- c(-1,0,1)
 #' # Example 2
 #' # The prediction always matches the reference outcome, so all non-zero
 #' # counts are on the diagonal.
-#' confusionMatrixPairPredict(c(1,1,0,0,-1,-1), c(1,1,0,0,-1,-1))
+#' confusionMatrixPredictPair(c(1,1,0,0,-1,-1), c(1,1,0,0,-1,-1))
 #' # outputs:
 #' #    -1 0 1
 #' # -1  2 0 0
@@ -49,14 +49,14 @@ predict_pair_categories <- c(-1,0,1)
 #' \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 #'
 #' @export
-confusionMatrixPairPredict <- function(ref_data, predicted_data) {
+confusionMatrixPredictPair <- function(ref_data, predicted_data) {
   return(confusionMatrix(ref_data, predicted_data, predict_pair_categories))
 }
 
 #' Accuracy based on a predictPair confusion matrix.
 #' 
 #' Given a confusion matrix from pair predict (the output of
-#' confusionMatrixPairPredict), calculate an accuracy.  By default assumes
+#' confusionMatrixPredictPair), calculate an accuracy.  By default assumes
 #' zeroes are guesses and that half of them are correct.  This guessing
 #' assumptions helps measures of accuracy converge faster for small samples,
 #' but it will artificially reduce the variance of an algorithm's predictions,
@@ -82,7 +82,7 @@ confusionMatrixPairPredict <- function(ref_data, predicted_data) {
 #' # Below has 3+1=4 guesses, and 0.5 are assigned correct.
 #' accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,0,1), c(0,0,0)))
 #' @seealso
-#' \code{\link{confusionMatrixPairPredict}} for generating the confusion
+#' \code{\link{confusionMatrixPredictPair}} for generating the confusion
 #'   matrix.
 #' @references
 #' Wikipedia's entry on
@@ -110,7 +110,7 @@ categoryAccuracyAll <- function(data, reference_col, cols_to_compare) {
   accuracy <- matrix(rep(NA, length(cols_to_compare)), 1, length(cols_to_compare))
   i <- 1
   for (col in cols_to_compare) {
-    confusion_matrix <- confusionMatrixPairPredict(data[,reference_col], data[,col])
+    confusion_matrix <- confusionMatrixPredictPair(data[,reference_col], data[,col])
     accuracy[,i] <- accuracyFromConfusionMatrix(confusion_matrix)
     i <- i+1
   }

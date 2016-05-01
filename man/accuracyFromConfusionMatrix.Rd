@@ -2,7 +2,7 @@
 % Please edit documentation in R/performance.R
 \name{accuracyFromConfusionMatrix}
 \alias{accuracyFromConfusionMatrix}
-\title{Accuracy based on a pairPredict confusion matrix.}
+\title{Accuracy based on a predictPair confusion matrix.}
 \usage{
 accuracyFromConfusionMatrix(confusion_matrix, zero_as_guess = TRUE)
 }
@@ -18,7 +18,7 @@ A value from 0 to 1 for the proportion correct.
 }
 \description{
 Given a confusion matrix from pair predict (the output of
-confusionMatrixPairPredict), calculate an accuracy.  By default assumes
+confusionMatrixPredictPair), calculate an accuracy.  By default assumes
 zeroes are guesses and that half of them are correct.  This guessing
 assumptions helps measures of accuracy converge faster for small samples,
 but it will artificially reduce the variance of an algorithm's predictions,
@@ -44,7 +44,7 @@ Wikipedia's entry on
 \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 }
 \seealso{
-\code{\link{confusionMatrixPairPredict}} for generating the confusion
+\code{\link{confusionMatrixPredictPair}} for generating the confusion
   matrix.
 }
 
