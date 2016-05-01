@@ -8,7 +8,7 @@ confusionMatrix <- function(data_1, data_2, required_categories) {
   return(cleaned)
 }
 
-pair_predict_categories <- c(-1,0,1)
+predict_pair_categories <- c(-1,0,1)
 
 #' Confusion matrix for categories -1, 0, 1, the output of pairPredict.
 #' 
@@ -50,7 +50,7 @@ pair_predict_categories <- c(-1,0,1)
 #'
 #' @export
 confusionMatrixPairPredict <- function(ref_data, predicted_data) {
-  return(confusionMatrix(ref_data, predicted_data, pair_predict_categories))
+  return(confusionMatrix(ref_data, predicted_data, predict_pair_categories))
 }
 
 #' Accuracy based on a pairPredict confusion matrix.
