@@ -44,6 +44,30 @@ test_that("ttbModel 2x3 predictPair forward data.frame", {
                               oneRow(train_df, 1), model))
 })
 
+test_that("ttbModel 2x3 predictPairProb forward data.frame ignore extra", {
+  train_df <- data.frame(y=c(5,4), name=c("a", "b"), x1=c(1,0), x2=c(0,1))
+  model <- ttbModel(train_df, 1, c(3,4))
+  expect_equal(c(x1=1, x2=0), model$cue_validities)
+  # The probability that row 1 > row 2 is 1.
+  expect_equal(1, predictPairProb(oneRow(train_df, 1),
+                                  oneRow(train_df, 2), model))
+  # The logical opposite: the probability that row2 > row 1 is 0.
+  expect_equal(0, predictPairProb(oneRow(train_df, 2),
+                                  oneRow(train_df, 1), model))
+})
+
+# predictPair
+test_that("ttbModel 2x3 predictPair forward data.frame ignore extra", {
+  train_df <- data.frame(y=c(5,4), name=c("a", "b"), x1=c(1,0), x2=c(0,1))
+  model <- ttbModel(train_df, 1, c(3,4))
+  expect_equal(c(x1=1, x2=0), model$cue_validities)
+  # The probability that row 1 > row 2 is 1.
+  expect_equal(1, predictPair(oneRow(train_df, 1),
+                              oneRow(train_df, 2), model))
+  # The logical opposite: the probability that row2 > row 1 is -1.
+  expect_equal(-1, predictPair(oneRow(train_df, 2),
+                               oneRow(train_df, 1), model))
+})
 
 test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)

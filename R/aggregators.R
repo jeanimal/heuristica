@@ -210,7 +210,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' pctCorrectOfPredictPair(list(ttb, reg), city_population)
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
-  return(pctCorrectOfPredictPairOLD(fitted_heuristic_list, test_data))
+  return(pctCorrectOfPredictPairNEWDf(fitted_heuristic_list, test_data))
 }
 
 pctCorrectOfPredictPairOLD <- function(fitted_heuristic_list, test_data) {
@@ -222,13 +222,23 @@ pctCorrectOfPredictPairOLD <- function(fitted_heuristic_list, test_data) {
   return(df)
 }
 
-#TODO(jeanw) Some tests fail when I try to migrate to this.
+#TODO(jeanw) Some tests fail when I try to migrate to this because they
+#expect a data.frame where you can refer to the $ttbModel column.
 pctCorrectOfPredictPairNEW <- function(fitted_heuristic_list, test_data) {
   goal_type <- 'ChooseGreater'
   predictions <- aggregatePredictPair(fitted_heuristic_list, test_data,
                                       goal_type)
   return(categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
 }
+
+pctCorrectOfPredictPairNEWDf <- function(fitted_heuristic_list, test_data) {
+  goal_type <- 'ChooseGreater'
+  predictions <- aggregatePredictPair(fitted_heuristic_list, test_data,
+                                      goal_type)
+  pct_correct_matrix <- categoryAccuracyAll(predictions, 1, c(2:ncol(predictions)))
+  return(as.data.frame(pct_correct_matrix))
+}
+
 
 #' pctCorrectOfPredictPair for non-symmetric heuristics
 #'

@@ -38,6 +38,8 @@ createFunction <- function(object, test_data) UseMethod("createFunction")
 # The data will be forced to be a matrix rather than a data.frame,
 # so you cannot use data.frame functions (like $col) in fn_to_bind.
 bindFunctionToRowPairs <- function(raw_data, fn_to_bind) {
+  #TODO(jean): Get rid of as.matrix below, because that limits the fn_to_bind.
+  # I already tried once to do that, and it had lots of consequences.
   data <- as.matrix(raw_data)
   new_fn <- function(index_pair) {
     row1 <- oneRow(data, index_pair[1])
@@ -51,7 +53,6 @@ applyFunctionToRowPairs <- function(data, fn) {
   fn_with_data <- bindFunctionToRowPairs(data, fn)
   # TODO(jean): Remove this hack for column names.
   temp <- fn_with_data(c(1,1))
-  #print(temp)
   results_array <- combn(nrow(data), 2, fn_with_data)
   # R drops dimensions so we need different handling here.
   if (length(dim(results_array))==1) {

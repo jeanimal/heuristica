@@ -25,7 +25,7 @@ To get the github version of heuristica:
 # devtools::install_github("jeanimal/heuristica")
 #    -- OR --
 devtools::load_all()
-library("heuristica")
+#library("heuristica")
 ```
 
 ## Minimal model
@@ -63,13 +63,15 @@ To make predictions with heuristica, implement a function called predictProbInte
 The output should be:
 * A value from 0 to 1, the probability that row1's criterion is greater than row2's criterion.
 
-For our bare-bones example, we will randomly guess 0 or 1.  1 means we predict the criterion in row1 will be greater.  0 means we predict the criterion in row2 will be greter.
+For our bare-bones example, we will randomly guess -1 or 1.  1 means we predict the criterion in row1 will be greater. -1 means we predict the criterion in row2 will be greater-- that is, the rows should be reversed.
 
 ```{r}
-predictProbInternal.myModel <- function(object, row1, row2) {
-  return(sample(c(0,1), 1))
+predictPairInternal.myModel <- function(object, row1, row2) {
+  return(sample(c(-1,1), 1))
 }
 ```
+
+TODO(jean): Give an example with predictProbInternal.myModel and explain the difference.
 
 ### Using the new model
 
@@ -90,13 +92,15 @@ row1 <- oneRow(schools, 1)
 row1
 row2 <- oneRow(schools, 2)
 row2
-predictPairProb(row1, row2, myFit)
+predictPair(row1, row2, myFit)
 ```
 
 We can see in the original data.frame that Austin had the higher dropout rate, meaning 1.0 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be 0 or 1.  (An exception is when the criterion is equal for both values, in which case the correct output is defined as 0.5.)
 ```{r}
 myFit <- myModel(schools, 2, c(3:5))
-rowPairApply(oneRow(schools, 1), oneRow(schools, 2), probGreater(2), heuristics(myFit))
+# TODO(jean) Create a wrapper where default is predictPairInternal.
+rowPairApply(oneRow(schools, 1), oneRow(schools, 2), correctGreater(2),
+             heuristics(myFit, fn=predictPairInternal))
 ```
 
 Heuristica makes this sort of assessment easy-- it can check your model against all row pairs and calculate the percent correct.  Here we do myModel for all pairs of schools in our subset data.  Not surprisingly, it earns roughly 50% correct.
@@ -166,6 +170,22 @@ predictProbInternal.lassoModel <- function(object, row1, row2) {
 }
 ```
 
+TODO(jean): Explain the difference.
+```{r}
+predictPairInternal.lassoModel <- function(object, row1, row2) {
+  p1 <- predict(object, as.matrix(row1))
+  p2 <- predict(object, as.matrix(row2))
+  if (p1 > p2) {
+    return(1)
+  } else if (p1 < p2) {
+    return(-1)
+  } else {
+    return(0)
+  }
+}
+```
+
+
 ### Using the new model
 
 First, prove we can predict one row pair.
@@ -181,7 +201,7 @@ pctCorrectOfPredictPair(list(lasso), my_data)
 
 Which comparison did it miss?  Check out the helper function below.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
 ```{r}
-allRowPairApply(my_data, rowIndexes(), heuristics(lasso), probGreater(lasso$criterion_col))
+allRowPairApply(my_data, rowIndexes(), heuristics(lasso,  fn=predictPairInternal), correctGreater(lasso$criterion_col))
 ```
 
 ### Improving performance
