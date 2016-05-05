@@ -549,6 +549,15 @@ makeTrimRowPairFunctionForObject <- function(object, internalFn) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
+  out <- rowPairApply(row1, row2, heuristics(object, fn=predictPairInternal))
+  # The asserts below ensure predictPairInternal returned just one value.
+  assert_single_row(out)
+  assert_single_column(out)
+  #TODO(jean): stop unnaming!
+  return(unname(out[1,1]))
+}
+
+predictPairNotQuiteWorking <- function(row1, row2, object) {
   data <- rbind(row1, row2)
   # fn1 is the extra step needed by heuristics.
   # TODO: how get column names for other functions?
@@ -580,6 +589,7 @@ predictPairProb <- function(row1, row2, object) {
   # The asserts below ensure predictProbInternal had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)
+  #TODO(jean): stop unnaming!
   return(unname(out[1,1]))
 }
 
