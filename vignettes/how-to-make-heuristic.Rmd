@@ -10,7 +10,7 @@ vignette: >
 ---
 
 So you have your own idea for a heuristic.  Just implement a few functions and you can run
-comparisons with heuristica's heuristics.
+comparisons with heuristica's heuristics.  These are a fitting function and two predicting functions.
 
 ## Installation
 
@@ -32,62 +32,90 @@ devtools::load_all()
 
 ### Fitting function
 
-First, write a function to fit data.  It must have three required arguments, but then you can have as many optional arguments as you want.  The required arguments are:
-* train_data.  This is the data to train on and can be either a matrix or data.frame
-* criterion_col.  The index of the criterion column, the "Y" in a regression.
-* cols_to_fit.  A vector of indexes of columns to fit, the "X's" in a regression.
+First, write a function to fit data.  All of the heuristica models have three required arguments, and they are recommended:
 
-This function should output a structure with several elements:
-* criterion_col for heuristica to use
-* cols_to_fit for heuristica to use
-* A class name the same as your function name, "myModel" in this case.
-* Any information your predictor function will need, such as fitted parameters
-So let's see a bare bones example.
+1. train_data.  This is the data to train on and can be either a matrix or data.frame
+2 criterion_col.  The index of the criterion column, the "Y" in a regression.
+3. cols_to_fit.  A vector of indexes of columns to fit, the "X's" in a regression.
+
+The function is required to output a structure with these elements:
+
+* criterion_col for heuristica to use to subset data in prediction
+* cols_to_fit for heuristica to use to subset data in prediction
+* A class name the same as your function name, "myRandModel" in this case.
+
+You can also output:
+
+* Any information your predictor function will need, such as fitted parameters.
+
+In this vignette, we will build a bare bones model first (and a more
+realistic model later).  This model has no extra parameters in its fit:
 
 ```{r}
-myModel <- function(train_data, criterion_col, cols_to_fit) {
+myRandModel <- function(train_data, criterion_col, cols_to_fit) {
   # We will fill in a more interesting version below.
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit),
-            class="myModel")
+            class="myRandModel")
 }
 ```
 
-The class name will tell heuristica how to find the predicting function.  But if you are curious, you can read more about S3 classes at http://adv-r.had.co.nz/OO-essentials.html.
+The class name-- myRandModel-- will tell heuristica how to find the
+predicting functions.  But if you are curious, you can read more about [S3 classes](http://adv-r.had.co.nz/OO-essentials.html).
 
-### Predicting function
+### Prediction functions
 
-To make predictions with heuristica, implement a function called predictProbInternal, then a dot, then your class name.  Inputs:
-* object, which will have everything returned by your fitting function
-* row1, one row of a matrix or data.frame having just the columns in cols_to_fit
-* row2, another row of a matrix or data.frame having just the columns in cols_to_fit
+Most statistical models in R implement "predict," which takes N rows of data and outputs N predictions.  Heuristica, however, is focused on predicting *pairs* of rows, so its models implement a "predict pair" and "predict pair probability".  Let us start with the former.
+
+#### Writing PredictPairInternal
+
+PredictPair refers to predicting which of the pair of rows, row1 or row2, is greater.  In this case the outputs have the following meaning:
+
+* 1 means row 1 is greater.
+* 0 means they are the same or it guesses.
+* -1 means row 2 is greater (that is, the rows should be reversed).
+
+To make predictions with heuristica, implement a function called predictPairInternal.yourClassName.  The "internal" in the name is supposed to indicate that you never call this function yourself-- you call predictPair instead.  The inputs for this function should be:
+
+* object, which will be the class structure returned by your fitting function.
+* row1, one row of a matrix or data.frame having just the columns in cols_to_fit.
+* row2, another row of a matrix or data.frame having just the columns in cols_to_fit.
+
 The output should be:
-* A value from 0 to 1, the probability that row1's criterion is greater than row2's criterion.
+
+* A value in -1, 0, 1.
+
+If you output anything else, the aggregating functions will not correctly calculate accuracy.
 
 For our bare-bones example, we will randomly guess -1 or 1.  1 means we predict the criterion in row1 will be greater. -1 means we predict the criterion in row2 will be greater-- that is, the rows should be reversed.
 
 ```{r}
-predictPairInternal.myModel <- function(object, row1, row2) {
-  return(sample(c(-1,1), 1))
+predictPairInternal.myRandModel <- function(object, row1, row2) {
+  prob <- runif(1)
+  if (prob > 0.5) {
+    return(1)
+  } else {
+    return(-1)
+  }
 }
 ```
 
-TODO(jean): Give an example with predictProbInternal.myModel and explain the difference.
+#### Using PredictPair
 
-### Using the new model
+Now to use this function, we call predictPair and pass in the fitted model.  Let's get some data to make this clearer.
 
-Let's consider a subset of the high school dropout data included with this package.  This subset has 5 schools.  The first column has the school name.  The drop-out rates are in column 2, and we will fit them using columns 3-5, namely Enrollment, Attendance Rate, and Low Income Students.
+Consider a subset of the high school dropout data included with this package, focusing on just 5 schools.  The first column has the school name.  The drop-out rates are in column 2, and we will fit them using columns 3-5, namely Enrollment, Attendance Rate, and Low Income Students.
 ```{r}
 data("highschool_dropout")
 schools <- highschool_dropout[c(1:5), c(1,4,6,7,11)]
 schools
 ```
 
-To analyze our heurist on this data requires these steps:
-1. "Fit" myModel to the schools data, which in this case does nothing.
+To analyze myRandModel on this data requires these steps:
+1. "Fit" myModel to the schools data.
 2. Ask the model to predict the probability that Austin has a higher dropout rate than Farrgut (the first two schools in our data).
 
 ```{r}
-myFit <- myModel(schools, 2, c(3:5))
+myFit <- myRandModel(schools, 2, c(3:5))
 row1 <- oneRow(schools, 1)
 row1
 row2 <- oneRow(schools, 2)
@@ -95,19 +123,63 @@ row2
 predictPair(row1, row2, myFit)
 ```
 
-We can see in the original data.frame that Austin had the higher dropout rate, meaning 1.0 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be 0 or 1.  (An exception is when the criterion is equal for both values, in which case the correct output is defined as 0.5.)
+We can see in the original data.frame that Austin had the higher dropout rate, meaning 1 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be -1 or 1.
 ```{r}
-myFit <- myModel(schools, 2, c(3:5))
+myFit <- myRandModel(schools, 2, c(3:5))
 # TODO(jean) Create a wrapper where default is predictPairInternal.
 rowPairApply(oneRow(schools, 1), oneRow(schools, 2), correctGreater(2),
              heuristics(myFit, fn=predictPairInternal))
 ```
 
-Heuristica makes this sort of assessment easy-- it can check your model against all row pairs and calculate the percent correct.  Here we do myModel for all pairs of schools in our subset data.  Not surprisingly, it earns roughly 50% correct.
+What if we want to see results for all pairs of the first 5 schools?  Use allRowPairApply.
+
 ```{r}
-myFit <- myModel(schools, 2, c(3:5))
+allRowPairApply(schools, correctGreater(2), heuristics(myFit, fn=predictPairInternal))
+```
+
+This outputs 10 predictions because there are 5*4/2 = 10 row pairs for 5 schools.  Notice that because the data is sorted, CorrectGreater is always 1.  (If we had a different sorting, we would see some -1's.)
+
+#### Performance
+
+Heuristica has two ways to assess the performance of this categorizing of ranking.  First, there is a confusion matrix, as in many machine learning problems, except this one assumes you always want to see the output for -1, 0, 1 always.
+
+```{r}
+set.seed(1)
+predictions <- data.frame(allRowPairApply(schools, correctGreater(2), heuristics(myFit, fn=predictPairInternal)))
+confusionMatrixPredictPair(predictions$CorrectGreater, predictions$myRandModel)
+```
+
+Assuming you used the same random seed as this module, the matrix shows that out of the 10 cases, 6 were predicted correctly (the prediction was 1 and the correct answer was 1) and 4 were not (the prediction was -1 but the correct answer was 1).
+
+What percent correct is this?  In this case, it's an easy division of 6/10 = 0.6.  But you can get this result in one step-- for many fitted models-- with pctCorrectOfPredictPair.  Below is the call (with the random seed set again).
+
+```{r}
+set.seed(1)
+myFit <- myRandModel(schools, 2, c(3:5))
 pctCorrectOfPredictPair(list(myFit), schools)
 ```
+
+#### PredictProbInternal and PredictProb
+
+Note that instead of the predicting which row is greater, we could predict the probabliity that row1 is greater.  Its output should be a value from 0 to 1.  When a consistent function predicts that the probability that row 1 is greater is more than 0.5 (#2), it should also select row1 as greater (#1).  Here is an example implementation for myRandModel.
+
+```{r}
+predictProbInternal.myRandModel <- function(object, row1, row2) {
+  prob <- runif(1)
+  return(prob)
+}
+```
+
+Use it like this:
+```{r}
+myFit <- myRandModel(schools, 2, c(3:5))
+row1 <- oneRow(schools, 1)
+row1
+row2 <- oneRow(schools, 2)
+row2
+predictPairProb(row1, row2, myFit)
+```
+
 
 ## Wrapping lasso regression
 
@@ -155,7 +227,8 @@ predict(lasso, my_data[,lasso$cols_to_fit])
 
 ### Predicting function
 
-The task is selecting between two rows.  so lasso should predict each row and choose the one with the higher criterion.  Below is an example implementation or predictProbInternal that will work, although it is not very efficient.
+The task is selecting between two rows.  so lasso should predict each row and choose the one with the higher criterion.  Below is an example implementation or predictProbInternal that will work, although it is not very efficient.  Since there is no probability calculated, we simply return 0, 1, or 0.5 for the probability.  In contrast, logistic regression explicitly calculates a probability.
+
 ```{r}
 predictProbInternal.lassoModel <- function(object, row1, row2) {
   p1 <- predict(object, as.matrix(row1))
@@ -170,7 +243,7 @@ predictProbInternal.lassoModel <- function(object, row1, row2) {
 }
 ```
 
-TODO(jean): Explain the difference.
+
 ```{r}
 predictPairInternal.lassoModel <- function(object, row1, row2) {
   p1 <- predict(object, as.matrix(row1))
@@ -199,9 +272,10 @@ Now predict all row pairs in our data set.  It got 91% correct-- pretty good!
 pctCorrectOfPredictPair(list(lasso), my_data)
 ```
 
-Which comparison did it miss?  Check out the helper function below.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
+Which comparison did it miss?  Check out the helper function below.  We predict all row pairs and then find the row pairs where Lasso did not agree with the Correct answer.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
 ```{r}
-allRowPairApply(my_data, rowIndexes(), heuristics(lasso,  fn=predictPairInternal), correctGreater(lasso$criterion_col))
+out <- data.frame(allRowPairApply(my_data, rowIndexes(), heuristics(lasso,  fn=predictPairInternal), correctGreater(lasso$criterion_col)))
+out[out$lassoModel != out$CorrectGreater,]
 ```
 
 ### Improving performance
