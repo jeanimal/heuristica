@@ -18,7 +18,7 @@
 #' https://en.wikipedia.org/wiki/Fundamental_theorem_of_software_engineering
 #'
 #' @param object The object that implements createFunction, e.g. 
-#'   heuristics(ttb).
+#'   heuristicsProb(ttb).
 #' @param test_data The test data that row_pairs will be drawn from.
 #'   We recommend 
 #' @return A function that can easily be used by allRowPairApply.  This
@@ -80,17 +80,17 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' @examples
 #' ## This is typical usage:
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' out <- allRowPairApply(city_population, heuristics(ttb))
+#' out <- allRowPairApply(city_population, heuristicsProb(ttb))
 #' head(out)
 #' ## Under the hood, it calls ttb's predictProbInternal.
 #' 
 #' @seealso
 #' \code{\link{predictPairProb}} for a simpler way to generate predictions
 #'   from fitted models.
-#' \code{\link{heuristics}} for a non-list version of this function.
+#' \code{\link{heuristicsProb}} for a non-list version of this function.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
-#'    order to use them with the heuristics() wrapper function.
+#'    order to use them with the heuristicsProb() wrapper function.
 #' @seealso
 #' \code{\link{createFunction}} which is what the returned object implements.
 #' @seealso
@@ -130,7 +130,7 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictProbInternal) {
 #' @examples
 #' ## This is typical usage:
 #' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' out <- allRowPairApply(city_population, heuristics(ttb))
+#' out <- allRowPairApply(city_population, heuristicsProb(ttb))
 #' head(out)
 #' ## Under the hood, it calls ttb's predictProbInternal.
 #' 
@@ -139,13 +139,13 @@ heuristicsList <- function(list_of_fitted_heuristics, fn=predictProbInternal) {
 #'   from fitted models.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
-#'    order to use them with the heuristics() wrapper function.
+#'    order to use them with the heuristicsProb() wrapper function.
 #' @seealso
 #' \code{\link{createFunction}} which is what the returned object implements.
 #' @seealso
 #' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
-heuristics <- function(..., fn=predictProbInternal) {
+heuristicsProb <- function(..., fn=predictProbInternal) {
   implementers <- list(...)
   return(heuristicsList(implementers, fn=fn))
 }
@@ -369,7 +369,7 @@ combineIntoOneFn <- function(function_list) {
 #'   must include the same criterion_col and cols_to_fit.
 #' @param function_creator_list List of the objects that generate the functions
 #'   to apply, using createFunction.  For example,
-#'    list(heuristics(ttb, reg), probGreater(col), rowIndexes()).
+#'    list(heuristicsProb(ttb, reg), probGreater(col), rowIndexes()).
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
 #'   output will have N x (N-1) rows.  The number of columns will be at least
@@ -382,7 +382,7 @@ combineIntoOneFn <- function(function_list) {
 #' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
-#' out1 <- allRowPairApplyList(city_population, list(heuristics(ttb, reg)))
+#' out1 <- allRowPairApplyList(city_population, list(heuristicsProb(ttb, reg)))
 #' head(out1)
 #' nrow(out1)
 #' ## returns a matrix of 2 columns, named ttbModel and regModel
@@ -390,7 +390,7 @@ combineIntoOneFn <- function(function_list) {
 #' ## Generate a matrix with the correct values and the heuristics'
 #' ## predictions:
 #' out2 <- allRowPairApplyList(city_population,
-#'                             list(probGreater(3), heuristics(reg, ttb)))
+#'                             list(probGreater(3), heuristicsProb(reg, ttb)))
 #' head(out2)
 #' nrow(out2)
 #' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel
@@ -400,7 +400,7 @@ combineIntoOneFn <- function(function_list) {
 #'    passed in the "..." argument, along with the attribute $column_names.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
-#'    order to use them with the heuristics() wrapper function.
+#'    order to use them with the heuristicsProb() wrapper function.
 #'
 #' @export
 allRowPairApplyList <- function(test_data, function_creator_list) {
@@ -428,7 +428,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #'   data.frame.  Heuristics must have already been fitted to trying data and
 #'   must include the same criterion_col and cols_to_fit.
 #' @param ... The objects that generate the functions to apply, using
-#'   createFunction.  For example, heuristics(ttb), probGreater(col), or
+#'   createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
 #'   colPairValues.
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
@@ -442,14 +442,14 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
-#' out1 <- allRowPairApply(city_population, heuristics(ttb, reg))
+#' out1 <- allRowPairApply(city_population, heuristicsProb(ttb, reg))
 #' head(out1)
 #' nrow(out1)
 #' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 #' 
 #' ## Generate a matrix with correct values and the heuristics' predictions:
 #' out2 <- allRowPairApply(city_population, probGreater(3),
-#'                         heuristics(reg, ttb))
+#'                         heuristicsProb(reg, ttb))
 #' head(out2)
 #' nrow(out2)
 #' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
@@ -459,7 +459,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #'    passed in the "..." argument, along with the attribute $column_names.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
-#'    order to use them with the heuristics() wrapper function.
+#'    order to use them with the heuristicsProb() wrapper function.
 #'
 #' @export
 allRowPairApply <- function(test_data, ...) {
@@ -501,7 +501,7 @@ assert_single_column <- function(obj) {
 #' @param row2 The second row (will apply cols_to_fit for you, based on
 #'   object).
 #' @param ... The objects that generate the functions to apply, using
-#'   createFunction.  For example, heuristics(ttb), probGreater(col), or
+#'   createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
 #'   colPairValues.
 #' @return A matrix of function outputs.
 #' @export
@@ -550,7 +550,7 @@ makeTrimRowPairFunctionForObject <- function(object, internalFn) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
-  out <- rowPairApply(row1, row2, heuristics(object, fn=predictPairInternal))
+  out <- rowPairApply(row1, row2, heuristicsProb(object, fn=predictPairInternal))
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(out)
   assert_single_column(out)
@@ -586,7 +586,7 @@ predictPairNotQuiteWorking <- function(row1, row2, object) {
 #'   criterion is greater than row2's criterion.
 #' @export
 predictPairProb <- function(row1, row2, object) {
-  out <- rowPairApply(row1, row2, heuristics(object))
+  out <- rowPairApply(row1, row2, heuristicsProb(object))
   # The asserts below ensure predictProbInternal had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)

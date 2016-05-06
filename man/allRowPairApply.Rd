@@ -12,7 +12,7 @@ data.frame.  Heuristics must have already been fitted to trying data and
 must include the same criterion_col and cols_to_fit.}
 
 \item{...}{The objects that generate the functions to apply, using
-createFunction.  For example, heuristics(ttb), probGreater(col), or
+createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
 colPairValues.}
 }
 \value{
@@ -32,14 +32,14 @@ ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
 
 ## Generate predictions for all row pairs for these two models:
-out1 <- allRowPairApply(city_population, heuristics(ttb, reg))
+out1 <- allRowPairApply(city_population, heuristicsProb(ttb, reg))
 head(out1)
 nrow(out1)
 ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
 
 ## Generate a matrix with correct values and the heuristics' predictions:
 out2 <- allRowPairApply(city_population, probGreater(3),
-                        heuristics(reg, ttb))
+                        heuristicsProb(reg, ttb))
 head(out2)
 nrow(out2)
 ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
@@ -50,6 +50,6 @@ nrow(out2)
    passed in the "..." argument, along with the attribute $column_names.
 
 \code{\link{predictProbInternal}} which must be implemented by heuristics in
-   order to use them with the heuristics() wrapper function.
+   order to use them with the heuristicsProb() wrapper function.
 }
 

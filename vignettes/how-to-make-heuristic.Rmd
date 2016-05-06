@@ -28,7 +28,7 @@ devtools::load_all()
 #library("heuristica")
 ```
 
-## Minimal model
+## A toy random model
 
 ### Fitting function
 
@@ -128,13 +128,13 @@ We can see in the original data.frame that Austin had the higher dropout rate, m
 myFit <- myRandModel(schools, 2, c(3:5))
 # TODO(jean) Create a wrapper where default is predictPairInternal.
 rowPairApply(oneRow(schools, 1), oneRow(schools, 2), correctGreater(2),
-             heuristics(myFit, fn=predictPairInternal))
+             heuristicsProb(myFit, fn=predictPairInternal))
 ```
 
 What if we want to see results for all pairs of the first 5 schools?  Use allRowPairApply.
 
 ```{r}
-allRowPairApply(schools, correctGreater(2), heuristics(myFit, fn=predictPairInternal))
+allRowPairApply(schools, correctGreater(2), heuristicsProb(myFit, fn=predictPairInternal))
 ```
 
 This outputs 10 predictions because there are 5*4/2 = 10 row pairs for 5 schools.  Notice that because the data is sorted, CorrectGreater is always 1.  (If we had a different sorting, we would see some -1's.)
@@ -145,7 +145,7 @@ Heuristica has two ways to assess the performance of this categorizing of rankin
 
 ```{r}
 set.seed(1)
-predictions <- data.frame(allRowPairApply(schools, correctGreater(2), heuristics(myFit, fn=predictPairInternal)))
+predictions <- data.frame(allRowPairApply(schools, correctGreater(2), heuristicsProb(myFit, fn=predictPairInternal)))
 confusionMatrixPredictPair(predictions$CorrectGreater, predictions$myRandModel)
 ```
 
@@ -274,7 +274,7 @@ pctCorrectOfPredictPair(list(lasso), my_data)
 
 Which comparison did it miss?  Check out the helper function below.  We predict all row pairs and then find the row pairs where Lasso did not agree with the Correct answer.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
 ```{r}
-out <- data.frame(allRowPairApply(my_data, rowIndexes(), heuristics(lasso,  fn=predictPairInternal), correctGreater(lasso$criterion_col)))
+out <- data.frame(allRowPairApply(my_data, rowIndexes(), heuristicsProb(lasso,  fn=predictPairInternal), correctGreater(lasso$criterion_col)))
 out[out$lassoModel != out$CorrectGreater,]
 ```
 

@@ -8,7 +8,7 @@ createFunction(object, test_data)
 }
 \arguments{
 \item{object}{The object that implements createFunction, e.g. 
-heuristics(ttb).}
+heuristicsProb(ttb).}
 
 \item{test_data}{The test data that row_pairs will be drawn from.
 We recommend}

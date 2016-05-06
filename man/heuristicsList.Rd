@@ -25,7 +25,7 @@ predictProbInternal.  Users will generally not use the output directly.
 \examples{
 ## This is typical usage:
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-out <- allRowPairApply(city_population, heuristics(ttb))
+out <- allRowPairApply(city_population, heuristicsProb(ttb))
 head(out)
 ## Under the hood, it calls ttb's predictProbInternal.
 
@@ -33,10 +33,10 @@ head(out)
 \seealso{
 \code{\link{predictPairProb}} for a simpler way to generate predictions
   from fitted models.
-\code{\link{heuristics}} for a non-list version of this function.
+\code{\link{heuristicsProb}} for a non-list version of this function.
 
 \code{\link{predictProbInternal}} which must be implemented by heuristics in
-   order to use them with the heuristics() wrapper function.
+   order to use them with the heuristicsProb() wrapper function.
 
 \code{\link{createFunction}} which is what the returned object implements.
 

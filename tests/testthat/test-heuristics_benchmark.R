@@ -12,7 +12,7 @@ context("heuristics_benchmark")
 
 test_that("Benchmark ttbModel on city_population", {
   ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-  times <- system.time(allRowPairApply(city_population, heuristics(ttb)))
+  times <- system.time(allRowPairApply(city_population, heuristicsProb(ttb)))
   print("ttb")
   print(times)
 
@@ -35,7 +35,7 @@ test_that("Benchmark ttbModel on city_population NEW simpleRowPairApply", {
 
 test_that("Benchmark regInterceptModel on city_population", {
   model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
-  times <- system.time(allRowPairApply(city_population, heuristics(model)))
+  times <- system.time(allRowPairApply(city_population, heuristicsProb(model)))
   print("reg")
   print(times)
   expect_lt(times[[2]], 1)
