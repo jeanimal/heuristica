@@ -4,15 +4,16 @@
 \alias{heuristicsList}
 \title{Wrapper for fitted heuristics to generate predictions with allRowPairApply.}
 \usage{
-heuristicsList(list_of_fitted_heuristics, fn = predictProbInternal)
+heuristicsList(list_of_fitted_heuristics, fn)
 }
 \arguments{
 \item{list_of_fitted_heuristics}{Normally a list of predictProbInternal
 implementers, e.g. a fitted ttb model.}
 
-\item{fn}{The function to be called on the heuristics, which is predictProbInternal
-by default, but it can be any function implemented by the heuristics
-with the signature function(object, row1, row2).}
+\item{fn}{The function to be called on the heuristics, which is typically
+either predictPairInternal or predictProbInternal but can be any function
+with the signature function(object, row1, row2) that is implemented by
+the heuristics in list_of_fitted_heuristics.}
 }
 \value{
 An object of class heuristics, which implements createFunction.
@@ -24,22 +25,20 @@ predictProbInternal.  Users will generally not use the output directly.
 }
 \examples{
 ## This is typical usage:
-ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-out <- allRowPairApply(city_population, heuristicsProb(ttb))
-head(out)
-## Under the hood, it calls ttb's predictProbInternal.
+df <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+ttb <- ttbModel(df, 1, c(2:ncol(df)))
+allRowPairApply(df, heuristicsList(list(ttb), predictPairInternal))
+## This outputs ttb's predictions for all 6 row pairs of df.
+## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
+## by calling ttb's predictPairInternal.
 
 }
 \seealso{
-\code{\link{predictPairProb}} for a simpler way to generate predictions
-  from fitted models.
 \code{\link{heuristicsProb}} for a non-list version of this function.
 
-\code{\link{predictProbInternal}} which must be implemented by heuristics in
-   order to use them with the heuristicsProb() wrapper function.
+\code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
+   what heuristicsList is normally passed in to.
 
 \code{\link{createFunction}} which is what the returned object implements.
-
-\code{\link{allRowPairApply}} which uses createFunction.
 }
 
