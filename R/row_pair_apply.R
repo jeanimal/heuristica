@@ -580,19 +580,6 @@ predictPair <- function(row1, row2, object) {
   return(unname(out[1,1]))
 }
 
-predictPairNotQuiteWorking <- function(row1, row2, object) {
-  data <- rbind(row1, row2)
-  # fn1 is the extra step needed by heuristics.
-  # TODO: how get column names for other functions?
-  fn1 <- makeRowPairFunctionForObject(object, predictPairInternal)
-  fn2 <- bindFunctionToRowPairs(data, fn1)
-  raw_matrix <- t(pairMatrix(2, fn2))
-  # The asserts below ensure predictPairInternal returned just one value.
-  assert_single_row(raw_matrix)
-  assert_single_column(raw_matrix)
-  return(raw_matrix[1,1])
-}
-
 #' Predict the probablity that row1 has a higher criterion than row2.
 #'
 #' It uses the passed-in object to do the prediction, assuming the object
