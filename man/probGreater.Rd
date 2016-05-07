@@ -22,6 +22,11 @@ the test_data.  It can do this using the criterion column passed in.
 By default, the output column is called "ProbGreater," but you
 can override the name with output_column_name.
 }
+\details{
+Note this uses a very simplistic "probability" which only looks at
+the current row pair.  It does not look at all sets of row pairs
+with the same profile.
+}
 \seealso{
 \code{\link{createFunction}} which is what the returned object implements.
 
