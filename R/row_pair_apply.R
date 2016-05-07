@@ -551,13 +551,6 @@ makeRowPairFunctionForObject <- function(object, internalFn) {
   return(fn1)
 }
 
-makeTrimRowPairFunctionForObject <- function(object, internalFn) {
-  fn1 <- function(row1_cues, row2_cues) {
-    internalFn(object, row1_cues, row2_cues)
-  }
-  return(fn1)
-}
-
 #' Predict which of a pair of rows has a higher criterion.
 #'
 #' Assumes the object implements predictProbInternal and has $cols_to_fit.
@@ -606,6 +599,13 @@ predictPairProb <- function(row1, row2, object) {
 #
 # Below are experimental functions.  They avoid an extra level of indirection.
 #
+
+makeTrimRowPairFunctionForObject <- function(object, internalFn) {
+  fn1 <- function(row1_cues, row2_cues) {
+    internalFn(object, row1_cues, row2_cues)
+  }
+  return(fn1)
+}
 
 createrRowIndexPairFn <- function() {
   # Data is ignored.
