@@ -12,16 +12,17 @@ test_that("stopIfNonProbability ", {
   expect_error(stopIfNonProbability(test_data, c(1,4)), ">= 0 are not all TRUE")
 })
 
-test_that("predictPairWithCorrect ProbGreater -1 bug", {
+test_that("allRowPairApply ProbGreater -1 bug", {
   # Specify enough of a ttb model for prediction.
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
                                linear_coef=c(4,2,1)),
                           class="ttbModel")
   # Below are rows from the fish fertility data set where we uncovered this bug.
-  test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3), b=c(976,1437), c=c(50, 49.74))
-  results <- predictPairWithCorrect(list(fitted_ttb), test_data)
-  expect_equal(cbind(Row1=c(1), Row2=c(2), ProbGreater=c(0), ttbModel=c(1)),
-               results)
+  test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3),
+                          b=c(976,1437), c=c(50, 49.74))
+  results <- allRowPairApplyList(test_data,
+                                 list(heuristics(fitted_ttb), probGreater(1)))
+  expect_equal(cbind(ttbModel=c(1), ProbGreater=c(0)), results)
 })
 
 test_that("pctCorrectOfPredictPair -1 prediction bug", {
@@ -49,14 +50,17 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
   train_data <- cbind(y=c(5,4,3), x1=c(1,0,0))
   ttb <- ttbModel(train_data, 1, c(2))
   lreg <- logRegModel(train_data, 1, c(2))
-  pred_df <- as.data.frame(predictPairWithCorrect(list(ttb, lreg), train_data))
+  pred <- allRowPairApplyList(
+    train_data, list(rowIndexes(), heuristics(ttb, lreg), correctGreater(1)))
+  pred_df <- as.data.frame(pred)
   
   row <- pred_df[which(pred_df$Row1==1 && pred_df$Row2==2),]
   expect_equal(1, row$ttbModel, tolerance=0.001)
   expect_equal(1, row$logRegModel, tolerance=0.001)
   row <- pred_df[which(pred_df$Row1==2),]
-  expect_equal(0.5, row$ttbModel, tolerance=0.001)
-  expect_equal(0.5, row$logRegModel, tolerance=0.001)
+  # Below are guesses, which means output of 0 for predictPair.
+  expect_equal(0, row$ttbModel, tolerance=0.001)
+  expect_equal(0, row$logRegModel, tolerance=0.001)
   expect_equal(3, nrow(pred_df))
   
   pct_correct_df <- pctCorrectOfPredictPair(list(ttb, lreg), train_data)
@@ -128,14 +132,16 @@ test_that("end to end test ttb vs. logistic regression input data.frame", {
   train_df <- data.frame(y=c(5,4,3), x=c(1,0,0), name=c("jo", "bo", "da"))
   ttb <- ttbModel(train_df, 1, c(2))
   lreg <- logRegModel(train_df, 1, c(2))
-  pred_df <- data.frame(predictPairWithCorrect(list(ttb, lreg), train_df))
+  pred <- allRowPairApplyList(
+    train_df, list(rowIndexes(), heuristics(ttb, lreg), correctGreater(1)))
+  pred_df <- data.frame(pred)
 
   row <- pred_df[which(pred_df$Row1==1 && pred_df$Row2==2),]
   expect_equal(1, row$ttbModel, tolerance=0.001)
   expect_equal(1, row$logRegModel, tolerance=0.001)
   row <- pred_df[which(pred_df$Row1==2),]
-  expect_equal(0.5, row$ttbModel, tolerance=0.001)
-  expect_equal(0.5, row$logRegModel, tolerance=0.001)
+  expect_equal(0, row$ttbModel, tolerance=0.001)
+  expect_equal(0, row$logRegModel, tolerance=0.001)
   expect_equal(3, nrow(pred_df))
   
   pct_correct_df <- pctCorrectOfPredictPair(list(ttb, lreg), train_df)

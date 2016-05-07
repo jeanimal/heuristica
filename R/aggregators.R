@@ -9,32 +9,6 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col,
   return(models)
 }
 
-#' Generates a matrix of all predictPairProb predictions plus correct output.
-#'
-#' This geneartes a column of correct output (whether row 1 or row 2 is
-#' greater) from the test matrix, then runs all the heuristics in order,
-#' generating a column of predictions for each, naming each column from the
-#' heuristic class.
-#'
-#' @param fitted_heuristic_list List of heuristics that implement the
-#'  generic function predictPair, e.g. ttbModel.  All heuristics must
-#'  agree on the criterion_col.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @return Same matrix as predictPair but with columns on correctness
-#' @seealso
-#' \code{\link{predictPairProb}}
-#' @export
-predictPairWithCorrect <- function(fitted_heuristic_list, test_data) {
-  # Assume the criterion_col is same for all heuristics.
-  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
-  # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(
-    rowIndexes(), probGreater(criterion_col),
-    heuristicsList(fitted_heuristic_list, predictProbInternal))
-  predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
-  return(predictions)
-}
-
 #' Creates an error matrix from a matrix of predictions.
 #' 
 #' Given a matrix where the first 3 columns are basic info and the others
