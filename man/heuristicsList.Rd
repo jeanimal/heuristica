@@ -25,20 +25,16 @@ predictProbInternal.  Users will generally not use the output directly.
 }
 \examples{
 ## This is typical usage:
-df <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
-ttb <- ttbModel(df, 1, c(2:ncol(df)))
-allRowPairApply(df, heuristicsList(list(ttb), predictPairInternal))
-## This outputs ttb's predictions for all 6 row pairs of df.
+data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+ttb <- ttbModel(data, 1, c(2:ncol(data)))
+allRowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
+## This outputs ttb's predictions for all 6 row pairs of data.
 ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 ## by calling ttb's predictPairInternal.
 
 }
 \seealso{
-\code{\link{heuristicsProb}} for a non-list version of this function.
-
-\code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
-   what heuristicsList is normally passed in to.
-
-\code{\link{createFunction}} which is what the returned object implements.
+\code{\link{heuristics}} and  \code{\link{heuristicsProb}} for 
+  simpler versions of this function.
 }
 

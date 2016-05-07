@@ -126,26 +126,25 @@ predictPair(row1, row2, myFit)
 We can see in the original data.frame that Austin had the higher dropout rate, meaning 1 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be -1 or 1.
 ```{r}
 myFit <- myRandModel(schools, 2, c(3:5))
-# TODO(jean) Create a wrapper where default is predictPairInternal.
 rowPairApply(oneRow(schools, 1), oneRow(schools, 2), correctGreater(2),
-             heuristicsProb(myFit, fn=predictPairInternal))
+             heuristics(myFit))
 ```
 
 What if we want to see results for all pairs of the first 5 schools?  Use allRowPairApply.
 
 ```{r}
-allRowPairApply(schools, correctGreater(2), heuristicsProb(myFit, fn=predictPairInternal))
+allRowPairApply(schools, correctGreater(2), heuristics(myFit))
 ```
 
 This outputs 10 predictions because there are 5*4/2 = 10 row pairs for 5 schools.  Notice that because the data is sorted, CorrectGreater is always 1.  (If we had a different sorting, we would see some -1's.)
 
 #### Performance
 
-Heuristica has two ways to assess the performance of this categorizing of ranking.  First, there is a confusion matrix, as in many machine learning problems, except this one assumes you always want to see the output for -1, 0, 1 always.
+Heuristica has two ways to assess the performance of this categorizing of ranking.  First, there is a confusion matrix, as in many machine learning problems, except this one assumes you always want to see the output for -1, 0, 1 always.  We need to give it the correct answers, which are based on column 2, so we use correctGreater(2).  And we need to give itht epredictions, which we generate with heuristics(myFit).  We pass these generators into allRowPairApply.  Then we send the output to our confusion matrix function.
 
 ```{r}
 set.seed(1)
-predictions <- data.frame(allRowPairApply(schools, correctGreater(2), heuristicsProb(myFit, fn=predictPairInternal)))
+predictions <- data.frame(allRowPairApply(schools, correctGreater(2), heuristics(myFit)))
 confusionMatrixPredictPair(predictions$CorrectGreater, predictions$myRandModel)
 ```
 

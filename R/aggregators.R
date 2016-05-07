@@ -147,8 +147,8 @@ createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
 #'   e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @param goal_type String identifying the goal of the models and criterion.
+#'   ChooseGreater' indicates to use correctGreater and predictPairInternal.
 #'   'ProbGreater' indicates to use probGreater and predictProbInternal.
-#'   ChooseGreater' indicates to use correctGrater and predictPairInternal.
 #' @param ... Optionally additional row pair functions, e.g. rowIndexes().
 #' @return A one-row matrix of numbers from 0 to 1, meaning proportion
 #'   correct.  Each column is named with the heuristic's class.

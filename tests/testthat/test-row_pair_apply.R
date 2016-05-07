@@ -240,6 +240,9 @@ test_that("allRowPairApply heuristics with fn", {
                          heuristicsProb(model, fn=predictPairInternal))
   # predictProbInternal guesses wtih 0.5.  predictPairInternal guesses with 0.
   expect_equal(cbind(0.5, 0), unname(out))
+  out2 <- allRowPairApply(train_matrix, heuristicsProb(model, fn=predictProbInternal),
+                         heuristics(model))
+  expect_equal(cbind(0.5, 0), unname(out))
 })
 
 ## Testing new functions not yet integrated with the rest of the package.

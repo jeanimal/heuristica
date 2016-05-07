@@ -80,20 +80,16 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' 
 #' @examples
 #' ## This is typical usage:
-#' df <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
-#' ttb <- ttbModel(df, 1, c(2:ncol(df)))
-#' allRowPairApply(df, heuristicsList(list(ttb), predictPairInternal))
-#' ## This outputs ttb's predictions for all 6 row pairs of df.
+#' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+#' ttb <- ttbModel(data, 1, c(2:ncol(data)))
+#' allRowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
+#' ## This outputs ttb's predictions for all 6 row pairs of data.
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
 #'
 #' @seealso
-#' \code{\link{heuristicsProb}} for a non-list version of this function.
-#' @seealso
-#' \code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
-#'    what heuristicsList is normally passed in to.
-#' @seealso
-#' \code{\link{createFunction}} which is what the returned object implements.
+#' \code{\link{heuristics}} and  \code{\link{heuristicsProb}} for 
+#'   simpler versions of this function.
 #' @export
 heuristicsList <- function(list_of_fitted_heuristics, fn) {
   implementers <- list_of_fitted_heuristics
@@ -114,7 +110,37 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
             class="heuristics")
 }
 
-#' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
+#' Wrap fitted heuristics to pass to allRowPairApply and call predictPair.
+#' 
+#' One or more fitted heuristics can be passed in.  They must all implement
+#' predictPairInternal.  Users will generally not use the output directly.
+#' 
+#' @param ... A list of predictPairInternal implementers, e.g. a fitted ttb model.
+#' @return An object of class heuristics, which implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#'
+#' @examples
+#' ## This is typical usage:
+#' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+#' ttb <- ttbModel(data, 1, c(2:ncol(data)))
+#' allRowPairApply(data, heuristics(ttb))
+#' ## This outputs ttb's predictions for all 6 row pairs of data.
+#' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
+#' ## by calling ttb's predictPairInternal.
+#' 
+#' @seealso
+#' \code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
+#'    what heuristicsProb is normally passed in to.
+#' @seealso
+#' \code{\link{predictPairInternal}} which must be implemented by heuristics in
+#'    order to use them with the heuristics() wrapper function.
+#' @export
+heuristics <- function(...) {
+  implementers <- list(...)
+  return(heuristicsList(implementers, predictPairInternal))
+}
+
+#' Wrap fitted heuristics to pass to allRowPairApply and call predictProb.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
 #' predictProbInternal.  Users will generally not use the output directly.
@@ -128,21 +154,19 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 #' 
 #' @examples
 #' ## This is typical usage:
-#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' out <- allRowPairApply(city_population, heuristicsProb(ttb))
-#' head(out)
-#' ## Under the hood, it calls ttb's predictProbInternal.
+#' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+#' ttb <- ttbModel(data, 1, c(2:ncol(data)))
+#' allRowPairApply(data, heuristicsProb(ttb))
+#' ## This outputs ttb's predictions for all 6 row pairs of data.
+#' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
+#' ## by calling ttb's predictProbInternal.
 #' 
 #' @seealso
-#' \code{\link{predictPairProb}} for a simpler way to generate predictions
-#'   from fitted models.
+#' \code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
+#'    what heuristicsProb is normally passed in to.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristicsProb() wrapper function.
-#' @seealso
-#' \code{\link{createFunction}} which is what the returned object implements.
-#' @seealso
-#' \code{\link{allRowPairApply}} which uses createFunction.
 #' @export
 heuristicsProb <- function(..., fn=predictProbInternal) {
   implementers <- list(...)
@@ -549,7 +573,7 @@ makeTrimRowPairFunctionForObject <- function(object, internalFn) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
-  out <- rowPairApply(row1, row2, heuristicsProb(object, fn=predictPairInternal))
+  out <- rowPairApply(row1, row2, heuristics(object))
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(out)
   assert_single_column(out)
