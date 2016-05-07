@@ -9,42 +9,6 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col,
   return(models)
 }
 
-#' Assuming you have a matrix with a columns row1 and row2,
-#' this helps you get the row which matches those columns.
-#' getPrediction makes code below more readable.
-#' @param df Data.frame to extra row from
-#' @param row1 The value in the row1 column to look for
-#' @param row2 The value in the row2 column to look for
-#' @return a row of the data frame.  (This could be multiple rows
-#'   if multiple rows match.)
-#' @export
-getPredictionRow <- function(df, row1=NULL, row2=NULL) {
-  if (is.null(row1) || is.null(row2)) {
-    stop("You must set both row1 and row2")
-  }
-  lastCol <- ncol(df)
-  return(df[(df$Row1==row1) & (df$Row2==row2),])
-}
-
-#' Assuming you have a matrix with a columns row1 and row2,
-#' this helps you get the row which matches those columns.
-#' getPrediction makes code below more readable.
-#' @param df Data.frame to extra row from
-#' @param row1 The value in the row1 column to look for
-#' @param row2 The value in the row2 column to look for
-#' @return a row of the data frame.  (This could be multiple rows
-#'   if multiple rows match.)
-#' @export
-getPredictionRowLC <- function(df, row1=NULL, row2=NULL) {
-  if (is.null(row1) || is.null(row2)) {
-    stop("You must set both row1 and row2")
-  }
-  lastCol <- ncol(df)
-  #TODO(jean): Share this code with getPredictiono?
-  #TODO(jean): Do sorting so it works even if row2 index < row1 index.
-  return(df[(df$row1==row1) & (df$row2==row2),])
-}
-
 #' Generates a matrix of all predictPairProb predictions plus correct output.
 #'
 #' This geneartes a column of correct output (whether row 1 or row 2 is
