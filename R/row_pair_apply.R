@@ -216,40 +216,6 @@ createFunction.heuristics <- function(object, test_data) {
   return(all_predictProbInternal_fn)
 }
 
-# probGreater (criterion function)
-
-#' Creates function for one column with correct probability row1 is greater.
-#'
-#' Using allRowPairApply, this can generate a column with
-#' the correct probability that row 1 > row 2 for each row pair in 
-#' the test_data.  It can do this using the criterion column passed in.
-#' By default, the output column is called "ProbGreater," but you
-#' can override the name with output_column_name.
-#'
-#' @param criterion_col The integer index of the criterion in test_data.
-#' @param output_column_name An optional string
-#' @return An object that implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
-#'
-#' @seealso
-#' \code{\link{createFunction}} which is what the returned object implements.
-#' @seealso
-#' \code{\link{allRowPairApply}} which uses createFunction.
-#' @export
-probGreater <- function(criterion_col, output_column_name="ProbGreater") {
-  structure(list(criterion_col=criterion_col,
-                 column_names=c(output_column_name)),
-            class="probGreater")
-}
-
-createFunction.probGreater <- function(object, test_data) {
-  criterion_matrix <- as.matrix(test_data[, object$criterion_col, drop=FALSE])
-  correct_fn <- function(index_pair)
-    rescale0To1(sign(criterion_matrix[index_pair[1], , drop=FALSE]
-                     - criterion_matrix[index_pair[2], , drop=FALSE]))
-  return(correct_fn)
-}
-
 # correctGreater (criterion function)
 
 #' Creates function for one column indicating whether row1 is greater.
@@ -284,6 +250,41 @@ createFunction.correctGreater <- function(object, test_data) {
   correct_fn <- function(index_pair)
     sign(criterion_matrix[index_pair[1], , drop=FALSE]
          - criterion_matrix[index_pair[2], , drop=FALSE])
+  return(correct_fn)
+}
+
+
+# probGreater (criterion function)
+
+#' Creates function for one column with correct probability row1 is greater.
+#'
+#' Using allRowPairApply, this can generate a column with
+#' the correct probability that row 1 > row 2 for each row pair in 
+#' the test_data.  It can do this using the criterion column passed in.
+#' By default, the output column is called "ProbGreater," but you
+#' can override the name with output_column_name.
+#'
+#' @param criterion_col The integer index of the criterion in test_data.
+#' @param output_column_name An optional string
+#' @return An object that implements createFunction.
+#'   Users will generally not use this directly-- allRowPairApply will.
+#'
+#' @seealso
+#' \code{\link{createFunction}} which is what the returned object implements.
+#' @seealso
+#' \code{\link{allRowPairApply}} which uses createFunction.
+#' @export
+probGreater <- function(criterion_col, output_column_name="ProbGreater") {
+  structure(list(criterion_col=criterion_col,
+                 column_names=c(output_column_name)),
+            class="probGreater")
+}
+
+createFunction.probGreater <- function(object, test_data) {
+  criterion_matrix <- as.matrix(test_data[, object$criterion_col, drop=FALSE])
+  correct_fn <- function(index_pair)
+    rescale0To1(sign(criterion_matrix[index_pair[1], , drop=FALSE]
+                     - criterion_matrix[index_pair[2], , drop=FALSE]))
   return(correct_fn)
 }
 
