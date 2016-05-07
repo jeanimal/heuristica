@@ -537,20 +537,6 @@ rowPairApply <- function(row1, row2, ...) {
   return(out)
 }
 
-# Given a fitted heuristic object and a function that can be called on that
-# object, returns a function with just the signature function(row1, row2)
-# where the rows have just the cols_to_fit.  The output should be a matrix
-# row with one column.
-makeRowPairFunctionForObject <- function(object, internalFn) {
-  fn1 <- function(row1, row2) {
-    row1_cues <- row1[,object$cols_to_fit, drop=FALSE]
-    row2_cues <- row2[,object$cols_to_fit, drop=FALSE]
-    # e.g. predictPairInternal(object, row1_cues, row2_cues)
-    internalFn(object, row1_cues, row2_cues)
-  }
-  return(fn1)
-}
-
 #' Predict which of a pair of rows has a higher criterion.
 #'
 #' Assumes the object implements predictProbInternal and has $cols_to_fit.
