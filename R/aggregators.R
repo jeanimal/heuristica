@@ -152,15 +152,6 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
   return(pctCorrectOfPredictPairNEWDf(fitted_heuristic_list, test_data))
 }
 
-pctCorrectOfPredictPairOLD <- function(fitted_heuristic_list, test_data) {
-  goal_type <- 'ProbGreater'
-  predictions <- aggregatePredictPair(fitted_heuristic_list, test_data,
-                                      goal_type)
-  errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
-  df <- createPctCorrectsFromErrors2(errors, 2)
-  return(df)
-}
-
 #TODO(jeanw) Some tests fail when I try to migrate to this because they
 #expect a data.frame where you can refer to the $ttbModel column.
 pctCorrectOfPredictPairNEW <- function(fitted_heuristic_list, test_data) {
