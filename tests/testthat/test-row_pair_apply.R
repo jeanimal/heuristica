@@ -270,6 +270,13 @@ test_that("simpleRowPairApply and createHeuristicWrapperFn2", {
   expect_equal(c(1,1,0), out[,"ttbModel"])
 })
 
+test_that("simpleRowPairApply data.frame with ignored strings", {
+  m <- data.frame(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1), x3=c("a", "b", "c"))
+  ttb <- ttbModel(m, 1, c(2:3))
+  out <- simpleRowPairApply(m, createHeuristicWrapperFn2(ttb))
+  expect_equal(c(1,1,0), out[,"ttbModel"])
+})
+
 test_that("simpleRowPairApply and createrRowIndexPairFn", {
   m <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
   out <- simpleRowPairApply(m, createrRowIndexPairFn())
