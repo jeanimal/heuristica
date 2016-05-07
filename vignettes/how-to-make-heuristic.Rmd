@@ -273,7 +273,7 @@ pctCorrectOfPredictPair(list(lasso), my_data)
 
 Which comparison did it miss?  Check out the helper function below.  We predict all row pairs and then find the row pairs where Lasso did not agree with the Correct answer.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
 ```{r}
-out <- data.frame(allRowPairApply(my_data, rowIndexes(), heuristicsProb(lasso,  fn=predictPairInternal), correctGreater(lasso$criterion_col)))
+out <- data.frame(allRowPairApply(my_data, rowIndexes(), heuristics(lasso), correctGreater(lasso$criterion_col)))
 out[out$lassoModel != out$CorrectGreater,]
 ```
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{heuristics}
 \alias{heuristics}
-\title{Wrap fitted heuristics to pass to allRowPairApply and call predictPair.}
+\title{Wrap fitted heuristics to pass to allRowPairApply to call predictPair.}
 \usage{
 heuristics(...)
 }
@@ -15,7 +15,8 @@ An object of class heuristics, which implements createFunction.
 }
 \description{
 One or more fitted heuristics can be passed in.  They must all implement
-predictPairInternal.  Users will generally not use the output directly.
+predictPairInternal.  Users will generally not use the output directly
+but instead pass this to allRowPairApply.
 }
 \examples{
 ## This is typical usage:

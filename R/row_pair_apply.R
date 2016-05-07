@@ -110,10 +110,11 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
             class="heuristics")
 }
 
-#' Wrap fitted heuristics to pass to allRowPairApply and call predictPair.
+#' Wrap fitted heuristics to pass to allRowPairApply to call predictPair.
 #' 
 #' One or more fitted heuristics can be passed in.  They must all implement
-#' predictPairInternal.  Users will generally not use the output directly.
+#' predictPairInternal.  Users will generally not use the output directly
+#' but instead pass this to allRowPairApply.
 #' 
 #' @param ... A list of predictPairInternal implementers, e.g. a fitted ttb model.
 #' @return An object of class heuristics, which implements createFunction.
@@ -140,15 +141,13 @@ heuristics <- function(...) {
   return(heuristicsList(implementers, predictPairInternal))
 }
 
-#' Wrap fitted heuristics to pass to allRowPairApply and call predictProb.
+#' Wrap fitted heuristics to pass to allRowPairApply to call predictProb.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
-#' predictProbInternal.  Users will generally not use the output directly.
+#' predictProbInternal.  Users will generally not use the output directly
+#' but instead pass this to allRowPairApply.
 #' 
 #' @param ... A list of predictProbInternal implementers, e.g. a fitted ttb model.
-#' @param fn The function to be called on the heuristics, which is predictProbInternal
-#'   by default, but it can be any function implemented by the heuristics
-#'   with the signature function(object, row1, row2).
 #' @return An object of class heuristics, which implements createFunction.
 #'   Users will generally not use this directly-- allRowPairApply will.
 #' 
@@ -168,9 +167,9 @@ heuristics <- function(...) {
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristicsProb() wrapper function.
 #' @export
-heuristicsProb <- function(..., fn=predictProbInternal) {
+heuristicsProb <- function(...) {
   implementers <- list(...)
-  return(heuristicsList(implementers, fn=fn))
+  return(heuristicsList(implementers, fn=predictProbInternal))
 }
 
 #' Create function for heuristics prediction with allRowPairApply.

@@ -2,16 +2,12 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{heuristicsProb}
 \alias{heuristicsProb}
-\title{Wrap fitted heuristics to pass to allRowPairApply and call predictProb.}
+\title{Wrap fitted heuristics to pass to allRowPairApply to call predictProb.}
 \usage{
-heuristicsProb(..., fn = predictProbInternal)
+heuristicsProb(...)
 }
 \arguments{
 \item{...}{A list of predictProbInternal implementers, e.g. a fitted ttb model.}
-
-\item{fn}{The function to be called on the heuristics, which is predictProbInternal
-by default, but it can be any function implemented by the heuristics
-with the signature function(object, row1, row2).}
 }
 \value{
 An object of class heuristics, which implements createFunction.
@@ -19,7 +15,8 @@ An object of class heuristics, which implements createFunction.
 }
 \description{
 One or more fitted heuristics can be passed in.  They must all implement
-predictProbInternal.  Users will generally not use the output directly.
+predictProbInternal.  Users will generally not use the output directly
+but instead pass this to allRowPairApply.
 }
 \examples{
 ## This is typical usage:
