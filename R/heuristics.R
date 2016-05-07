@@ -63,14 +63,6 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
   sign((row1 - row2) %*% coefficients)
 }
 
-# Private for now. Will export and test when I settle on a name.
-reverseAsNeeded <- function(cue_validities) {
-  cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
-  cue_directions <- sign(cue_validities - 0.5)
-  structure(list(cue_validities_with_reverse=cue_validities_with_reverse,
-                 cue_directions=cue_directions))
-}
-
 ### Take The Best ###
 
 #' Take The Best

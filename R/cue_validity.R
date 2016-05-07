@@ -91,6 +91,17 @@ cueValidityMatrixValidities <- function(data, criterion_col, cols_to_fit,
   })
 }
 
+# Given a vector of cue validities, looks for values less than 0.5
+# and reverses those, returning them as cue_validities_with_reverse.
+# cue_directions are +1 or -1 for the validities that were reversed.
+# Private.
+reverseAsNeeded <- function(cue_validities) {
+  cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
+  cue_directions <- sign(cue_validities - 0.5)
+  structure(list(cue_validities_with_reverse=cue_validities_with_reverse,
+                 cue_directions=cue_directions))
+}
+
 #' Calculate cue validity for cols_to_fit predicting the criterion.
 #'
 #' This provides a vector of cue_validities and potentially other useufl
