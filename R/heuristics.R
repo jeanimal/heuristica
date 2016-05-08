@@ -120,7 +120,7 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
   linear_coef <- cv$cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef, fit_name=fit_name),
             class="ttbModel")
@@ -161,7 +161,7 @@ ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
 
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_ranks=cv$cue_ranks,
-                 cue_validities=cv$cue_validities,
+                 cue_validities_unreversed=cv$cue_validities,
                  cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef),
             class="ttbGreedyModel")
@@ -228,7 +228,7 @@ unitWeightModel <- function(train_data, criterion_col, cols_to_fit,
   linear_coef <- cv$cue_directions
 
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef), class="unitWeightModel")
 }
@@ -279,7 +279,7 @@ validityWeightModel <- function(train_data, criterion_col, cols_to_fit,
 
   linear_coef <- cv$cue_directions * cv$cue_validities
   structure(list(criterion_col = criterion_col, cols_to_fit = cols_to_fit,
-                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
                  linear_coef = linear_coef),
             class="validityWeightModel")
@@ -715,7 +715,7 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit,
   linear_coef <- cv$cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
                  linear_coef=linear_coef),
             class="singleCueModel")
@@ -773,7 +773,7 @@ minModel <- function(train_data, criterion_col, cols_to_fit,
                                  function(n) 2^(length(cv$cue_ranks)-n) )
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
-                 cue_validities=cv$cue_validities_unreversed,
+                 cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities_with_reverse=cv$cue_validities,
                  cue_directions=cv$cue_directions,
                  unsigned_linear_coef=unsigned_linear_coef,
