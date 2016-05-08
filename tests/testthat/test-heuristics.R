@@ -358,7 +358,7 @@ test_that("ttbModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(x1=0.667, x2=0.667, x3=0), model$cue_validities_unreversed,
                tolerance=0.002)
-  expect_equal(c(x1=0.667, x2=0.667, x3=1), model$cue_validities_with_reverse,
+  expect_equal(c(x1=0.667, x2=0.667, x3=1), model$cue_validities,
                tolerance=0.002)
   # The coefficient for column c should be negative.
   expect_equal(c(x3=-1), sign(coef(model)["x3"]), tolerance=0.002)
@@ -386,7 +386,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates reverse cue data
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   # The coefficient for column c should be negative.
   expect_equal(c(c=-1), sign(coef(model)["c"]), tolerance=0.002)
   expect_equal(1, predictPairProb(oneRow(train_df, 3),
@@ -405,7 +405,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
   expect_equal(1, predictPairProb(oneRow(train_df, 3),
                                  oneRow(train_df, 4), model))
@@ -423,7 +423,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
   expect_equal(1, predictPairProb(oneRow(train_df, 3),
                                  oneRow(train_df, 4), model))
@@ -440,7 +440,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
   expect_equal(1, predictPairProb(oneRow(train_df, 3),
                                  oneRow(train_df, 4), model))
@@ -458,7 +458,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame R
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- ttbModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
   expect_equal(0, predictPairProb(oneRow(train_df, 3),
                                  oneRow(train_df, 4), model))
@@ -478,7 +478,7 @@ test_that("ttbModel on 3x3 where differs from greedy ttb", {
   # Below is the row pair that differs from greedy ttb.
   expect_equal(0.5, predictPairProb(oneRow(matrix, 2),
                                     oneRow(matrix, 3), model))
-  expect_equal(c(x1=1.0, x2=0.5), model$cue_validities_with_reverse)
+  expect_equal(c(x1=1.0, x2=0.5), model$cue_validities)
 })
 
 test_that("ttbModel on 2 same cues- differs from greedy ttb", {
@@ -488,7 +488,7 @@ test_that("ttbModel on 2 same cues- differs from greedy ttb", {
   out <- pctCorrectOfPredictPair(list(model), full_matrix)
   # TTB uses both cues, so it can get 100% correct.
   expect_equal(1, out$ttbModel)
-  expect_equal(c(x1=1.0, x2=1.0), model$cue_validities_with_reverse)
+  expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
 })
 
 ### ttbGreedyModel ###
@@ -505,7 +505,7 @@ test_that("ttbGreedyModel on 3x3 where differs from regular ttb", {
                                   oneRow(matrix, 3), model))
   # After using x1, it sees only last two rows of x2.  It reverses them
   # to get a validity 1.0 cue, which is why it predicts 2 vs. 3 correctly.
-  expect_equal(c(x1=1.0, x2=1.0), model$cue_validities_with_reverse)
+  expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
 })
 
 test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
@@ -517,7 +517,7 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
   # one row pair.  Accuracy = (1+1+0.5)/3.
   expect_equal(0.83333, out$ttbGreedyModel, tolerance=0.0001)
   # One cue has NA, but we don't know which one.
-  expect_equal(c(1.0, NA), sort(unname(model$cue_validities_with_reverse),
+  expect_equal(c(1.0, NA), sort(unname(model$cue_validities),
                                 na.last=TRUE))
 })
 
@@ -564,7 +564,7 @@ test_that("unitWeightModel 4x4 predictPairProb 3nd cue dominates non-binary reve
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities_unreversed,
                tolerance=0.002)
   #TODO(jean): Return cue reversal.
-  #expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  #expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(a=1, b=1, c=-1), model$linear_coef, tolerance=0.002)
   expect_equal(0, predictPairProb(oneRow(train_df, 3),
                                  oneRow(train_df, 4), model))
@@ -611,8 +611,8 @@ test_that("validityWeightModel 5x1 25 reverse_cues FALSE", {
   train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,0,1,1,1))
   model <- validityWeightModel(train_matrix, 1, c(2), reverse_cues=FALSE)
   expect_equal(c(x1=0.25),  model$cue_validities_unreversed)
-  # No cue reversal means cue_validities_with_reverse is the same.
-  expect_equal(c(x1=0.25),  model$cue_validities_with_reverse)
+  # No cue reversal means cue_validities is the same.
+  expect_equal(c(x1=0.25),  model$cue_validities)
   # No cue reversal means coefficients are same as cue validities.
   expect_equal(c(x1=0.25),  coef(model))
   out <- allRowPairApply(train_matrix, rowIndexes(), heuristicsProb(model))
@@ -630,7 +630,7 @@ test_that("validityWeightModel 5x1 25", {
   model <- validityWeightModel(train_matrix, 1, c(2))
   expect_equal(c(x1=0.25),  model$cue_validities_unreversed)
   # Cue reversal changes validity 0.25 to 0.75.
-  expect_equal(c(x1=0.75),  model$cue_validities_with_reverse)
+  expect_equal(c(x1=0.75),  model$cue_validities)
   # Cue reversal changes coefficient from 0.75 to -0.75.
   expect_equal(c(x1=-0.75),  coef(model))
   
@@ -1040,7 +1040,7 @@ test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
   # Single cue will not use cue b to help.
   model <- singleCueModel(train_df, 1, c(2:3))
   expect_equal(c(a=1, b=0.6), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=1, b=0.6), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=1, b=0.6), model$cue_validities, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=1, b=0), coef(model), tolerance=0.002)
   expect_equal(0.5, predictPairProb(oneRow(train_df, 1),
@@ -1062,7 +1062,7 @@ test_that("singleCueModel 4x3 real value cue c dominates", {
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- singleCueModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=0, b=0, c=1), coef(model), tolerance=0.002)
   
@@ -1085,7 +1085,7 @@ test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
   # But if you sum all cue weights, predict Row 4 > Row 3
   model <- singleCueModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities_unreversed, tolerance=0.002)
-  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_with_reverse, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=0, b=0, c=-1), coef(model), tolerance=0.002)
   

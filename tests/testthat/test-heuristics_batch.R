@@ -17,8 +17,8 @@ test_cue_reorder <- function(model, has_cv=TRUE) {
   fitted_model_rev <- model(train_df, 1, c(3, 2))
   # Checking fit only applies to some heuristics.
   if (has_cv) {
-    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities_with_reverse, tolerance=0.001)
-    expect_equal(c(b=0.6, a=1), fitted_model_rev$cue_validities_with_reverse, tolerance=0.001)
+    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities, tolerance=0.001)
+    expect_equal(c(b=0.6, a=1), fitted_model_rev$cue_validities, tolerance=0.001)
   }
   # Make sure models still agree on outputs.
   out <- allRowPairApply(train_df, heuristicsProb(fitted_model))
@@ -48,8 +48,8 @@ test_row_reorder <- function(model, has_cv=TRUE) {
   fitted_model_rev <- model(train_df_rev, 1, c(2:3))
   # Checking fit only applies to some heuristics.
   if (has_cv) {
-    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities_with_reverse, tolerance=0.001)
-    expect_equal(c(a=1, b=0.6), fitted_model_rev$cue_validities_with_reverse, tolerance=0.001)
+    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities, tolerance=0.001)
+    expect_equal(c(a=1, b=0.6), fitted_model_rev$cue_validities, tolerance=0.001)
   }
   # Make sure models still agree on outputs.
   out <- allRowPairApply(train_df, heuristicsProb(fitted_model))
@@ -80,7 +80,7 @@ test_10_06 <- function(model, expected, has_cv=TRUE) {
   # Checking fit only applies to some heuristics.
   if (has_cv) {
     expect_equal(c(a=1, b=0.6), fitted_model$cue_validities_unreversed, tolerance=0.001)
-    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities_with_reverse,
+    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities,
                  tolerance=0.001)
   }
   # Check output.
@@ -114,7 +114,7 @@ test_00_04_rc <- function(model, expected, has_cv=TRUE) {
   # Checking fit only applies to some heuristics.
   if (has_cv) {
     expect_equal(c(a=0, b=0.4), fitted_model$cue_validities_unreversed, tolerance=0.001)
-    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities_with_reverse,
+    expect_equal(c(a=1, b=0.6), fitted_model$cue_validities,
                  tolerance=0.001)
   }
   # Check output.
@@ -144,7 +144,7 @@ test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
   fitted_model <- model(train_df, 1, c(2:4))
   if (has_cv) {
     expect_equal(c(a=0.667, b=0.667, c=1), fitted_model$cue_validities_unreversed, tolerance=0.002)
-    expect_equal(c(a=0.667, b=0.667, c=1), fitted_model$cue_validities_with_reverse,
+    expect_equal(c(a=0.667, b=0.667, c=1), fitted_model$cue_validities,
                  tolerance=0.002)
   }
   # Check prediction.
@@ -173,7 +173,7 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
   if (has_cv) {
     expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fitted_model$cue_validities_unreversed,
                  tolerance=0.002)
-    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fitted_model$cue_validities_with_reverse,
+    expect_equal(c(x1=0.667, x2=0.667, x3=0.5), fitted_model$cue_validities,
                  tolerance=0.002)
   }
   # Check prediction.
