@@ -161,7 +161,7 @@ ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
 
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_ranks=cv$cue_ranks,
-                 cue_validities_unreversed=cv$cue_validities,
+                 cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities=cv$cue_validities,
                  linear_coef=linear_coef),
             class="ttbGreedyModel")
