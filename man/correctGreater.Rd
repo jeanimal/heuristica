@@ -25,9 +25,14 @@ all row pairs in test_data.
 By default, the output column is called "CorrectGreater," but you
 can override the name with output_column_name.
 }
+\details{
+This is meant to be used to measure the performance of heuristics
+wrapped with \code{\link{heuristics}}.
+}
 \seealso{
-\code{\link{createFunction}} which is what the returned object implements.
+\code{\link{heuristics}} is the wrapper to get the predicted greater
+  row in the row pair for each heuristic passed in to it.
 
-\code{\link{allRowPairApply}} which uses createFunction.
+\code{\link{allRowPairApply}} which has an example of using this.
 }
 

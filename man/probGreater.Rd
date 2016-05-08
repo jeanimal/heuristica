@@ -28,8 +28,10 @@ the current row pair.  It does not look at all sets of row pairs
 with the same profile.
 }
 \seealso{
-\code{\link{createFunction}} which is what the returned object implements.
+\code{\link{heuristicsProb}} is the wrapper to get the predicted probability
+  that the first row in the row pair is greater, with output for each fitted
+  heuristic passed to it.
 
-\code{\link{allRowPairApply}} which uses createFunction.
+\code{\link{allRowPairApply}} which has examples of using this.
 }
 

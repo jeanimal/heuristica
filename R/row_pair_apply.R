@@ -8,9 +8,10 @@
 
 
 
-###
+###################################################
 # Function creators-- they implement createFunction and $column_names
 # for use in row pair apply functions.
+################################################
 
 #' Generic function to create functions for allRowPairApply.
 #' 
@@ -228,6 +229,9 @@ createFunction.heuristics <- function(object, test_data) {
 #'  -1 indicaties row 2's criterion is greater
 #' By default, the output column is called "CorrectGreater," but you
 #' can override the name with output_column_name.
+#' 
+#' This is meant to be used to measure the performance of heuristics
+#' wrapped with \code{\link{heuristics}}.
 #'
 #' @param criterion_col The integer index of the criterion in test_data.
 #' @param output_column_name An optional string
@@ -235,9 +239,12 @@ createFunction.heuristics <- function(object, test_data) {
 #'   Users will generally not use this directly-- allRowPairApply will.
 #'
 #' @seealso
-#' \code{\link{createFunction}} which is what the returned object implements.
+#' \code{\link{heuristics}} is the wrapper to get the predicted greater
+#'   row in the row pair for each heuristic passed in to it.
+#'
 #' @seealso
-#' \code{\link{allRowPairApply}} which uses createFunction.
+#' \code{\link{allRowPairApply}} which has an example of using this.
+#'
 #' @export
 correctGreater <- function(criterion_col, output_column_name="CorrectGreater") {
   structure(list(criterion_col=criterion_col,
@@ -274,9 +281,13 @@ createFunction.correctGreater <- function(object, test_data) {
 #'   Users will generally not use this directly-- allRowPairApply will.
 #'
 #' @seealso
-#' \code{\link{createFunction}} which is what the returned object implements.
+#' \code{\link{heuristicsProb}} is the wrapper to get the predicted probability
+#'   that the first row in the row pair is greater, with output for each fitted
+#'   heuristic passed to it.
+#'
 #' @seealso
-#' \code{\link{allRowPairApply}} which uses createFunction.
+#' \code{\link{allRowPairApply}} which has examples of using this.
+#'
 #' @export
 probGreater <- function(criterion_col, output_column_name="ProbGreater") {
   structure(list(criterion_col=criterion_col,
@@ -402,32 +413,17 @@ combineIntoOneFn <- function(function_list) {
 #'   output will have N x (N-1) rows.  The number of columns will be at least
 #'   the number of functions but may be more as some functions may output more
 #'   than one column.
-#
-#' @examples
-#' ## Fit two models to the city_population data set.
-#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
-#' 
-#' ## Generate predictions for all row pairs for these two models:
-#' out1 <- allRowPairApplyList(city_population, list(heuristicsProb(ttb, reg)))
-#' head(out1)
-#' nrow(out1)
-#' ## returns a matrix of 2 columns, named ttbModel and regModel
-#' 
-#' ## Generate a matrix with the correct values and the heuristics'
-#' ## predictions:
-#' out2 <- allRowPairApplyList(city_population,
-#'                             list(probGreater(3), heuristicsProb(reg, ttb)))
-#' head(out2)
-#' nrow(out2)
-#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel
 #'
+#' @examples
+#' # This function is called like 
+#' # allRowPairApplyList(data, list(heuristics(ttb, reg)))
+#' # instead of
+#' # allRowPairApply(data, heuristics(ttb, reg))
+#' # See allRowPairApply for details.
+#' 
 #' @seealso
-#' \code{\link{createFunction}} which must be implemented by the objects
-#'    passed in the "..." argument, along with the attribute $column_names.
-#' @seealso
-#' \code{\link{predictProbInternal}} which must be implemented by heuristics in
-#'    order to use them with the heuristicsProb() wrapper function.
+#' \code{\link{allRowPairApply}} for no need to use a list.  Examples and details
+#'   are there.
 #'
 #' @export
 allRowPairApplyList <- function(test_data, function_creator_list) {
@@ -464,29 +460,45 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #'   than one column.
 #
 #' @examples
-#' ## Fit two models to the city_population data set.
-#' ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-#' reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+#' ## Fit two models to data.
+#' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+#' ttb <- ttbModel(data, 1, c(2:ncol(data)))
+#' reg <- regInterceptModel(data, 1, c(2:ncol(data)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
-#' out1 <- allRowPairApply(city_population, heuristicsProb(ttb, reg))
-#' head(out1)
-#' nrow(out1)
-#' ## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
+#' allRowPairApply(data, heuristics(ttb, reg))
+#' ## Returns a matrix of 2 columns, named ttbModel and regModel, and 6 rows.
+#' ## The original data had 4 rows, meaning there are 4*3/2 = 6 row pairs.
+#'
+#' ## To see which row pair is which row, use rowIndexes:
+#' allRowPairApply(data, rowIndexes(), heuristics(ttb, reg))
+#' ## Returns a matrix with columns Row1, Row2, ttbModel, regInterceptModel.
+#' ## (RowIndexes returns *two* columns.)
 #' 
-#' ## Generate a matrix with correct values and the heuristics' predictions:
-#' out2 <- allRowPairApply(city_population, probGreater(3),
-#'                         heuristicsProb(reg, ttb))
-#' head(out2)
-#' nrow(out2)
-#' ## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+#' ## To see whether the first row was actually greater than the second in the
+#' ## row pair, use correctGreater and give it the criterion column index, in
+#' ## this case 1.
+#' allRowPairApply(data, heuristics(reg, ttb), correctGreater(1))
+#' ## Returns a matrix with columns regInterceptModel, ttbModel,
+#' ## CorrectGreater.  Values are -1, 0, or 1.
+#' 
+#' ## To do the same analysis for the *probabilty* that the first row is
+#' ## greater. use heuristicsProb and probGreater.
+#' allRowPairApply(data, heuristicsProb(reg, ttb), probGreater(1))
+#' ## Returns a matrix with columns regInterceptModel, ttbModel, ProbGreater.
+#' ## Values range from 0.0 to 1.0.
 #'
 #' @seealso
-#' \code{\link{createFunction}} which must be implemented by the objects
-#'    passed in the "..." argument, along with the attribute $column_names.
+#' \code{\link{heuristics}} and \code{\link{heuristicsProb}} to wrap heuristics
+#' to be applied.
+#' 
 #' @seealso
-#' \code{\link{predictProbInternal}} which must be implemented by heuristics in
-#'    order to use them with the heuristicsProb() wrapper function.
+#' \code{\link{rowIndexes}} to get apply to output row indexes for the pair.
+#' 
+#' @seealso
+#' \code{\link{correctGreater}} and \code{\link{probGreater}} to get the correct
+#' output based on the criterion column.  (CorrectGreater should be used with
+#' heuristics while probGreater should be used with heuristicsProb.)
 #'
 #' @export
 allRowPairApply <- function(test_data, ...) {
@@ -494,9 +506,10 @@ allRowPairApply <- function(test_data, ...) {
   return(allRowPairApplyList(test_data, function_creator_list))
 }
 
-###
-# Specific row pair apply functions.
 
+################################################
+# Wrapper functions to pass to row pair apply. #
+################################################
 
 # Private helper.
 assert_single_row <- function(row) {
@@ -521,7 +534,7 @@ assert_single_column <- function(obj) {
   }
 }
 
-#' Apply all functions to the row pair.
+#' Apply all functions to the two rows passed in.
 #'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based
 #'   on object).
@@ -531,6 +544,11 @@ assert_single_column <- function(obj) {
 #'   createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
 #'   colPairValues.
 #' @return A matrix of function outputs.
+#'
+#' @seealso
+#' \code{\link{allRowPairApply}} to apply to all row pairs in a matrix or
+#'   data.frame.
+#'
 #' @export
 rowPairApply <- function(row1, row2, ...) {
   assert_single_row(row1)

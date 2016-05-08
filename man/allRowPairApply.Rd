@@ -27,29 +27,43 @@ Apply functions like heuristic predictions to all row pairs in a matrix
 or data.frame.
 }
 \examples{
-## Fit two models to the city_population data set.
-ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+## Fit two models to data.
+data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+ttb <- ttbModel(data, 1, c(2:ncol(data)))
+reg <- regInterceptModel(data, 1, c(2:ncol(data)))
 
 ## Generate predictions for all row pairs for these two models:
-out1 <- allRowPairApply(city_population, heuristicsProb(ttb, reg))
-head(out1)
-nrow(out1)
-## returns a matrix of 2 columns, named ttbModel and regInterceptModel.
+allRowPairApply(data, heuristics(ttb, reg))
+## Returns a matrix of 2 columns, named ttbModel and regModel, and 6 rows.
+## The original data had 4 rows, meaning there are 4*3/2 = 6 row pairs.
 
-## Generate a matrix with correct values and the heuristics' predictions:
-out2 <- allRowPairApply(city_population, probGreater(3),
-                        heuristicsProb(reg, ttb))
-head(out2)
-nrow(out2)
-## returns a matrix of 3 columns, ProbGreater, ttbModel and regModel.
+## To see which row pair is which row, use rowIndexes:
+allRowPairApply(data, rowIndexes(), heuristics(ttb, reg))
+## Returns a matrix with columns Row1, Row2, ttbModel, regInterceptModel.
+## (RowIndexes returns *two* columns.)
+
+## To see whether the first row was actually greater than the second in the
+## row pair, use correctGreater and give it the criterion column index, in
+## this case 1.
+allRowPairApply(data, heuristics(reg, ttb), correctGreater(1))
+## Returns a matrix with columns regInterceptModel, ttbModel,
+## CorrectGreater.  Values are -1, 0, or 1.
+
+## To do the same analysis for the *probabilty* that the first row is
+## greater. use heuristicsProb and probGreater.
+allRowPairApply(data, heuristicsProb(reg, ttb), probGreater(1))
+## Returns a matrix with columns regInterceptModel, ttbModel, ProbGreater.
+## Values range from 0.0 to 1.0.
 
 }
 \seealso{
-\code{\link{createFunction}} which must be implemented by the objects
-   passed in the "..." argument, along with the attribute $column_names.
+\code{\link{heuristics}} and \code{\link{heuristicsProb}} to wrap heuristics
+to be applied.
 
-\code{\link{predictProbInternal}} which must be implemented by heuristics in
-   order to use them with the heuristicsProb() wrapper function.
+\code{\link{rowIndexes}} to get apply to output row indexes for the pair.
+
+\code{\link{correctGreater}} and \code{\link{probGreater}} to get the correct
+output based on the criterion column.  (CorrectGreater should be used with
+heuristics while probGreater should be used with heuristicsProb.)
 }
 

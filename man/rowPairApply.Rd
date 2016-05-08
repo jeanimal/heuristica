@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{rowPairApply}
 \alias{rowPairApply}
-\title{Apply all functions to the row pair.}
+\title{Apply all functions to the two rows passed in.}
 \usage{
 rowPairApply(row1, row2, ...)
 }
@@ -21,6 +21,10 @@ colPairValues.}
 A matrix of function outputs.
 }
 \description{
-Apply all functions to the row pair.
+Apply all functions to the two rows passed in.
+}
+\seealso{
+\code{\link{allRowPairApply}} to apply to all row pairs in a matrix or
+  data.frame.
 }
 
