@@ -98,8 +98,10 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #'
 #' @seealso
 #' \code{\link{cueValidity}} for the metric used to sort cues.
+#'
 #' @seealso
 #' \code{\link{predictPairProb}} for prediction.
+#'
 #' @references
 #' Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal
 #'  way: Models of bounded rationality". Psychological Review, 103, 650-669.

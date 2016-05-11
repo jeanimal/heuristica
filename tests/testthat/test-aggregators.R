@@ -30,8 +30,9 @@ test_that("pctCorrectOfPredictPair -1 prediction bug", {
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
                                linear_coef=c(4,2,1)),
             class="ttbModel")
-  test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3), b=c(976,1437), c=c(50, 49.74))
-  results <- pctCorrectOfPredictPairNEW(list(fitted_ttb), test_data)
+  test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3), b=c(976,1437),
+                          c=c(50, 49.74))
+  results <- pctCorrectOfPredictPairReturnMatrix(list(fitted_ttb), test_data)
   expect_equal(cbind(ttbModel=c(0)), results)
 })
 
@@ -42,7 +43,7 @@ test_that("pctCorrectOfPredictPair -1 prediction bug reverse rows", {
                           class="ttbModel")
   test_data <- data.frame(criterion=rev(c(33200, 36184)), a=rev(c(5,3)),
                           b=rev(c(976,1437)), c=rev(c(50, 49.74)))
-  results <- pctCorrectOfPredictPairNEW(list(fitted_ttb), test_data)
+  results <- pctCorrectOfPredictPairReturnMatrix(list(fitted_ttb), test_data)
   expect_equal(cbind(ttbModel=c(0)), results)
 })
 
