@@ -219,16 +219,14 @@ pctCorrectOfPredictPairReturnMatrix <- function(fitted_heuristic_list,
 #' @export
 pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list,
                                                 test_data) {
-  # Assume the criterion_col is same for all heuristics.
-  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
-  # TODO: Check and stop if a heuristics disagrees with criterion_col.
-  all_fn_creator_list <- list(probGreater(criterion_col),
-                              heuristicsList(fitted_heuristic_list))
-  predictions_fwd <- allRowPairApplyList(test_data, all_fn_creator_list)
+  goal_type <- 'ChooseGreater'
+  predictions_fwd <- aggregatePredictPair(
+    fitted_heuristic_list, test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
-  predictions_rev <- allRowPairApplyList(test_data_rev, all_fn_creator_list)
+  predictions_rev <- aggregatePredictPair(
+    fitted_heuristic_list, test_data_rev, goal_type)
   predictions <- rbind(predictions_fwd, predictions_rev)
-  errors <- createErrorsFromPredicts2(predictions, 1, c(2:ncol(predictions)))
-  df <- createPctCorrectsFromErrors2(errors, 2)
-  return(df)
+  pct_correct_matrix <- categoryAccuracyAll(
+    predictions, 1, c(2:ncol(predictions)))
+  return(data.frame(pct_correct_matrix))
 }
