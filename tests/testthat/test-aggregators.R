@@ -127,7 +127,8 @@ test_that("aggregatePredictPair custom model fit_name", {
   expect_equal(colnames(out), c('CorrectGreater', 'ttbNoRev'))
 })
 
-# pctCorrectOfPredictPair
+# pctCorrectOfPredictPair and
+# pctCorrectOfPredictPairNonSymmetric
 
 test_that("end to end test ttb vs. logistic regression input data.frame", {
   train_df <- data.frame(y=c(5,4,3), x=c(1,0,0), name=c("jo", "bo", "da"))
@@ -169,5 +170,31 @@ test_that("city_population ttb vs. regression on dirty four cities", {
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
   expect_equal(0, pct_correct_df$regInterceptModel, tolerance=0.001)
 
-  # Now try on reversed rows
+  # ttb and reg are symmetric, so everything is the same with
+  # pctCorrectOfPredictPairNonSymmetric
+  pct_correct_df <- pctCorrectOfPredictPairNonSymmetric(
+    list(ttb, reg), city_population[c(27,30,52,68),])
+  expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
+  expect_equal(0, pct_correct_df$regInterceptModel, tolerance=0.001)
+})
+
+
+test_that("pctCorrectOfPredictPair vs pctCorrectOfPredictPairNonSymmetric", {
+  fitted_always_1 <- structure(list(criterion_col=1, cols_to_fit=c(2)),
+                          class="all1Model")
+  predictPairInternal.all1Model <- function(object, row1, row2) 1
+  data <- cbind(y=c(4,3,2,1), x1=c(1, 1, 0, 0))
+
+  # pctCorrectOfPredictPair incorrectly says this gets it all right.
+  # It is incorrect because it assumes the heuristic makes symmetric
+  # decisions: if it chooses A > B, it wil chose B < A, so the function
+  # only checks the former of those two cases.
+  pct_correct_df <- pctCorrectOfPredictPair(list(fitted_always_1), data)
+  expect_equal(1, pct_correct_df$all1Model, tolerance=0.001)
+
+  # pctCorrectOfPredictPairNonSymmetric does not assume symmetry and so
+  # correctly says this heuristic is 50% correct.
+  pct_correct_df <- pctCorrectOfPredictPairNonSymmetric(
+    list(fitted_always_1), data)
+  expect_equal(0.5, pct_correct_df$all1Model, tolerance=0.001)
 })
