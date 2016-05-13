@@ -230,3 +230,9 @@ pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list,
     predictions, 1, c(2:ncol(predictions)))
   return(data.frame(pct_correct_matrix))
 }
+
+
+# For the test.  Kinda hacky.  Need a better way.
+fitted_always_1 <- structure(list(criterion_col=1, cols_to_fit=c(2)),
+                             class="all1Model")
+predictPairInternal.all1Model <- function(object, row1, row2) { return(1) }

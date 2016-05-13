@@ -180,9 +180,7 @@ test_that("city_population ttb vs. regression on dirty four cities", {
 
 
 test_that("pctCorrectOfPredictPair vs pctCorrectOfPredictPairNonSymmetric", {
-  fitted_always_1 <- structure(list(criterion_col=1, cols_to_fit=c(2)),
-                          class="all1Model")
-  predictPairInternal.all1Model <- function(object, row1, row2) 1
+  # This uses all1Model, not exported from aggregators.  Find a better way.
   data <- cbind(y=c(4,3,2,1), x1=c(1, 1, 0, 0))
 
   # pctCorrectOfPredictPair incorrectly says this gets it all right.
