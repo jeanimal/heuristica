@@ -4,7 +4,8 @@
 \alias{unitWeightModel}
 \title{Unit WeightModel, a unit-weight linear model}
 \usage{
-unitWeightModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE)
+unitWeightModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
+  fit_name = "unitWeightModel")
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -16,6 +17,9 @@ criterion.}
 the criterion.}
 
 \item{reverse_cues}{Optional parameter to reverse cues as needed.}
+
+\item{fit_name}{Optional The name other functions can use to label output.
+It defaults to the class name.}
 }
 \value{
 An object of \code{\link[base]{class}} unitWeightModel.  This is a list
@@ -45,6 +49,11 @@ Wikipedia's entry on
 \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
 }
 \seealso{
-\code{\link{predictPairProb}} for predicting among a pair of alternatives.
+\code{\link{cueValidity}} for the metric used to to determine cue direction.
+
+\code{\link{predictPair}} for predicting whether row1 is greater.
+
+\code{\link{predictPairProb}} for predicting the probability row1 is
+greater.
 }
 

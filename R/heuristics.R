@@ -207,6 +207,8 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #'
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name.
 #'
 #' @return An object of \code{\link[base]{class}} unitWeightModel.  This is a list
 #' containing at least the following components:
@@ -219,7 +221,15 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #'   }
 #'
 #' @seealso
-#' \code{\link{predictPairProb}} for predicting among a pair of alternatives.
+#' \code{\link{cueValidity}} for the metric used to to determine cue direction.
+#'
+#' @seealso
+#' \code{\link{predictPair}} for predicting whether row1 is greater.
+#' 
+#' @seealso
+#' \code{\link{predictPairProb}} for predicting the probability row1 is
+#' greater.
+#' 
 #' @references
 #' Wikipedia's entry on
 #' \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
@@ -227,7 +237,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #' @param reverse_cues Optional parameter to reverse cues as needed.
 #' @export
 unitWeightModel <- function(train_data, criterion_col, cols_to_fit,
-                       reverse_cues=TRUE) {
+                            reverse_cues=TRUE, fit_name="unitWeightModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
