@@ -123,8 +123,8 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities_unreversed=cv$cue_validities_unreversed,
-                 cue_validities=cv$cue_validities,
-                 linear_coef=linear_coef, fit_name=fit_name),
+                 cue_validities=cv$cue_validities, linear_coef=linear_coef,
+                 fit_name=fit_name),
             class="ttbModel")
 }
 
@@ -152,7 +152,8 @@ predictProbInternal.ttbModel <- function(object, row1, row2) {
 ### Greedy Take The Best Model ###
 
 
-ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
+ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit,
+                           fit_name="ttbGreedyModel") {
   cv <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
   unsigned_linear_coef <- sapply(cv$cue_ranks,
                                  function(n) 2^(length(cv$ue_ranks)-n) )
@@ -164,8 +165,8 @@ ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit) {
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_ranks=cv$cue_ranks,
                  cue_validities_unreversed=cv$cue_validities_unreversed,
-                 cue_validities=cv$cue_validities,
-                 linear_coef=linear_coef),
+                 cue_validities=cv$cue_validities, linear_coef=linear_coef,
+                 fit_name=fit_name),
             class="ttbGreedyModel")
   
 }
