@@ -74,8 +74,8 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
-#' @param fit_name Optional name other functions can use to label output.  It
-#'   defaults to the class name.  It is useful to change this to a unique name
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name.  It is useful to change this to a unique name
 #'   if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."
 #'
 #' @return An object of \code{\link[base]{class}} ttbModel.  This is a list

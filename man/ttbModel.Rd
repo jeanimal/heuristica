@@ -21,8 +21,8 @@ default, the model will reverse the cue values for cues with cue validity
 < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 
-\item{fit_name}{Optional name other functions can use to label output.  It
-defaults to the class name.  It is useful to change this to a unique name
+\item{fit_name}{Optional The name other functions can use to label output.
+It defaults to the class name.  It is useful to change this to a unique name
 if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."}
 }
 \value{

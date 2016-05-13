@@ -491,6 +491,24 @@ test_that("ttbModel on 2 same cues- differs from greedy ttb", {
   expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
 })
 
+test_that("ttbModel default fit_name", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  ttb_default <- ttbModel(train_matrix, 1, c(2,3))
+  expect_equal(class(ttb_default), ttb_default$fit_name)
+})
+
+test_that("ttbModel override fit_name", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  ttb1 <- ttbModel(train_matrix, 1, c(2,3), fit_name="fit1")
+  expect_equal("fit1", ttb1$fit_name)
+  ttb2 <- ttbModel(train_matrix, 1, c(2,3), fit_name="fit2")
+  expect_equal("fit2", ttb2$fit_name)
+  
+  # Is the fit_name properly used by other code?
+  out <- pctCorrectOfPredictPair(list(ttb1, ttb2), train_matrix)
+  expect_equal(c("fit1", "fit2"), colnames(out))
+})
+
 ### ttbGreedyModel ###
 
 test_that("ttbGreedyModel on 3x3 where differs from regular ttb", {
