@@ -51,34 +51,6 @@ classificationErrorsFromPredicts <- function(data, reference_col, cols_to_compar
   return(data)
 }
 
-#' Converts errors to percent correct for each column.
-#' 
-#' The errors should be the output of createErrorsFromPredicts.
-#' 
-#' @param errors_raw A dataframe of heuristic errors to calculate with.
-#'  Assumes data starts in column 4. (First 3 are Row1, Row2, and correct.)
-#' @return A dataframe with one row and the last column as a percent correct.
-#' @export
-createPctCorrectsFromErrors <- function(errors_raw) {
-  return(createPctCorrectsFromErrors2(errors_raw, 4))
-}
-
-createPctCorrectsFromErrors2 <- function(errors_raw, startCol) {
-  #TODO: Make this work without a data.frame
-  errors <- data.frame(errors_raw)
-  newDf <- NULL
-  for (col in startCol:ncol(errors)) {
-    sumError <- sum(abs(errors[,col]))
-    if (is.null(newDf)) {
-      newDf <- data.frame((nrow(errors)-sumError) /nrow(errors))
-    } else {
-      newDf <- cbind(newDf, (nrow(errors)-sumError) /nrow(errors))
-    }
-    names(newDf)[[ncol(newDf)]] <- names(errors)[[ncol(newDf)+startCol-1]]
-  }
-  return(newDf)
-}
-
 #' Predicts with heuristics and criterion, returning all row pairs.
 #'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
