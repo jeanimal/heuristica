@@ -42,13 +42,13 @@ two objects).
 \examples{
 ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
 ## validity 0.
-train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,0))
 ttb <- ttbModel(train_matrix, 1, c(2,3))
-predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
-## But this test data results in an incorrect prediction because x1 is
-## unexpected.
-test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,1))
-predictPairProb(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
+predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
+## But this test data results in an incorrect prediction-- that row1 has a
+## smaller criterion than row2-- because x1 has a reversed direction.
+test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,0))
+predictPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 
 }
 \references{
@@ -61,6 +61,9 @@ Wikipedia's entry on
 \seealso{
 \code{\link{cueValidity}} for the metric used to sort cues.
 
-\code{\link{predictPairProb}} for prediction.
+\code{\link{predictPair}} for predicting whether row1 is greater.
+
+\code{\link{predictPairProb}} for predicting the probability row1 is
+greater.
 }
 
