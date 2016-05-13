@@ -9,38 +9,11 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col,
   return(models)
 }
 
-#' Creates an error matrix from a matrix of predictions.
-#' 
-#' Given a matrix where the first 3 columns are basic info and the others
-#' are predictions, with these values ranging from 0 to 1, returns the error
-#' of each.
-#' 
-#' @param df A dataframe to convert.  Must have a column named correctProb
-#'  and predictions in all but the first 3 columns.
-#'  (First 3 are Row1, Row2, and correct.) 
-#' @return A dataframe with the last column converted to:
-#'   0: if it matched correctProb
-#'   1: if it was wrong.
-#'   0.5: if it guessed or the true value was a guess and it wasn't a guess.
-#'  This is technically a measure of error.
-#' @export
-createErrorsFromPredicts <- function(df) {
-  return(createErrorsFromPredicts2(df, 3, c(4:ncol(df))))
-}
-
 stopIfNonProbability <- function(data, cols_to_check) {
   #TODO(Jean): Didn't Hadley Wickham have a better version of stopifnot?
   #TODO(Jean): Report first bad column in error message.
   stopifnot(data[,cols_to_check, drop=FALSE] <= 1,
             data[,cols_to_check, drop=FALSE] >= 0)
-}
-
-createErrorsFromPredicts2 <- function(data, reference_col, cols_to_compare) {
-  stopIfNonProbability(data, c(reference_col, cols_to_compare))
-  for (col in cols_to_compare) {
-    data[,col] <- (data[,col] - data[,reference_col] )
-  }
-  return(data)
 }
 
 # Note: goal_type affects which "stop" checks we do.
