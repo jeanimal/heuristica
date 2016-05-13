@@ -9,14 +9,6 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col,
   return(models)
 }
 
-# Note: goal_type affects which "stop" checks we do.
-classificationErrorsFromPredicts <- function(data, reference_col, cols_to_compare) {
-  for (col in cols_to_compare) {
-    data[,col] <- (data[,col] != data[,reference_col] )
-  }
-  return(data)
-}
-
 #' Predicts with heuristics and criterion, returning all row pairs.
 #'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
