@@ -151,7 +151,7 @@ predictProbInternal.ttbModel <- function(object, row1, row2) {
 
 ### Greedy Take The Best Model ###
 
-
+# TODO(jean): Document and export this.
 ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit,
                            fit_name="ttbGreedyModel") {
   cv <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
