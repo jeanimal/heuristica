@@ -9,13 +9,6 @@ fitAllModels <- function(vec_of_models, training_set, criterion_col,
   return(models)
 }
 
-stopIfNonProbability <- function(data, cols_to_check) {
-  #TODO(Jean): Didn't Hadley Wickham have a better version of stopifnot?
-  #TODO(Jean): Report first bad column in error message.
-  stopifnot(data[,cols_to_check, drop=FALSE] <= 1,
-            data[,cols_to_check, drop=FALSE] >= 0)
-}
-
 # Note: goal_type affects which "stop" checks we do.
 classificationErrorsFromPredicts <- function(data, reference_col, cols_to_compare) {
   for (col in cols_to_compare) {

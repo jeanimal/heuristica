@@ -2,16 +2,6 @@ context("aggregators")
 
 # require('testthat')
 
-# stopIfNonProbability
-# When functions work, we test within range worked, so here we only
-# need to test that outside of range works.
-test_that("stopIfNonProbability ", {
-  test_data <- cbind(x1=c(0.1,0.9), x2=c(1.1,0.5), c3=c(0.5,0.5), c4=c(-0.001, 0.2))
-  stopIfNonProbability(test_data, c(1,3))
-  expect_error(stopIfNonProbability(test_data, c(1,2)), "<= 1 are not all TRUE")
-  expect_error(stopIfNonProbability(test_data, c(1,4)), ">= 0 are not all TRUE")
-})
-
 test_that("allRowPairApply ProbGreater -1 bug", {
   # Specify enough of a ttb model for prediction.
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
