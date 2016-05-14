@@ -222,6 +222,7 @@ cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWi
 #'
 #' @seealso
 #' \code{\link{cueValidity}} for the unconditional version.
+#'
 #' @references
 #' Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
 #' heuristics for paired comparisons.  Theory and Decision, 52: 29-71.

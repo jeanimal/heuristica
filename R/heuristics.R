@@ -154,7 +154,67 @@ predictProbInternal.ttbModel <- function(object, row1, row2) {
 
 ### Greedy Take The Best Model ###
 
-# TODO(jean): Document and export this.
+#' Greedy Take The Best
+#'
+#' A variant of the Take The Best heuristic with a different cue order, namely
+#' using conditional cue validity, where the validity of a cue is judged only
+#' on row pairs not already decided by prior cues.  Specifically, it uses the
+#' cue ranks returned by \code{\link{conditionalCueValidityMatrix}}.
+#' 
+#' @inheritParams zzDocumentationStubModelParams
+#' @inheritParams zzDocumentationStubReverseCues
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name.  It is useful to change this to a unique name
+#'   if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."
+#'
+#' @return An object of \code{\link[base]{class}} ttbGreedyModel, which can
+#'   be passed in to \code{\link{predictPair}}.
+#'
+#' @examples
+#' ## A data set where Take the Best and Greedy Take the Best disagree.
+#' matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
+#' ttb <- ttbModel(train_matrix, 1, c(2,3))
+#' ttb$cue_validities
+#' # Returns
+#' #  x1  x2 
+#' # 1.0 0.5
+#' ttbG <- ttbGreedyModel(matrix, 1, c(2:3))
+#' ttbG$cue_validities
+#' # Returns
+#' #  x1  x2 
+#' #   1   1
+#' # because after using x1, only decisions between row 2 and 3 are left,
+#' # and x2 gets 100% right  on those (after reversal).  However, these
+#' # cue_validities depend on using x1, first, so cue_rank is key.
+#' ttbG$cue_ranks
+#' # Returns
+#' #  x1  x2 
+#' #   1   2
+#'
+#' # Now see how this affects predictions on row 2 vs. 3.
+#' # Take the best guesses (output 0).
+#' predictPair(oneRow(matrix, 2), oneRow(matrix, 3), ttb)
+#' # Greedy Take The Best selects row 2 (output 1).
+#' predictPair(oneRow(matrix, 2), oneRow(matrix, 3), ttbG)
+#'
+#' @seealso
+#' \code{\link{conditionalCueValidityMatrix}} for the metric used to sort cues.
+#'
+#' @seealso
+#' \code{\link{ttbModel}} for the original version of Take The Best.
+#'
+#' @seealso
+#' \code{\link{predictPair}} for predicting whether row1 is greater.
+#'
+#' @seealso
+#' \code{\link{predictPairProb}} for predicting the probability row1 is
+#' greater.
+#'
+#' @references
+#' Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
+#' heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
+#'
+#' @export
 ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit,
                            fit_name="ttbGreedyModel") {
   cv <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
@@ -792,7 +852,6 @@ predictProbInternal.singleCueModel <- function(object, row1, row2) {
 #' Fit the Minimalist heuristic by specifying columns and a dataset. It
 #' searches cues in a random order, making a decision based on the first cue
 #' that discriminates (has differing values on the two objects).
-#'
 #' 
 #' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams zzDocumentationStubReverseCues
