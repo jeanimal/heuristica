@@ -458,11 +458,14 @@ predictProbInternal.regInterceptModel <- function(object, row1, row2) {
 #' @return An object of class regModel, which is a subclass of lm.
 #'
 #' @seealso
-#' \code{\link{regInterceptModel}} for a version that includes the intercept.
-#' @seealso
 #' \code{\link{predict.lm}} for prediction.
+#'
 #' @seealso
-#' \code{\link{predictPairProb}} for predicting between a pair of alternatives.
+#' \code{\link{predictPair}} for predicting whether row1 is greater.
+#'
+#' @seealso
+#' \code{\link{predictPairProb}} for predicting the probability row1 is
+#' greater.
 #'
 #' @export
 regModel <- function(train_matrix, criterion_col, cols_to_fit,
