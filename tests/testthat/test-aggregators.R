@@ -147,25 +147,25 @@ test_that("end to end test ttb vs. logistic regression input data.frame", {
 # city_population data set.
 test_that("city_population ttb vs. regression on dirty four cities", {
   ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-  reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+  reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 
   pct_correct_df <- pctCorrectOfPredictPair(list(ttb, reg),
                                             city_population[c(27,30,52,68),])
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
-  expect_equal(0, pct_correct_df$regInterceptModel, tolerance=0.001)
+  expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
 
   # Confirm same results even with a different order of rows.
   pct_correct_df <- pctCorrectOfPredictPair(list(ttb, reg),
                                             city_population[c(68,52,30,27),])
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
-  expect_equal(0, pct_correct_df$regInterceptModel, tolerance=0.001)
+  expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
 
   # ttb and reg are symmetric, so everything is the same with
   # pctCorrectOfPredictPairNonSymmetric
   pct_correct_df <- pctCorrectOfPredictPairNonSymmetric(
     list(ttb, reg), city_population[c(27,30,52,68),])
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
-  expect_equal(0, pct_correct_df$regInterceptModel, tolerance=0.001)
+  expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
 })
 
 
