@@ -5,7 +5,8 @@
 \title{Logistic Regression model using the sign of the difference of cues}
 \usage{
 logRegSignModel(train_data, criterion_col, cols_to_fit,
-  cue_order_fn = keepOrder, suppress_warnings = TRUE)
+  cue_order_fn = keepOrder, suppress_warnings = TRUE,
+  fit_name = "logRegSignModel")
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -25,6 +26,9 @@ function(train_data, criterion_col, cols_to_fit).}
 
 \item{suppress_warnings}{Optional argument specifying whether glm warnings
 should be suppressed or not. Default is TRUE.}
+
+\item{fit_name}{Optional The name other functions can use to label output.
+It defaults to the class name.}
 }
 \value{
 An object of class logRegModel.

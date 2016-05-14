@@ -693,14 +693,19 @@ predictProbInternal.logRegCorrModel <- function(object, row1, row2) {
 #'   function(train_data, criterion_col, cols_to_fit).
 #' @param suppress_warnings Optional argument specifying whether glm warnings
 #'   should be suppressed or not. Default is TRUE.
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name. 
 #' @return An object of class logRegModel.
 #' @export
 logRegSignModel <- function(train_data, criterion_col, cols_to_fit,
                             cue_order_fn=keepOrder,
-                            suppress_warnings=TRUE){
-  return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                            rowDiffSign, "logRegSignModel", cue_order_fn,
-                            suppress_warnings))
+                            suppress_warnings=TRUE,
+                            fit_name="logRegSignModel") {
+  model <- logRegModelGeneral(train_data, criterion_col, cols_to_fit,
+                              rowDiffSign, "logRegSignModel", cue_order_fn,
+                              suppress_warnings)
+  model$fit_name <- fit_name
+  return(model)
 }
 
 # This is equivalent to the glm predict like this:
