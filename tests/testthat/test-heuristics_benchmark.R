@@ -33,8 +33,8 @@ test_that("Benchmark ttbModel on city_population NEW simpleRowPairApply", {
   #   0.118   0.003   0.122
 })
 
-test_that("Benchmark regInterceptModel on city_population", {
-  model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+test_that("Benchmark regModel on city_population", {
+  model <- regModel(city_population, 3, c(4:ncol(city_population)))
   times <- system.time(allRowPairApply(city_population, heuristicsProb(model)))
   print("reg")
   print(times)
@@ -45,11 +45,11 @@ test_that("Benchmark regInterceptModel on city_population", {
   #   0.138   0.001   0.139
 })
 
-test_that("Benchmark regInterceptModel on city_population NEW simpleRowPairApply", {
-  model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+test_that("Benchmark regModel on city_population NEW simpleRowPairApply", {
+  model <- regModel(city_population, 3, c(4:ncol(city_population)))
   times <- system.time(simpleRowPairApply(city_population,
                                           createHeuristicWrapperFn2(model)))
-  print("regInterceptModel NEW simpleRowPairApply")
+  print("regModel NEW simpleRowPairApply")
   print(times)
 
   # In April 2016 on Jean's macbook:
