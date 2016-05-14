@@ -43,7 +43,7 @@ validity to select the single cue to be used.
 ## validity 0.
 train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 singlecue <- singleCueModel(train_matrix, 1, c(2,3))
-predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue) 
+predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue)
 }
 \seealso{
 \code{\link{predictPairProb}} for prediction.
