@@ -400,7 +400,7 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   col_weights_clean <- coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
-  # Because the intercept is 0 for row1 and ro2, ignore it.
+  # Because the intercept is 0 for row1 and row2, ignore it.
   if ("(Intercept)" %in% names(col_weights_clean)) {
     intercept_index <- which(names(col_weights_clean)=="(Intercept)")
     col_weights_clean <- col_weights_clean[-intercept_index]
