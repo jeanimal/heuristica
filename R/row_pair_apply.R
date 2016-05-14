@@ -34,8 +34,10 @@
 createFunction <- function(object, test_data) UseMethod("createFunction")
 
 # Give it a function of the form fn(row1, row2).  It creates a
-# function of the form fn(index_pair) that refer to two row indices,
-# e.g. f(c(1,2)) or f(c(2,4)).
+# function of the form fn(index_pair), referring to two row indices
+# of the data.
+# e.g. f(c(1,2)) will be f(row1, row2).
+# f(c(2,4))  will be f(row2, row4).
 # The data will be forced to be a matrix rather than a data.frame,
 # so you cannot use data.frame functions (like $col) in fn_to_bind.
 bindFunctionToRowPairs <- function(raw_data, fn_to_bind) {
