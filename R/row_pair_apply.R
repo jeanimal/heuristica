@@ -50,6 +50,7 @@ bindFunctionToRowPairs <- function(raw_data, fn_to_bind) {
   return(new_fn)
 }
 
+# fn should be of the form fn(row1, row2)
 applyFunctionToRowPairs <- function(data, fn) {
   fn_with_data <- bindFunctionToRowPairs(data, fn)
   # TODO(jean): Remove this hack for column names.
