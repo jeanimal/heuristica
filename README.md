@@ -20,9 +20,8 @@ The package comes with the following models that implement predictPair.
 * __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
 * __unitWeightModel__: A [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An Exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
 * __validityWeightModel__: A cue-validity-weighted linear model.  (In some publications, this was called franklinModel after Ben Franklin.)
-* __regModel__: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.
-* __regNoIModel__: Same as RegModel but with no intercept.  Out-of-sample accuracy will usually be higher for a regression _without_ an intercept for tasks where the goal is rank order, as in two-alternative choice tasks.  That's because the intercept has no effect on the ranking, but estimating its value uses up a degree of freedom.
-* __logRegModel__: A logistic regression model, a wrapper around R's glm.
+* __regModel__: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.  It generates a prediction for each item in the pair-- e.g. estimates the population of Rostock and the population of Munich-- and then picks the item (city) with the higher estimate.
+* __logRegModel__: A logistic regression model, a wrapper around R's glm.  This estimates the probability that Rostock is greater than Munich and chooses Rostock if the probability is greater than 50/50.
 
 You can add your own models by also implementing __predictPair__.
 
