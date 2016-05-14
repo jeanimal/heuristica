@@ -30,7 +30,7 @@ or data.frame.
 ## Fit two models to data.
 data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
 ttb <- ttbModel(data, 1, c(2:ncol(data)))
-reg <- regInterceptModel(data, 1, c(2:ncol(data)))
+reg <- regModel(data, 1, c(2:ncol(data)))
 
 ## Generate predictions for all row pairs for these two models:
 allRowPairApply(data, heuristics(ttb, reg))
@@ -39,20 +39,20 @@ allRowPairApply(data, heuristics(ttb, reg))
 
 ## To see which row pair is which row, use rowIndexes:
 allRowPairApply(data, rowIndexes(), heuristics(ttb, reg))
-## Returns a matrix with columns Row1, Row2, ttbModel, regInterceptModel.
+## Returns a matrix with columns Row1, Row2, ttbModel, regModel.
 ## (RowIndexes returns *two* columns.)
 
 ## To see whether the first row was actually greater than the second in the
 ## row pair, use correctGreater and give it the criterion column index, in
 ## this case 1.
 allRowPairApply(data, heuristics(reg, ttb), correctGreater(1))
-## Returns a matrix with columns regInterceptModel, ttbModel,
+## Returns a matrix with columns regModel, ttbModel,
 ## CorrectGreater.  Values are -1, 0, or 1.
 
 ## To do the same analysis for the *probabilty* that the first row is
 ## greater. use heuristicsProb and probGreater.
 allRowPairApply(data, heuristicsProb(reg, ttb), probGreater(1))
-## Returns a matrix with columns regInterceptModel, ttbModel, ProbGreater.
+## Returns a matrix with columns regModel, ttbModel, ProbGreater.
 ## Values range from 0.0 to 1.0.
 
 }
