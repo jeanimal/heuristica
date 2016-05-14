@@ -4,7 +4,8 @@
 \alias{minModel}
 \title{Minimalist Model}
 \usage{
-minModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE)
+minModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
+  fit_name = "minModel")
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -19,6 +20,9 @@ the criterion.}
 default, the model will reverse the cue values for cues with cue validity
 < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
+
+\item{fit_name}{Optional The name other functions can use to label output.
+It defaults to the class name.}
 }
 \description{
 Fit the Minimalist heuristic by specifying columns and a dataset. It
@@ -30,7 +34,7 @@ that discriminates (has differing values on the two objects).
 ## validity 0.
 train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
 min <- minModel(train_matrix, 1, c(2,3))
-predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
+predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
 
 }
 \seealso{

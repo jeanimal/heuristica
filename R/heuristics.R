@@ -794,12 +794,14 @@ predictProbInternal.singleCueModel <- function(object, row1, row2) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name. 
 #' @examples
 #' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
 #' ## validity 0.
 #' train_matrix <- cbind(c(5,4), c(1,0), c(0,1))
 #' min <- minModel(train_matrix, 1, c(2,3))
-#' predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
+#' predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min) 
 #'
 #' @seealso
 #' \code{\link{predictPairProb}} for prediction.
@@ -807,7 +809,7 @@ predictProbInternal.singleCueModel <- function(object, row1, row2) {
 #'
 #' @export
 minModel <- function(train_data, criterion_col, cols_to_fit,
-                     reverse_cues=TRUE) {
+                     reverse_cues=TRUE, fit_name="minModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
@@ -820,7 +822,7 @@ minModel <- function(train_data, criterion_col, cols_to_fit,
                  cue_validities=cv$cue_validities,
                  cue_directions=cv$cue_directions,
                  unsigned_linear_coef=unsigned_linear_coef,
-                 cue_sample_fn=sample),
+                 cue_sample_fn=sample, fit_name=fit_name),
             class="minModel")
 }
 
