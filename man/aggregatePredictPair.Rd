@@ -27,19 +27,19 @@ Predicts with heuristics and criterion, returning all row pairs.
 }
 \examples{
 ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-reg <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
+reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 # Which row pairs is ttb better on?  By "better" we mean chooses the
 # correct larger row-- that's our goal_type.
 goal_type <- 'ChooseGreater'
 out <- aggregatePredictPair(list(ttb, reg), city_population, goal_type,
   rowIndexes())
 out_df <- data.frame(out)
-head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
+head(out_df[out_df$ttbModel > out_df$regModel,])
 # So one example where ttb was right and reg was wrong was row 4 vs.
 # row 7.  Let's put some city names on this.
 out_df$Row1_City <- city_population$Name_of_City[out_df$Row1]
 out_df$Row2_City <- city_population$Name_of_City[out_df$Row2]
-head(out_df[out_df$ttbModel > out_df$regInterceptModel,])
+head(out_df[out_df$ttbModel > out_df$regModel,])
 # So row 4 vs. 7 was Cologne vs. Dortmund.  Looking through the list,
 # this is the only time Cologne appeared.  In contrast, Halle appears
 # 7 times, so it's a tougher city for regression to predict than ttb.
