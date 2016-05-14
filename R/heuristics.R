@@ -734,6 +734,8 @@ predictProbInternal.logRegSignModel <- function(object, row1, row2) {
 #' 
 #' @inheritParams heuristicaModel
 #' @inheritParams reversingModel
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name. 
 #' @examples
 #' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
 #' ## validity 0.
@@ -746,7 +748,7 @@ predictProbInternal.logRegSignModel <- function(object, row1, row2) {
 #'
 #' @export
 singleCueModel <- function(train_data, criterion_col, cols_to_fit,
-                           reverse_cues=TRUE) {
+                           reverse_cues=TRUE, fit_name="singleCueModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
@@ -758,7 +760,7 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit,
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
                  cue_validities_unreversed=cv$cue_validities_unreversed,
                  cue_validities=cv$cue_validities,
-                 linear_coef=linear_coef),
+                 linear_coef=linear_coef, fit_name=fit_name),
             class="singleCueModel")
 }
 

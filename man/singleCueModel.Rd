@@ -4,7 +4,8 @@
 \alias{singleCueModel}
 \title{Single Cue Model}
 \usage{
-singleCueModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE)
+singleCueModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
+  fit_name = "singleCueModel")
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -19,6 +20,9 @@ the criterion.}
 default, the model will reverse the cue values for cues with cue validity
 < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
+
+\item{fit_name}{Optional The name other functions can use to label output.
+It defaults to the class name.}
 }
 \description{
 Create a single cue model by specifying columns and a dataset.  It sorts
