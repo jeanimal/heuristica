@@ -37,30 +37,6 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-# Proof of concept.  Not in use.
-cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
-  data <- cbind(criterion, cue)
-  correctIncorrectFn <- function(row1, row2) {
-    sign_diff <- sign(row1 - row2)
-    if (sign_diff[,2,drop = FALSE] == 0) {
-      return(cbind(0,0))
-    } else if (sign_diff[,2,drop = FALSE] == sign_diff[,1,drop = FALSE]) {
-      return(cbind(1,0))
-    } else {
-      return(cbind(0,1))
-    }
-  }
-  fn2 <- bindFunctionToRowPairs(data, correctIncorrectFn)
-  correct_incorrect <- pairMatrix(nrow(data), fn2)
-  correct <- sum(correct_incorrect[,1,drop = FALSE])
-  incorrect <- sum(correct_incorrect[,2,drop = FALSE])
-  cv <- correct / (correct + incorrect)
-  if (is.nan(cv)) {
-    cv <- replaceNanWith
-  }
-  return(cv)
-}
-
 #' Calculate just cue validity for cols_to_fit predicting the criterion.
 #'
 #' This returns only the cue validities, without reversing when a cue
