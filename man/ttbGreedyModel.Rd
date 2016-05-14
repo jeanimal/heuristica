@@ -33,7 +33,7 @@ cue ranks returned by \code{\link{conditionalCueValidityMatrix}}.
 \examples{
 ## A data set where Take the Best and Greedy Take the Best disagree.
 matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
-ttb <- ttbModel(train_matrix, 1, c(2,3))
+ttb <- ttbModel(matrix, 1, c(2,3))
 ttb$cue_validities
 # Returns
 #  x1  x2 
