@@ -452,6 +452,8 @@ predictProbInternal.regInterceptModel <- function(object, row1, row2) {
 #' ranking, but estimating it wastes a degree of freedom.
 #' 
 #' @inheritParams regInterceptModelForDocumentation 
+#' @param fit_name Optional The name other functions can use to label output.
+#'   It defaults to the class name.
 #'
 #' @return An object of class regModel, which is a subclass of lm.
 #'
@@ -463,7 +465,8 @@ predictProbInternal.regInterceptModel <- function(object, row1, row2) {
 #' \code{\link{predictPairProb}} for predicting between a pair of alternatives.
 #'
 #' @export
-regModel <- function(train_matrix, criterion_col, cols_to_fit) {
+regModel <- function(train_matrix, criterion_col, cols_to_fit,
+                     fit_name="regModel") {
   model <- lmWrapper(train_matrix, criterion_col, cols_to_fit,
                      include_intercept=FALSE)
   class(model) <- c("regModel", class(model))
@@ -475,6 +478,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit) {
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
   model$col_weights_clean <- col_weights_clean
+  model$fit_name <- fit_name
   return(model)
 }
 

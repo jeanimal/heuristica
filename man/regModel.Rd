@@ -4,7 +4,7 @@
 \alias{regModel}
 \title{Linear regression (no intercept) wrapper for hueristica}
 \usage{
-regModel(train_matrix, criterion_col, cols_to_fit)
+regModel(train_matrix, criterion_col, cols_to_fit, fit_name = "regModel")
 }
 \arguments{
 \item{train_matrix}{A matrix (or data.frame) of data to train (fit) the
@@ -14,6 +14,9 @@ model with.}
 
 \item{cols_to_fit}{A vector of column indexes to fit-- the "x's" in the
 formula.}
+
+\item{fit_name}{Optional The name other functions can use to label output.
+It defaults to the class name.}
 }
 \value{
 An object of class regModel, which is a subclass of lm.
