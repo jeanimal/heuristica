@@ -45,7 +45,7 @@ predictPairInternal <- function(object, row1, row2) {
 #' @param cols_to_fit A vector of column indices in train_data, used to fit
 #'   the criterion.
 # Private.  This is just an easy way to share parameter documentation.
-heuristicaModel <- function(train_data, criterion_col, cols_to_fit) NULL 
+zzDocumentationStubModelParams <- function(train_data, criterion_col, cols_to_fit) NULL
 
 
 ### Helper functions ###
@@ -72,7 +72,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #' based on the first cue that discriminates (has differing values on the
 #' two objects).
 #' 
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams reversingModel
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.  It is useful to change this to a unique name
@@ -205,7 +205,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #' validity is 0.5 (rather than randomly assigning +1 or -1) to give faster
 #' convergence of average accuracy.
 #'
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams reversingModel
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.
@@ -274,7 +274,7 @@ predictProbInternal.unitWeightModel <- function(object, row1, row2) {
 #' Validity Weight Model is a linear model with weights calculated by
 #' \code{\link{cueValidity}}.
 #'
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams reversingModel
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.
@@ -601,7 +601,7 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
 #' Note that our criterion is the probability that row 1 is greater than row 2
 #' when a pair is encountered.
 #' 
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @param cue_order_fn Optional argument as a function that orders cues.  This
 #'   affects which cues are dropped for underspecified models. The rightmost
 #'   cues in the order are dropped first, so the function rankByCueValidity
@@ -687,7 +687,7 @@ predictProbInternal.logRegCorrModel <- function(object, row1, row2) {
 #'
 #' This version assumes you do not want to include the intercept.
 #' 
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @param cue_order_fn Optional argument as a function that orders cues.  This
 #'   affects which cues are dropped for underspecified models. The rightmost
 #'   cues in the order are dropped first, so the function rankByCueValidity
@@ -735,7 +735,7 @@ predictProbInternal.logRegSignModel <- function(object, row1, row2) {
 #' Note that other researchers have sometimes used other measures than cue
 #' validity to select the single cue to be used.
 #' 
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams reversingModel
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name. 
@@ -795,7 +795,7 @@ predictProbInternal.singleCueModel <- function(object, row1, row2) {
 #' that discriminates (has differing values on the two objects).
 #'
 #' 
-#' @inheritParams heuristicaModel
+#' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams reversingModel
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name. 
