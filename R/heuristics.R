@@ -36,7 +36,6 @@ predictPairInternal <- function(object, row1, row2) {
 }
 
 ### Shared documentation stubs ###
-## TODO: Find a way so these do not show up in actual documenentation.
 
 #' Documentation stub.
 #' @param train_data Training/fitting data as a matrix or data.frame.
