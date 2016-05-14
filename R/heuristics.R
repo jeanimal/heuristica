@@ -308,7 +308,7 @@ validityWeightModel <- function(train_data, criterion_col, cols_to_fit,
   linear_coef <- cv$cue_directions * cv$cue_validities
   structure(list(criterion_col = criterion_col, cols_to_fit = cols_to_fit,
                  cue_validities_unreversed=cv$cue_validities_unreversed,
-                 cue_validities=cv$cue_validities, linear_coef = linear_coef
+                 cue_validities=cv$cue_validities, linear_coef=linear_coef,
                  fit_name=fit_name),
             class="validityWeightModel")
 }
