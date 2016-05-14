@@ -18,6 +18,7 @@ The key function heuristics must implement is __predictRoot__ rather than the __
 ## Models
 The package comes with the following models that implement predictPair. 
 * __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+* __ttbGreedyModel__: Take the Best using conditional cue validity (rather than cue validity).
 * __unitWeightModel__: A [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An Exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
 * __validityWeightModel__: A cue-validity-weighted linear model.  (In some publications, this was called franklinModel after Ben Franklin.)
 * __regModel__: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.  It generates a prediction for each item in the pair-- e.g. estimates the population of Rostock and the population of Munich-- and then picks the item (city) with the higher estimate.
