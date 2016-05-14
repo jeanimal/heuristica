@@ -72,7 +72,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #' two objects).
 #' 
 #' @inheritParams zzDocumentationStubModelParams
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.  It is useful to change this to a unique name
 #'   if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."
@@ -205,7 +205,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 #' convergence of average accuracy.
 #'
 #' @inheritParams zzDocumentationStubModelParams
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.
 #'
@@ -274,7 +274,7 @@ predictProbInternal.unitWeightModel <- function(object, row1, row2) {
 #' \code{\link{cueValidity}}.
 #'
 #' @inheritParams zzDocumentationStubModelParams
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.
 #'
@@ -735,7 +735,7 @@ predictProbInternal.logRegSignModel <- function(object, row1, row2) {
 #' validity to select the single cue to be used.
 #' 
 #' @inheritParams zzDocumentationStubModelParams
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name. 
 #' @examples
@@ -795,7 +795,7 @@ predictProbInternal.singleCueModel <- function(object, row1, row2) {
 #'
 #' 
 #' @inheritParams zzDocumentationStubModelParams
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name. 
 #' @examples

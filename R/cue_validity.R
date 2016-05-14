@@ -7,7 +7,7 @@
 #' < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 #' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
 # Private.  This is just an easy way to share parameter documentation.
-reversingModel <- function(reverse_cues=TRUE) NULL
+zzDocumentationStubReverseCues <- function(reverse_cues=TRUE) NULL
 
 #' Calculate the cue validity
 #'
@@ -74,7 +74,7 @@ cueValidity2 <- function(criterion, cue, replaceNanWith=0.5) {
 #'   validity for.
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
 #' @seealso
@@ -121,7 +121,7 @@ reverseAsNeeded <- function(cue_validities) {
 #'   validity for.
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
-#' @inheritParams reversingModel
+#' @inheritParams zzDocumentationStubReverseCues
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
 #' @references
