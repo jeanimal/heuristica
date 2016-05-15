@@ -144,16 +144,6 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
   return(concordance)
 }
 
-# If I switch to this, the only thing that makes tests fail is named columns or not.
-# Bad: It is about 10 times slower than cueValidityMatrixValidities.
-# TODO: Use this for conditional cue validity.
-cueValidityMatrix_new <- function(data, criterion_col, cols_to_fit, replaceNanWith=0.5) {
-  agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
-  pos <- apply(agreement, 2, function(x) { sum(x[x>0]) })
-  neg <- apply(agreement, 2, function(x) { sum(abs(x[x<0])) })
-  return(pos / (pos+neg))
-}
-
 #' Calculate conditional cue validity for cols_to_fit predicting criterion.
 #'
 #' Conditional cue validity is the validity of a cue taking into account
