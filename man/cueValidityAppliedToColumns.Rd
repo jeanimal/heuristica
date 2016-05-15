@@ -26,13 +26,13 @@ A list where $cue_validities has a vector of validities for
 This returns only the cue validities, without reversing when a cue
 points in the wrong direction-- e.g. education is negatively associated
 with number of felonies, so we should use LESS education as a predictor.
-Use cueValidityMatrix for help with that.
+Use cueValidityComplete for help with that.
 }
 \references{
 Wikipedia's entry on
 \url{https://en.wikipedia.org/wiki/Cue_validity}
 }
 \seealso{
-\code{\link{cueValidityMatrix}} for more complete output.
+\code{\link{cueValidityComplete}} for more complete output.
 }
 

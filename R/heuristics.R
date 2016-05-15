@@ -116,7 +116,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 ttbModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE, fit_name="ttbModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
 
   unsigned_linear_coef <- sapply(cv$cue_ranks,
@@ -298,7 +298,7 @@ predictProbInternal.ttbGreedyModel <- function(object, row1, row2) {
 unitWeightModel <- function(train_data, criterion_col, cols_to_fit,
                             reverse_cues=TRUE, fit_name="unitWeightModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
 
   linear_coef <- cv$cue_directions
@@ -361,7 +361,7 @@ validityWeightModel <- function(train_data, criterion_col, cols_to_fit,
                                 reverse_cues=TRUE,
                                 fit_name="validityWeightModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
 
   linear_coef <- cv$cue_directions * cv$cue_validities
@@ -561,7 +561,7 @@ predictProbInternal.regModel <- function(object, row1, row2) {
 
 # An implementation of cue_order_fn that ranks cues by cue validity.
 rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
-  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit)
+  cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit)
   return(unname(cv$cue_ranks))
 }
 
@@ -812,7 +812,7 @@ predictProbInternal.logRegSignModel <- function(object, row1, row2) {
 singleCueModel <- function(train_data, criterion_col, cols_to_fit,
                            reverse_cues=TRUE, fit_name="singleCueModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
   unsigned_linear_coef <- sapply(cv$cue_ranks, function(v)
    if (v==1) 1 else 0)
@@ -872,7 +872,7 @@ predictProbInternal.singleCueModel <- function(object, row1, row2) {
 minModel <- function(train_data, criterion_col, cols_to_fit,
                      reverse_cues=TRUE, fit_name="minModel") {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
-  cv <- cueValidityMatrix(train_data, criterion_col, cols_to_fit,
+  cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit,
                            reverse_cues=reverse_cues)
   
   unsigned_linear_coef <- sapply(cv$cue_ranks,

@@ -42,7 +42,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' This returns only the cue validities, without reversing when a cue
 #' points in the wrong direction-- e.g. education is negatively associated
 #' with number of felonies, so we should use LESS education as a predictor.
-#' Use cueValidityMatrix for help with that.
+#' Use cueValidityComplete for help with that.
 #'
 #' @param data The matrix or data.frame whose columns are treated as cues.
 #' @param criterion_col The index of the column used as criterion.
@@ -54,7 +54,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
 #' @seealso
-#' \code{\link{cueValidityMatrix}} for more complete output.
+#' \code{\link{cueValidityComplete}} for more complete output.
 #' @references
 #' Wikipedia's entry on
 #' \url{https://en.wikipedia.org/wiki/Cue_validity}
@@ -105,9 +105,8 @@ reverseAsNeeded <- function(cue_validities) {
 #' Wikipedia's entry on
 #' \url{https://en.wikipedia.org/wiki/Cue_validity}
 #' @export
-cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
-                              replaceNanWith=0.5,
-                              reverse_cues=FALSE) {
+cueValidityComplete <- function(data, criterion_col, cols_to_fit,
+                                replaceNanWith=0.5, reverse_cues=FALSE) {
   cue_validities <- cueValidityAppliedToColumns(
     data, criterion_col, cols_to_fit, replaceNanWith)
   if (length(colnames(data)) > 0) {
