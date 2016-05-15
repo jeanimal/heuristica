@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{cueValidityMatrix}
 \alias{cueValidityMatrix}
-\title{Calculate cue validity for cols_to_fit predicting the criterion.}
+\title{Calculate cue validity with reverse, cue directions, and cue ranks.}
 \usage{
 cueValidityMatrix(data, criterion_col, cols_to_fit, replaceNanWith = 0.5,
   reverse_cues = FALSE)

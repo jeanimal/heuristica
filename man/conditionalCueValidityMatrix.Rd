@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{conditionalCueValidityMatrix}
 \alias{conditionalCueValidityMatrix}
-\title{Calculate conditional cue validity for cols_to_fit predicting criterion.}
+\title{Calculate conditional cue validity, which includes reversing and ranks.}
 \usage{
 conditionalCueValidityMatrix(data, criterion_col, cols_to_fit)
 }
@@ -26,7 +26,7 @@ $cue_directions: 1 if cue is in same direction as criterion, -1 if
 }
 \description{
 Conditional cue validity is the validity of a cue taking into account
-decisions already made by higher-validity cues.  For a single cue, it
+decisions already made by higher-ranked cues.  For a single cue, it
 is the same as cue validity.  For two cues, the higher validity cue will
 have conditional cue validity = cue validity.  However, the remaining cue
 will have its validity re-calculated on just those pairs of object where

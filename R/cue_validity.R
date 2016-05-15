@@ -59,7 +59,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' Wikipedia's entry on
 #' \url{https://en.wikipedia.org/wiki/Cue_validity}
 #' @export
-cueValidityMatrixValidities <- function(data, criterion_col, cols_to_fit,
+cueValidityAppliedToColumns <- function(data, criterion_col, cols_to_fit,
                                         replaceNanWith=0.5) {
   sapply(cols_to_fit, function(col) {
     cueValidity(data[,criterion_col], data[,col],
@@ -79,7 +79,7 @@ reverseAsNeeded <- function(cue_validities) {
                  cue_directions=cue_directions))
 }
 
-#' Calculate cue validity for cols_to_fit predicting the criterion.
+#' Calculate cue validity with reverse, cue directions, and cue ranks.
 #'
 #' This provides a vector of cue_validities and potentially other useufl
 #' information, particularly if reverse_cues=TRUE.  For example, education
@@ -108,7 +108,7 @@ reverseAsNeeded <- function(cue_validities) {
 cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
                               replaceNanWith=0.5,
                               reverse_cues=FALSE) {
-  cue_validities <- cueValidityMatrixValidities(
+  cue_validities <- cueValidityAppliedToColumns(
     data, criterion_col, cols_to_fit, replaceNanWith)
   if (length(colnames(data)) > 0) {
     names(cue_validities) <- colnames(data)[cols_to_fit]
@@ -153,10 +153,10 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
   return(concordance)
 }
 
-#' Calculate conditional cue validity for cols_to_fit predicting criterion.
+#' Calculate conditional cue validity, which includes reversing and ranks.
 #'
 #' Conditional cue validity is the validity of a cue taking into account
-#' decisions already made by higher-validity cues.  For a single cue, it
+#' decisions already made by higher-ranked cues.  For a single cue, it
 #' is the same as cue validity.  For two cues, the higher validity cue will
 #' have conditional cue validity = cue validity.  However, the remaining cue
 #' will have its validity re-calculated on just those pairs of object where
