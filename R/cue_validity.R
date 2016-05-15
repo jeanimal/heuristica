@@ -70,6 +70,7 @@ cueValidityMatrixValidities <- function(data, criterion_col, cols_to_fit,
 # Given a vector of cue validities, looks for values less than 0.5
 # and reverses those, returning them as cue_validities_with_reverse.
 # cue_directions are +1 or -1 for the validities that were reversed.
+# This is a helper function.
 # Private.
 reverseAsNeeded <- function(cue_validities) {
   cue_validities_with_reverse <- abs(cue_validities - 0.5) + 0.5
@@ -130,6 +131,14 @@ cueValidityMatrix <- function(data, criterion_col, cols_to_fit,
               cue_directions=cue_directions))
 }
 
+# Returns a matrix of 1,0,-1 for when cols_to_fit agree with criterion_col.
+# 1 means the col_to_fit agreed with the criterion (both had row1 higher or
+# both had row2 higher).  -1 meant they disagreed (col_to fit had row1 higher
+# when the criterion had row2 higher).  And 0 meant col_to_fit did not
+# discriminate between row1 and row2.
+# Each row returned is a row pair, so if data has N rows, N*(N-1)/2 rows
+# are returned.
+# This is a helper function.
 agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
   # The line below puts the criterion into column 1.
   trim_data <- data[,c(criterion_col, cols_to_fit), drop=FALSE]
@@ -223,10 +232,7 @@ conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
     agreement <- subset(agreement, agreement[,index] == 0)
     # If any rows are left, repeat this process.  
   }
-  # If some cues not used by end, give them CV from replaceNanWith.
-  # Random rank, I guess.
-  # TODO: For other cue validity calculations, return cue_validities
-  # and original_cue_validities, not cue_validities_with_reverse.
+  # If some cues not used by end, they stay NA.
 
   # Preserve column names.
   names <- colnames(data)[cols_to_fit]
