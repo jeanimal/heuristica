@@ -664,27 +664,3 @@ convertClassBindToData <- function(fn, data) {
   }
 }
 
-# The signature of pair_evaluator_fn should be
-# function(index_pair, data) where index_pair is a vector of two integer
-# row indexes into the data.
-simpleRowPairApply <- function(data, pair_evaluator_fn) {
-  fn <- convertClassBindToData(pair_evaluator_fn, data)
-  out <- combn(nrow(data), 2, fn, simplify=FALSE)
-  # The output of combn is a complicated nested mess.  Below we make it a
-  # simple matrix by assuming the dimensions of every list element are the
-  # same as the first list element.
-  if (length(out) < 1) {
-    stop("pairMatrix got no output to process")
-  }
-  rows <- length(out) * nrow(out[[1]])
-  cols <- ncol(out[[1]])
-  out_matrix <- matrix(unlist(out), rows, cols, byrow=TRUE)
-  colnames(out_matrix) <- colnames(out[[1]])
-  return(out_matrix)
-}
-
-simpleRowPairApplyList <- function(test_data, function_list) {
-  converted_function_list <- lapply(function_list, convertClassBindToData, test_data)
-  all_fn <- combineIntoOneFn(converted_function_list)
-  simpleRowPairApply(test_data, all_fn)
-}
