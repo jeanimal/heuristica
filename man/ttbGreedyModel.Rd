@@ -28,7 +28,7 @@ An object of \code{\link[base]{class}} ttbGreedyModel, which can
 A variant of the Take The Best heuristic with a different cue order, namely
 using conditional cue validity, where the validity of a cue is judged only
 on row pairs not already decided by prior cues.  Specifically, it uses the
-cue ranks returned by \code{\link{conditionalCueValidityMatrix}}.
+cue ranks returned by \code{\link{conditionalCueValidityComplete}}.
 }
 \examples{
 ## A data set where Take the Best and Greedy Take the Best disagree.
@@ -63,7 +63,7 @@ Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
 heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
 }
 \seealso{
-\code{\link{conditionalCueValidityMatrix}} for the metric used to sort cues.
+\code{\link{conditionalCueValidityComplete}} for the metric used to sort cues.
 
 \code{\link{ttbModel}} for the original version of Take The Best.
 

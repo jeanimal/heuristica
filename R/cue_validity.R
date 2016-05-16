@@ -183,7 +183,7 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
 #' # vs. row3 is undecided  x2 predictions correctly on those, so its
 #' # conditional cue validity is 1.0 (conditional on x1 being first).
 #' data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
-#' out <- conditionalCueValidityMatrix(data, 1, c(2:3))
+#' out <- conditionalCueValidityComplete(data, 1, c(2:3))
 #' # This tells you both cues had validity 1-- it returns 1, 1.
 #' out$cue_validities
 #' # This tells you to choose x1 first-- it returns 1, 0.
@@ -192,7 +192,7 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
 #' out$cue_directions
 #' # For a case with a negative cue direction, try this data:
 #' data2 <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
-#' conditionalCueValidityMatrix(data2, 1, c(2:3))
+#' conditionalCueValidityComplete(data2, 1, c(2:3))
 #'
 #' @seealso
 #' \code{\link{cueValidity}} for the unconditional version.
@@ -201,7 +201,7 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
 #' Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
 #' heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
 #' @export
-conditionalCueValidityMatrix <- function(data, criterion_col, cols_to_fit) {
+conditionalCueValidityComplete <- function(data, criterion_col, cols_to_fit) {
   original_agreement <- agreementWithCriterionMatrix(data, criterion_col, cols_to_fit)
   conditional_cue_validities <- rep(NA, length(cols_to_fit))
   conditional_cue_ranks <- rep(NA, length(cols_to_fit))

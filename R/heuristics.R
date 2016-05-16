@@ -159,7 +159,7 @@ predictProbInternal.ttbModel <- function(object, row1, row2) {
 #' A variant of the Take The Best heuristic with a different cue order, namely
 #' using conditional cue validity, where the validity of a cue is judged only
 #' on row pairs not already decided by prior cues.  Specifically, it uses the
-#' cue ranks returned by \code{\link{conditionalCueValidityMatrix}}.
+#' cue ranks returned by \code{\link{conditionalCueValidityComplete}}.
 #' 
 #' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams zzDocumentationStubReverseCues
@@ -198,7 +198,7 @@ predictProbInternal.ttbModel <- function(object, row1, row2) {
 #' predictPair(oneRow(matrix, 2), oneRow(matrix, 3), ttbG)
 #'
 #' @seealso
-#' \code{\link{conditionalCueValidityMatrix}} for the metric used to sort cues.
+#' \code{\link{conditionalCueValidityComplete}} for the metric used to sort cues.
 #'
 #' @seealso
 #' \code{\link{ttbModel}} for the original version of Take The Best.
@@ -217,7 +217,7 @@ predictProbInternal.ttbModel <- function(object, row1, row2) {
 #' @export
 ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit,
                            fit_name="ttbGreedyModel") {
-  cv <- conditionalCueValidityMatrix(train_data, criterion_col, cols_to_fit)
+  cv <- conditionalCueValidityComplete(train_data, criterion_col, cols_to_fit)
   unsigned_linear_coef <- sapply(cv$cue_ranks,
                                  function(n) 2^(length(cv$ue_ranks)-n) )
   # Now give negative signs for cues pointing the other way.

@@ -164,19 +164,19 @@ test_that("agreementWithCriterionMatrix realistic 5 rows 2 cues", {
   expect_equal(cbind(x1=-1, x2=-1), oneRow(agreement, 10))
 })
 
- # conditionalCueValidityMatrix
+ # conditionalCueValidityComplete
  # TODO: Have all cue validity stuff return column names.
 
-test_that("conditionalCueValidityMatrix 1 cue same as cueValidity", {
+test_that("conditionalCueValidityComplete 1 cue same as cueValidity", {
   matrix <- cbind(y=c(6:1), x1=c(15,0,2,0,12,1))
-  out <- conditionalCueValidityMatrix(matrix, 1, c(2))
+  out <- conditionalCueValidityComplete(matrix, 1, c(2))
   cv <- cueValidityComplete(matrix, 1, c(2))
   expect_equal(cv$cue_validities, out$cue_validities)
 })
 
-test_that("conditionalCueValidityMatrix 1 cue will reverse", {
+test_that("conditionalCueValidityComplete 1 cue will reverse", {
   matrix <- cbind(y=c(4:1), x1=c(0, 0, 0, 1))
-  out <- conditionalCueValidityMatrix(matrix, 1, c(2))
+  out <- conditionalCueValidityComplete(matrix, 1, c(2))
   expect_equal(c(x1=1), out$cue_validities)
   expect_equal(c(x1=-1), out$cue_directions)
   # Below for comparison
@@ -184,18 +184,18 @@ test_that("conditionalCueValidityMatrix 1 cue will reverse", {
   expect_equal(c(x1=0), cv$cue_validities)
 })
 
-test_that("conditionalCueValidityMatrix 2 cues", {
+test_that("conditionalCueValidityComplete 2 cues", {
   # x2 has initial validity 0.5, then validity -1.0 after x1 is chosen.
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
-  out <- conditionalCueValidityMatrix(matrix, 1, c(2:3))
+  out <- conditionalCueValidityComplete(matrix, 1, c(2:3))
   expect_equal(c(x1=1, x2=1), out$cue_validities)
   expect_equal(c(x1=1, x2=2), out$cue_ranks)
   expect_equal(c(x1=1, x2=-1), out$cue_directions)
 })
 
-test_that("conditionalCueValidityMatrix 2 same cues", {
+test_that("conditionalCueValidityComplete 2 same cues", {
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,0))
-  out <- conditionalCueValidityMatrix(matrix, 1, c(2:3))
+  out <- conditionalCueValidityComplete(matrix, 1, c(2:3))
   # Either cue could be chosen as the one with cue validity 1.  The other cue
   # will have validity NA because it does not discriminate on anything new.
   # Below output is sorted to make it consistent.
@@ -204,9 +204,9 @@ test_that("conditionalCueValidityMatrix 2 same cues", {
   expect_equal(c(1, NA), sort(unname(out$cue_directions), na.last=TRUE))
 })
 
-test_that("conditionalCueValidityMatrix too many cues", {
+test_that("conditionalCueValidityComplete too many cues", {
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1), x3=c(0,0,0))
-  out <- conditionalCueValidityMatrix(matrix, 1, c(2:4))
+  out <- conditionalCueValidityComplete(matrix, 1, c(2:4))
   # TODO: Convert NA to defaults, e.g. validity is 0.5.
   # That can be applied for all cue performance functions.
   expect_equal(c(x1=1, x2=1, x3=NA), out$cue_validities)
