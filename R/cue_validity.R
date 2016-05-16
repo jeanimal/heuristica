@@ -9,20 +9,36 @@
 # Private.  This is just an easy way to share parameter documentation.
 zzDocumentationStubReverseCues <- function(reverse_cues=TRUE) NULL
 
-#' Calculate the cue validity
+#' Calculate the cue validity.
 #'
 #' Calculate the
 #' \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
-#' for a pair of vectors.  Roughly speaking, what is the proportion of
-#' cases where this cue correctly predicts which row will have a larger
-#' criterion?
+#' for a pair of vectors.  It is calculated as
+#' correct / (correct + incorrect).
 #'
 #' @param criterion A vector of values to be predicted.
 #' @param cue A vector of values to predict with.  Should have the same
 #'         length as the criterion.
 #' @param replaceNanWith The value to return as cue validity in case it
-#'         cannot be calculated.
+#'         cannot be calculated, e.g. no variance in the values.
 #' @return The cue validity, a value in the range [0,1].
+#' @seealso
+#' \code{\link{cueValidityComplete}} for more complete output.
+#' @seealso
+#' \code{\link{conditionalCueValidityComplete}} for a version where validity
+#'   is conditional on cues already used to make decisions.
+#'
+#' @examples
+#' cueValidity(c(5,1), c(1,0))
+#' # Returns 1.
+#' cueValidity(c(5,2,1), c(1,0,0))
+#' # Also returns 1
+#' cueValidity(c(5,2,1), c(0,0,1))
+#' # Returns 0.
+#' cueValidity(c(5,2,1), c(1,0,1))
+#' # Returns 0.5.
+#' @seealso
+#' \code{\link{cueAccuracy}} for a measure that takes guesses into account.
 #' @references
 #' Wikipedia's entry on
 #' \url{https://en.wikipedia.org/wiki/Cue_validity}
@@ -37,7 +53,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-#' Calculate just cue validity for cols_to_fit predicting the criterion.
+#' Calculate the cue validity for the cols_to_fit columns.
 #'
 #' This returns only the cue validities, without reversing when a cue
 #' points in the wrong direction-- e.g. education is negatively associated
@@ -53,6 +69,7 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' @inheritParams zzDocumentationStubReverseCues
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
+#'
 #' @seealso
 #' \code{\link{cueValidityComplete}} for more complete output.
 #' @references
@@ -195,7 +212,8 @@ agreementWithCriterionMatrix <- function(data, criterion_col, cols_to_fit) {
 #' conditionalCueValidityComplete(data2, 1, c(2:3))
 #'
 #' @seealso
-#' \code{\link{cueValidity}} for the unconditional version.
+#' \code{\link{cueValidity}} and \code{\link{cueValidityComplete}} for the
+#' unconditional version.
 #'
 #' @references
 #' Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
@@ -244,10 +262,33 @@ conditionalCueValidityComplete <- function(data, criterion_col, cols_to_fit) {
               cue_directions=conditional_cue_directions))
 }
 
-# Cue validity counts only correct and incorrect inferences, ignoring
-# cases where a cue does not discriminate.  Cue accuracy gives those
-# cases a weight of 0.5, which is the prediction accuracy if forced to
-# use the cue to make a prediction.
+#' Calculate the accuracy of using a cue to predict a criterion.
+#'
+#' \code{\link{cueValidity}} counts only correct and incorrect inferences,
+#' ignoring cases where a cue does not discriminate.  Cue accuracy gives those
+#' cases a weight of 0.5, the expected accuracy of guessing.
+#' It is calculated as
+#' (correct + 0.5 * guesses) / (correct + incorrect + guesses).
+#'
+#' @param criterion A vector of values to be predicted.
+#' @param cue A vector of values to predict with.  Should have the same
+#'         length as the criterion.
+#' @param replaceNanWith The value to return as cue validity in case it
+#'         cannot be calculated, e.g. no variance in the values.
+#' @return The cue accuracy, a value in the range [0,1].
+#'
+#' @examples
+#' cueValidity(c(5,1), c(1,0))
+#' cueAccuracy(c(5,1), c(1,0))
+#' # Both return 1.
+#' cueValidity(c(5,2,1), c(1,0,0))
+#' cueAccuracy(c(5,2,1), c(1,0,0))
+#' # Cue validity still returns 1 but cue accuracy returns (2+0.5)/3 = 0.833.
+# TODO(jean):  #' @seealso
+# TODO(jean):  #' \code{\link{cueAccuracyComplete}} for more complete output.
+#' @seealso
+#' \code{\link{cueValidity}} for an alternate measure used in Take The Best.
+#' @export
 cueAccuracy <- function(criterion, cue, replaceNanWith=0.5) {
   out <- Hmisc::rcorr.cens(cue, criterion, outx=FALSE)
   justDxy <- as.double(out["Dxy"])

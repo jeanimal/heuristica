@@ -58,6 +58,7 @@ Martignon, L., & Hoffrage, U.  (2002).  Fast, frugal, and fit: Simple
 heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
 }
 \seealso{
-\code{\link{cueValidity}} for the unconditional version.
+\code{\link{cueValidity}} and \code{\link{cueValidityComplete}} for the
+unconditional version.
 }
 

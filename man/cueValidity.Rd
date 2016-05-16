@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{cueValidity}
 \alias{cueValidity}
-\title{Calculate the cue validity}
+\title{Calculate the cue validity.}
 \usage{
 cueValidity(criterion, cue, replaceNanWith = 0.5)
 }
@@ -13,7 +13,7 @@ cueValidity(criterion, cue, replaceNanWith = 0.5)
 length as the criterion.}
 
 \item{replaceNanWith}{The value to return as cue validity in case it
-cannot be calculated.}
+cannot be calculated, e.g. no variance in the values.}
 }
 \value{
 The cue validity, a value in the range [0,1].
@@ -21,12 +21,29 @@ The cue validity, a value in the range [0,1].
 \description{
 Calculate the
 \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
-for a pair of vectors.  Roughly speaking, what is the proportion of
-cases where this cue correctly predicts which row will have a larger
-criterion?
+for a pair of vectors.  It is calculated as
+correct / (correct + incorrect).
+}
+\examples{
+cueValidity(c(5,1), c(1,0))
+# Returns 1.
+cueValidity(c(5,2,1), c(1,0,0))
+# Also returns 1
+cueValidity(c(5,2,1), c(0,0,1))
+# Returns 0.
+cueValidity(c(5,2,1), c(1,0,1))
+# Returns 0.5.
 }
 \references{
 Wikipedia's entry on
 \url{https://en.wikipedia.org/wiki/Cue_validity}
+}
+\seealso{
+\code{\link{cueValidityComplete}} for more complete output.
+
+\code{\link{conditionalCueValidityComplete}} for a version where validity
+  is conditional on cues already used to make decisions.
+
+\code{\link{cueAccuracy}} for a measure that takes guesses into account.
 }
 

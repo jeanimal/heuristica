@@ -2,7 +2,7 @@
 % Please edit documentation in R/cue_validity.R
 \name{cueValidityAppliedToColumns}
 \alias{cueValidityAppliedToColumns}
-\title{Calculate just cue validity for cols_to_fit predicting the criterion.}
+\title{Calculate the cue validity for the cols_to_fit columns.}
 \usage{
 cueValidityAppliedToColumns(data, criterion_col, cols_to_fit,
   replaceNanWith = 0.5)
