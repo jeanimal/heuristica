@@ -299,8 +299,8 @@ cueAccuracy <- function(criterion, cue, replaceNanWith=0.5) {
   return(cv)
 }
 
-cueAccuracyMatrix  <- function(data, criterion_col, cols_to_fit,
-                               replaceNanWith=0.5) {
+cueAccuracyAppliedToColumns <- function(data, criterion_col, cols_to_fit,
+                                        replaceNanWith=0.5) {
   out <- sapply(cols_to_fit, function(col) {
     cueAccuracy(data[,criterion_col], data[,col],
                 replaceNanWith=replaceNanWith)

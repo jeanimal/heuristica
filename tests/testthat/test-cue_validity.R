@@ -87,23 +87,23 @@ expect_equal(0.75, cueAccuracy(c(5,4,3,2), c(3.3, 1, 2.2, 1)), tolerance=0.001)
 # (3*1 + -1 + __ + 1)/4 = 3/5
 expect_equal(0.8, cueValidity(c(5,4,3,2), c(3.3, 1, 2.2, 1)), tolerance=0.001)
 
-test_that("cueAccuracyMatrix with 1-cue matrix", {
+test_that("cueAccuracyAppliedToColumns with 1-cue matrix", {
   matrix <- cbind(y=c(5,4,3), x1=c(1,0,0))
-  cv <- cueAccuracyMatrix(matrix, 1, c(2)) 
+  cv <- cueAccuracyAppliedToColumns(matrix, 1, c(2)) 
   expect_equal(c(0.83333), cv, tolerance=0.001)
 })
 
-test_that("cueAccuracyMatrix with 3-cue matrix", {
+test_that("cueAccuracyAppliedToColumns with 3-cue matrix", {
   matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1), x3=c(0,0))
-  cv_just1 <- cueAccuracyMatrix(matrix, 1, c(3)) 
+  cv_just1 <- cueAccuracyAppliedToColumns(matrix, 1, c(3)) 
   expect_equal(0, cv_just1)
-  cv <- cueAccuracyMatrix(matrix, 1, c(2:4)) 
+  cv <- cueAccuracyAppliedToColumns(matrix, 1, c(2:4)) 
   expect_equal(c(1.0, 0, 0.5), cv)
 })
 
-test_that("cueAccuracyMatrix with 3-cue data.frame", {
+test_that("cueAccuracyAppliedToColumns with 3-cue data.frame", {
   df <- data.frame(y=c(5,4), x1=c(1,0), x2=c(0,1), x3=c(0,0))
-  cv <- cueAccuracyMatrix(df, 1, c(2:4)) 
+  cv <- cueAccuracyAppliedToColumns(df, 1, c(2:4)) 
   expect_equal(c(x1=1.0, x2=0, x3=0.5), cv)
 })
 
