@@ -78,10 +78,15 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #' @export
 cueValidityAppliedToColumns <- function(data, criterion_col, cols_to_fit,
                                         replaceNanWith=0.5) {
-  sapply(cols_to_fit, function(col) {
+  out <- sapply(cols_to_fit, function(col) {
     cueValidity(data[,criterion_col], data[,col],
                 replaceNanWith=replaceNanWith)
   })
+  out <- c(out)
+  if (length(colnames(data)) > 0) {
+    names(out) <- colnames(data)[cols_to_fit]
+  }
+  return(out)
 }
 
 # Given a vector of cue validities, looks for values less than 0.5
@@ -126,9 +131,6 @@ cueValidityComplete <- function(data, criterion_col, cols_to_fit,
                                 replaceNanWith=0.5, reverse_cues=FALSE) {
   cue_validities <- cueValidityAppliedToColumns(
     data, criterion_col, cols_to_fit, replaceNanWith)
-  if (length(colnames(data)) > 0) {
-    names(cue_validities) <- colnames(data)[cols_to_fit]
-  }
   if (reverse_cues) {
     reverse_info = reverseAsNeeded(cue_validities)
     cue_validities_with_reverse <- reverse_info$cue_validities_with_reverse
@@ -306,8 +308,8 @@ cueAccuracyAppliedToColumns <- function(data, criterion_col, cols_to_fit,
                 replaceNanWith=replaceNanWith)
   })
   out <- c(out)
-  if (length(names(data)) > 0) {
-    names(out) <- names(data)[cols_to_fit]
+  if (length(colnames(data)) > 0) {
+    names(out) <- colnames(data)[cols_to_fit]
   }
   return(out)
 }
