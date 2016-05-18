@@ -28,6 +28,17 @@ expect_equal(0.667, cueValidity(c(397,385,327), c(99,100,85)),
 expect_equal(-10, cueValidity(c(5,4,3), c(1,1,1), replaceNanWith=-10),tolerance=1)
 expect_equal(0.75,  cueValidity(c(5,4,3,2,1), c(1,1,1,0,1), replaceNanWith=-10),tolerance=0.01)
 
+
+# cueValidityAppliedToColumns
+
+test_that("cueValidityAppliedToColumns with 3-cue matrix", {
+  matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1), x3=c(0,0))
+  cv_just1 <- cueValidityAppliedToColumns(matrix, 1, c(3)) 
+  expect_equal(c(x2=0), cv_just1)
+  cv <- cueValidityAppliedToColumns(matrix, 1, c(2:4)) 
+  expect_equal(c(x1=1.0, x2=0, x3=0.5), cv)
+})
+
 # cueValidityComplete
 
 expect_equal(c(1), cueValidityComplete(
