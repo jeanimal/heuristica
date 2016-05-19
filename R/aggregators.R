@@ -94,19 +94,16 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' #        fit1 fit2 fit3
 #' # 1 0.8333333 0.75 0.75
 #'
+#' @seealso
+#' \code{\link{predicPair}} for predicting which of a pair of rows is greater
+#'   using one fitted heuristic.
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
   return(as.data.frame(pctCorrectOfPredictPairReturnMatrix(
     fitted_heuristic_list, test_data)))
 }
 
-#' Percent correct of all heuristics on test_data, returning a matrix.
-#'
-#' Returns overall percent correct for all heuristics.
-#' 1. Create predictions of row pairs for all heuristics in the list.
-#' 2. Calculate overall percent correct for each heuristic.
-#' Assumes the heuristics passed in have already been fitted to training
-#' data and all have the same criterion column.
+#' Percent correct of heuristics' predictPair on test_data, returning a matrix.
 #'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
 #'   e.g. ttbModel.

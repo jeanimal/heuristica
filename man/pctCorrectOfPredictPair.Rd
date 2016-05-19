@@ -45,4 +45,8 @@ pctCorrectOfPredictPair(list(ttb1, ttb2, ttb3), df)
 # 1 0.8333333 0.75 0.75
 
 }
+\seealso{
+\code{\link{predicPair}} for predicting which of a pair of rows is greater
+  using one fitted heuristic.
+}
 

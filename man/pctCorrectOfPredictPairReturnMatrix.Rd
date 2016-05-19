@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregators.R
 \name{pctCorrectOfPredictPairReturnMatrix}
 \alias{pctCorrectOfPredictPairReturnMatrix}
-\title{Percent correct of all heuristics on test_data, returning a matrix.}
+\title{Percent correct of heuristics' predictPair on test_data, returning a matrix.}
 \usage{
 pctCorrectOfPredictPairReturnMatrix(fitted_heuristic_list, test_data)
 }
@@ -17,11 +17,7 @@ A one-row matrix of numbers from 0 to 1, meaning proportion correct.
   Each column is named with the heuristic's class or the fit name.
 }
 \description{
-Returns overall percent correct for all heuristics.
-1. Create predictions of row pairs for all heuristics in the list.
-2. Calculate overall percent correct for each heuristic.
-Assumes the heuristics passed in have already been fitted to training
-data and all have the same criterion column.
+Percent correct of heuristics' predictPair on test_data, returning a matrix.
 }
 \examples{
 # See examples for pctCorrectOfPredictPair, which returns a data.frame.
