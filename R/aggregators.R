@@ -84,6 +84,9 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' #  1     0.75      0.8333333
 #' # TTB gets 75% correct while single cue model gets 83%.
 #'
+#' # Now repeatedly sample 2 rows of the data set and see how outcomes are
+#' # affected, tracking with the fit_name.
+#' set.seed(1) # If you want to reproduce the same output as below.
 #'
 #' @seealso
 #'   using one fitted heuristic.
