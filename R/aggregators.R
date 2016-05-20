@@ -95,7 +95,6 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' # 1 0.8333333 0.75 0.75
 #'
 #' @seealso
-#' \code{\link{predicPair}} for predicting which of a pair of rows is greater
 #'   using one fitted heuristic.
 #' @export
 pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
