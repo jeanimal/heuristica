@@ -87,6 +87,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' # Now repeatedly sample 2 rows of the data set and see how outcomes are
 #' # affected, tracking with the fit_name.
 #' set.seed(1) # If you want to reproduce the same output as below.
+#' ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
 #'
 #' @seealso
 #'   using one fitted heuristic.
