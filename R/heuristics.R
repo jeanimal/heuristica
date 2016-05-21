@@ -421,10 +421,8 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit,
    if (include_intercept == FALSE) {
     formula_str = paste(formula_str, "-1", sep = "")
   }
-  return(lm(as.formula(formula_str), data=train_df))
+  return(stats::lm(stats::as.formula(formula_str), data=train_df))
 }
-
-# TODO(jean): A general fitting model for both regModel and regInterceptModel.
 
 #' Linear regression wrapper for hueristica
 #'
@@ -571,7 +569,7 @@ rankByCueValidity <- function(train_data, criterion_col, cols_to_fit) {
 rankByCorrelation <- function(train_data, criterion_col, cols_to_fit) {
   data_columns <- train_data[,c(criterion_col, cols_to_fit)]
   # Get correlations for all pairs, then limit to criterion column.
-  all_cor_with_criterion <- cor(data_columns)[,1]
+  all_cor_with_criterion <- stats::cor(data_columns)[,1]
   # Drop correlation of criterion with itself.
   cue_cor_with_criterion <- all_cor_with_criterion[-1]
   # rank by default ranks in ascending order.  A trick to get a ranking in
@@ -613,12 +611,13 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
   formula <- paste(formula, "-1")
   
   if(suppress_warnings) {
-    model <- suppressWarnings(glm(formula,family=binomial,data=training_set))
+    model <- suppressWarnings(stats::glm(formula, family=stats::binomial,
+                                         data=training_set))
   } else { 
-    model <- glm(formula,family=binomial,data=training_set)  
+    model <- stats::glm(formula, family=stats::binomial, data=training_set)  
   }
   
-  col_weights <- coef(model)
+  col_weights <- stats::coef(model)
   
   # Make clean weights that can be easily used in predictProbInternal.
   col_weights_clean <- col_weights
