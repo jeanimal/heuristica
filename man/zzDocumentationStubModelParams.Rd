@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{zzDocumentationStubModelParams}
 \alias{zzDocumentationStubModelParams}
-\title{Documentation stub.}
+\title{Documentation stub.  Just a way to share parameter documentation.}
 \usage{
 zzDocumentationStubModelParams(train_data, criterion_col, cols_to_fit)
 }
@@ -16,7 +16,7 @@ criterion.}
 the criterion.}
 }
 \description{
-Documentation stub.
+Documentation stub.  Just a way to share parameter documentation.
 }
 \keyword{internal}
 

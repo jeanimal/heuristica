@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{regInterceptModelForDocumentation}
 \alias{regInterceptModelForDocumentation}
-\title{Just to share documentation}
+\title{Documentation stub. Just to share documentation.}
 \usage{
 regInterceptModelForDocumentation(train_matrix, criterion_col, cols_to_fit)
 }
@@ -16,6 +16,7 @@ model with.}
 formula.}
 }
 \description{
-Just to share documentation
+Documentation stub. Just to share documentation.
 }
+\keyword{internal}
 

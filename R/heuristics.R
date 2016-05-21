@@ -37,14 +37,13 @@ predictPairInternal <- function(object, row1, row2) {
 
 ### Shared documentation stubs ###
 
-#' Documentation stub.
+#' Documentation stub.  Just a way to share parameter documentation.
 #' @param train_data Training/fitting data as a matrix or data.frame.
 #' @param criterion_col The index of the colum in train_data that has the
 #'   criterion.
 #' @param cols_to_fit A vector of column indices in train_data, used to fit
 #'   the criterion.
 #' @keywords internal
-# Private.  This is just an easy way to share parameter documentation.
 zzDocumentationStubModelParams <- function(train_data, criterion_col, cols_to_fit) NULL
 
 
@@ -392,14 +391,14 @@ predictProbInternal.validityWeightModel <- function(object, row1, row2) {
 
 ### Wrappers for linear regression models ###
 
-#' Just to share documentation
+#' Documentation stub. Just to share documentation.
 #'
 #' @param train_matrix A matrix (or data.frame) of data to train (fit) the
 #'   model with.
 #' @param criterion_col The index of the criterion column-- "y" in the formula.
 #' @param cols_to_fit A vector of column indexes to fit-- the "x's" in the
 #'   formula.
-# Private
+#' @keywords internal
 regInterceptModelForDocumentation <- function(train_matrix, criterion_col,
                                               cols_to_fit) NULL
 
