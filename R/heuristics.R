@@ -454,7 +454,7 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model$cols_to_fit <- cols_to_fit
 
   # Make clean weights that can be easily used in predictProbInternal.
-  col_weights_clean <- coef(model)
+  col_weights_clean <- stats::coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
   # Because the intercept is 0 for row1 and row2, ignore it.
@@ -472,8 +472,8 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
 # to use in practice.
 # TODO: use this in tests to compare with hand-coded predictions.
 predictProbInternalUsingPredict <- function(object, row1, row2) {
-  p1 <- predict(object, as.data.frame(row1))
-  p2 <- predict(object, as.data.frame(row2))
+  p1 <- stats::predict(object, as.data.frame(row1))
+  p2 <- stats::predict(object, as.data.frame(row2))
   if (p1 > p2) {
     return(1)
   } else if (p1 < p2) {
@@ -534,7 +534,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit,
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
   # Make clean weights that can be easily used in predictProbInternal.
-  col_weights_clean <- coef(model)
+  col_weights_clean <- stats::coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
   model$col_weights_clean <- col_weights_clean
