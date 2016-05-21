@@ -38,6 +38,11 @@ pctCorrectOfPredictPair(list(ttb, sing), df)
 # affected, tracking with the fit_name.
 set.seed(1) # If you want to reproduce the same output as below.
 ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
+ttb2 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit2")
+ttb3 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit3")
+pctCorrectOfPredictPair(list(ttb1, ttb2, ttb3), df)
+#        fit1 fit2 fit3
+# 1 0.8333333 0.75 0.75
 
 }
 \seealso{

@@ -57,7 +57,7 @@ applyFunctionToRowPairs <- function(data, fn) {
   fn_with_data <- bindFunctionToRowPairs(data, fn)
   # TODO(jean): Remove this hack for column names.
   temp <- fn_with_data(c(1,1))
-  results_array <- combn(nrow(data), 2, fn_with_data)
+  results_array <- utils::combn(nrow(data), 2, fn_with_data)
   # R drops dimensions so we need different handling here.
   if (length(dim(results_array))==1) {
     results <- t(t(results_array))
@@ -362,7 +362,7 @@ createFunction.colPairValues<- function(object, test_data) {
 #' @return A matrix of the output of the function for all unique row pairs:
 #'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
 pairMatrix <- function(num_row, pair_evaluator_fn) {
-  out <- combn(num_row, 2, pair_evaluator_fn, simplify=FALSE)
+  out <- utils::combn(num_row, 2, pair_evaluator_fn, simplify=FALSE)
   # The output of combn is a complicated nested mess.  Below we make it a
   # simple matrix by assuming the dimensions of every list element are the
   # same as the first list element.
