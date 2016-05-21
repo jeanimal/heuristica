@@ -6,6 +6,7 @@
 #' default, the model will reverse the cue values for cues with cue validity
 #' < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 #' Set this to FALSE if you do not want that, i.e. the cue stays validity 0.
+#' @keywords internal
 # Private.  This is just an easy way to share parameter documentation.
 zzDocumentationStubReverseCues <- function(reverse_cues=TRUE) NULL
 

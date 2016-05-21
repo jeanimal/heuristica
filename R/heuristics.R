@@ -43,6 +43,7 @@ predictPairInternal <- function(object, row1, row2) {
 #'   criterion.
 #' @param cols_to_fit A vector of column indices in train_data, used to fit
 #'   the criterion.
+#' @keywords internal
 # Private.  This is just an easy way to share parameter documentation.
 zzDocumentationStubModelParams <- function(train_data, criterion_col, cols_to_fit) NULL
 

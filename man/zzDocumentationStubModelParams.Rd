@@ -18,4 +18,5 @@ the criterion.}
 \description{
 Documentation stub.
 }
+\keyword{internal}
 
