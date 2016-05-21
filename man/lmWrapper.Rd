@@ -24,4 +24,5 @@ An object of class lm.
 \description{
 Create an lm model just specifying columns, generating a formula for you.
 }
+\keyword{internal}
 

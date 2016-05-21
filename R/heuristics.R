@@ -399,18 +399,17 @@ predictProbInternal.validityWeightModel <- function(object, row1, row2) {
 #' @param cols_to_fit A vector of column indexes to fit-- the "x's" in the
 #'   formula.
 #' @keywords internal
-regInterceptModelForDocumentation <- function(train_matrix, criterion_col,
+zzDocumentationStubFormulaModelParams <- function(train_matrix, criterion_col,
                                               cols_to_fit) NULL
 
 #' Create an lm model just specifying columns, generating a formula for you.
 #' 
-#' @inheritParams regInterceptModelForDocumentation 
+#' @inheritParams zzDocumentationStubFormulaModelParams 
 #' @param include_intercept A boolean of whether to include an intercept in
 #' the formula.
 #'
 #' @return An object of class lm.
-#'
-# Private because the exported versions are below.
+#' @keywords internal
 lmWrapper <- function(train_matrix, criterion_col, cols_to_fit,
                       include_intercept=TRUE) {
   train_df = as.data.frame(train_matrix)
@@ -432,7 +431,7 @@ lmWrapper <- function(train_matrix, criterion_col, cols_to_fit,
 #'
 #' This version assumes you always want to include the intercept.
 #' 
-#' @inheritParams regInterceptModelForDocumentation 
+#' @inheritParams zzDocumentationStubFormulaModelParams 
 #'
 #' @return An object of class regInterceptModel, which is a subclass of lm.
 #'
@@ -508,7 +507,7 @@ predictProbInternal.regInterceptModel <- function(object, row1, row2) {
 #' goal is predicting rank order because the intercept does not affect the
 #' ranking, but estimating it wastes a degree of freedom.
 #' 
-#' @inheritParams regInterceptModelForDocumentation 
+#' @inheritParams zzDocumentationStubFormulaModelParams 
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.
 #'
