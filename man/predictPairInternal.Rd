@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{predictPairInternal}
 \alias{predictPairInternal}
-\title{Generic function to predict which of a pair of rows has higher criterion.}
+\title{Generic function to predict which of a pair of rows has a higher criterion.}
 \usage{
 predictPairInternal(object, row1, row2)
 }
@@ -19,7 +19,9 @@ A number in the set {-1, 0, 1}, where 1 means row1 is predicted to
   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 }
 \description{
-Implement this for every heuristic in order to use with row_pair and
-aggregate functions.
+Do not call this directly (which is why it is called "internal").
+Instead, call predictPair.  Heuristics implement this function in order to
+be callable with predictPair.
 }
+\keyword{internal}
 

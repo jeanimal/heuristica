@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{predictProbInternal}
 \alias{predictProbInternal}
-\title{Generic function to predict which of a pair of rows has higher criterion.}
+\title{Generic function to predict the probability row 1 has a higher criterion.}
 \usage{
 predictProbInternal(object, row1, row2)
 }
@@ -19,7 +19,9 @@ A value from 0 to 1, representing the probability that row1's
   criterion is greater than row2's criterion.
 }
 \description{
-Implement this for every heuristic in order to use with row_pair and
-aggregate functions.
+Do not call this directly (which is why it is called "internal").
+Instead, call predictPairProb.  Heuristics implement this function in order
+to be callable with predictPairProb.
 }
+\keyword{internal}
 

@@ -5,24 +5,11 @@
 
 ## New generics ##
 
-#' Generic function to predict which of a pair of rows has higher criterion.
+#' Generic function to predict which of a pair of rows has a higher criterion.
 #' 
-#' Implement this for every heuristic in order to use with row_pair and
-#' aggregate functions.
-#'
-#' @param object The object that implements predictPair, e.g. a ttb model.
-#' @param row1 The first row of cues (object$cols_to_fit columns), as a
-#'   one-row matrix.
-#' @param row2 The second row of cues.
-#' @return A value from 0 to 1, representing the probability that row1's
-#'   criterion is greater than row2's criterion.
-#' @export
-predictProbInternal <- function(object, row1, row2) UseMethod("predictProbInternal")
-
-#' Generic function to predict which of a pair of rows has higher criterion.
-#' 
-#' Implement this for every heuristic in order to use with row_pair and
-#' aggregate functions.
+#' Do not call this directly (which is why it is called "internal").
+#' Instead, call predictPair.  Heuristics implement this function in order to
+#' be callable with predictPair.
 #'
 #' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param row1 The first row of cues (object$cols_to_fit columns), as a
@@ -30,10 +17,27 @@ predictProbInternal <- function(object, row1, row2) UseMethod("predictProbIntern
 #' @param row2 The second row of cues.
 #' @return A number in the set {-1, 0, 1}, where 1 means row1 is predicted to
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
+#' @keywords internal
 #' @export
 predictPairInternal <- function(object, row1, row2) {
   UseMethod("predictPairInternal")
 }
+
+#' Generic function to predict the probability row 1 has a higher criterion.
+#'
+#' Do not call this directly (which is why it is called "internal").
+#' Instead, call predictPairProb.  Heuristics implement this function in order
+#' to be callable with predictPairProb.
+#'
+#' @param object The object that implements predictPair, e.g. a ttb model.
+#' @param row1 The first row of cues (object$cols_to_fit columns), as a
+#'   one-row matrix.
+#' @param row2 The second row of cues.
+#' @return A value from 0 to 1, representing the probability that row1's
+#'   criterion is greater than row2's criterion.
+#' @keywords internal
+#' @export
+predictProbInternal <- function(object, row1, row2) UseMethod("predictProbInternal")
 
 ### Shared documentation stubs ###
 
