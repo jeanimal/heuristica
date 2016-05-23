@@ -26,12 +26,9 @@ It defaults to the class name.  It is useful to change this to a unique name
 if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."}
 }
 \value{
-An object of \code{\link[base]{class}} ttbModel.  This is a list
-  containing at least the following components:
-  \itemize{
-   \item "cue_validities": A list of cue validities for the cues in order of
-     cols_to_fit.
-  }
+An object of \code{\link[base]{class}} ttbModel, which can be passed
+to a variety of functions to make predictions, e.g.
+\code{\link{predictPair}} and \code{\link{pctCorrectOfPredictPair}}.
 }
 \description{
 An implementation of the Take The Best heuristic.
@@ -40,13 +37,20 @@ based on the first cue that discriminates (has differing values on the
 two objects).
 }
 \examples{
-## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
-## validity 0.
+# Fit column 1 (y) to columns 2 and 3 (x1 and x2) of train_matrix.
 train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,0))
 ttb <- ttbModel(train_matrix, 1, c(2,3))
+# Have ttb predict whether row 1 or 2 has a greater value for y.  The
+# output is 1, meaning it predicts row1 is bigger.
 predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), ttb)
-## But this test data results in an incorrect prediction-- that row1 has a
-## smaller criterion than row2-- because x1 has a reversed direction.
+
+# Now ask it the reverse-- predict whther row 2 or row 1 is greater.  The
+# output is -1, meaning it still predicts row1 is bigger.  (It is a
+# symmetric heuristic.)
+predictPair(oneRow(train_matrix, 2), oneRow(train_matrix, 1), ttb)
+
+# But this test data results in an incorrect prediction-- that row1 has a
+# smaller criterion than row2-- because x1 has a reversed direction.
 test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(0,0))
 predictPair(oneRow(test_matrix, 1), oneRow(test_matrix, 2), ttb)
 
