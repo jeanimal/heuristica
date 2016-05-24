@@ -20,7 +20,13 @@ test_cue_reorder <- function(model, has_cv=TRUE) {
     expect_equal(c(a=1, b=0.6), fitted_model$cue_validities, tolerance=0.001)
     expect_equal(c(b=0.6, a=1), fitted_model_rev$cue_validities, tolerance=0.001)
   }
-  # Make sure models still agree on outputs.
+
+  # Make sure models agree on outputs when reversing *cues*.
+  # predictPair:
+  out <- allRowPairApply(train_df, heuristics(fitted_model))
+  out_rev <- allRowPairApply(train_df, heuristics(fitted_model_rev))
+  expect_equal(out, out_rev)
+  # predictPairProb:
   out <- allRowPairApply(train_df, heuristicsProb(fitted_model))
   out_rev <- allRowPairApply(train_df, heuristicsProb(fitted_model_rev))
   expect_equal(out, out_rev)
@@ -51,7 +57,12 @@ test_row_reorder <- function(model, has_cv=TRUE) {
     expect_equal(c(a=1, b=0.6), fitted_model$cue_validities, tolerance=0.001)
     expect_equal(c(a=1, b=0.6), fitted_model_rev$cue_validities, tolerance=0.001)
   }
-  # Make sure models still agree on outputs.
+  # Make sure models agree on outputs when reversing *rows*.
+  # predictPair:
+  out <- allRowPairApply(train_df, heuristics(fitted_model))
+  out_rev <- allRowPairApply(train_df, heuristics(fitted_model_rev))
+  expect_equal(out, out_rev)
+  # predictPairProb:
   out <- allRowPairApply(train_df, heuristicsProb(fitted_model))
   out_rev <- allRowPairApply(train_df, heuristicsProb(fitted_model_rev))
   expect_equal(out, out_rev)
