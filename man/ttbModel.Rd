@@ -69,5 +69,8 @@ Wikipedia's entry on
 
 \code{\link{predictPairProb}} for predicting the probability row1 is
 greater.
+
+\code{\link{pctCorrectOfPredictPair}} for the accuracy of predicting all
+row pairs in a matrix or data.frame.
 }
 
