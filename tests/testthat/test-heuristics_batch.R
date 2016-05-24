@@ -128,17 +128,19 @@ test_00_04_rc <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.001)
   }
   # Check output.
-  expect_equal(expected, predictPairProb(oneRow(train_df, 1),
-                                        oneRow(train_df, 2), fitted_model), tolerance=0.001)
-  expect_equal(1-expected, predictPairProb(oneRow(train_df, 2),
-                                          oneRow(train_df, 1), fitted_model), tolerance=0.001)
+  expect_equal(expected, predictPair(oneRow(train_df, 1),
+                                     oneRow(train_df, 2), fitted_model),
+               tolerance=0.001)
+  expect_equal(-expected, predictPair(oneRow(train_df, 2),
+                                       oneRow(train_df, 1), fitted_model),
+               tolerance=0.001)
 }
 
 # The correct answer is 0, but we confirm each model works as designed.
-test_that("test_00_04_rc ttb",      {test_00_04_rc(ttbModel,       0)})
-test_that("test_00_04_rc singleCue",{test_00_04_rc(singleCueModel, 0.5)})
-test_that("test_00_04_rc dawes",    {test_00_04_rc(unitWeightModel,     0)})
-test_that("test_00_04_rc validityWeight", {test_00_04_rc(validityWeightModel,  0)})
+test_that("test_00_04_rc ttb",      {test_00_04_rc(ttbModel,        -1)})
+test_that("test_00_04_rc singleCue",{test_00_04_rc(singleCueModel,   0)})
+test_that("test_00_04_rc dawes",    {test_00_04_rc(unitWeightModel, -1)})
+test_that("test_00_04_rc validityWeight", {test_00_04_rc(validityWeightModel,  -1)})
 #TODO(jean): Why do reg models get this wrong?
 test_that("test_00_04_rc reg",      {test_00_04_rc(regModel,       1, has_cv=FALSE)})
 test_that("test_00_04_rc regIntercept", {test_00_04_rc(regInterceptModel,       1, has_cv=FALSE)})
