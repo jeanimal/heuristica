@@ -95,21 +95,20 @@ test_10_06 <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.001)
   }
   # Check output.
-  expect_equal(expected, predictPairProb(oneRow(train_df, 1),
-                                        oneRow(train_df, 2), fitted_model), tolerance=0.001)
-  expect_equal(1-expected, predictPairProb(oneRow(train_df, 2),
-                                          oneRow(train_df, 1), fitted_model), tolerance=0.001)
+  expect_equal(expected, predictPair(oneRow(train_df, 1),
+                                     oneRow(train_df, 2), fitted_model), tolerance=0.001)
+  expect_equal(-expected, predictPair(oneRow(train_df, 2),
+                                      oneRow(train_df, 1), fitted_model), tolerance=0.001)
 }
 
 # The correct answer is 1, but we confirm each model works as designed.
 test_that("test_10_06 ttb",      {test_10_06(ttbModel,       1)})
-test_that("test_10_06 singleCue",{test_10_06(singleCueModel, 0.5)})
+test_that("test_10_06 singleCue",{test_10_06(singleCueModel, 0)})
 test_that("test_10_06 dawes",    {test_10_06(unitWeightModel,     1)})
 test_that("test_10_06 validityWeight", {test_10_06(validityWeightModel,  1)})
 test_that("test_10_06 reg",      {test_10_06(regModel,    1, has_cv=FALSE)})
-test_that("test_10_06 regIntercept", {test_10_06(regInterceptModel,       0, has_cv=FALSE)})
-#TODO(Daniel): Why does logReg get this prediction wrong?  Is it a bug?
-test_that("test_10_06 logReg",   {test_10_06(logRegModel,    0, has_cv=FALSE)})
+test_that("test_10_06 regIntercept", {test_10_06(regInterceptModel,       -1, has_cv=FALSE)})
+test_that("test_10_06 logReg",   {test_10_06(logRegModel,    -1, has_cv=FALSE)})
 
 
 # This test is named by the cue validities of the two cues, 1.0 and 0.6,
@@ -143,7 +142,7 @@ test_that("test_00_04_rc validityWeight", {test_00_04_rc(validityWeightModel,  0
 #TODO(jean): Why do reg models get this wrong?
 test_that("test_00_04_rc reg",      {test_00_04_rc(regModel,       1, has_cv=FALSE)})
 test_that("test_00_04_rc regIntercept", {test_00_04_rc(regInterceptModel,       1, has_cv=FALSE)})
-test_that("test_00_04_rc logReg",   {test_10_06(logRegModel,       0, has_cv=FALSE)})
+test_that("test_00_04_rc logReg",   {test_00_04_rc(logRegModel,       1, has_cv=FALSE)})
 
 
 test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
