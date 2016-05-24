@@ -160,20 +160,20 @@ test_ab_vs_c <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.002)
   }
   # Check prediction.
-  expect_equal(expected, predictPairProb(oneRow(train_df, 3),
-                                        oneRow(train_df, 4), fitted_model))
-  expect_equal(1-expected, predictPairProb(oneRow(train_df, 4),
-                                          oneRow(train_df, 3), fitted_model))
+  expect_equal(expected, predictPair(oneRow(train_df, 3),
+                                     oneRow(train_df, 4), fitted_model))
+  expect_equal(-expected, predictPair(oneRow(train_df, 4),
+                                       oneRow(train_df, 3), fitted_model))
 }
 
 # The correct answer is 0, but we confirm each model works as designed.
 test_that("test_ab_vs_c ttb",      {test_ab_vs_c(ttbModel,       1)})
 test_that("test_ab_vs_c singleCue",{test_ab_vs_c(singleCueModel, 1)})
-test_that("test_ab_vs_c dawes",    {test_ab_vs_c(unitWeightModel,     0)})
-test_that("test_ab_vs_c validityWeight", {test_ab_vs_c(validityWeightModel,  0)})
-test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,       1, has_cv=FALSE)})
+test_that("test_ab_vs_c dawes",    {test_ab_vs_c(unitWeightModel,     -1)})
+test_that("test_ab_vs_c validityWeight", {test_ab_vs_c(validityWeightModel,  -1)})
+test_that("test_ab_vs_c reg",      {test_ab_vs_c(regModel,                    1, has_cv=FALSE)})
 test_that("test_ab_vs_c regIntercept", {test_ab_vs_c(regInterceptModel,       1, has_cv=FALSE)})
-test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,    1, has_cv=FALSE)})
+test_that("test_ab_vs_c logReg",   {test_ab_vs_c(logRegModel,                 1, has_cv=FALSE)})
 
 
 d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
