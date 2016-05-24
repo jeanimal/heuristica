@@ -12,18 +12,22 @@ context("heuristics_benchmark")
 
 test_that("Benchmark ttbModel on city_population", {
   ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-  times <- system.time(allRowPairApply(city_population, heuristicsProb(ttb)))
+  times <- system.time(allRowPairApply(city_population, heuristics(ttb)))
   print("ttb")
   print(times)
 
-  # On 11 Jan on Jean's macbook:
+  # 2016-01-11 Jan on Jean's macbook:
   #    user  system elapsed
   #   0.137   0.006   0.143
+  #
+  # 2016-05-23 Jan on Jean's macbook-- a REGRESSION
+  # user  system elapsed 
+  # 0.173   0.002   0.182 
 })
 
 test_that("Benchmark regModel on city_population", {
-  model <- regModel(city_population, 3, c(4:ncol(city_population)))
-  times <- system.time(allRowPairApply(city_population, heuristicsProb(model)))
+  reg <- regModel(city_population, 3, c(4:ncol(city_population)))
+  times <- system.time(allRowPairApply(city_population, heuristics(reg)))
   print("reg")
   print(times)
   expect_lt(times[[2]], 1)
@@ -31,5 +35,9 @@ test_that("Benchmark regModel on city_population", {
   # On 11 Jan on Jean's macbook:
   #    user  system elapsed
   #   0.138   0.001   0.139
+  #
+  # 2016-05-23 Jan on Jean's macbook-- a REGRESSION
+  # user  system elapsed 
+  # 0.150   0.002   0.158 
 })
 
