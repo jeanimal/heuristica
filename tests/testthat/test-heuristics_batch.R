@@ -111,7 +111,7 @@ test_that("test_10_06 regIntercept", {test_10_06(regInterceptModel,       -1, ha
 test_that("test_10_06 logReg",   {test_10_06(logRegModel,    -1, has_cv=FALSE)})
 
 
-# This test is named by the cue validities of the two cues, 1.0 and 0.6,
+# This test is named by the cue validities of the two cues, 1.0 and 0.4,
 # and "rc" means "reversed criterion."
 test_00_04_rc <- function(model, expected, has_cv=TRUE) {
   train_df <- data.frame(criterion=c(6,7,8,9), a=c(101,101,2,2), b=c(59,58,5,59))
