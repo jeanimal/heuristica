@@ -143,6 +143,10 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
             class="ttbModel")
 }
 
+coef.ttbModel <- function(object) {
+  return(object$linear_coef)
+}
+
 predictPairInternal.ttbModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
@@ -311,6 +315,10 @@ unitWeightModel <- function(train_data, criterion_col, cols_to_fit,
                  linear_coef=linear_coef), class="unitWeightModel")
 }
 
+coef.unitWeightModel <- function(object) {
+  return(object$linear_coef)
+}
+
 predictPairInternal.unitWeightModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
@@ -368,6 +376,10 @@ validityWeightModel <- function(train_data, criterion_col, cols_to_fit,
                  cue_validities=cv$cue_validities, linear_coef=linear_coef,
                  fit_name=fit_name),
             class="validityWeightModel")
+}
+
+coef.validityWeightModel <- function(object) {
+  return(object$linear_coef)
 }
 
 predictPairInternal.validityWeightModel <- function(object, row1, row2) {
@@ -763,6 +775,10 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit,
                  cue_validities=cv$cue_validities,
                  linear_coef=linear_coef, fit_name=fit_name),
             class="singleCueModel")
+}
+
+coef.singleCueModel <- function(object) {
+  return(object$linear_coef)
 }
 
 predictPairInternal.singleCueModel <- function(object, row1, row2) {
