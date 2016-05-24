@@ -719,59 +719,6 @@ predictProbInternal.logRegModel <- function(object, row1, row2) {
                            object$col_weights_clean, object$row_pair_fn)
 }
 
-logRegCorrModel <- function(train_data, criterion_col, cols_to_fit,
-                           suppress_warnings=TRUE) {
-  return(logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                            rowDiff, "logRegCorrModel", rankByCorrelation,
-                            suppress_warnings))
-}
-
-predictProbInternal.logRegCorrModel <- function(object, row1, row2) {
-  generalPredictRootLogReg(row1, row2, object$cue_ordering, 
-                           object$col_weights_clean, object$row_pair_fn)
-}
-
-#' Logistic Regression model using the sign of the difference of cues
-#'
-#' Create a logistic regression model by specifying columns and a dataset.
-#' It fits the model with R's glm function.
-#'
-#' This version assumes you do not want to include the intercept.
-#' 
-#' @inheritParams zzDocumentationStubModelParams
-#' @param cue_order_fn Optional argument as a function that orders cues.  This
-#'   affects which cues are dropped for underspecified models. The rightmost
-#'   cues in the order are dropped first, so the function rankByCueValidity
-#'   means cues with the lowest cueValidity in the training set will be
-#'   be dropped first.  The function must have the signature
-#'   function(train_data, criterion_col, cols_to_fit).
-#' @param suppress_warnings Optional argument specifying whether glm warnings
-#'   should be suppressed or not. Default is TRUE.
-#' @param fit_name Optional The name other functions can use to label output.
-#'   It defaults to the class name. 
-#' @return An object of class logRegModel.
-#' @export
-logRegSignModel <- function(train_data, criterion_col, cols_to_fit,
-                            cue_order_fn=keepOrder,
-                            suppress_warnings=TRUE,
-                            fit_name="logRegSignModel") {
-  model <- logRegModelGeneral(train_data, criterion_col, cols_to_fit,
-                              rowDiffSign, "logRegSignModel", cue_order_fn,
-                              suppress_warnings)
-  model$fit_name <- fit_name
-  return(model)
-}
-
-# This is equivalent to the glm predict like this:
-# predict(model, newdata=as.data.frame(sign(row1 - row2)),
-#  type="response"))
-predictProbInternal.logRegSignModel <- function(object, row1, row2) {
-  generalPredictRootLogReg(row1, row2, object$cue_ordering, 
-                           object$col_weights_clean, object$row_pair_fn)
-}
-
-
-
 #' Single Cue Model
 #'
 #' Create a single cue model by specifying columns and a dataset.  It sorts

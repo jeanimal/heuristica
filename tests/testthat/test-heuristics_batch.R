@@ -189,10 +189,10 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
                  tolerance=0.002)
   }
   # Check prediction.
-  expect_equal(expected, predictPairProb(oneRow(train_df, 1),
-                                        oneRow(train_df, 2), fitted_model))
-  expect_equal(1-expected, predictPairProb(oneRow(train_df, 2),
-                                          oneRow(train_df, 1), fitted_model))
+  expect_equal(expected, predictPair(oneRow(train_df, 1),
+                                     oneRow(train_df, 2), fitted_model))
+  expect_equal(-expected, predictPair(oneRow(train_df, 2),
+                                      oneRow(train_df, 1), fitted_model))
   
 }
 
@@ -200,12 +200,11 @@ d_useless_cue_3 <- function(model, expected, has_cv=TRUE) {
 #TODO(jean): Find a way to test ttb and singleCue despite random order of x1 and x2.
 #test_that("d_useless_cue_3 ttb",      {d_useless_cue_3(ttbModel,       #random(0,1))})
 #test_that("d_useless_cue_3 singleCue",{d_useless_cue_3(singleCueModel, #random(0,1))})
-test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(unitWeightModel,     0.5)})
-test_that("d_useless_cue_3 validityWeight", {d_useless_cue_3(validityWeightModel,  0.5)})
+test_that("d_useless_cue_3 dawes",    {d_useless_cue_3(unitWeightModel,     0)})
+test_that("d_useless_cue_3 validityWeight", {d_useless_cue_3(validityWeightModel,  0)})
 test_that("d_useless_cue_3 reg",      {d_useless_cue_3(regModel,       1, has_cv=FALSE)})
 test_that("d_useless_cue_3 regIntercept", {d_useless_cue_3(regInterceptModel, 1, has_cv=FALSE)})
 test_that("d_useless_cue_3 logReg",   {d_useless_cue_3(logRegModel,    1, has_cv=FALSE)})
-test_that("d_useless_cue_3 logRegSign",   {d_useless_cue_3(logRegSignModel, 0.5, has_cv=FALSE)})
 # minModel
 
 
@@ -235,6 +234,5 @@ test_that("a_reordered_columns validityWeight", {a_reordered_columns(validityWei
 test_that("a_reordered_columns reg",      {a_reordered_columns(regModel)})
 test_that("a_reordered_columns regIntercept", {a_reordered_columns(regInterceptModel)})
 test_that("a_reordered_columns logReg",   {a_reordered_columns(logRegModel)})
-test_that("a_reordered_columns logRegSign", {a_reordered_columns(logRegSignModel)})
 # minModel
 
