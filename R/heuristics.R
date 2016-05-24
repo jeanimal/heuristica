@@ -139,14 +139,6 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
             class="ttbModel")
 }
 
-#' Linear weights that can be used to compare pairs of cue directions.
-#'
-#' Do NOT apply these directly to raw data.
-#'
-#' @inheritParams stats::coef
-#' @export
-coef.ttbModel <- function(object, ...) object$linear_coef
-
 predictPairInternal.ttbModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
@@ -242,8 +234,6 @@ ttbGreedyModel <- function(train_data, criterion_col, cols_to_fit,
   
 }
 
-coef.ttbGreedyModel <- function(object, ...) object$linear_coef
-
 predictPairInternal.ttbGreedyModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
@@ -317,10 +307,6 @@ unitWeightModel <- function(train_data, criterion_col, cols_to_fit,
                  linear_coef=linear_coef), class="unitWeightModel")
 }
 
-#' @inheritParams stats::coef
-#' @export
-coef.unitWeightModel <- function(object, ...) object$linear_coef
-
 predictPairInternal.unitWeightModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
@@ -379,10 +365,6 @@ validityWeightModel <- function(train_data, criterion_col, cols_to_fit,
                  fit_name=fit_name),
             class="validityWeightModel")
 }
-
-#' @inheritParams stats::coef
-#' @export
-coef.validityWeightModel <- function(object, ...) object$linear_coef
 
 predictPairInternal.validityWeightModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
@@ -832,14 +814,6 @@ singleCueModel <- function(train_data, criterion_col, cols_to_fit,
             class="singleCueModel")
 }
 
-#' Linear weights that can be used to compare pairs of cue directions.
-#'
-#' Do NOT apply these directly to raw data.
-#'
-#' @inheritParams stats::coef
-#' @export
-coef.singleCueModel <- function(object, ...) object$linear_coef
-
 predictPairInternal.singleCueModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDirections(object$linear_coef,
                                                          row1, row2)
@@ -893,14 +867,6 @@ minModel <- function(train_data, criterion_col, cols_to_fit,
             class="minModel")
 }
 
-#' Linear weights that can be used to compare pairs of cue directions.
-#'
-#' Do NOT apply these directly to raw data.
-#'
-#' @inheritParams stats::coef
-#' @export
-coef.minModel <- function(object, ...) return(object$unsigned_linear_coef)
-
 predictPairInternal.minModel <- function(object, row1, row2) {
   random_order_coefficients <- object$cue_sample_fn(
     object$unsigned_linear_coef)
@@ -916,5 +882,3 @@ predictProbInternal.minModel <- function(object, row1, row2) {
   # probability that row 1 > row 2.
   return(rescale0To1(direction_plus_minus_1))
 }
-
-
