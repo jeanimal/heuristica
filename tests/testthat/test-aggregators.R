@@ -100,8 +100,9 @@ test_that("aggregatePredictPair 1 model ProbGreater", {
   out <- aggregatePredictPair(list(ttb), data, goal_type)
   expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 1))
   expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 2))
-  # This is the row that differs: Prob row 1 is greater is 0.
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0)), oneRow(out, 3))
+  # This is the row that differs: When it can't decide between row 2
+  # vs. row 3, it outputs a probability row 2 is greater of 0.5.
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0.5)), oneRow(out, 3))
 })
 
 test_that("aggregatePredictPair custom model fit_name", {

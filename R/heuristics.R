@@ -137,8 +137,10 @@ ttbModel <- function(train_data, criterion_col, cols_to_fit,
   linear_coef <- cv$cue_directions * unsigned_linear_coef
   
   structure(list(criterion_col=criterion_col, cols_to_fit=cols_to_fit,
+                 cue_validities=cv$cue_validities,
                  cue_validities_unreversed=cv$cue_validities_unreversed,
-                 cue_validities=cv$cue_validities, linear_coef=linear_coef,
+                 cue_directions=cv$cue_directions,
+                 linear_coef=linear_coef,
                  fit_name=fit_name),
             class="ttbModel")
 }
@@ -153,11 +155,31 @@ predictPairInternal.ttbModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
+# Returns index of the first (highest-validity) discriminating cue.
+# For lexicographic functions like Take The Best.
+# TODO(jean): In case of ties, randomly select.
+indexOfCueUsed <- function(cue_validities, row1, row2) {
+  usable_abs_cue_validities <- abs(cue_validities * sign(row1-row2))
+  first_validity <- which.max(usable_abs_cue_validities)
+}
+
 predictProbInternal.ttbModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- predictPairInternal.ttbModel(object, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
+  index <- indexOfCueUsed(object$cue_validities, row1, row2)
+  validity <- object$cue_validities[index]
+  fitted_direction <- object$cue_directions[index]
+  current_data_direction <-sign(row1-row2)[index]
+  if (fitted_direction == 0) {
+    return(0.5)
+  }
+  # Oops, this cue did not actually discriminate-- randomly chosen.
+  if (current_data_direction == 0) {
+    return(0.5)
+  }
+  # If fitted direction and actual direction disagree, use 1-validity.
+  if (fitted_direction * current_data_direction < 0) {
+    return(1 - validity)
+  }
+  return(validity)
 }
 
 ### Greedy Take The Best Model ###
