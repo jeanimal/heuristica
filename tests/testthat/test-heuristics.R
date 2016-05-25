@@ -127,6 +127,7 @@ test_that("ttbModel 2x3 predictPair predictPairProb test_matrix backward cues", 
 test_that("ttbModel 2x3 predictPair predictPairProb test_matrix backward criterion", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_equal(c(x1=1, x2=1), model$cue_validities)
   expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
   # The criterion in test_data below has been reversed.
   # It should be ignored-- continue to use the validities from train_matrix.
@@ -142,10 +143,11 @@ test_that("ttbModel 2x3 predictPair predictPairProb test_matrix backward criteri
                                oneRow(test_matrix, 1), model))
 })
 
-test_that("ttbModel 2x2 predictPairProb cue_reversal", {
+test_that("ttbModel 2x2 predictPair predictPairProb cue_reversal", {
   train_matrix <- cbind(y=c(5,4), x1=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2))
   expect_equal(c(x1=0), model$cue_validities_unreversed)
+  expect_equal(c(x1=1), model$cue_validities)
   expect_equal(1, predictPairProb(oneRow(train_matrix, 1),
                                  oneRow(train_matrix, 2), model))
   expect_equal(1, predictPair(oneRow(train_matrix, 1),
