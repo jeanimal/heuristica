@@ -69,47 +69,41 @@ test_that("aggregatePredictPair 3 models", {
   ttb <- ttbModel(data, 1, c(2:3))
   ttbG <- ttbGreedyModel(data, 1, c(2:3))
   reg <- regModel(data, 1, c(2:3))
-  goal_type <- 'ProbGreater'
-  out <- aggregatePredictPair(list(ttb, ttbG, reg), data, goal_type)
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
-                     regModel=c(1)), oneRow(out, 1))
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
-                     regModel=c(1)), oneRow(out, 2))
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0.5), ttbGreedyModel=c(1),
-                     regModel=c(0)), oneRow(out, 3))
-})
-
-test_that("aggregatePredictPair 1 model with rowIndexes()", {
-  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
-  ttb <- ttbModel(data, 1, c(2:3))
-  goal_type <- 'ProbGreater'
-  out <- aggregatePredictPair(list(ttb), data, goal_type, rowIndexes())
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1), Row1=c(1),
-                     Row2=c(2)), oneRow(out, 1))
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1), Row1=c(1),
-                     Row2=c(3)), oneRow(out, 2))
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0.5), Row1=c(2),
-                     Row2=c(3)), oneRow(out, 3))
-})
-
-test_that("aggregatePredictPair 3 models ChooseGreater", {
-  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
-  ttb <- ttbModel(data, 1, c(2:3))
-  ttbG <- ttbGreedyModel(data, 1, c(2:3))
-  reg <- regModel(data, 1, c(2:3))
   goal_type <- 'ChooseGreater'
   out <- aggregatePredictPair(list(ttb, ttbG, reg), data, goal_type)
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
                      regModel=c(1)), oneRow(out, 1))
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
                      regModel=c(1)), oneRow(out, 2))
-  # This is the row that differs.  Success is still 1, but undecided is 0 not 0.5,
-  # and bad is -1.
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(0), ttbGreedyModel=c(1),
                      regModel=c(-1)), oneRow(out, 3))
 })
 
-# So far only ttb has this implemented, but I will do it for all models.
+test_that("aggregatePredictPair 1 model with rowIndexes()", {
+  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(data, 1, c(2:3))
+  goal_type <- 'ChooseGreater'
+  out <- aggregatePredictPair(list(ttb), data, goal_type, rowIndexes())
+  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), Row1=c(1),
+                     Row2=c(2)), oneRow(out, 1))
+  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), Row1=c(1),
+                     Row2=c(3)), oneRow(out, 2))
+  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(0), Row1=c(2),
+                     Row2=c(3)), oneRow(out, 3))
+})
+
+# TODO: Add more models to this test.
+test_that("aggregatePredictPair 1 model ProbGreater", {
+  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(data, 1, c(2:3))
+  goal_type <- 'ProbGreater'
+  out <- aggregatePredictPair(list(ttb), data, goal_type)
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 1))
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 2))
+  # This is the row that differs: Prob row 1 is greater is 0.
+  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0)), oneRow(out, 3))
+})
+
 test_that("aggregatePredictPair custom model fit_name", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3), reverse_cues=FALSE, fit_name="ttbNoRev")
