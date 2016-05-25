@@ -95,13 +95,13 @@ test_that("ttbModel 2x3 predictPair predictPairProb forward", {
   expect_equal(c(1, 0), model$cue_validities_unreversed)
   # The probability that row 1 > row 2 is 1.
   expect_equal(1, predictPairProb(oneRow(train_matrix, 1),
-                                 oneRow(train_matrix, 2), model))
+                                  oneRow(train_matrix, 2), model))
   expect_equal(1, predictPair(oneRow(train_matrix, 1),
                               oneRow(train_matrix, 2), model))
   # The logical opposite: the probability that row2 > row 1 is 0.
   expect_equal(0, predictPairProb(oneRow(train_matrix, 2),
-                                 oneRow(train_matrix, 1), model))
-  # So predict the 2nd row.
+                                  oneRow(train_matrix, 1), model))
+  # So predict row 1 is NOT greater.
   expect_equal(-1, predictPair(oneRow(train_matrix, 2),
                                oneRow(train_matrix, 1), model))
 })
@@ -114,12 +114,12 @@ test_that("ttbModel 2x3 predictPair predictPairProb test_matrix backward cues", 
   # So predictions should be reversed.
   test_matrix <- cbind(y=c(5,4), x1=c(0,1), x2=c(1,0))
   expect_equal(0, predictPairProb(oneRow(test_matrix, 1),
-                                 oneRow(test_matrix, 2), model))
+                                  oneRow(test_matrix, 2), model))
   expect_equal(-1, predictPair(oneRow(test_matrix, 1),
                                oneRow(test_matrix, 2), model))
   # Check symmetry (row 2 vs. row1).
   expect_equal(1, predictPairProb(oneRow(test_matrix, 2),
-                                 oneRow(test_matrix, 1), model))
+                                  oneRow(test_matrix, 1), model))
   expect_equal(1, predictPair(oneRow(test_matrix, 2),
                               oneRow(test_matrix, 1), model))
 })
