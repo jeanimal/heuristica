@@ -89,7 +89,7 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
 
 # ttbModel on binary cues
 
-test_that("ttbModel 2x3 predictPairProb forward", {
+test_that("ttbModel 2x3 predictPair predictPairProb forward", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(1, 0), model$cue_validities_unreversed)
@@ -106,7 +106,7 @@ test_that("ttbModel 2x3 predictPairProb forward", {
                                oneRow(train_matrix, 1), model))
 })
 
-test_that("ttbModel 2x3 predictPairProb test_matrix backward cues", {
+test_that("ttbModel 2x3 predictPair predictPairProb test_matrix backward cues", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
@@ -124,7 +124,7 @@ test_that("ttbModel 2x3 predictPairProb test_matrix backward cues", {
                               oneRow(test_matrix, 1), model))
 })
 
-test_that("ttbModel 2x3 predictPairProb test_matrix backward criterion", {
+test_that("ttbModel 2x3 predictPair predictPairProb test_matrix backward criterion", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
