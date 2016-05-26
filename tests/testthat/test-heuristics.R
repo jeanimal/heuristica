@@ -554,9 +554,15 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
 
 ### prob helper functions ###
 
-test_that("simple cue used", {
-  cv <- c(0.9, 0.8, 0.5)
-  indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,1))
+test_that("indexOfCueUsed 3 simple cues", {
+  cv <- c(0.9, 0.8, 0.7)
+  # Indexes ar 1-based.  All cues discriminate, so choose the
+  # highest-validity cue.
+  expect_equal(1, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,0,0)))
+  # First cue does not discriminate.  Have to go to 2nd cue.
+  expect_equal(2, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,0,0)))
+  # First 2 cues do not discriminate.  Have to go to 3rd cue.
+  expect_equal(3, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,0)))
 })
 
 ### unitWeightModel ###
