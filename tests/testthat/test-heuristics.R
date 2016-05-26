@@ -556,11 +556,36 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
 
 test_that("indexOfCueUsed 3 simple cues", {
   cv <- c(0.9, 0.8, 0.7)
-  # Indexes ar 1-based.  All cues discriminate, so choose the
-  # highest-validity cue.
+  # Indexes are 1-based.  As long as cue 1 discriminates, use it.
   expect_equal(1, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,0,0)))
+  expect_equal(1, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,0,1)))
+  expect_equal(1, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,1,0)))
+  expect_equal(1, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,1,1)))
   # First cue does not discriminate.  Have to go to 2nd cue.
   expect_equal(2, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,0,0)))
+  expect_equal(2, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,0,1)))
+  # First 2 cues do not discriminate.  Have to go to 3rd cue.
+  expect_equal(3, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,0)))
+  # The above are 7 of the 8 possible combinations.
+  # The case where no cue discriminates is a separate test.
+})
+
+# TODO: do this.
+#test_that("indexOfCueUsed 3 simple cues none discriminate", {
+#  cv <- c(0.9, 0.8, 0.7)
+#  expect_equal(0, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,0)))
+#})
+
+test_that("indexOfCueUsed 3 simple cues reversed", {
+  # Same cue validities as above.
+  cv_orig <- c(0.9, 0.8, 0.7)
+  # Reverse them.
+  cv <- rev(cv_orig)
+  # Indexes ar 1-based.  All cues discriminate, so choose the
+  # highest-validity cue.
+  expect_equal(3, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,0,0)))
+  # First cue does not discriminate.  Have to go to 2nd cue.
+  expect_equal(3, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,0,0)))
   # First 2 cues do not discriminate.  Have to go to 3rd cue.
   expect_equal(3, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,0)))
 })
