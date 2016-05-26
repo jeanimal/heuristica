@@ -163,23 +163,27 @@ indexOfCueUsed <- function(cue_validities, row1, row2) {
   first_validity <- which.max(usable_abs_cue_validities)
 }
 
+getProbabilityFromCueUsed <- function(cue_used_validity, cue_used_direction,
+                                      cue_row1, cue_row2) {
+  data_direction <- sign(cue_row1 - cue_row2)
+  # If this cue is a guess or the data does not discriminate, it is a guess,
+  # which is probability 0.5 that row1 is greater.
+  if (cue_used_direction == 0 || data_direction == 0) {
+    return(0.5)
+  }
+  # If disagree, the other row is more likely, so use 1-validity.
+  if (cue_used_direction * data_direction < 0) {
+    return(1 - cue_used_validity)
+  }
+  return(cue_used_validity)
+}
+
 predictProbInternal.ttbModel <- function(object, row1, row2) {
   index <- indexOfCueUsed(object$cue_validities, row1, row2)
-  validity <- object$cue_validities[index]
-  fitted_direction <- object$cue_directions[index]
-  current_data_direction <-sign(row1-row2)[index]
-  if (fitted_direction == 0) {
-    return(0.5)
-  }
-  # Oops, this cue did not actually discriminate-- randomly chosen.
-  if (current_data_direction == 0) {
-    return(0.5)
-  }
-  # If fitted direction and actual direction disagree, use 1-validity.
-  if (fitted_direction * current_data_direction < 0) {
-    return(1 - validity)
-  }
-  return(validity)
+  cue_used_validity <- object$cue_validities[index]
+  cue_used_direction <- object$cue_directions[index]
+  return(getProbabilityFromCueUsed(cue_used_validity, cue_used_direction,
+                                   row1[index], row2[index]))
 }
 
 ### Greedy Take The Best Model ###
