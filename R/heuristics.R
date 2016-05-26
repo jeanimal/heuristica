@@ -160,7 +160,7 @@ predictPairInternal.ttbModel <- function(object, row1, row2) {
 # TODO(jean): In case of ties, randomly select.
 indexOfCueUsed <- function(cue_validities, row1, row2) {
   usable_abs_cue_validities <- abs(cue_validities * sign(row1-row2))
-  first_validity <- which.max(usable_abs_cue_validities)
+  return(which.max(usable_abs_cue_validities))
 }
 
 getProbabilityFromCueUsed <- function(cue_used_validity, cue_used_direction,
@@ -171,7 +171,7 @@ getProbabilityFromCueUsed <- function(cue_used_validity, cue_used_direction,
   if (cue_used_direction == 0 || data_direction == 0) {
     return(0.5)
   }
-  # If disagree, the other row is more likely, so use 1-validity.
+  # If disagree, the second row is more likely greater, so use 1-validity.
   if (cue_used_direction * data_direction < 0) {
     return(1 - cue_used_validity)
   }

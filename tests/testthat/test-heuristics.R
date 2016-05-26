@@ -552,6 +552,13 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
                                 na.last=TRUE))
 })
 
+### prob helper functions ###
+
+test_that("simple cue used", {
+  cv <- c(0.9, 0.8, 0.5)
+  indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,1))
+})
+
 ### unitWeightModel ###
 
 test_that("unitWeightModel 2x3 pos neg", {
