@@ -283,7 +283,7 @@ test_that("ttbModel 4x4 predictPairProb x1 cue dominates", {
   expect_equal(1, predictPair(oneRow(train_data, 3),
                               oneRow(train_data, 4), model))
   expect_equal(-1, predictPair(oneRow(train_data, 4),
-                              oneRow(train_data, 3), model))
+                               oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPairProb cue x1 dominates non-binary", {
