@@ -75,40 +75,6 @@ test_that("ttbModel 2x3 predictPair/Prob forward data.frame ignore extra", {
                                   oneRow(train_df, 1), model))
 })
 
-test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
-  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
-  ttb <- ttbModel(train_matrix, 1, c(2,3))
-
-  # heuristics
-
-  out_1 <- allRowPairApply(train_matrix, heuristics(ttb))
-  # output should look like
-  #      ttbModel
-  # [1,]        1
-  expect_equal(cbind(ttbModel=c(1)), out_1)
-  
-  out_2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
-  expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
-  #           ttbModel ttbModel
-  # [1,]        1        1
-  expect_equal(expected_out2, out_2)
-  
-  # heuristicsProb
-  
-  out_p1 <- allRowPairApply(train_matrix, heuristicsProb(ttb))
-  # output should look like
-  #      ttbModel
-  # [1,]        1
-  expect_equal(cbind(ttbModel=c(1)), out_p1)
-
-  out_p2 <- allRowPairApply(train_matrix, heuristicsProb(ttb, ttb))
-  expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
-  #           ttbModel ttbModel
-  # [1,]        1        1
-  expect_equal(expected_out2, out_p2)
-})
-
-
 # ttbModel on binary cues
 
 test_that("ttbModel 2x3 predictPair predictPairProb forward", {
