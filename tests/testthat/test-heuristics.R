@@ -16,7 +16,6 @@ test_that("predictPair error too many rows", {
                "Expected a single row but got 2 rows")
 })
 
-
 test_that("predictPairProb error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
@@ -33,73 +32,80 @@ test_that("predictPairProb error too many rows", {
 
 # Variations with data types
 
-test_that("ttbModel 2x3 predictPairProb forward data.frame", {
+test_that("ttbModel 2x3 predictPair/Prob forward data.frame", {
   train_df <- data.frame(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_df, 1, c(2,3))
   expect_equal(c(x1=1, x2=1), model$cue_validities)
   expect_equal(c(x1=1, x2=-1), model$cue_directions)
   expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
-  # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictPairProb(oneRow(train_df, 1),
-                                  oneRow(train_df, 2), model))
-  # The logical opposite: the probability that row2 > row 1 is 0.
-  expect_equal(0, predictPairProb(oneRow(train_df, 2),
-                                  oneRow(train_df, 1), model))
-})
-
-# predictPair
-test_that("ttbModel 2x3 predictPair forward data.frame", {
-  train_df <- data.frame(y=c(5,4), x1=c(1,0), x2=c(0,1))
-  model <- ttbModel(train_df, 1, c(2,3))
-  expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
-  # The probability that row 1 > row 2 is 1.
+  # The prediction whether row 1 or row 2 is greater is 1, meaning row1.
   expect_equal(1, predictPair(oneRow(train_df, 1),
                               oneRow(train_df, 2), model))
-  # The logical opposite: the probability that row2 > row 1 is -1.
-  expect_equal(-1, predictPair(oneRow(train_df, 2),
-                              oneRow(train_df, 1), model))
-})
-
-test_that("ttbModel 2x3 predictPairProb forward data.frame ignore extra", {
-  train_df <- data.frame(y=c(5,4), name=c("a", "b"), x1=c(1,0), x2=c(0,1))
-  model <- ttbModel(train_df, 1, c(3,4))
-  expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
-  # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictPairProb(oneRow(train_df, 1),
-                                  oneRow(train_df, 2), model))
-  # The logical opposite: the probability that row2 > row 1 is 0.
-  expect_equal(0, predictPairProb(oneRow(train_df, 2),
-                                  oneRow(train_df, 1), model))
-})
-
-# predictPair
-test_that("ttbModel 2x3 predictPair forward data.frame ignore extra", {
-  train_df <- data.frame(y=c(5,4), name=c("a", "b"), x1=c(1,0), x2=c(0,1))
-  model <- ttbModel(train_df, 1, c(3,4))
-  expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
-  # The probability that row 1 > row 2 is 1.
-  expect_equal(1, predictPair(oneRow(train_df, 1),
-                              oneRow(train_df, 2), model))
-  # The logical opposite: the probability that row2 > row 1 is -1.
+  # The logical opposite: the prediction whether row 1 or row 2 is greater is
+  # -1, meaning row2.
   expect_equal(-1, predictPair(oneRow(train_df, 2),
                                oneRow(train_df, 1), model))
+  
+  # predictPairProb
+  # The probability that row 1 > row 2 is 1.
+  expect_equal(1, predictPairProb(oneRow(train_df, 1),
+                                  oneRow(train_df, 2), model))
+  # The logical opposite: the probability that row2 > row 1 is 0.
+  expect_equal(0, predictPairProb(oneRow(train_df, 2),
+                                  oneRow(train_df, 1), model))
+})
+
+test_that("ttbModel 2x3 predictPair/Prob forward data.frame ignore extra", {
+  train_df <- data.frame(y=c(5,4), name=c("a", "b"), x1=c(1,0), x2=c(0,1))
+  model <- ttbModel(train_df, 1, c(3,4))
+  expect_equal(c(x1=1, x2=0), model$cue_validities_unreversed)
+  # The prediction whether row 1 or row 2 is greater is 1, meaning row1.
+  expect_equal(1, predictPair(oneRow(train_df, 1),
+                              oneRow(train_df, 2), model))
+  # The logical opposite: the prediction whether row 1 or row 2 is greater is
+  # -1, meaning row2.
+  expect_equal(-1, predictPair(oneRow(train_df, 2),
+                               oneRow(train_df, 1), model))
+  
+  # The probability that row 1 > row 2 is 1.
+  expect_equal(1, predictPairProb(oneRow(train_df, 1),
+                                  oneRow(train_df, 2), model))
+  # The logical opposite: the probability that row2 > row 1 is 0.
+  expect_equal(0, predictPairProb(oneRow(train_df, 2),
+                                  oneRow(train_df, 1), model))
 })
 
 test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   ttb <- ttbModel(train_matrix, 1, c(2,3))
 
-  out1 <- allRowPairApply(train_matrix, heuristicsProb(ttb))
+  # heuristics
+
+  out_1 <- allRowPairApply(train_matrix, heuristics(ttb))
   # output should look like
   #      ttbModel
   # [1,]        1
-  expect_equal(cbind(ttbModel=c(1)), out1)
-
-  out2 <- allRowPairApply(train_matrix, heuristicsProb(ttb, ttb))
+  expect_equal(cbind(ttbModel=c(1)), out_1)
+  
+  out_2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
   expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
   #           ttbModel ttbModel
   # [1,]        1        1
-  expect_equal(expected_out2, out2)
+  expect_equal(expected_out2, out_2)
+  
+  # heuristicsProb
+  
+  out_p1 <- allRowPairApply(train_matrix, heuristicsProb(ttb))
+  # output should look like
+  #      ttbModel
+  # [1,]        1
+  expect_equal(cbind(ttbModel=c(1)), out_p1)
+
+  out_p2 <- allRowPairApply(train_matrix, heuristicsProb(ttb, ttb))
+  expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
+  #           ttbModel ttbModel
+  # [1,]        1        1
+  expect_equal(expected_out2, out_p2)
 })
 
 
