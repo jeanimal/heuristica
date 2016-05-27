@@ -198,7 +198,7 @@ test_that("ttbModel 3x3 predictPair/Prob cue_reversal", {
   expect_equal(1, predictPair(oneRow(train_matrix, 1),
                               oneRow(train_matrix, 3), model))
   
-  # predictPairProg: guess = 0.5.
+  # predictPairProb: guess = 0.5.
   expect_equal(0.5, predictPairProb(oneRow(train_matrix, 1),
                                    oneRow(train_matrix, 2), model))
   # Reverse the 2nd cue, and it discriminates to get these right.
