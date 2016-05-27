@@ -280,10 +280,10 @@ test_that("ttbModel 4x4 predictPairProb x1 cue dominates", {
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(x1=1, x2=0.667, x3=0.667), model$cue_validities_unreversed,
                tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_data, 3),
-                                 oneRow(train_data, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_data, 4),
-                                 oneRow(train_data, 3), model))
+  expect_equal(1, predictPair(oneRow(train_data, 3),
+                              oneRow(train_data, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 4),
+                              oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPairProb cue x1 dominates non-binary", {
@@ -302,10 +302,10 @@ test_that("ttbModel 4x4 predictPairProb cue x1 dominates non-binary", {
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(x1=1, x2=0.667, x3=0.667), model$cue_validities_unreversed,
                tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_data, 3),
-                                 oneRow(train_data, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_data, 4),
-                                 oneRow(train_data, 3), model))
+  expect_equal(1, predictPair(oneRow(train_data, 3),
+                              oneRow(train_data, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 4),
+                               oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPairProb cue x3 dominates non-binary", {
@@ -324,10 +324,10 @@ test_that("ttbModel 4x4 predictPairProb cue x3 dominates non-binary", {
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(x1=0.667, x2=0.667, x3=1), model$cue_validities_unreversed,
                tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_data, 3),
-                                 oneRow(train_data, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_data, 4),
-                                 oneRow(train_data, 3), model))
+  expect_equal(1, predictPair(oneRow(train_data, 3),
+                              oneRow(train_data, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 4),
+                               oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue", {
@@ -348,10 +348,10 @@ test_that("ttbModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue
   model <- ttbModel(train_data, 1, c(2:4))
   expect_equal(c(x1=0.667, x2=0.667, x3=0), model$cue_validities_unreversed,
                tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_data, 3),
-                                 oneRow(train_data, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_data, 4),
-                                 oneRow(train_data, 3), model))
+  expect_equal(1, predictPair(oneRow(train_data, 3),
+                              oneRow(train_data, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_data, 4),
+                              oneRow(train_data, 3), model))
 })
 
 test_that("ttbModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue data.frame", {
