@@ -2,6 +2,20 @@ context("heuristics")
 
 # require('testthat')
 
+test_that("predictPair error does not have row dimension", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_error(predictPair(train_matrix[1,], train_matrix[2,], model),
+               "Object does not have row dimension")
+})
+
+test_that("predictPair error too many rows", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  model <- ttbModel(train_matrix, 1, c(2,3))
+  expect_error(predictPairProb(train_matrix[c(1:2),], train_matrix[2,], model),
+               "Expected a single row but got 2 rows")
+})
+
 
 test_that("predictPairProb error does not have row dimension", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
