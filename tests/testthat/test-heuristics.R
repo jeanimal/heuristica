@@ -511,13 +511,13 @@ test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame REVER
 test_that("ttbModel on 3x3 where differs from greedy ttb", {
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
   model <- ttbModel(matrix, 1, c(2:3))
-  expect_equal(1, predictPairProb(oneRow(matrix, 1),
-                                  oneRow(matrix, 2), model))
-  expect_equal(1, predictPairProb(oneRow(matrix, 1),
-                                  oneRow(matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(matrix, 1),
+                              oneRow(matrix, 2), model))
+  expect_equal(1, predictPair(oneRow(matrix, 1),
+                              oneRow(matrix, 3), model))
   # Below is the row pair that differs from greedy ttb.
-  expect_equal(0.5, predictPairProb(oneRow(matrix, 2),
-                                    oneRow(matrix, 3), model))
+  expect_equal(0, predictPair(oneRow(matrix, 2),
+                                oneRow(matrix, 3), model))
   expect_equal(c(x1=1.0, x2=0.5), model$cue_validities)
 })
 
