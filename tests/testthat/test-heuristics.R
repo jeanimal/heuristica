@@ -554,13 +554,28 @@ test_that("ttbModel override fit_name", {
 test_that("ttbGreedyModel on 3x3 where differs from regular ttb", {
   matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,0,1))
   model <- ttbGreedyModel(matrix, 1, c(2:3))
-  expect_equal(1, predictPairProb(oneRow(matrix, 1),
-                                  oneRow(matrix, 2), model))
-  expect_equal(1, predictPairProb(oneRow(matrix, 1),
-                                  oneRow(matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(matrix, 1),
+                              oneRow(matrix, 2), model))
+  expect_equal(1, predictPair(oneRow(matrix, 1),
+                              oneRow(matrix, 3), model))
   # Below is the row pair that differs from regular ttb.
-  expect_equal(1, predictPairProb(oneRow(matrix, 2),
-                                  oneRow(matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(matrix, 2),
+                              oneRow(matrix, 3), model))
+  # After using x1, it sees only last two rows of x2.  It reverses them
+  # to get a validity 1.0 cue, which is why it predicts 2 vs. 3 correctly.
+  expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
+})
+
+test_that("ttbGreedyModel on 3x3 where differs from regular ttb reverse cue values", {
+  matrix <- cbind(y=c(3:1), x1=c(0,1,1), x2=c(0,1,0))
+  model <- ttbGreedyModel(matrix, 1, c(2:3))
+  expect_equal(1, predictPair(oneRow(matrix, 1),
+                              oneRow(matrix, 2), model))
+  expect_equal(1, predictPair(oneRow(matrix, 1),
+                              oneRow(matrix, 3), model))
+  # Below is the row pair that differs from regular ttb.
+  expect_equal(1, predictPair(oneRow(matrix, 2),
+                              oneRow(matrix, 3), model))
   # After using x1, it sees only last two rows of x2.  It reverses them
   # to get a validity 1.0 cue, which is why it predicts 2 vs. 3 correctly.
   expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
