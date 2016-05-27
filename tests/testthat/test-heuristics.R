@@ -570,13 +570,15 @@ test_that("indexOfCueUsed 3 simple cues", {
   # The case where no cue discriminates is a separate test.
 })
 
-# TODO: do this.
-#test_that("indexOfCueUsed 3 simple cues none discriminate", {
-#  cv <- c(0.9, 0.8, 0.7)
-#  expect_equal(0, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,0)))
-#})
 
-test_that("indexOfCueUsed 3 simple cues reversed", {
+test_that("indexOfCueUsed 3 simple cues none discriminate", {
+  cv <- c(0.9, 0.8, 0.7)
+  expect_equal(-1, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,1,1)))
+  # Should get same result with reversed
+  expect_equal(-1, indexOfCueUsed(rev(cv), cbind(1,1,1), cbind(1,1,1)))
+})
+
+test_that("indexOfCueUsed 3 simple cue order reversed", {
   # Same cue validities as above.
   cv_orig <- c(0.9, 0.8, 0.7)
   # Reverse them.
@@ -592,6 +594,22 @@ test_that("indexOfCueUsed 3 simple cues reversed", {
   expect_equal(2, indexOfCueUsed(cv, cbind(1,1,1), cbind(1,0,1)))
   # First 2 cues do not discriminate.  Have to go to 3rd cue.
   expect_equal(1, indexOfCueUsed(cv, cbind(1,1,1), cbind(0,1,1)))
+})
+  
+test_that("indexOfCueUsed 3 simple cues rows reversed", {
+  cv <- c(0.9, 0.8, 0.7)
+  # Indexes are 1-based.  As long as cue 1 discriminates, use it.
+  expect_equal(1, indexOfCueUsed(cv, cbind(0,0,0), cbind(1,1,1)))
+  expect_equal(1, indexOfCueUsed(cv, cbind(0,0,1), cbind(1,1,1)))
+  expect_equal(1, indexOfCueUsed(cv, cbind(0,1,0), cbind(1,1,1)))
+  expect_equal(1, indexOfCueUsed(cv, cbind(0,1,1), cbind(1,1,1)))
+  # First cue does not discriminate.  Have to go to 2nd cue.
+  expect_equal(2, indexOfCueUsed(cv, cbind(1,0,0), cbind(1,1,1)))
+  expect_equal(2, indexOfCueUsed(cv, cbind(1,0,1), cbind(1,1,1)))
+  # First 2 cues do not discriminate.  Have to go to 3rd cue.
+  expect_equal(3, indexOfCueUsed(cv, cbind(1,1,0), cbind(1,1,1)))
+  # The above are 7 of the 8 possible combinations.
+  # The case where no cue discriminates is same when rows reversed.
 })
 
 ### unitWeightModel ###

@@ -160,7 +160,12 @@ predictPairInternal.ttbModel <- function(object, row1, row2) {
 # TODO(jean): In case of ties, randomly select.
 indexOfCueUsed <- function(cue_validities, row1, row2) {
   usable_abs_cue_validities <- abs(cue_validities * sign(row1-row2))
-  return(which.max(usable_abs_cue_validities))
+  index <- which.max(usable_abs_cue_validities)
+  # The cue actually did not discriminate.  It was a degenerate max.
+  if (sign(row1[index]-row2[index]) == 0) {
+    return(-1)
+  }
+  return(index)
 }
 
 getProbabilityFromCueUsed <- function(cue_used_validity, cue_used_direction,
@@ -180,6 +185,9 @@ getProbabilityFromCueUsed <- function(cue_used_validity, cue_used_direction,
 
 predictProbInternal.ttbModel <- function(object, row1, row2) {
   index <- indexOfCueUsed(object$cue_validities, row1, row2)
+  if (index == -1) {
+    return(0.5)
+  }
   cue_used_validity <- object$cue_validities[index]
   cue_used_direction <- object$cue_directions[index]
   return(getProbabilityFromCueUsed(cue_used_validity, cue_used_direction,
