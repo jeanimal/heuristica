@@ -183,13 +183,22 @@ test_that("ttbModel 3x3 predictPair predictPairProb forward", {
                                     oneRow(train_matrix, 3), model))
 })
 
-test_that("ttbModel 3x3 predictPairProb cue_reversal", {
+test_that("ttbModel 3x3 predictPair/Prob cue_reversal", {
   train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,1), x2=c(0,0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(x1=0.5, x2=0), model$cue_validities_unreversed)
   # x1 discriminates but has 0.5 validity.
   # x2 does not discriminate.
-  # So it's a guess = 0.5.
+  # So it's a guess = 0.
+  expect_equal(0, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+  # Reverse the 2nd cue, and it discriminates to get these right.
+  expect_equal(1, predictPair(oneRow(train_matrix, 2),
+                              oneRow(train_matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 3), model))
+  
+  # predictPairProg: guess = 0.5.
   expect_equal(0.5, predictPairProb(oneRow(train_matrix, 1),
                                    oneRow(train_matrix, 2), model))
   # Reverse the 2nd cue, and it discriminates to get these right.
@@ -199,11 +208,27 @@ test_that("ttbModel 3x3 predictPairProb cue_reversal", {
                                  oneRow(train_matrix, 3), model))
 })
 
-test_that("ttbModel 3x3 pos pos predictPairProb forward", {
+test_that("ttbModel 3x3 pos pos predictPair/Prob forward", {
   train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,1,0))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(x1=1, x2=1),  model$cue_validities_unreversed)
   
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+  expect_equal(-1, predictPair(oneRow(train_matrix, 2),
+                               oneRow(train_matrix, 1), model))
+  
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 3), model))
+  expect_equal(-1, predictPair(oneRow(train_matrix, 3),
+                               oneRow(train_matrix, 1), model))
+  
+  expect_equal(1, predictPair(oneRow(train_matrix, 2),
+                              oneRow(train_matrix, 3), model))
+  expect_equal(-1, predictPair(oneRow(train_matrix, 3),
+                               oneRow(train_matrix, 2), model))
+  
+  # predictPairProb
   expect_equal(1, predictPairProb(oneRow(train_matrix, 1),
                                  oneRow(train_matrix, 2), model))
   expect_equal(0, predictPairProb(oneRow(train_matrix, 2),
@@ -220,13 +245,29 @@ test_that("ttbModel 3x3 pos pos predictPairProb forward", {
                                  oneRow(train_matrix, 2), model))
 })
 
-test_that("ttbModel 3x3 pos pos predictPairProb backward cues in test", {
+test_that("ttbModel 3x3 pos pos predictPair/Prob backward cues in test", {
   train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,1,0))
   model <- ttbModel(train_matrix, 1, c(2,3))
   expect_equal(c(x1=1, x2=1),  model$cue_validities_unreversed)
 
   # All cues backwards relative to training data.
   test_matrix <- cbind(y=c(5,4,3), x1=c(0,1,1), x2=c(0,0,1))
+  expect_equal(-1, predictPair(oneRow(test_matrix, 1),
+                               oneRow(test_matrix, 2), model))
+  expect_equal(1, predictPair(oneRow(test_matrix, 2),
+                              oneRow(test_matrix, 1), model))
+  
+  expect_equal(-1, predictPair(oneRow(test_matrix, 1),
+                               oneRow(test_matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(test_matrix, 3),
+                              oneRow(test_matrix, 1), model))
+  
+  expect_equal(-1, predictPair(oneRow(test_matrix, 2),
+                               oneRow(test_matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(test_matrix, 3),
+                              oneRow(test_matrix, 2), model))
+  
+  # predictPairProb
   expect_equal(0, predictPairProb(oneRow(test_matrix, 1),
                                  oneRow(test_matrix, 2), model))
   expect_equal(1, predictPairProb(oneRow(test_matrix, 2),
