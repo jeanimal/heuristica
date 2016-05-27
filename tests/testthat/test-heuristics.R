@@ -410,7 +410,7 @@ test_that("ttbModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue
 
 ### ttbModel on real-valued cues ###
 
-test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates reverse cue data.frame",
+test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates reverse cue data.frame",
           "non-binary small diffs, big diffs, small diffs"), {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(1.1,1.1,1.0,1.1), b=c(10,10,-10,10),
                          c=c(0,0,0,0.1))
@@ -435,7 +435,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates reverse cue data
                                oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
+test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
                 "non-binary big diffs, big diffs, big diffs"), {
   train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,90,90,10))
@@ -453,7 +453,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
                                oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
+test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
                 "non-binary big criteriondiffs, big diffs, big diffs, big diffs"), {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,90,90,10))
@@ -471,7 +471,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
                                oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
+test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame",
                 "non-binary big criteriondiffs, big diffs, big diffs, big unique diffs"), {
   train_df <- data.frame(criterion=c(900,400,100,6), a=c(101,101,20,101), b=c(59,59,5,59),
                          c=c(90,80,70,10))
@@ -488,7 +488,7 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
                                oneRow(train_df, 3), model))
 })
 
-test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame REVERSE",
+test_that(paste("ttbModel 4x4 predictPair 3nd cue dominates cue data.frame REVERSE",
                 "non-binary big criteriondiffs, big diffs, big diffs, big unique diffs"), {
   train_df <- data.frame(criterion=c(6,100,400,900), a=c(101,20,101,101), b=c(59,5,59,59),
                          c=c(10,70,80,90))
