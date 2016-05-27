@@ -402,10 +402,10 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates reverse cue data
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   # The coefficient for column c should be negative.
   expect_equal(c(c=-1), sign(coef(model)["c"]), tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 4),
+                               oneRow(train_df, 3), model))
 })
 
 test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
@@ -420,10 +420,10 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 4),
+                               oneRow(train_df, 3), model))
 })
 
 test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
@@ -438,10 +438,10 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 4),
+                               oneRow(train_df, 3), model))
 })
 
 test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
@@ -455,10 +455,10 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame",
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  expect_equal(1, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 4),
+                               oneRow(train_df, 3), model))
 })
 
 test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame REVERSE",
@@ -473,10 +473,10 @@ test_that(paste("ttbModel 4x4 predictPairProb 3nd cue dominates cue data.frame R
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities_unreversed, tolerance=0.002)
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   expect_equal(c(c=1), sign(coef(model)["c"]), tolerance=0.002)
-  expect_equal(0, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(1, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 3),
+                               oneRow(train_df, 4), model))
+  expect_equal(1, predictPair(oneRow(train_df, 4),
+                              oneRow(train_df, 3), model))
 })
 
 ### ttbModel on same data as ttbGreedyModel ###
