@@ -284,7 +284,7 @@ test_that("ttbModel 3x3 pos pos predictPair/Prob backward cues in test", {
                                  oneRow(test_matrix, 2), model))
 })
 
-test_that("ttbModel 2x2,3x2 predictPair predictPairProb", {
+test_that("ttbModel 2x2,3x2 predictPair/Prob", {
   train_matrix <- cbind(y=c(5,4,3), x1=c(1,0,0))
   model <- ttbModel(train_matrix, 1, c(2))
   expect_equal(c(x1=1), model$cue_validities)
