@@ -98,7 +98,7 @@ predictPairInternal.myRandModel <- function(object, row1, row2) {
 
 #### Using PredictPair
 
-Now to use this function, we call predictPair and pass in the fitted model.  We could call predictPairInternal directl, but predictPair takes care of some housekeeping.  (It calls `predictPairInternal(object, row1[cols_to_fit], row2[cols_to_fit])` and makes sure one row is returned and names its column with the model class or `fit_name`.)  Let's get some data and run our model on it.
+Now to use this function, we call predictPair and pass in the fitted model.  We could call predictPairInternal directly, but predictPair takes care of some housekeeping.  (It calls `predictPairInternal(object, row1[cols_to_fit], row2[cols_to_fit])`, makes sure the output has the dimension of one row, names its column with the model class or `fit_name`.)  Let's get some data and run our model on it.
 
 Consider a subset of the high school dropout data included with this package, focusing on just 5 schools.  The first column has the school name.  The drop-out rates are in column 2, and we will fit them using columns 3-5, namely Enrollment, Attendance Rate, and Low Income Students.
 ```{r}
