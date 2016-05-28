@@ -9,12 +9,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-So you have your own idea for a heuristic.  Just implement a few functions and you can run
-comparisons with heuristica's heuristics.  These are a fitting function and two predicting functions.
+So you have your own idea for a heuristic.  Just implement a few functions-- a fitting function and a predicting function-- and you can evaluate performance with heuristica and compare it with other models.
 
 ## Installation
-
-To get the github version of heuristica:
 
 ```{r}
 # Uncomment and execute install functions you may need.
@@ -28,7 +25,7 @@ devtools::load_all()
 #library("heuristica")
 ```
 
-## A toy random model
+## A toy model
 
 ### Fitting function
 
@@ -101,7 +98,7 @@ predictPairInternal.myRandModel <- function(object, row1, row2) {
 
 #### Using PredictPair
 
-Now to use this function, we call predictPair and pass in the fitted model.  Let's get some data to make this clearer.
+Now to use this function, we call predictPair and pass in the fitted model.  We could call predictPairInternal directl, but predictPair takes care of some housekeeping.  (It calls `predictPairInternal(object, row1[cols_to_fit], row2[cols_to_fit])` and makes sure one row is returned and names its column with the model class or `fit_name`.)  Let's get some data and run our model on it.
 
 Consider a subset of the high school dropout data included with this package, focusing on just 5 schools.  The first column has the school name.  The drop-out rates are in column 2, and we will fit them using columns 3-5, namely Enrollment, Attendance Rate, and Low Income Students.
 ```{r}
@@ -158,28 +155,6 @@ myFit <- myRandModel(schools, 2, c(3:5))
 pctCorrectOfPredictPair(list(myFit), schools)
 ```
 
-#### PredictProbInternal and PredictProb
-
-Note that instead of the predicting which row is greater, we could predict the probabliity that row1 is greater.  Its output should be a value from 0 to 1.  When a consistent function predicts that the probability that row 1 is greater is more than 0.5 (#2), it should also select row1 as greater (#1).  Here is an example implementation for myRandModel.
-
-```{r}
-predictProbInternal.myRandModel <- function(object, row1, row2) {
-  prob <- runif(1)
-  return(prob)
-}
-```
-
-Use it like this:
-```{r}
-myFit <- myRandModel(schools, 2, c(3:5))
-row1 <- oneRow(schools, 1)
-row1
-row2 <- oneRow(schools, 2)
-row2
-predictPairProb(row1, row2, myFit)
-```
-
-
 ## Wrapping lasso regression
 
 That was a toy example.  What if you want to wrap a real model, like lasso regression?  That is implemented in another package, glmnet, so if necessary, install it.
@@ -226,22 +201,7 @@ predict(lasso, my_data[,lasso$cols_to_fit])
 
 ### Predicting function
 
-The task is selecting between two rows.  so lasso should predict each row and choose the one with the higher criterion.  Below is an example implementation or predictProbInternal that will work, although it is not very efficient.  Since there is no probability calculated, we simply return 0, 1, or 0.5 for the probability.  In contrast, logistic regression explicitly calculates a probability.
-
-```{r}
-predictProbInternal.lassoModel <- function(object, row1, row2) {
-  p1 <- predict(object, as.matrix(row1))
-  p2 <- predict(object, as.matrix(row2))
-  if (p1 > p2) {
-    return(1)
-  } else if (p1 < p2) {
-    return(0)
-  } else {
-    return(0.5)
-  }
-}
-```
-
+The task is selecting between two rows, so lasso should predict each row and choose the one with the higher criterion.  Below is an example implementation of predictPairInternal that will work, although it is not very efficient.
 
 ```{r}
 predictPairInternal.lassoModel <- function(object, row1, row2) {
@@ -263,7 +223,7 @@ predictPairInternal.lassoModel <- function(object, row1, row2) {
 First, prove we can predict one row pair.
 
 ```{r}
-predictPairProb(oneRow(my_data, 1), oneRow(my_data, 2), lasso)
+predictPair(oneRow(my_data, 1), oneRow(my_data, 2), lasso)
 ```
 
 Now predict all row pairs in our data set.  It got 91% correct-- pretty good!
@@ -271,7 +231,7 @@ Now predict all row pairs in our data set.  It got 91% correct-- pretty good!
 pctCorrectOfPredictPair(list(lasso), my_data)
 ```
 
-Which comparison did it miss?  Check out the helper function below.  We predict all row pairs and then find the row pairs where Lasso did not agree with the Correct answer.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It got the other 5 row pairs correctly!
+Which comparison did it miss?  Check out the helper function below.  We predict all row pairs and then find the row pairs where Lasso did not agree with the Correct answer.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It predicted the other 5 row pairs correctly!
 ```{r}
 out <- data.frame(allRowPairApply(my_data, rowIndexes(), heuristics(lasso), correctGreater(lasso$criterion_col)))
 out[out$lassoModel != out$CorrectGreater,]
@@ -281,4 +241,4 @@ out[out$lassoModel != out$CorrectGreater,]
 
 If you run lasso's predictions for even a moderately large data set, it will take a while.  For example, for the schools data set, it took 20 seconds on a Macbook air.
 
-The solution is to make the prediction step purely a matrix calculation.  (This might require saving and caching extra information in the fitting step so it does not have to be recalculated on every prediction.)  TODO(Daniel): Paste your optimized code here.
+The solution is to make the prediction step purely a matrix calculation.  (This might require saving and caching extra information in the fitting step so it does not have to be recalculated on every prediction.)
