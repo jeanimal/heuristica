@@ -11,9 +11,9 @@ heuristicsList(list_of_fitted_heuristics, fn)
 implementers, e.g. a fitted ttb model.}
 
 \item{fn}{The function to be called on the heuristics, which is typically
-either predictPairInternal or predictProbInternal but can be any function
-with the signature function(object, row1, row2) that is implemented by
-the heuristics in list_of_fitted_heuristics.}
+predictPairInternal (or the experimental function predictProbInternal)
+but can be any function with the signature function(object, row1, row2)
+that is implemented by the heuristics in list_of_fitted_heuristics.}
 }
 \value{
 An object of class heuristics, which implements createFunction.

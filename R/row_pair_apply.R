@@ -72,9 +72,9 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' @param list_of_fitted_heuristics Normally a list of predictProbInternal
 #'   implementers, e.g. a fitted ttb model.
 #' @param fn The function to be called on the heuristics, which is typically
-#'   either predictPairInternal or predictProbInternal but can be any function
-#'   with the signature function(object, row1, row2) that is implemented by
-#'   the heuristics in list_of_fitted_heuristics.
+#'   predictPairInternal (or the experimental function predictProbInternal)
+#'   but can be any function with the signature function(object, row1, row2)
+#'   that is implemented by the heuristics in list_of_fitted_heuristics.
 #' @return An object of class heuristics, which implements createFunction.
 #'   Users will generally not use this directly-- allRowPairApply will.
 #' 
