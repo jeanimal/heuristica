@@ -8,9 +8,12 @@ Authors@R: c(
 		role = "aut")
 	)
 Description: Implements various heuristics like Take The Best and
-    unit-weight linear, called Unit Weight' model here, in a format that
-    makes it easy to use with other R fit models.  In particular,
-    they implement coef and predict.  Includes helper functions.
+    unit-weight linear, which do two-alternative choice: which of
+    two objects will have a higher criterion?  Also offers functions
+    to assess performance, e.g. percent correct across all row pairs
+    in a data set and finding row pairs where models disagree.
+    New models can be added by implementing a fit and predict function--
+    see vignette.
 Depends: 
     R (>= 3.1.0)
 License: MIT + file LICENSE
