@@ -21,7 +21,5 @@ A function that can easily be used by allRowPairApply to
 Creates a function that takes an index pair and returns a prediction
 for each of the predictProbInternal implementers.
 }
-\seealso{
-\code{\link{ttbModel}} for example code.
-}
+\keyword{internal}
 

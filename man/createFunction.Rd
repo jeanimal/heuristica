@@ -21,10 +21,5 @@ A function that can easily be used by allRowPairApply.  This
 An example of solving something with another layer of indirection.
 https://en.wikipedia.org/wiki/Fundamental_theorem_of_software_engineering
 }
-\seealso{
-\code{\link{predictPairProb}} for a simpler way to generate predictions
-  from fitted models.
-
-\code{\link{allRowPairApply}} which uses createFunction.
-}
+\keyword{internal}
 

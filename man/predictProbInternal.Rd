@@ -23,5 +23,9 @@ Do not call this directly (which is why it is called "internal").
 Instead, call predictPairProb.  Heuristics implement this function in order
 to be callable with predictPairProb.
 }
+\details{
+Most heuristics have not implemented this.  Also, the output cannot (and
+should not) be assessed with categorical measures like percent correct.
+}
 \keyword{internal}
 
