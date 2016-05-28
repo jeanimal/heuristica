@@ -61,7 +61,7 @@ predicting functions.  But if you are curious, you can read more about [S3 class
 
 ### Prediction functions
 
-Most statistical models in R implement "predict," which takes N rows of data and outputs N predictions.  Heuristica, however, is focused on predicting *pairs* of rows, so its models implement a "predict pair" and "predict pair probability".  Let us start with the former.
+Most statistical models in R implement "predict," which takes N rows of data and outputs N predictions.  Heuristica, however, is focused on predicting *pairs* of rows, so its models implement a "predict pair" function.  Two rows are passed in, row1 or row2, and the model must predict which has a higher criterion.  This is a categorical question: row1 or row2?  Some models answer this by first estimating the criterion for the two rows, which is quantitative, but models like Take The Best do not.
 
 #### Writing PredictPairInternal
 
@@ -109,7 +109,7 @@ schools
 
 To analyze myRandModel on this data requires these steps:
 1. "Fit" myModel to the schools data.
-2. Ask the model to predict the probability that Austin has a higher dropout rate than Farrgut (the first two schools in our data).
+2. Ask the model to predict whether Austin has a higher dropout rate than Farrgut (the first two schools in our data).
 
 ```{r}
 myFit <- myRandModel(schools, 2, c(3:5))
@@ -120,7 +120,7 @@ row2
 predictPair(row1, row2, myFit)
 ```
 
-We can see in the original data.frame that Austin had the higher dropout rate, meaning 1 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct probability based on the criterion, which will be -1 or 1.
+We can see in the original data.frame that Austin had the higher dropout rate, meaning 1 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct choice based on the criterion, which will be -1 or 1.
 ```{r}
 myFit <- myRandModel(schools, 2, c(3:5))
 rowPairApply(oneRow(schools, 1), oneRow(schools, 2), correctGreater(2),
