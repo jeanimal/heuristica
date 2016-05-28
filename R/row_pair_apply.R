@@ -24,12 +24,8 @@
 #'   We recommend 
 #' @return A function that can easily be used by allRowPairApply.  This
 #'   is not normally used by ordinary users.
-#' 
-#' @seealso
-#' \code{\link{predictPairProb}} for a simpler way to generate predictions
-#'   from fitted models.
-#' @seealso
-#' \code{\link{allRowPairApply}} which uses createFunction.
+#'
+#' @keywords internal
 #' @export
 createFunction <- function(object, test_data) UseMethod("createFunction")
 
@@ -187,9 +183,7 @@ heuristicsProb <- function(...) {
 #'   generate predictions for all heuristics the object was created with.
 #'   If it was created with M heuristics, it will generate M predictions.
 #'
-#' @seealso
-#' \code{\link{ttbModel}} for example code.
-#'
+#' @keywords internal
 #' @export
 createFunction.heuristics <- function(object, test_data) {
   test_data_trim <- as.matrix(test_data[, object$cols_to_fit, drop=FALSE])
