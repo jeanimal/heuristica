@@ -6,7 +6,11 @@
 ## R CMD check results
 ERRORs: 0
 WARNINGS: 0
-NOTES: 0
+NOTES: 1
+
+Non-standard file/directory found at top level:
+  ‘cran-comments.md’
+TODO: Upgrading devtools will probably fix this.
 
 ## Downstream dependencies
 None.  This is a new package.
