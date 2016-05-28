@@ -29,6 +29,9 @@ predictPairInternal <- function(object, row1, row2) {
 #' Instead, call predictPairProb.  Heuristics implement this function in order
 #' to be callable with predictPairProb.
 #'
+#' Most heuristics have not implemented this.  Also, the output cannot (and
+#' should not) be assessed with categorical measures like percent correct.
+#'
 #' @param object The object that implements predictPair, e.g. a ttb model.
 #' @param row1 The first row of cues (object$cols_to_fit columns), as a
 #'   one-row matrix.
