@@ -1239,35 +1239,25 @@ test_that("singleCueModel 4x3 real value cue a and b have same validity", {
 
 ## minModel
 
-test_that("minModel predictPairProb 2x2 forward", {
+test_that("minModel predictPair 2x2 forward", {
   train_data <- cbind(y=c(5,4), x1=c(1,0))
   model <- minModel(train_data, 1, c(2))
-  expect_equal(1, predictPairProb(oneRow(train_data, 1),
-                                 oneRow(train_data, 2), model))
-  expect_equal(0, predictPairProb(oneRow(train_data, 2),
-                                 oneRow(train_data, 1), model))
-  
   expect_equal(1, predictPair(oneRow(train_data, 1),
                               oneRow(train_data, 2), model))
   expect_equal(-1, predictPair(oneRow(train_data, 2),
                                oneRow(train_data, 1), model))
 })
 
-test_that("minModel predictPairProb 2x2 reverse cue", {
+test_that("minModel predictPair 2x2 reverse cue", {
   train_data <- cbind(y=c(5,4), x1=c(0,1))
   model <- minModel(train_data, 1, c(2))
-  expect_equal(1, predictPairProb(oneRow(train_data, 1),
-                                 oneRow(train_data, 2), model))
-  expect_equal(0, predictPairProb(oneRow(train_data, 2),
-                                 oneRow(train_data, 1), model))
-  
   expect_equal(1, predictPair(oneRow(train_data, 1),
                               oneRow(train_data, 2), model))
   expect_equal(-1, predictPair(oneRow(train_data, 2),
                                oneRow(train_data, 1), model))
 })
 
-test_that("minModel predictPairProb 5x4 all cues same after reverse", {
+test_that("minModel predictPair 5x4 all cues same after reverse", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,0,0,0,0),
                       x3=c(0,1,1,1,1))
   model <- minModel(train_data, 1, c(2:4))
@@ -1275,12 +1265,12 @@ test_that("minModel predictPairProb 5x4 all cues same after reverse", {
   # Note x3 is same when reversed.
   # Gives same answer consistently, no matter which cue is selected.
   for (i in 1:5) {
-    expect_equal(1, predictPairProb(oneRow(train_data, 1),
-                                   oneRow(train_data, 2), model))
+    expect_equal(1, predictPair(oneRow(train_data, 1),
+                                oneRow(train_data, 2), model))
   }
 })
 
-test_that("minModel predictPairProb 5x4 cue_sample_fn in_order", {
+test_that("minModel predictPair 5x4 cue_sample_fn in_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
   model <- minModel(train_data, 1, c(2:4))
@@ -1291,31 +1281,32 @@ test_that("minModel predictPairProb 5x4 cue_sample_fn in_order", {
   expect_equal(c(x1=1, x2=0.667, x3=0.5), model$cue_validities_unreversed,
                tolerance=0.002)
   
-  # Between row 1 and 2, x1 predicts 1 (others would predict 0.5)
-  expect_equal(1, predictPairProb(oneRow(train_data, 1),
-                                 oneRow(train_data, 2), model))
+  # Between row 1 and 2, x1 predicts 1 (x2: guess, x3: 1)
+  expect_equal(1, predictPair(oneRow(train_data, 1),
+                              oneRow(train_data, 2), model))
 
-  # Between row 4 and 5, x1 doesn't discriminate, then x2 predicts 0
-  expect_equal(0, predictPairProb(oneRow(train_data, 4),
-                                 oneRow(train_data, 5), model))
+  # Between row 4 and 5, x1 doesn't discriminate, then x2 predicts -1.
+  # (x3: -1).
+  expect_equal(-1, predictPair(oneRow(train_data, 4),
+                               oneRow(train_data, 5), model))
 })
 
-test_that("minModel predictPairProb 5x4 cue_sample_fn reverse_order", {
+test_that("minModel predictPair 5x4 cue_sample_fn reverse_order", {
   train_data <- cbind(y=c(5,4,3,2,1), x1=c(1,0,0,0,0), x2=c(1,1,0,0,1),
                       x3=c(1,0,0,0,1))
   model <- minModel(train_data, 1, c(2:4))
   # For testing purposes, force cue order to always be x3, x2, x1.
-  reverse_order <- function(x) return(rev(x))
-  model$cue_sample_fn <- reverse_order
+  model$cue_sample_fn <- rev
   expect_equal(c(x1=1, x2=1, x3=0), model$cue_directions)
-  expect_equal(c(x1=1, x2=0.667, x3=0.5), model$cue_validities_unreversed, tolerance=0.002)
+  expect_equal(c(x1=1, x2=0.667, x3=0.5), model$cue_validities_unreversed,
+               tolerance=0.002)
   
-  # Between row 1 and 2, x3 predicts 0 (x1 would also predict 1)
-  expect_equal(1, predictPairProb(oneRow(train_data, 1),
-                                  oneRow(train_data, 2), model))
+  # Because cue_sample_fn is reverse, start from x3.
+  # Between row 1 and 2, x3 predicts 1 (x1: 1, x2: guess)
+  expect_equal(1, predictPair(oneRow(train_data, 1),
+                              oneRow(train_data, 2), model))
   
-  # Between row 4 and 5, x3 predict 0, while x1 would guess.
-  expect_equal(0, predictPairProb(oneRow(train_data, 4),
-                                  oneRow(train_data, 5), model))
+  # Between row 4 and 5, x3 predicts -1 (x1: guess, x2: -1)
+  expect_equal(-1, predictPair(oneRow(train_data, 4),
+                               oneRow(train_data, 5), model))
 })
-
