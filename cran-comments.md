@@ -6,7 +6,8 @@
 ## R CMD check results
 ERRORs: 0
 WARNINGS: 0
-NOTES: 0 but 1 on win-builder (New submission)
+NOTES: 0 but 1 on win-builder
+* New submission
 
 ## Downstream dependencies
 None.  This is a new package.
