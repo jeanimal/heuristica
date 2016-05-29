@@ -72,7 +72,7 @@
 #'
 #' @format A data frame.
 #' \describe{
-#'   \item{Name_of_City}{Name of city}
+#'   \item{Name}{Name of city}
 #'   \item{Running_Number}{Running Number}
 #'   \item{Population}{Population size}
 #'   \item{Soccer_Team}{1 indicates that the city has a soccer team, 0
