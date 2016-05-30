@@ -678,7 +678,7 @@ test_that("unitWeightModel 5x1 25", {
   expect_equal(1, length(coef(model))) 
 })
 
-test_that("unitWeightModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue", {
+test_that("unitWeightModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
   train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1),
                          c=c(0,0,0,0.1))
   # How this data looks:
@@ -696,13 +696,13 @@ test_that("unitWeightModel 4x4 predictPairProb 3nd cue dominates non-binary reve
   model <- unitWeightModel(train_df, 1, c(2:4))
   expect_equal(c(a=0.667, b=0.667, c=0), model$cue_validities_unreversed,
                tolerance=0.002)
-  #TODO(jean): Return cue reversal.
-  #expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
+  expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities,
+               tolerance=0.002)
   expect_equal(c(a=1, b=1, c=-1), model$linear_coef, tolerance=0.002)
-  expect_equal(0, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(1, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 3),
+                               oneRow(train_df, 4), model))
+  expect_equal(1, predictPair(oneRow(train_df, 4),
+                              oneRow(train_df, 3), model))
 })
 
 ### validityWeightModel ###
