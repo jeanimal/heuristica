@@ -20,7 +20,7 @@ The goal is to make it easy to explore the wide range of conditions in which sim
 
 # The Task
 
-Take the Best was designed for two-alternative choice tasks, e.g. given two schools, which has a higher drop-out rate?  The heuristics had __cues__, like the percent of low-income students and the percent of limited English students, in order to infer the __criterion__, drop-out rate.
+This package is focused on two-alternative choice tasks, e.g. given two schools, which has a higher drop-out rate.  The output is categorical, not quantitative.
 
 # A Simple Example
 
@@ -32,23 +32,23 @@ schools
 
 ## Fitting
 
-Next we fit Take The Best-- ttbModel-- and a wrapped version of R's "lm" function for a linear regression-- regModel.  The 2nd column, `Dropout_Rate`, is the criterion to be predicted.  The following columns, indexes 3 and 4, which are percent of `Low_Income_Students` and percent of `Limited_English_Students`, are the predictors.
+To fit Take The Best-- ttbModel-- and a wrapped version of R's "lm" function for a linear regression-- regModel-- we specify the data set and the columns to use.  The 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, indexes 3 and 4, percent of `Low_Income_Students` and percent of `Limited_English_Students`.
 
 ```{r}
 ttb <- ttbModel(schools, 2, c(3:4))
 reg <- regModel(schools, 2, c(3:4))
 ```
 
-What does the fit look like?  We can example Take The Best's cue validities and the regression coefficients.
+What does the fit look like?  We can examine Take The Best's cue validities and the regression coefficients.
 ```{r}
 ttb$cue_validities
 coef(reg)
 ```
-Both Take The Best and regression give a higher weight to `Low_Income_Students`, although of course how they use this weight differs.
+Both Take The Best and regression give a higher weight to `Low_Income_Students` than `Limited_English_Students`, although of course how they use the weights differs.  Take The Best will use a lexicographic order, making its prediction based solely on `Low_Income_Students` as long as the schools have differing values-- which they do for all 5 schools in this data set.  That means it will ignore `Limited_English_Students` when predicting on this data set.  In contrast, regression will use a weighted sum of both cues, but with the most important cues weighted more.  
 
 ## Predicting
 
-To see a model's predictions, we give two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  (We use the package's __oneRow__ helper function to select a row.)  Below we see that between the first and 2nd row, ttb predicts the first row, outputting 1.  Between the first and third row, it outputs -1, predicting the 2nd row passed to it (row 3) is greater.
+To see a model's predictions, we give it two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  (We use the package's __oneRow__ helper function to select a row.)  Below we see that between the first and 2nd row, ttb predicts the first row, outputting 1.  Between the first and third row, it outputs -1, predicting the 2nd row passed to it (row 3) is greater.
 ```{r}
 predictPair(oneRow(schools, 1), oneRow(schools, 2), ttb)
 predictPair(oneRow(schools, 1), oneRow(schools, 3), ttb)
@@ -60,19 +60,27 @@ predictPair(oneRow(schools, 1), oneRow(schools, 2), reg)
 predictPair(oneRow(schools, 1), oneRow(schools, 3), reg)
 ```
 
+Looking at the data set, we see that Take The Best was correct about row 1 (Bowen) vs row 2 (Collins) because Bowen has the higher `Dropout_Rate`.  It was also correct about row 1 (Bowen) vs. row 3 (Fenger) because Fenger has the higher `Dropout_rate`.  Regression was wrong on both.
+```{r}
+schools[c(1:3), c(1,2)]
+```
 
 ## Assessing overall performance
 
-To assess how well ttb fit the data overall, we can measure the percent of correct inferences for all pairs of schools in the data with __pctCorrectOfPredictPair__.  Let us also compare it to regression.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __pctCorrectOfPredictPair__.  The function also lets us readily compare ttb and regression.
 ```{r}
 pctCorrectOfPredictPair(list(ttb, reg), schools)
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.
 
-Of course, this was just assessing the performance of an in-sample fit on a subset of data.  For a more realistic example, see the vignette with cross-validated out-of-sample performance on a complete data set.
+Regression is the best linear unbiased model for the data.  But this data had a very small sample size of just 5 schools, and good estimates require more data.
 
-# Installation
+This is an unusual case where TTB actually beat regression in a fitting task.  Usually ttb only wins in out-of-sample performance, e.g. fitting 5 schools and then predicting on other schools not used in the fit.
+
+For a more realistic example, see the vignette with cross-validated out-of-sample performance on a complete data set.
+
+# Package Installation
 
 Uncomment and execute the line below to get the CRAN version:
 
