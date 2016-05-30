@@ -33,7 +33,11 @@ schools
 
 ## Fitting
 
-To fit Take The Best-- ttbModel-- and a wrapped version of R's "lm" function for a linear regression-- regModel-- we specify the data set and the columns to use.  The 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, indexes 3 and 4, percent of `Low_Income_Students` and percent of `Limited_English_Students`.
+To fit a model, we give it the data set and the columns to use.  The 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, indexes 3 and 4, percent of `Low_Income_Students` and percent of `Limited_English_Students`.
+
+Let's fit two models:
+* ttbModel, Take The Best, ttbModel 
+* regModel, a wrapped version of R's "lm" function for a linear regression.
 
 
 ```r
