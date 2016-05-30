@@ -63,7 +63,12 @@ predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRU
   }
   correct <- out[,1]
   predictions <- out[,2]
-  return(confusionMatrixRequiredCategories(correct, predictions, c(-1,1)))
+  if (0 %in% out) {
+    # If there are any guesses or ties (0's), include 0 in the categories.
+    return(confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1)))
+  } else {
+    return(confusionMatrixRequiredCategories(correct, predictions, c(-1,1)))
+  }
 }
 
 #' Percent correct of heuristics' predictPair on test_data, returning a matrix.
@@ -165,7 +170,11 @@ percentCorrectNonSymmetric <- function(fitted_heuristic_list,
 }
 
 
-# For the test.  Kinda hacky.  Need a better way.
+# For tests.  Kinda hacky.  Need a better way.
 fitted_always_1 <- structure(list(criterion_col=1, cols_to_fit=c(2)),
                              class="all1Model")
 predictPairInternal.all1Model <- function(object, row1, row2) { return(1) }
+
+fitted_always_0 <- structure(list(criterion_col=1, cols_to_fit=c(2)),
+                             class="all0Model")
+predictPairInternal.all0Model <- function(object, row1, row2) { return(0) }
