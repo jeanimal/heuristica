@@ -287,9 +287,9 @@ predictPairInternal.ttbGreedyModel <- function(object, row1, row2) {
 
 ### Unit Weight Model ###
 
-#' Unit WeightModel, a unit-weight linear model
+#' Unit-weight linear model
 #'
-#' Unit WeightModel is a unit-weight linear model inspired by Robyn Dawes.
+#' Unit-weight linear model inspired by Robyn Dawes.
 #' Unit Weight Model assigns unit (+1 or -1) weights based on
 #' \code{\link{cueValidity}}.
 #'   \itemize{
