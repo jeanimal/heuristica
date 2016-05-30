@@ -49,12 +49,18 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   return(predictions)
 }
 
-predictPairConfusionMatrix <- function(test_data, heuristic) {
+predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRUE) {
   goal_type <- 'CorrectGreater'
   out_fwd <- aggregatePredictPair(list(heuristic), test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
-  out_rev <- aggregatePredictPair(list(heuristic), test_data_rev, goal_type)
-  out <- rbind(out_fwd, out_rev)
+  if (symmetric_model) {
+    # The model's prediction in A vs. B = - prediction in B vs. A.
+    out <- rbind(out_fwd, -out_fwd)
+  } else {
+    # Need to re-run the model to figure out what it says in B vs. A.
+    out_rev <- aggregatePredictPair(list(heuristic), test_data_rev, goal_type)
+    out <- rbind(out_fwd, out_rev)
+  }
   correct <- out[,1]
   predictions <- out[,2]
   return(confusionMatrixRequiredCategories(correct, predictions, c(-1,1)))

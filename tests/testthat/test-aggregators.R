@@ -217,8 +217,10 @@ test_that("predictPairConfusionMatrix 1 pair ttb wrong", {
 
 test_that("predictPairConfusionMatrix 1 pair fitted_always_1", {
   data <- cbind(y=c(2,1), x1=c(1, 0))
-  # fitted_always_1 always predicts 1, regardless of data.
-  out <- predictPairConfusionMatrix(data, fitted_always_1)
+  # fitted_always_1 always predicts 1, regardless of data.  This makes it
+  # asymmetric.
+  out <- predictPairConfusionMatrix(data, fitted_always_1,
+                                    symmetric_model=FALSE)
   # Check all 4 quadrants.
   expect_equal(0, out["-1", "-1"])
   expect_equal(1, out["-1", "1"])
