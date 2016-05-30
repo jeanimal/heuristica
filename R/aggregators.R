@@ -62,7 +62,7 @@ guessExpectedValue <- function(confusionMatrixWith0s) {
 }
 
 predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRUE,
-                                       zero_handling_fn=NULL) {
+                                       guess_handling_fn=NULL) {
   goal_type <- 'CorrectGreater'
   out_fwd <- aggregatePredictPair(list(heuristic), test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
@@ -79,8 +79,8 @@ predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRU
   if (0 %in% out) {
     # If there are any guesses or ties (0's), include 0 in the categories.
     cf <- confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1))
-    if (!is.null(zero_handling_fn)) {
-      return(zero_handling_fn(cf))
+    if (!is.null(guess_handling_fn)) {
+      return(guess_handling_fn(cf))
     } else {
       return(cf)
     }
