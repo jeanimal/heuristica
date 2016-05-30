@@ -2,7 +2,7 @@
 
 # A general-ish function that always returns a square matrix with dimensions
 # the length of required_categories.
-confusionMatrix <- function(data_1, data_2, required_categories) {
+confusionMatrixRequiredCategories <- function(data_1, data_2, required_categories) {
   munged <- table(c(required_categories, data_1), c(required_categories, data_2))
   cleaned <- munged - diag(length(required_categories))
   return(cleaned)
@@ -50,7 +50,8 @@ predict_pair_categories <- c(-1,0,1)
 #'
 #' @export
 confusionMatrixPredictPair <- function(ref_data, predicted_data) {
-  return(confusionMatrix(ref_data, predicted_data, predict_pair_categories))
+  return(confusionMatrixRequiredCategories(ref_data, predicted_data,
+                                           predict_pair_categories))
 }
 
 #' Accuracy based on a predictPair confusion matrix.
