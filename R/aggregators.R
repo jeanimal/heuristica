@@ -48,7 +48,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   return(predictions)
 }
 
-#'Percent correct of heuristics' predictPair on test_data.
+#' Percent correct of heuristics' predictPair on test_data.
 #'
 #' Returns overall percent correct for all heuristics.
 #' 1. Create predictions using predictPair for all row pairs for all
