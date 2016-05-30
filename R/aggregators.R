@@ -48,6 +48,29 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   return(predictions)
 }
 
+#' Percent correct of heuristics' predictPair on test_data, returning a matrix.
+#'
+#' @param fitted_heuristic_list A list of heuristics already fitted to data,
+#'   e.g. ttbModel.
+#' @param test_data Data to try to predict; must match columns in fit.
+#' @return A one-row matrix of numbers from 0 to 1, meaning proportion correct.
+#'   Each column is named with the heuristic's class or the fit name.
+#'
+#' @examples
+#' # See examples for percentCorrect, which returns a data.frame.
+#'
+#' @seealso
+#' \code{\link{percentCorrect}} for a version that returns a
+#'   data.frame and includes several examples.
+#' @export
+percentCorrectReturnMatrix <- function(fitted_heuristic_list,
+                                       test_data) {
+  goal_type <- 'CorrectGreater'
+  predictions <- aggregatePredictPair(
+    fitted_heuristic_list, test_data, goal_type)
+  return(categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
+}
+
 #' Percent correct of heuristics' predictPair on test_data.
 #'
 #' Returns overall percent correct for all heuristics.
@@ -90,30 +113,6 @@ percentCorrect <- function(fitted_heuristic_list, test_data) {
   return(as.data.frame(percentCorrectReturnMatrix(
     fitted_heuristic_list, test_data)))
 }
-
-#' Percent correct of heuristics' predictPair on test_data, returning a matrix.
-#'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data,
-#'   e.g. ttbModel.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row matrix of numbers from 0 to 1, meaning proportion correct.
-#'   Each column is named with the heuristic's class or the fit name.
-#'
-#' @examples
-#' # See examples for percentCorrect, which returns a data.frame.
-#'
-#' @seealso
-#' \code{\link{percentCorrect}} for a version that returns a
-#'   data.frame and includes several examples.
-#' @export
-percentCorrectReturnMatrix <- function(fitted_heuristic_list,
-                                                test_data) {
-  goal_type <- 'CorrectGreater'
-  predictions <- aggregatePredictPair(
-    fitted_heuristic_list, test_data, goal_type)
-  return(categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
-}
-
 
 #' percentCorrect for non-symmetric heuristics
 #'
