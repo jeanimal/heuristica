@@ -1,14 +1,3 @@
-fitAllModels <- function(vec_of_models, training_set, criterion_col,
-                         cols_to_fit) {
-  models<-list()
-  y <- 0
-  for (mod in vec_of_models) {
-    y <- y+1
-    models[[y]] <- mod(training_set, criterion_col, cols_to_fit)
-  }
-  return(models)
-}
-
 #' Predicts with heuristics and criterion, returning all row pairs.
 #'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
