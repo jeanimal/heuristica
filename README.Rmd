@@ -75,9 +75,9 @@ Looking at the data set, we see that Take The Best was correct about Bowen vs. C
 subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 ```
 
-Using heuristica's rowPairApply function, we can even get a nice table of results.
+Using heuristica's __allRowPairApply__ function, we can even get a nice summary table of these predictions.
 ```{r}
-out <- allRowPairApply(subset(schools, Name %in% c("Bowen", "Collins", "Fenger")), rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out <- allRowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
 out_df <- data.frame(out)
 out_df$Row1 <- schools$Name[out_df$Row1]
 out_df$Row2 <- schools$Name[out_df$Row2]
