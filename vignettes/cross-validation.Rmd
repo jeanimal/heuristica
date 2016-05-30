@@ -84,12 +84,12 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     }
 
     #calculate percentage of correct predictions
-    pctCorr <- pctCorrectOfPredictPair(models, test_set)
+    pctCorr <- percentCorrect(models, test_set)
     results <- rbind(results, pctCorr)
   }
 
   # Predictions of na are equivalent to guessing, which is 50% correct.
-  # TODO(jean): Handle this case in pctCorrectOfPredictPair, not here.
+  # TODO(jean): Handle this case in percentCorrect, not here.
   results[is.na(results)] <- 0.5
   return (colMeans(results))
 }  

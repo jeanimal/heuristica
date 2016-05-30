@@ -69,7 +69,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #'                  x1=c(1,1,0,0), x2=c(1,1,0,1))
 #' ttb <- ttbModel(df, 1, c(3:4))
 #' sing <- singleCueModel(df, 1, c(3:4))
-#' pctCorrectOfPredictPair(list(ttb, sing), df)
+#' percentCorrect(list(ttb, sing), df)
 #' #    ttbModel singleCueModel
 #' #  1     0.75      0.8333333
 #' # TTB gets 75% correct while single cue model gets 83%.
@@ -80,15 +80,15 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 #' ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
 #' ttb2 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit2")
 #' ttb3 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit3")
-#' pctCorrectOfPredictPair(list(ttb1, ttb2, ttb3), df)
+#' percentCorrect(list(ttb1, ttb2, ttb3), df)
 #' #        fit1 fit2 fit3
 #' # 1 0.8333333 0.75 0.75
 #'
 #' @seealso
 #'   using one fitted heuristic.
 #' @export
-pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
-  return(as.data.frame(pctCorrectOfPredictPairReturnMatrix(
+percentCorrect <- function(fitted_heuristic_list, test_data) {
+  return(as.data.frame(percentCorrectReturnMatrix(
     fitted_heuristic_list, test_data)))
 }
 
@@ -101,13 +101,13 @@ pctCorrectOfPredictPair <- function(fitted_heuristic_list, test_data) {
 #'   Each column is named with the heuristic's class or the fit name.
 #'
 #' @examples
-#' # See examples for pctCorrectOfPredictPair, which returns a data.frame.
+#' # See examples for percentCorrect, which returns a data.frame.
 #'
 #' @seealso
-#' \code{\link{pctCorrectOfPredictPair}} for a version that returns a
+#' \code{\link{percentCorrect}} for a version that returns a
 #'   data.frame and includes several examples.
 #' @export
-pctCorrectOfPredictPairReturnMatrix <- function(fitted_heuristic_list,
+percentCorrectReturnMatrix <- function(fitted_heuristic_list,
                                                 test_data) {
   goal_type <- 'ChooseGreater'
   predictions <- aggregatePredictPair(
@@ -116,15 +116,15 @@ pctCorrectOfPredictPairReturnMatrix <- function(fitted_heuristic_list,
 }
 
 
-#' pctCorrectOfPredictPair for non-symmetric heuristics
+#' percentCorrect for non-symmetric heuristics
 #'
-#' Same as pctCorrectOfPredictPair but for weird heuristics that do not
+#' Same as percentCorrect but for weird heuristics that do not
 #' consistently choose the same row.  If a symmetric heuristics says
 #' row1 > row2, then it will also says row2 < row1.  Those can be used
-#' with pctCorrectOfPredictPair.  All heuristics built into heuristica
-#' quality.  They will get the same answers for pctCorrectOfPredictPair
-#' and pctCorrectOfPredictPairNonSymmetric.  But a non-symmetric heuristic
-#' will only get correct answers for pctCorrectOfPredictPairNonSymmetric.
+#' with percentCorrect.  All heuristics built into heuristica
+#' quality.  They will get the same answers for percentCorrect
+#' and percentCorrectNonSymmetric.  But a non-symmetric heuristic
+#' will only get correct answers for percentCorrectNonSymmetric.
 #'
 #' @param fitted_heuristic_list A list of heuristics already fitted to data,
 #'   e.g. ttbModel.
@@ -132,9 +132,9 @@ pctCorrectOfPredictPairReturnMatrix <- function(fitted_heuristic_list,
 #' @return A one-row matrix of numbers from 0 to 1, meaning proportion
 #'   correct.  Each column is named with the heuristic's class.
 #' @seealso
-#' \code{\link{pctCorrectOfPredictPair}} for prediction.
+#' \code{\link{percentCorrect}} for prediction.
 #' @export
-pctCorrectOfPredictPairNonSymmetric <- function(fitted_heuristic_list,
+percentCorrectNonSymmetric <- function(fitted_heuristic_list,
                                                 test_data) {
   goal_type <- 'ChooseGreater'
   predictions_fwd <- aggregatePredictPair(

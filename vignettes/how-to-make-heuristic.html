@@ -135,7 +135,7 @@ row2</code></pre>
 ## [1,]           1       1</code></pre>
 <p>Heuristica makes this sort of assessment easy– it can check your model against all row pairs and calculate the percent correct. Here we do myModel for all pairs of schools in our subset data. Not surprisingly, it earns roughly 50% correct.</p>
 <pre class="sourceCode r"><code class="sourceCode r">myFit &lt;-<span class="st"> </span><span class="kw">myModel</span>(schools, <span class="dv">2</span>, <span class="kw">c</span>(<span class="dv">3</span>:<span class="dv">5</span>))
-<span class="kw">pctCorrectOfPredictPair</span>(<span class="kw">list</span>(myFit), schools)</code></pre>
+<span class="kw">percentCorrect</span>(<span class="kw">list</span>(myFit), schools)</code></pre>
 <pre><code>##   myModel
 ## 1     0.8</code></pre>
 </div>

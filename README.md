@@ -85,10 +85,10 @@ schools[c(1:3), c(1,2)]
 
 ## Assessing overall performance
 
-For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __pctCorrectOfPredictPair__.  The function also lets us readily compare ttb and regression.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __percentCorrect__.  The function also lets us readily compare ttb and regression.
 
 ```r
-pctCorrectOfPredictPair(list(ttb, reg), schools)
+percentCorrect(list(ttb, reg), schools)
 #>   ttbModel regModel
 #> 1      0.6      0.5
 ```

@@ -15,25 +15,25 @@ test_that("allRowPairApply ProbGreater -1 bug", {
   expect_equal(cbind(ttbModel=c(1), ProbGreater=c(0)), results)
 })
 
-test_that("pctCorrectOfPredictPair -1 prediction bug", {
+test_that("percentCorrect -1 prediction bug", {
   # Specify enough of a ttb model for prediction.
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
                                linear_coef=c(4,2,1)),
             class="ttbModel")
   test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3), b=c(976,1437),
                           c=c(50, 49.74))
-  results <- pctCorrectOfPredictPairReturnMatrix(list(fitted_ttb), test_data)
+  results <- percentCorrectReturnMatrix(list(fitted_ttb), test_data)
   expect_equal(cbind(ttbModel=c(0)), results)
 })
 
-test_that("pctCorrectOfPredictPair -1 prediction bug reverse rows", {
+test_that("percentCorrect -1 prediction bug reverse rows", {
   # Specify enough of a ttb model for prediction.
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
                                linear_coef=c(4,2,1)),
                           class="ttbModel")
   test_data <- data.frame(criterion=rev(c(33200, 36184)), a=rev(c(5,3)),
                           b=rev(c(976,1437)), c=rev(c(50, 49.74)))
-  results <- pctCorrectOfPredictPairReturnMatrix(list(fitted_ttb), test_data)
+  results <- percentCorrectReturnMatrix(list(fitted_ttb), test_data)
   expect_equal(cbind(ttbModel=c(0)), results)
 })
 
@@ -54,7 +54,7 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
   expect_equal(0, row$logRegModel, tolerance=0.001)
   expect_equal(3, nrow(pred_df))
   
-  pct_correct_df <- pctCorrectOfPredictPair(list(ttb, lreg), train_data)
+  pct_correct_df <- percentCorrect(list(ttb, lreg), train_data)
   #expect_equal(c("ttbModel", "logRegModel"), names(pct_correct_df))
   expect_equal(0.8333, pct_correct_df$ttbModel, tolerance=0.001)
   expect_equal(0.8333, pct_correct_df$logRegModel, tolerance=0.001)
@@ -112,8 +112,8 @@ test_that("aggregatePredictPair custom model fit_name", {
   expect_equal(colnames(out), c('CorrectGreater', 'ttbNoRev'))
 })
 
-# pctCorrectOfPredictPair and
-# pctCorrectOfPredictPairNonSymmetric
+# percentCorrect and
+# percentCorrectNonSymmetric
 
 test_that("end to end test ttb vs. logistic regression input data.frame", {
   train_df <- data.frame(y=c(5,4,3), x=c(1,0,0), name=c("jo", "bo", "da"))
@@ -131,7 +131,7 @@ test_that("end to end test ttb vs. logistic regression input data.frame", {
   expect_equal(0, row$logRegModel, tolerance=0.001)
   expect_equal(3, nrow(pred_df))
   
-  pct_correct_df <- pctCorrectOfPredictPair(list(ttb, lreg), train_df)
+  pct_correct_df <- percentCorrect(list(ttb, lreg), train_df)
   #expect_equal(c("ttbModel", "logRegModel"), names(pct_correct_df))
   expect_equal(0.8333, pct_correct_df$ttbModel, tolerance=0.001)
   expect_equal(0.8333, pct_correct_df$logRegModel, tolerance=0.001)
@@ -144,40 +144,40 @@ test_that("city_population ttb vs. regression on dirty four cities", {
   ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
   reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 
-  pct_correct_df <- pctCorrectOfPredictPair(list(ttb, reg),
+  pct_correct_df <- percentCorrect(list(ttb, reg),
                                             city_population[c(27,30,52,68),])
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
   expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
 
   # Confirm same results even with a different order of rows.
-  pct_correct_df <- pctCorrectOfPredictPair(list(ttb, reg),
+  pct_correct_df <- percentCorrect(list(ttb, reg),
                                             city_population[c(68,52,30,27),])
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
   expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
 
   # ttb and reg are symmetric, so everything is the same with
-  # pctCorrectOfPredictPairNonSymmetric
-  pct_correct_df <- pctCorrectOfPredictPairNonSymmetric(
+  # percentCorrectNonSymmetric
+  pct_correct_df <- percentCorrectNonSymmetric(
     list(ttb, reg), city_population[c(27,30,52,68),])
   expect_equal(0, pct_correct_df$ttbModel, tolerance=0.001)
   expect_equal(0, pct_correct_df$regModel, tolerance=0.001)
 })
 
 
-test_that("pctCorrectOfPredictPair vs pctCorrectOfPredictPairNonSymmetric", {
+test_that("percentCorrect vs percentCorrectNonSymmetric", {
   # This uses all1Model, not exported from aggregators.  Find a better way.
   data <- cbind(y=c(4,3,2,1), x1=c(1, 1, 0, 0))
 
-  # pctCorrectOfPredictPair incorrectly says this gets it all right.
+  # percentCorrect incorrectly says this gets it all right.
   # It is incorrect because it assumes the heuristic makes symmetric
   # decisions: if it chooses A > B, it wil chose B < A, so the function
   # only checks the former of those two cases.
-  pct_correct_df <- pctCorrectOfPredictPair(list(fitted_always_1), data)
+  pct_correct_df <- percentCorrect(list(fitted_always_1), data)
   expect_equal(1, pct_correct_df$all1Model, tolerance=0.001)
 
-  # pctCorrectOfPredictPairNonSymmetric does not assume symmetry and so
+  # percentCorrectNonSymmetric does not assume symmetry and so
   # correctly says this heuristic is 50% correct.
-  pct_correct_df <- pctCorrectOfPredictPairNonSymmetric(
+  pct_correct_df <- percentCorrectNonSymmetric(
     list(fitted_always_1), data)
   expect_equal(0.5, pct_correct_df$all1Model, tolerance=0.001)
 })

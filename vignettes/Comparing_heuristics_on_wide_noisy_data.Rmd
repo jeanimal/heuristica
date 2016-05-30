@@ -74,7 +74,7 @@ multiPredict75 <- function(vec_of_models, num_rand_columns) {
     fitted_model <- model_constructor(m_train, criterion_col, cols_to_fit)
     list_of_fitted_models[[length(list_of_fitted_models)+1]] <- fitted_model
   }
-  pctCorrect <- pctCorrectOfPredictPair(list_of_fitted_models, m_test)
+  pctCorrect <- percentCorrect(list_of_fitted_models, m_test)
   pctCorrect <- cbind.data.frame(num_rand_col=num_rand_columns, pctCorrect)
   df <- melt(pctCorrect, id.vars=c("num_rand_col"))
   names(df) <- c("num_rand_col", "model", "accuracy")

@@ -103,12 +103,12 @@ testS &lt;-<span class="st"> </span><span class="kw">nrow</span>(data_set)-train
     }
 
     <span class="co">#calculate percentage of correct predictions</span>
-    pctCorr &lt;-<span class="st"> </span><span class="kw">pctCorrectOfPredictPair</span>(models, test_set)
+    pctCorr &lt;-<span class="st"> </span><span class="kw">percentCorrect</span>(models, test_set)
     results &lt;-<span class="st"> </span><span class="kw">rbind</span>(results, pctCorr)
   }
 
   <span class="co"># Predictions of na are equivalent to guessing, which is 50% correct.</span>
-  <span class="co"># TODO(jean): Handle this case in pctCorrectOfPredictPair, not here.</span>
+  <span class="co"># TODO(jean): Handle this case in percentCorrect, not here.</span>
   results[<span class="kw">is.na</span>(results)] &lt;-<span class="st"> </span><span class="fl">0.5</span>
   <span class="kw">return</span> (<span class="kw">colMeans</span>(results))
 }  </code></pre>
