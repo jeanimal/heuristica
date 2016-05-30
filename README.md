@@ -8,17 +8,17 @@ output: github_document
 
 
 
-This R package implements [Heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB), which uses just one cue to make its inference.  The models are designed for two-alternative choice tasks, such as which of two cities has a greater population given that one has a university and the other does not.  It also wraps more well-known models like regression and logistic regression into the two-alternative choice framework for easy comparison.  It provides functions to measure accuracy and robustness (out-of-sample accuracy).
+This R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as a unit-weighted linear model and Gigerenzer and Goldstein's Take The Best (TTB), which uses just one cue to make its inference.  The models are designed for two-alternative choice tasks, such as which of two cities has a greater population given that one has a university and the other does not.  It also wraps more well-known models like regression and logistic regression into the two-alternative choice framework for easy comparison.  It provides functions to measure accuracy and robustness (out-of-sample accuracy).
 
 The goal is to make it easy to explore the wide range of conditions in which simple heuristics can be more robust than more complex models.  Optimizing is not always better!
 
 # The Task
 
-Take the Best was designed for two-alternative choice tasks, e.g. given two cities, Rostock and Munich, which has a larger population?  The heuristics had __cues__ like whether each city had a university or a soccer team in order to infer the __criterion__, population size.
+Take the Best was designed for two-alternative choice tasks, e.g. given two schools, which has a higher drop-out rate?  The heuristics had __cues__, like the percent of low-income students and the percent of limited English students, in order to infer the __criterion__, drop-out rate.
 
 # A Simple Example
 
-Here is a subset of data on Chicago public high school drop-out rates from the 1995.
+Here is a subset of data on Chicago public high school drop-out rates.
 
 ```r
 schools <- data.frame(Name=c("Bowen", "Collins", "Fenger", "Juarez", "Young"), Dropout_Rate=c(25.5, 11.8, 28.7, 21.6, 4.5), Low_Income_Students=c(82.5, 88.8, 63.2, 84.5, 30.3), Limited_English_Students=c(11.4, 0.1, 0, 28.3, 0.1))
@@ -39,13 +39,25 @@ ttb <- ttbModel(schools, 2, c(3:4))
 reg <- regModel(schools, 2, c(3:4))
 ```
 
+What does the fit look like?  We can example Take The Best's cue validities and the regression coefficients.
+
+```r
+ttb$cue_validities
+#>      Low_Income_Students Limited_English_Students 
+#>                0.6000000                0.5555556
+coef(reg)
+#>      Low_Income_Students Limited_English_Students 
+#>               0.24985315               0.07322294
+```
+
+
 To see TTB's predictions, we give two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  (We use the package's __oneRow__ helper function to select a row.)  Below we see that between the first and 2nd row, ttb predicts the first row, outputting 1.  Between the first and third row, it outputs -1, predicting the 2nd row passed to it (row 3) is greater.
 
 ```r
 predictPair(oneRow(schools, 1), oneRow(schools, 2), ttb)
 #> [1] 1
-redictPair(oneRow(schools, 1), oneRow(schools, 3), ttb)
-#> Error in eval(expr, envir, enclos): could not find function "redictPair"
+predictPair(oneRow(schools, 1), oneRow(schools, 3), ttb)
+#> [1] -1
 ```
 
 To assess how well ttb fit the data overall, we can measure the percent of correct inferences for all pairs of schools in the data with __pctCorrectOfPredictPair__.  Let us also compare it to regression.
