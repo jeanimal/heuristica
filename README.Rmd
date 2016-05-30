@@ -58,7 +58,7 @@ predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), tt
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), ttb)
 ```
 
-Note that the output depends on the order of the rows.  In Collins vs. Bowen, -1 indicate Bowen had the higher drop-out rate.
+Note that the output depends on the order of the rows.  In the reversed pair of Collins vs. Bowen, -1 indicate Bowen had the higher drop-out rate.
 ```{r}
 predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), ttb)
 ```
