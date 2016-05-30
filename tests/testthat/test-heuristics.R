@@ -707,37 +707,39 @@ test_that("unitWeightModel 4x4 predictPair 3nd cue dominates non-binary reverse 
 
 ### validityWeightModel ###
 
-test_that("validityWeightModel 2x3 predictPairProb pos neg reverse_cues FALSE", {
+test_that("validityWeightModel 2x3 predictPair pos neg reverse_cues FALSE", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- validityWeightModel(train_matrix, 1, c(2,3), reverse_cues=FALSE)
   expect_equal(c(x1=1, x2=0),  model$cue_validities_unreversed)
+  expect_equal(c(x1=1, x2=0),  model$linear_coef)
+  # Another way to get the linear coefficients.
   expect_equal(c(x1=1, x2=0),  coef(model))
-  expect_equal(1, predictPairProb(oneRow(train_matrix, 1),
-                                 oneRow(train_matrix, 2), model))
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
 })
 
-test_that("validityWeightModel 2x3 predictPairProb pos neg", {
+test_that("validityWeightModel 2x3 predictPair pos neg", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- validityWeightModel(train_matrix, 1, c(2,3))
   expect_equal(c(x1=1, x2=0),  model$cue_validities_unreversed)
-  expect_equal(c(x1=1, x2=-1),  coef(model))
-  expect_equal(1, predictPairProb(oneRow(train_matrix, 1),
-                                 oneRow(train_matrix, 2), model))
+  expect_equal(c(x1=1, x2=-1),  model$linear_coef)
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
 })
 
 test_that("validityWeightModel allRowPairApply 5x1 75", {
   train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,1,1,0,1))
   model <- validityWeightModel(train_matrix, 1, c(2))
   expect_equal(c(x1=0.75),  model$cue_validities_unreversed) 
-  expect_equal(c(x1=0.75),  coef(model))
-  out <- allRowPairApply(train_matrix, rowIndexes(), heuristicsProb(model))
+  expect_equal(c(x1=0.75),  model$linear_coef)
+  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
   
-  expect_equal(0.5, getPrediction_raw(out, c(1,2)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
-  expect_equal(1,   getPrediction_raw(out, c(1,4)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,2)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,3)), tolerance=0.002)
+  expect_equal(1,  getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,5)), tolerance=0.002)
   
-  expect_equal(0, getPrediction_raw(out, c(4,5)), tolerance=0.002)
+  expect_equal(-1, getPrediction_raw(out, c(4,5)), tolerance=0.002)
 })
 
 test_that("validityWeightModel 5x1 25 reverse_cues FALSE", {
@@ -748,13 +750,13 @@ test_that("validityWeightModel 5x1 25 reverse_cues FALSE", {
   expect_equal(c(x1=0.25),  model$cue_validities)
   # No cue reversal means coefficients are same as cue validities.
   expect_equal(c(x1=0.25),  coef(model))
-  out <- allRowPairApply(train_matrix, rowIndexes(), heuristicsProb(model))
-  expect_equal(1,   getPrediction_raw(out, c(1,2)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,4)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
+  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  expect_equal(1,  getPrediction_raw(out, c(1,2)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,3)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,5)), tolerance=0.002)
   
-  expect_equal(0,   getPrediction_raw(out, c(2,3)), tolerance=0.002)
+  expect_equal(-1, getPrediction_raw(out, c(2,3)), tolerance=0.002)
 })
 
 test_that("validityWeightModel 5x1 25", {
@@ -767,16 +769,16 @@ test_that("validityWeightModel 5x1 25", {
   # Cue reversal changes coefficient from 0.75 to -0.75.
   expect_equal(c(x1=-0.75),  coef(model))
   
-  out <- allRowPairApply(train_matrix, rowIndexes(), heuristicsProb(model))
-  expect_equal(0,   getPrediction_raw(out, c(1,2)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,3)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,4)), tolerance=0.002)
-  expect_equal(0.5, getPrediction_raw(out, c(1,5)), tolerance=0.002)
+  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  expect_equal(-1, getPrediction_raw(out, c(1,2)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,3)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,4)), tolerance=0.002)
+  expect_equal(0,  getPrediction_raw(out, c(1,5)), tolerance=0.002)
   
-  expect_equal(1,   getPrediction_raw(out, c(2,3)), tolerance=0.002)
+  expect_equal(1,  getPrediction_raw(out, c(2,3)), tolerance=0.002)
 })
 
-test_that("validityWeightModel 4x4 predictPairProb 3nd cue dominates non-binary reverse cue", {
+test_that("validityWeightModel 4x4 predictPair 3nd cue dominates non-binary reverse cue", {
   train_df <- data.frame(Y=c(9,8,7,6), a=c(1,1,0,1), b=c(1,1,0,1), c=c(0,0,0,0.1))
   # How this data looks:
   # > train_df
@@ -796,10 +798,10 @@ test_that("validityWeightModel 4x4 predictPairProb 3nd cue dominates non-binary 
   # Soon: Linear coef will include reversing the cue pointed the wrong way.
   expect_equal(c(a=0.667, b=0.667, c=0), model$linear_coef, tolerance=0.002)
   
-  expect_equal(0, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(1, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(1, predictPair(oneRow(train_df, 4),
+                              oneRow(train_df, 3), model))
 })
 
 ### regInterceptModel ###

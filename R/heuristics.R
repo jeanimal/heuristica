@@ -411,13 +411,6 @@ predictPairInternal.validityWeightModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-predictProbInternal.validityWeightModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- predictPairInternal.validityWeightModel(object, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the 
-  # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
-}
-
 ### Wrappers for linear regression models ###
 
 #' Documentation stub. Just to share documentation.
