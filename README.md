@@ -31,6 +31,8 @@ schools
 #> 5   Young          4.5                30.3                      0.1
 ```
 
+## Fitting
+
 Next we fit Take The Best-- ttbModel-- and a wrapped version of R's "lm" function for a linear regression-- regModel.  The 2nd column, `Dropout_Rate`, is the criterion to be predicted.  The following columns, indexes 3 and 4, which are percent of `Low_Income_Students` and percent of `Limited_English_Students`, are the predictors.
 
 
@@ -49,9 +51,11 @@ coef(reg)
 #>      Low_Income_Students Limited_English_Students 
 #>               0.24985315               0.07322294
 ```
+Both Take The Best and regression give a higher weight to `Low_Income_Students`, although of course how they use this weight differs.
 
+## Predicting
 
-To see TTB's predictions, we give two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  (We use the package's __oneRow__ helper function to select a row.)  Below we see that between the first and 2nd row, ttb predicts the first row, outputting 1.  Between the first and third row, it outputs -1, predicting the 2nd row passed to it (row 3) is greater.
+To see a model's predictions, we give two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  (We use the package's __oneRow__ helper function to select a row.)  Below we see that between the first and 2nd row, ttb predicts the first row, outputting 1.  Between the first and third row, it outputs -1, predicting the 2nd row passed to it (row 3) is greater.
 
 ```r
 predictPair(oneRow(schools, 1), oneRow(schools, 2), ttb)
@@ -59,6 +63,18 @@ predictPair(oneRow(schools, 1), oneRow(schools, 2), ttb)
 predictPair(oneRow(schools, 1), oneRow(schools, 3), ttb)
 #> [1] -1
 ```
+
+Interestingly, regression predicts exactly the opposite for these row pairs!
+
+```r
+predictPair(oneRow(schools, 1), oneRow(schools, 2), reg)
+#> [1] -1
+predictPair(oneRow(schools, 1), oneRow(schools, 3), reg)
+#> [1] 1
+```
+
+
+## Assessing overall performance
 
 To assess how well ttb fit the data overall, we can measure the percent of correct inferences for all pairs of schools in the data with __pctCorrectOfPredictPair__.  Let us also compare it to regression.
 
@@ -69,6 +85,8 @@ pctCorrectOfPredictPair(list(ttb, reg), schools)
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.
+
+Of course, this was just assessing the performance of an in-sample fit on a subset of data.  For a more realistic example, see the vignette with cross-validated out-of-sample performance on a complete data set.
 
 # Installation
 
