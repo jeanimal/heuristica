@@ -88,7 +88,7 @@ predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), reg
 Looking at the data set, we see that Take The Best was correct about Bowen vs. Collins because Bowen has the higher `Dropout_Rate`.  Take The Best was also correct about Bowen vs. Fenger.  Regression was wrong for both pairs.
 
 ```r
-schools[c(1:3), c(1,2)]
+subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 #>      Name Dropout_Rate
 #> 1   Bowen         25.5
 #> 2 Collins         11.8
