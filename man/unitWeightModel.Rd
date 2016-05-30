@@ -2,7 +2,7 @@
 % Please edit documentation in R/heuristics.R
 \name{unitWeightModel}
 \alias{unitWeightModel}
-\title{Unit WeightModel, a unit-weight linear model}
+\title{Unit-weight linear model}
 \usage{
 unitWeightModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
   fit_name = "unitWeightModel")
@@ -33,7 +33,7 @@ containing at least the following components:
   }
 }
 \description{
-Unit WeightModel is a unit-weight linear model inspired by Robyn Dawes.
+Unit-weight linear model inspired by Robyn Dawes.
 Unit Weight Model assigns unit (+1 or -1) weights based on
 \code{\link{cueValidity}}.
   \itemize{
