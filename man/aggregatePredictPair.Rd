@@ -13,7 +13,7 @@ e.g. ttbModel.}
 \item{test_data}{Data to try to predict; must match columns in fit.}
 
 \item{goal_type}{String identifying the goal of the models and criterion.
-'ChooseGreater' indicates to use correctGreater and predictPairInternal.
+'CorrectGreater' indicates to use correctGreater and predictPairInternal.
 'ProbGreater' indicates to use probGreater and predictProbInternal.}
 
 \item{...}{Optionally additional row pair functions, e.g. rowIndexes().}
@@ -30,7 +30,7 @@ ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
 reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 # Which row pairs is ttb better on?  By "better" we mean chooses the
 # correct larger row-- that's our goal_type.
-goal_type <- 'ChooseGreater'
+goal_type <- 'CorrectGreater'
 out <- aggregatePredictPair(list(ttb, reg), city_population, goal_type,
   rowIndexes())
 out_df <- data.frame(out)
