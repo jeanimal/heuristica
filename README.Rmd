@@ -52,26 +52,32 @@ Both Take The Best and regression give a higher weight to `Low_Income_Students` 
 
 ## Predicting
 
-To see a model's predictions, we give it two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  (We use the package's __oneRow__ helper function to select a row.)  Below we see that between the first and 2nd row, ttb predicts the first row, outputting 1.  Between the first and third row, it outputs -1, predicting the 2nd row passed to it (row 3) is greater.
+To see a model's predictions, we give it two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropout rate.  In Bowen vs. Fenger, it outputs -1, meaning it predicts Fenger has a higher dropout rate.
 ```{r}
-predictPair(oneRow(schools, 1), oneRow(schools, 2), ttb)
-predictPair(oneRow(schools, 1), oneRow(schools, 3), ttb)
+predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), ttb)
+predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), ttb)
 ```
 
-Interestingly, regression predicts exactly the opposite for these row pairs!
+Note that the output depends on the order of the rows.  In Collins vs. Bowen, -1 indicate Bowen had the higher drop-out rate.
 ```{r}
-predictPair(oneRow(schools, 1), oneRow(schools, 2), reg)
-predictPair(oneRow(schools, 1), oneRow(schools, 3), reg)
+predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), ttb)
 ```
 
-Looking at the data set, we see that Take The Best was correct about row 1 (Bowen) vs row 2 (Collins) because Bowen has the higher `Dropout_Rate`.  It was also correct about row 1 (Bowen) vs. row 3 (Fenger) because Fenger has the higher `Dropout_rate`.  Regression was wrong on both.
+
+Now ask the fitted regression model to predict the same school pairs.  Interestingly, it makes the opposite predictions.
+```{r}
+predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), reg)
+predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), reg)
+```
+
+Looking at the data set, we see that Take The Best was correct about Bowen vs. Collins because Bowen has the higher `Dropout_Rate`.  Take The Best was also correct about Bowen vs. Fenger.  Regression was wrong for both pairs.
 ```{r}
 schools[c(1:3), c(1,2)]
 ```
 
 ## Assessing Overall Performance
 
-For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __percentCorrect__.  The function also lets us readily compare ttb and regression.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __percentCorrect__.  The function also lets us readily compare ttb and regression in one function call.
 ```{r}
 percentCorrect(list(ttb, reg), schools)
 ```
@@ -106,7 +112,7 @@ Uncomment and execute the line below to get the development version.
 The package comes with the following models that implement predictPair.
 * __ttbModel__: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
 * __ttbGreedyModel__: Take the Best using conditional cue validity (rather than cue validity).
-* __unitWeightModel__: A [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An Exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
+* __unitWeightModel__: A [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
 * __validityWeightModel__: A cue-validity-weighted linear model.  (In some publications, this was called franklinModel after Ben Franklin.)
 * __regModel__: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.  It generates a prediction for each item in the pair-- e.g. estimates the population of Rostock and the population of Munich-- and then picks the item (city) with the higher estimate.
 * __logRegModel__: A logistic regression model, a wrapper around R's glm.  This estimates the probability that Rostock is greater than Munich and chooses Rostock if the probability is greater than 50/50.
