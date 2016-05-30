@@ -83,7 +83,7 @@ schools[c(1:3), c(1,2)]
 #> 3  Fenger         28.7
 ```
 
-## Assessing overall performance
+## Assessing Overall Performance
 
 For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __percentCorrect__.  The function also lets us readily compare ttb and regression.
 
