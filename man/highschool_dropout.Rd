@@ -6,7 +6,7 @@
 \title{Chicago high school dropout rates.}
 \format{A data frame.
 \describe{
-  \item{Name_of_School}{Name of School}
+  \item{Name}{Name of School}
   \item{Running_Number}{Running Number}
   \item{Included_in_Web_and_Web_Corrected}{If 1, then this row was
     accidentally omitted in the ABC studies from 1993}
