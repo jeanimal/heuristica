@@ -64,7 +64,7 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 ```
 
 
-Now ask the fitted regression model to predict the same school pairs.  Interestingly, it makes the opposite predictions.
+Now ask the fitted regression model to predict the same school pairs.  Interestingly, it makes the opposite predictions, choosing Collins over Bown and Bowen over Fenger.
 ```{r}
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), reg)
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), reg)
