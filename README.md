@@ -68,7 +68,7 @@ predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), ttb
 #> [1] -1
 ```
 
-Note that the output depends on the order of the rows.  In Collins vs. Bowen, -1 indicate Bowen had the higher drop-out rate.
+Note that the output depends on the order of the rows.  In the reversed pair of Collins vs. Bowen, -1 indicate Bowen had the higher drop-out rate.
 
 ```r
 predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), ttb)
@@ -76,7 +76,7 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 ```
 
 
-Now ask the fitted regression model to predict the same school pairs.  Interestingly, it makes the opposite predictions.
+Now ask the fitted regression model to predict the same school pairs.  Interestingly, it makes the opposite predictions, choosing Collins over Bown and Bowen over Fenger.
 
 ```r
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), reg)
@@ -94,6 +94,20 @@ subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 #> 2 Collins         11.8
 #> 3  Fenger         28.7
 ```
+
+Using heuristica's rowPairApply function, we can even get a nice table of results.
+
+```r
+out <- allRowPairApply(subset(schools, Name %in% c("Bowen", "Collins", "Fenger")), rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out_df <- data.frame(out)
+out_df$Row1 <- schools$Name[out_df$Row1]
+out_df$Row2 <- schools$Name[out_df$Row2]
+out_df[c(1,2),]
+#>    Row1    Row2 CorrectGreater ttbModel regModel
+#> 1 Bowen Collins              1        1       -1
+#> 2 Bowen  Fenger             -1       -1        1
+```
+
 
 ## Assessing Overall Performance
 

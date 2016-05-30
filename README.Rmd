@@ -75,6 +75,16 @@ Looking at the data set, we see that Take The Best was correct about Bowen vs. C
 subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 ```
 
+Using heuristica's rowPairApply function, we can even get a nice table of results.
+```{r}
+out <- allRowPairApply(subset(schools, Name %in% c("Bowen", "Collins", "Fenger")), rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out_df <- data.frame(out)
+out_df$Row1 <- schools$Name[out_df$Row1]
+out_df$Row2 <- schools$Name[out_df$Row2]
+out_df[c(1,2),]
+```
+
+
 ## Assessing Overall Performance
 
 For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __percentCorrect__.  The function also lets us readily compare ttb and regression in one function call.
