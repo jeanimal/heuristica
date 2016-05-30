@@ -38,7 +38,6 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
                                 heuristicsList(fitted_heuristic_list,
                                                fn=predictProbInternal), ...)
   } else if (goal_type=='CorrectGreater') {
-    # TODO(jean): Change to CorrectGreater to match output column name.
     all_fn_creator_list <- list(correctGreater(criterion_col),
                                 heuristicsList(fitted_heuristic_list,
                                                fn=predictPairInternal), ...)
