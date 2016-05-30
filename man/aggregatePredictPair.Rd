@@ -44,4 +44,5 @@ head(out_df[out_df$ttbModel > out_df$regModel,])
 # this is the only time Cologne appeared.  In contrast, Halle appears
 # 7 times, so it's a tougher city for regression to predict than ttb.
 }
+\keyword{internal}
 

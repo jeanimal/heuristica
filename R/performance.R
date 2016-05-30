@@ -3,7 +3,9 @@
 # A general-ish function that always returns a square matrix with dimensions
 # the length of required_categories.
 confusionMatrixRequiredCategories <- function(data_1, data_2, required_categories) {
-  munged <- table(c(required_categories, data_1), c(required_categories, data_2))
+  correct <- c(required_categories, data_1)
+  predictions <- c(required_categories, data_2)
+  munged <- table(correct, predictions)
   cleaned <- munged - diag(length(required_categories))
   return(cleaned)
 }
@@ -107,6 +109,7 @@ accuracyFromConfusionMatrix <- function(confusion_matrix, zero_as_guess=TRUE) {
   sum(correct, guessed_correct) / sum(confusion_matrix)
 }
 
+# calculate accuracy of predictions in cols_to_compare.
 categoryAccuracyAll <- function(data, reference_col, cols_to_compare) {
   accuracy <- matrix(rep(NA, length(cols_to_compare)), 1, length(cols_to_compare))
   i <- 1

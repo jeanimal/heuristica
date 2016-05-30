@@ -27,6 +27,7 @@
 #' # So row 4 vs. 7 was Cologne vs. Dortmund.  Looking through the list,
 #' # this is the only time Cologne appeared.  In contrast, Halle appears
 #' # 7 times, so it's a tougher city for regression to predict than ttb.
+#' @keywords internal
 #' @export
 aggregatePredictPair <- function(fitted_heuristic_list, test_data,
                                  goal_type, ...) {
@@ -46,6 +47,17 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   }
   predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
   return(predictions)
+}
+
+predictPairConfusionMatrix <- function(test_data, heuristic) {
+  goal_type <- 'CorrectGreater'
+  out_fwd <- aggregatePredictPair(list(heuristic), test_data, goal_type)
+  test_data_rev <- test_data[c(nrow(test_data):1),]
+  out_rev <- aggregatePredictPair(list(heuristic), test_data_rev, goal_type)
+  out <- rbind(out_fwd, out_rev)
+  correct <- out[,1]
+  predictions <- out[,2]
+  return(confusionMatrixRequiredCategories(correct, predictions, c(-1,1)))
 }
 
 #' Percent correct of heuristics' predictPair on test_data, returning a matrix.

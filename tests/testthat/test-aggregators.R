@@ -181,3 +181,50 @@ test_that("percentCorrect vs percentCorrectNonSymmetric", {
     list(fitted_always_1), data)
   expect_equal(0.5, pct_correct_df$all1Model, tolerance=0.001)
 })
+
+#
+# predictPairConfusionMatrix
+#
+
+test_that("predictPairConfusionMatrix 1 pair ttb correct", {
+  data <- cbind(y=c(2,1), x1=c(1, 0))
+  ttb <- ttbModel(data, 1, c(2))
+  out <- predictPairConfusionMatrix(data, ttb)
+  # Check all 4 quadrants.
+  expect_equal(1, out["-1", "-1"])
+  expect_equal(0, out["-1", "1"])
+  expect_equal(0, out["1", "-1"])
+  expect_equal(1, out["1", "1"])
+  # Check dimentsions.
+  expect_equal(2, nrow(out))
+  expect_equal(2, ncol(out))
+})
+
+test_that("predictPairConfusionMatrix 1 pair ttb wrong", {
+  data <- cbind(y=c(2,1), x1=c(1, 0))
+  ttb <- ttbModel(data, 1, c(2))
+  # Now have it predict on data with the cue pointed the "wrong" way.
+  out <- predictPairConfusionMatrix(cbind(y=c(2,1), x1=c(0, 1)), ttb)
+  # Check all 4 quadrants.
+  expect_equal(0, out["-1", "-1"])
+  expect_equal(1, out["-1", "1"])
+  expect_equal(1, out["1", "-1"])
+  expect_equal(0, out["1", "1"])
+  # Check dimentsions.
+  expect_equal(2, nrow(out))
+  expect_equal(2, ncol(out))
+})
+
+test_that("predictPairConfusionMatrix 1 pair fitted_always_1", {
+  data <- cbind(y=c(2,1), x1=c(1, 0))
+  # fitted_always_1 always predicts 1, regardless of data.
+  out <- predictPairConfusionMatrix(data, fitted_always_1)
+  # Check all 4 quadrants.
+  expect_equal(0, out["-1", "-1"])
+  expect_equal(1, out["-1", "1"])
+  expect_equal(0, out["1", "-1"])
+  expect_equal(1, out["1", "1"])
+  # Check dimentsions.
+  expect_equal(2, nrow(out))
+  expect_equal(2, ncol(out))
+})
