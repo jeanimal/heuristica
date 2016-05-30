@@ -95,10 +95,15 @@ subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 #> 3  Fenger         28.7
 ```
 
-Using heuristica's rowPairApply function, we can even get a nice table of results.
+Using heuristica's __allRowPairApply__ function, we can even get a nice summary table of these predictions.
 
 ```r
-out <- allRowPairApply(subset(schools, Name %in% c("Bowen", "Collins", "Fenger")), rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out <- allRowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out[c(1,2),]
+#>      Row1 Row2 CorrectGreater ttbModel regModel
+#> [1,]    1    2              1        1       -1
+#> [2,]    1    3             -1       -1        1
+# Convert indexes to school names.
 out_df <- data.frame(out)
 out_df$Row1 <- schools$Name[out_df$Row1]
 out_df$Row2 <- schools$Name[out_df$Row2]

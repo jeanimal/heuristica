@@ -78,6 +78,8 @@ subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 Using heuristica's __allRowPairApply__ function, we can even get a nice summary table of these predictions.
 ```{r}
 out <- allRowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out[c(1,2),]
+# Convert indexes to school names.
 out_df <- data.frame(out)
 out_df$Row1 <- schools$Name[out_df$Row1]
 out_df$Row2 <- schools$Name[out_df$Row2]
