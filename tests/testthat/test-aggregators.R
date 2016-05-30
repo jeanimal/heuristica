@@ -247,3 +247,21 @@ test_that("predictPairConfusionMatrix 1 pair fitted_always_0", {
   expect_equal(3, nrow(out))
   expect_equal(3, ncol(out))
 })
+
+test_that("predictPairConfusionMatrix 1 pair fitted_always_0 guess expected value", {
+  data <- cbind(y=c(2,1), x1=c(1, 0))
+  # fitted_always_0 always predicts 0, regardless of data.  This is
+  # accidentally symmetric because the negative of 0 is 0.
+  out <- predictPairConfusionMatrix(data, fitted_always_0,
+                                    zero_handling_fn=guessExpectedValue)
+  # In cases when correct value was -1, it guessed and was 50% right.
+  expect_equal(c("-1"=0.5, "0"=0, "1"=0.5), out["-1",])
+  # There were no cases when correct value was 0.
+  expect_equal(c("-1"=0, "0"=0, "1"=0), out["0",])
+  # In cases when correct value was 1, it guessed and was 50% right..
+  expect_equal(c("-1"=0.5, "0"=0, "1"=0.5), out["1",])
+  
+  # Check dimensions-- now there are 3.
+  expect_equal(3, nrow(out))
+  expect_equal(3, ncol(out))
+})

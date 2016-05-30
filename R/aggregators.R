@@ -49,7 +49,20 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   return(predictions)
 }
 
-predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRUE) {
+guessExpectedValue <- function(confusionMatrixWith0s) {
+  guesses <- confusionMatrixWith0s[1,2]
+  confusionMatrixWith0s[1,1] <- confusionMatrixWith0s[1,1] + 0.5 * guesses
+  confusionMatrixWith0s[1,3] <- confusionMatrixWith0s[1,3] + 0.5 * guesses
+  confusionMatrixWith0s[1,2] <- 0
+  guesses <- confusionMatrixWith0s[3,2]
+  confusionMatrixWith0s[3,1] <- confusionMatrixWith0s[3,1] + 0.5 * guesses
+  confusionMatrixWith0s[3,3] <- confusionMatrixWith0s[3,3] + 0.5 * guesses
+  confusionMatrixWith0s[3,2] <- 0
+  return(confusionMatrixWith0s)
+}
+
+predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRUE,
+                                       zero_handling_fn=NULL) {
   goal_type <- 'CorrectGreater'
   out_fwd <- aggregatePredictPair(list(heuristic), test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
@@ -65,7 +78,12 @@ predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRU
   predictions <- out[,2]
   if (0 %in% out) {
     # If there are any guesses or ties (0's), include 0 in the categories.
-    return(confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1)))
+    cf <- confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1))
+    if (!is.null(zero_handling_fn)) {
+      return(zero_handling_fn(cf))
+    } else {
+      return(cf)
+    }
   } else {
     return(confusionMatrixRequiredCategories(correct, predictions, c(-1,1)))
   }
