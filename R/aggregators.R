@@ -4,7 +4,7 @@
 #'   e.g. ttbModel.
 #' @param test_data Data to try to predict; must match columns in fit.
 #' @param goal_type String identifying the goal of the models and criterion.
-#'   'ChooseGreater' indicates to use correctGreater and predictPairInternal.
+#'   'CorrectGreater' indicates to use correctGreater and predictPairInternal.
 #'   'ProbGreater' indicates to use probGreater and predictProbInternal.
 #' @param ... Optionally additional row pair functions, e.g. rowIndexes().
 #' @return A one-row matrix of numbers from 0 to 1, meaning proportion
@@ -14,7 +14,7 @@
 #' reg <- regModel(city_population, 3, c(4:ncol(city_population)))
 #' # Which row pairs is ttb better on?  By "better" we mean chooses the
 #' # correct larger row-- that's our goal_type.
-#' goal_type <- 'ChooseGreater'
+#' goal_type <- 'CorrectGreater'
 #' out <- aggregatePredictPair(list(ttb, reg), city_population, goal_type,
 #'   rowIndexes())
 #' out_df <- data.frame(out)
@@ -37,7 +37,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
     all_fn_creator_list <- list(probGreater(criterion_col),
                                 heuristicsList(fitted_heuristic_list,
                                                fn=predictProbInternal), ...)
-  } else if (goal_type=='ChooseGreater') {
+  } else if (goal_type=='CorrectGreater') {
     # TODO(jean): Change to CorrectGreater to match output column name.
     all_fn_creator_list <- list(correctGreater(criterion_col),
                                 heuristicsList(fitted_heuristic_list,
@@ -109,7 +109,7 @@ percentCorrect <- function(fitted_heuristic_list, test_data) {
 #' @export
 percentCorrectReturnMatrix <- function(fitted_heuristic_list,
                                                 test_data) {
-  goal_type <- 'ChooseGreater'
+  goal_type <- 'CorrectGreater'
   predictions <- aggregatePredictPair(
     fitted_heuristic_list, test_data, goal_type)
   return(categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
@@ -136,7 +136,7 @@ percentCorrectReturnMatrix <- function(fitted_heuristic_list,
 #' @export
 percentCorrectNonSymmetric <- function(fitted_heuristic_list,
                                                 test_data) {
-  goal_type <- 'ChooseGreater'
+  goal_type <- 'CorrectGreater'
   predictions_fwd <- aggregatePredictPair(
     fitted_heuristic_list, test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
