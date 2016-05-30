@@ -137,7 +137,7 @@ This outputs 10 predictions because there are 5*4/2 = 10 row pairs for 5 schools
 
 #### Performance
 
-Heuristica has two ways to assess the performance of this categorizing of ranking.  First, there is a confusion matrix, as in many machine learning problems, except this one assumes you always want to see the output for -1, 0, 1 always.  We need to give it the correct answers, which are based on column 2, so we use correctGreater(2).  And we need to give itht epredictions, which we generate with heuristics(myFit).  We pass these generators into allRowPairApply.  Then we send the output to our confusion matrix function.
+Heuristica can assess the performance of this categorizing of ranking.  First, there is a confusion matrix, as in many machine learning problems, except this one assumes you always want to see the output for -1, 0, 1 always.  We need to give it the correct answers, which are based on column 2, so we use correctGreater(2).  And we need to give it the predictions, which we generate with heuristics(myFit).  We pass these generators into allRowPairApply.  Then we send the output to our confusion matrix function.
 
 ```{r}
 set.seed(1)
