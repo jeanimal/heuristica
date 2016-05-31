@@ -1,7 +1,9 @@
 #' Chicago high school dropout rates. 
 #'
 #' Chicago high school droput rates from 1995 and associated variables
-#' like average students per teach and percent low income.
+#' like average students per teacher and percent low income students.
+#' All cues are real-valued but some have N/A values.  It includes rows
+#' accidentally omitted in prior research.
 #'
 #' The data is based on:
 #'
@@ -57,9 +59,10 @@
 
 #' Population size of the 83 largest German cities. 
 #'
-#' Population size of 83 largest German cities and additional variables 
-#' indicating whether they have a soccer team, intercity trainline,
-#' University, etc.
+#' Population size of the 83 German cities that had more than 100,000
+#' inhabitants when this data was collected in 1993 plus cues 
+#' indicating whether a city has a soccer team, intercity trainline,
+#' University, etc.  All cues are binary.
 #'
 #' The data is based on:
 #'

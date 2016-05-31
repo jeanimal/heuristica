@@ -32,9 +32,10 @@
 city_population
 }
 \description{
-Population size of 83 largest German cities and additional variables 
-indicating whether they have a soccer team, intercity trainline,
-University, etc.
+Population size of the 83 German cities that had more than 100,000
+inhabitants when this data was collected in 1993 plus cues 
+indicating whether a city has a soccer team, intercity trainline,
+University, etc.  All cues are binary.
 }
 \details{
 The data is based on:

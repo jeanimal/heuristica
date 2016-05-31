@@ -153,21 +153,24 @@ Uncomment and execute the line below to get the development version.
 
 # Models
 
-The package comes with the following models that implement predictPair.
-* `ttbModel`: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). It sorts cues in order of cue validity, making a decision based on the first cue that discriminates (has differing values on the two objects).
+The package comes with the following models that you can call with predictPair.
+* `logRegModel`: A logistic regression model, a wrapper around R's glm.  This estimates the probability that one school's drop-out rate is greater than the other and chooses the school with probability greater than 50%.
+* `minModel`: It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two items / schools).
+* `regModel`: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It fits a regression based on the column indices.  For predictPair, it predicts the criterion for each item in the pair-- e.g. estimates the drop-out rate of each school-- and then predicts the item with the higher estimate-- higher drop-out rate.  (A variant that fits with an intercept, `regInterceptModel`, is provided in order to confirm prior research results, but it is not recommended for future research.)
+* `singleCueModel`: In the fitting stage, this selects the cue with the higest cue validity.  It only uses that cue, and if the cue does not discriminate, it guesses.
+* `ttbModel`: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). In the fitting stage, it sorts cues in order of cue validity.  When predicting between two items, it finds the highest-validity that discriminates (has differing values on the two items) and bases its prediction on that cue, ignoring other cues.  The cue used can vary based on the cue values of the two items.
 * `ttbGreedyModel`: Take the Best using conditional cue validity (rather than cue validity).
 * `unitWeightModel`: A [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
 * `validityWeightModel`: A cue-validity-weighted linear model.  (In some publications, this was called franklinModel after Ben Franklin.)
-* `regModel`: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It generates a regression formula for you based on the matrix and column indices you give it.  It generates a prediction for each item in the pair-- e.g. estimates the population of Rostock and the population of Munich-- and then picks the item (city) with the higher estimate.
-* `logRegModel`: A logistic regression model, a wrapper around R's glm.  This estimates the probability that Rostock is greater than Munich and chooses Rostock if the probability is greater than 50/50.
 
-You can add your own models by also implementing a function related to __predictPair__, as described in a vignette.
+You can add your own models by also implementing a function related to `predictPair`, as described in a vignette.
 
 # Data
 
 The package comes with two data sets used in the book, Simple Heuristics That Make Us Smart.
-* city_population (all binary cues)
-* highschool_dropout
+* `city_population`:  The 83 German cities with more than 100,000 inhabitants in 1993.  All cues are binary.
+* `highschool_dropout`: Drop-out rates for all 63 Chicago public high school plus associated variables like average students per teacher and percent low income students.  The data is
+from 1995.  All cues are real-valued but some have N/A values.
 
 # Citations
 
