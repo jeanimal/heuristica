@@ -231,11 +231,11 @@ test_that("predictPairConfusionMatrix 1 pair fitted_always_1", {
   expect_equal(2, ncol(out))
 })
 
-test_that("predictPairConfusionMatrix 1 pair fitted_always_0", {
+test_that("predictPairFullConfusionMatrix 1 pair fitted_always_0", {
   data <- cbind(y=c(2,1), x1=c(1, 0))
   # fitted_always_0 always predicts 0, regardless of data.  This is
   # accidentally symmetric because the negative of 0 is 0.
-  out <- predictPairConfusionMatrix(data, fitted_always_0)
+  out <- predictPairFullConfusionMatrix(data, fitted_always_0)
   # In cases when correct value was -1, it guessed.
   expect_equal(c("-1"=0, "0"=1, "1"=0), out["-1",])
   # There were no cases when correct value was 0.
@@ -248,12 +248,12 @@ test_that("predictPairConfusionMatrix 1 pair fitted_always_0", {
   expect_equal(3, ncol(out))
 })
 
-test_that("predictPairConfusionMatrix 1 pair fitted_always_0 guess expected value", {
+test_that("predictPairFullConfusionMatrix 1 pair fitted_always_0 guess expected value", {
   data <- cbind(y=c(2,1), x1=c(1, 0))
   # fitted_always_0 always predicts 0, regardless of data.  This is
   # accidentally symmetric because the negative of 0 is 0.
-  out <- predictPairConfusionMatrix(data, fitted_always_0,
-                                    guess_handling_fn=guessExpectedValue)
+  out_1 <- predictPairFullConfusionMatrix(data, fitted_always_0)
+  out <- guessExpectedValue(out_1)
   # In cases when correct value was -1, it guessed and was 50% right.
   expect_equal(c("-1"=0.5, "0"=0, "1"=0.5), out["-1",])
   # There were no cases when correct value was 0.

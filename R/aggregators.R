@@ -49,44 +49,55 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   return(predictions)
 }
 
-guessExpectedValue <- function(confusionMatrixWith0s) {
-  guesses <- confusionMatrixWith0s[1,2]
-  confusionMatrixWith0s[1,1] <- confusionMatrixWith0s[1,1] + 0.5 * guesses
-  confusionMatrixWith0s[1,3] <- confusionMatrixWith0s[1,3] + 0.5 * guesses
-  confusionMatrixWith0s[1,2] <- 0
-  guesses <- confusionMatrixWith0s[3,2]
-  confusionMatrixWith0s[3,1] <- confusionMatrixWith0s[3,1] + 0.5 * guesses
-  confusionMatrixWith0s[3,3] <- confusionMatrixWith0s[3,3] + 0.5 * guesses
-  confusionMatrixWith0s[3,2] <- 0
-  return(confusionMatrixWith0s)
-}
-
-predictPairConfusionMatrix <- function(test_data, heuristic, symmetric_model=TRUE,
-                                       guess_handling_fn=NULL) {
+# Same as predictPairFullConfusionMatrix bur returns a 3x3 matrix,
+# leaving guesses intact as 0's.
+predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
+                                           symmetric_model=TRUE) {
   goal_type <- 'CorrectGreater'
-  out_fwd <- aggregatePredictPair(list(heuristic), test_data, goal_type)
+  out_fwd <- aggregatePredictPair(list(fitted_heuristic), test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
   if (symmetric_model) {
     # The model's prediction in A vs. B = - prediction in B vs. A.
     out <- rbind(out_fwd, -out_fwd)
   } else {
     # Need to re-run the model to figure out what it says in B vs. A.
-    out_rev <- aggregatePredictPair(list(heuristic), test_data_rev, goal_type)
+    out_rev <- aggregatePredictPair(list(fitted_heuristic), test_data_rev, goal_type)
     out <- rbind(out_fwd, out_rev)
   }
   correct <- out[,1]
   predictions <- out[,2]
-  if (0 %in% out) {
-    # If there are any guesses or ties (0's), include 0 in the categories.
-    cf <- confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1))
-    if (!is.null(guess_handling_fn)) {
-      return(guess_handling_fn(cf))
-    } else {
-      return(cf)
-    }
-  } else {
-    return(confusionMatrixRequiredCategories(correct, predictions, c(-1,1)))
+  return(confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1)))
+}
+
+#' Make a confusion matrix using predictPair with the heuristic and test_data.
+#'
+#' @param test_data A data set.  Must have the criterion_column and cols_to_fit
+#'   that the heuristic expects.
+#' @param fitted_heuristic A fitted heuristic that implements predictPair
+#' @param guess_handling_fn A function to call on the 3x3 confusion matrix to
+#'   assign a model's guesses-- 0 output-- to -1 or 1.
+#' @param symmetric_model Optional parameter that is TRUE by default because
+#'   all models in heuristica are symmtric.  (For an asymmteric model, this
+#'   function will run both A vs. B and B vs. A through predicPair.)
+#' @return A 2x2 confusion matrix with rows and columns for -1 and 1.  It will
+#'   be 2x2 even if predictions and correct do not cover the full range.
+#'
+#' @references
+#' Wikipedia's entry on
+#' \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
+#'
+#' @export
+predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
+                                       guess_handling_fn=NULL,
+                                       symmetric_model=TRUE) {
+  matrix3x3 <- predictPairFullConfusionMatrix(test_data, fitted_heuristic,
+                                              symmetric_model=symmetric_model)
+  if (!is.null(guess_handling_fn)) {
+    matrix3x3 <- guess_handling_fn(matrix3x3)
   }
+  # Drop all zero rows.  TOODO(error checking).
+  matrix2x2 <- matrix3x3[c(1,3), c(1,3)]
+  return(matrix2x2)
 }
 
 #' Percent correct of heuristics' predictPair on test_data, returning a matrix.

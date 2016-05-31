@@ -113,3 +113,19 @@ test_that("accuracyFromConfusionMatrix guess 0.5", {
 # > accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,2,1), c(0,0,0)))
 # [1] 0.6666667
 
+test_that("guessExpectedValue", {
+  m <- cbind(c("-1"=4, "0"=4, "1"=4), c("-1"=4, "0"=4, "1"=4),
+             c("-1"=4, "0"=4, "1"=4))
+  colnames(m) <- c("-1", "0", "1")
+  out <- guessExpectedValue(m)
+  # In cases when correct value was -1, it guessed.
+  expect_equal(c("-1"=6, "0"=0, "1"=6), out["-1",])
+  # There were no cases when correct value was 0.
+  expect_equal(c("-1"=4, "0"=4, "1"=4), out["0",])
+  # In cases when correct value was 1, it guessed.
+  expect_equal(c("-1"=6, "0"=0, "1"=6), out["1",])
+  
+  # Check dimensions-- now there are 3.
+  expect_equal(3, nrow(out))
+  expect_equal(3, ncol(out))
+})

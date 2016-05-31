@@ -56,6 +56,18 @@ confusionMatrixPredictPair <- function(ref_data, predicted_data) {
                                            predict_pair_categories))
 }
 
+guessExpectedValue <- function(confusionMatrixWith0s) {
+  guesses <- confusionMatrixWith0s[1,2]
+  confusionMatrixWith0s[1,1] <- confusionMatrixWith0s[1,1] + 0.5 * guesses
+  confusionMatrixWith0s[1,3] <- confusionMatrixWith0s[1,3] + 0.5 * guesses
+  confusionMatrixWith0s[1,2] <- 0
+  guesses <- confusionMatrixWith0s[3,2]
+  confusionMatrixWith0s[3,1] <- confusionMatrixWith0s[3,1] + 0.5 * guesses
+  confusionMatrixWith0s[3,3] <- confusionMatrixWith0s[3,3] + 0.5 * guesses
+  confusionMatrixWith0s[3,2] <- 0
+  return(confusionMatrixWith0s)
+}
+
 #' Accuracy based on a predictPair confusion matrix.
 #' 
 #' Given a confusion matrix from pair predict (the output of
