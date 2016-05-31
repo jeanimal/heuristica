@@ -10,7 +10,7 @@ output: github_document
 
 This R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) and Gigerenzer and Goldstein's [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB), which uses just one cue to make its inference.  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as overall proportion correct.  These measure can be used in-sample or out-of-sample.
 
-The goal is to make it easy to explore the wide range of conditions in which simple heuristics can be better than more complex models.  Optimizing is not always better!
+The goal is to make it easy to explore the range of conditions in which simple heuristics are better than more complex models.  Optimizing is not always better!
 
 # The Task
 
