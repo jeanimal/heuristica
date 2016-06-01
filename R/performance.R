@@ -56,16 +56,39 @@ confusionMatrixPredictPair <- function(ref_data, predicted_data) {
                                            predict_pair_categories))
 }
 
-guessExpectedValue <- function(confusionMatrixWith0s) {
-  guesses <- confusionMatrixWith0s[1,2]
-  confusionMatrixWith0s[1,1] <- confusionMatrixWith0s[1,1] + 0.5 * guesses
-  confusionMatrixWith0s[1,3] <- confusionMatrixWith0s[1,3] + 0.5 * guesses
-  confusionMatrixWith0s[1,2] <- 0
-  guesses <- confusionMatrixWith0s[3,2]
-  confusionMatrixWith0s[3,1] <- confusionMatrixWith0s[3,1] + 0.5 * guesses
-  confusionMatrixWith0s[3,3] <- confusionMatrixWith0s[3,3] + 0.5 * guesses
-  confusionMatrixWith0s[3,2] <- 0
-  return(confusionMatrixWith0s)
+# Moves half of guess counts (in column 2) to -1 (column 1) and the other half
+# to 1 (column 3).
+guessExpectedValue <- function(confusionMatrix3x3) {
+  guesses <- confusionMatrix3x3[1,2]
+  confusionMatrix3x3[1,1] <- confusionMatrix3x3[1,1] + 0.5 * guesses
+  confusionMatrix3x3[1,3] <- confusionMatrix3x3[1,3] + 0.5 * guesses
+  confusionMatrix3x3[1,2] <- 0
+  guesses <- confusionMatrix3x3[2,2]
+  confusionMatrix3x3[2,1] <- confusionMatrix3x3[2,1] + 0.5 * guesses
+  confusionMatrix3x3[2,3] <- confusionMatrix3x3[2,3] + 0.5 * guesses
+  confusionMatrix3x3[2,2] <- 0
+  guesses <- confusionMatrix3x3[3,2]
+  confusionMatrix3x3[3,1] <- confusionMatrix3x3[3,1] + 0.5 * guesses
+  confusionMatrix3x3[3,3] <- confusionMatrix3x3[3,3] + 0.5 * guesses
+  confusionMatrix3x3[3,2] <- 0
+  return(confusionMatrix3x3)
+}
+
+# All counts in the ties row (0 correct) are set to zero.  This will mean
+# the matrix' total counts will no longer be the number of row pairs.
+zeroOutTies <- function(confusionMatrix3x3) {
+  confusionMatrix3x3[2,] <- c(0,0,0)
+}
+
+confusionMatrix3x3to2x2 <- function(confusionMatrix3x3,
+                                    guess_handling_fn=guessExpectedValue,
+                                    tie_handling_fn=zeroOutTies) {
+  if (!is.null(guess_handling_fn)) {
+    confusionMatrix3x3 <- guess_handling_fn(confusionMatrix3x3)
+  }
+  
+  # Drop all zero rows.  TOODO(error checking).
+  matrix2x2 <- matrix3x3[c(1,3), c(1,3)]
 }
 
 #' Accuracy based on a predictPair confusion matrix.
