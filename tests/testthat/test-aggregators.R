@@ -252,8 +252,8 @@ test_that("predictPairFullConfusionMatrix 1 pair fitted_always_0 guess expected 
   data <- cbind(y=c(2,1), x1=c(1, 0))
   # fitted_always_0 always predicts 0, regardless of data.  This is
   # accidentally symmetric because the negative of 0 is 0.
-  out_1 <- predictPairFullConfusionMatrix(data, fitted_always_0)
-  out <- guessExpectedValue(out_1)
+  out_with_guesses <- predictPairFullConfusionMatrix(data, fitted_always_0)
+  out <- distributeGuessAsExpectedValue(out_with_guesses)
   # In cases when correct value was -1, it guessed and was 50% right.
   expect_equal(c("-1"=0.5, "0"=0, "1"=0.5), out["-1",])
   # There were no cases when correct value was 0.

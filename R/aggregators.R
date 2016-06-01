@@ -88,7 +88,7 @@ predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
 #'
 #' @export
 predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
-                                       guess_handling_fn=NULL,
+                                       guess_handling_fn=distributeGuessAsExpectedValue,
                                        symmetric_model=TRUE) {
   matrix3x3 <- predictPairFullConfusionMatrix(test_data, fitted_heuristic,
                                               symmetric_model=symmetric_model)

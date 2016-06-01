@@ -58,7 +58,7 @@ confusionMatrixPredictPair <- function(ref_data, predicted_data) {
 
 # Moves half of guess counts (in column 2) to -1 (column 1) and the other half
 # to 1 (column 3).
-guessExpectedValue <- function(confusionMatrix3x3) {
+distributeGuessAsExpectedValue <- function(confusionMatrix3x3) {
   guesses <- confusionMatrix3x3[1,2]
   confusionMatrix3x3[1,1] <- confusionMatrix3x3[1,1] + 0.5 * guesses
   confusionMatrix3x3[1,3] <- confusionMatrix3x3[1,3] + 0.5 * guesses

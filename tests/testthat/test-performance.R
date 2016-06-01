@@ -113,11 +113,11 @@ test_that("accuracyFromConfusionMatrix guess 0.5", {
 # > accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,2,1), c(0,0,0)))
 # [1] 0.6666667
 
-test_that("guessExpectedValue", {
+test_that("distributeGuessAsExpectedValue", {
   m <- rbind(c("-1"=2, "0"=2, "1"=2), c("-1"=4, "0"=4, "1"=4),
              c("-1"=6, "0"=6, "1"=6))
   rownames(m) <- c("-1", "0", "1")
-  out <- guessExpectedValue(m)
+  out <- distributeGuessAsExpectedValue(m)
   # In cases when correct value was -1, it guessed.
   expect_equal(c("-1"=3, "0"=0, "1"=3), out["-1",])
   # There were no cases when correct value was 0.
