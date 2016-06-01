@@ -95,7 +95,8 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
 }  
 ```
 
-** City population **
+**City population**
+
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 accuracy<-vector()
@@ -125,7 +126,8 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
 
 ```
 
-** High school drop-outs **
+**High school drop-outs**
+
 Now do the same analysis for the school drop-out data set.  It has  real-valued cues rather than binary cues.  Also, it has a whopping 23 cues for the 63 Chicago public high schools.
 
 Note that this data set has na's, so we use na.omit to clean them because not all heuristics can handle them properly.
