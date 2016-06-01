@@ -536,6 +536,9 @@ predictProbInternal.regInterceptModel <- function(object, row1, row2) {
 #' @return An object of class regModel, which is a subclass of lm.
 #'
 #' @seealso
+#' \code{\link{lm}} for the regression function being wrapped.
+#'
+#' @seealso
 #' \code{\link{predictPair}} for predicting whether row1 is greater.
 #' greater.
 #'

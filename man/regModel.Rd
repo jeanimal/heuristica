@@ -34,6 +34,8 @@ goal is predicting rank order because the intercept does not affect the
 ranking, but estimating it wastes a degree of freedom.
 }
 \seealso{
+\code{\link{lm}} for the regression function being wrapped.
+
 \code{\link{predictPair}} for predicting whether row1 is greater.
 greater.
 }
