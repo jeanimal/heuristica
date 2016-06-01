@@ -129,3 +129,20 @@ test_that("distributeGuessAsExpectedValue", {
   expect_equal(3, nrow(out))
   expect_equal(3, ncol(out))
 })
+
+test_that("distributeTies", {
+  m <- cbind(c("-1"=2, "0"=2, "1"=2), c("-1"=4, "0"=4, "1"=4),
+             c("-1"=6, "0"=6, "1"=6))
+  colnames(m) <- c("-1", "0", "1")
+  out <- distributeTies(m)
+  # In cases when correct value was -1, it guessed.
+  expect_equal(c("-1"=3, "0"=6, "1"=9), out["-1",])
+  # There were no cases when correct value was 0.
+  expect_equal(c("-1"=0, "0"=0, "1"=0), out["0",])
+  # In cases when correct value was 1, it guessed.
+  expect_equal(c("-1"=3, "0"=6, "1"=9), out["1",])
+  
+  # Check dimensions-- now there are 3.
+  expect_equal(3, nrow(out))
+  expect_equal(3, ncol(out))
+})

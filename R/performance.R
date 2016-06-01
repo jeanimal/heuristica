@@ -93,6 +93,42 @@ distributeGuessAsExpectedValue <- function(confusionMatrix3x3) {
   return(confusionMatrix3x3)
 }
 
+# Just like distributeGuessAsExpectedValue but applied to the tie row in row 2.
+distributeTies <- function(confusionMatrix3x3) {
+  ties <- confusionMatrix3x3[2,1]
+  confusionMatrix3x3[1,1] <- confusionMatrix3x3[1,1] + 0.5 * ties
+  confusionMatrix3x3[3,1] <- confusionMatrix3x3[3,1] + 0.5 * ties
+  confusionMatrix3x3[2,1] <- 0
+  ties <- confusionMatrix3x3[2,2]
+  confusionMatrix3x3[1,2] <- confusionMatrix3x3[1,2] + 0.5 * ties
+  confusionMatrix3x3[3,2] <- confusionMatrix3x3[3,2] + 0.5 * ties
+  confusionMatrix3x3[2,2] <- 0
+  ties <- confusionMatrix3x3[2,3]
+  confusionMatrix3x3[1,3] <- confusionMatrix3x3[1,3] + 0.5 * ties
+  confusionMatrix3x3[3,3] <- confusionMatrix3x3[3,3] + 0.5 * ties
+  confusionMatrix3x3[2,3] <- 0
+  return(confusionMatrix3x3)
+}
+
+#' Collapses a 3x3 confusion matrix to a 2x2 confusion matrix.
+#'
+#' @param confusionMatrix3x3 A 3x3 confusion matrix.
+#' @param guess_handling_fn A function to call on the 3x3 confusion matrix to
+#'   assign a model's guesses-- 0 predictions tracked in the 2nd column-- to
+#'   -1 or 1 counts.
+#' @param tie_handling_fn A function to call on the 3x3 confusion matrix to
+#'   distribute ties-- 0 correct answers tracked in the 2nd row-- to -1 or 1
+#'   counts.
+#' @return A 2x2 confusion matrix.
+collapseConfusionMatrix3x3To2x2 <- function(
+  confusionMatrix3x3, guess_handling_fn=distributeGuessAsExpectedValue,
+  tie_handling_fn=distributeTies) {
+  matrix3x3 <- guess_handling_fn(confusionMatrix3x3)
+  matrix3x3 <- distributeTies(confusionMatrix3x3)
+  # Return a matrix without row 2 or column 2.
+  return(confusionMatrix3x3[c(1,3), c(1,3)])
+}
+
 # All counts in the ties row (0 correct) are set to zero.  This will mean
 # the matrix' total counts will no longer be the number of row pairs.
 zeroOutTies <- function(confusionMatrix3x3) {

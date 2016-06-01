@@ -75,7 +75,11 @@ predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
 #'   that the heuristic expects.
 #' @param fitted_heuristic A fitted heuristic that implements predictPair
 #' @param guess_handling_fn A function to call on the 3x3 confusion matrix to
-#'   assign a model's guesses-- 0 output-- to -1 or 1.
+#'   assign a model's guesses-- 0 predictions tracked in the 2nd column-- to
+#'   -1 or 1 counts.
+#' @param tie_handling_fn A function to call on the 3x3 confusion matrix to
+#'   distribute ties-- 0 correct answers tracked in the 2nd row-- to -1 or 1
+#'   counts.
 #' @param symmetric_model Optional parameter that is TRUE by default because
 #'   all models in heuristica are symmtric.  (For an asymmteric model, this
 #'   function will run both A vs. B and B vs. A through predicPair.)
@@ -89,14 +93,13 @@ predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
 #' @export
 predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
                                        guess_handling_fn=distributeGuessAsExpectedValue,
+                                       tie_handling_fn=distributeTies,
                                        symmetric_model=TRUE) {
   matrix3x3 <- predictPairFullConfusionMatrix(test_data, fitted_heuristic,
                                               symmetric_model=symmetric_model)
-  if (!is.null(guess_handling_fn)) {
-    matrix3x3 <- guess_handling_fn(matrix3x3)
-  }
-  # Drop all zero rows.  TOODO(error checking).
-  matrix2x2 <- matrix3x3[c(1,3), c(1,3)]
+  matrix2x2 <- collapseConfusionMatrix3x3To2x2(matrix3x3,
+                                               guess_handling_fn=guess_handling_fn,
+                                               tie_handling_fn=tie_handling_fn)
   return(matrix2x2)
 }
 
