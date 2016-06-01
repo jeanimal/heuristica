@@ -94,25 +94,25 @@ distributeGuessAsExpectedValue <- function(confusionMatrix3x3) {
 }
 
 # Just like distributeGuessAsExpectedValue but applied to the tie row in row 2.
-distributeTies <- function(confusionMatrix3x3) {
-  ties <- confusionMatrix3x3[2,1]
-  confusionMatrix3x3[1,1] <- confusionMatrix3x3[1,1] + 0.5 * ties
-  confusionMatrix3x3[3,1] <- confusionMatrix3x3[3,1] + 0.5 * ties
-  confusionMatrix3x3[2,1] <- 0
-  ties <- confusionMatrix3x3[2,2]
-  confusionMatrix3x3[1,2] <- confusionMatrix3x3[1,2] + 0.5 * ties
-  confusionMatrix3x3[3,2] <- confusionMatrix3x3[3,2] + 0.5 * ties
-  confusionMatrix3x3[2,2] <- 0
-  ties <- confusionMatrix3x3[2,3]
-  confusionMatrix3x3[1,3] <- confusionMatrix3x3[1,3] + 0.5 * ties
-  confusionMatrix3x3[3,3] <- confusionMatrix3x3[3,3] + 0.5 * ties
-  confusionMatrix3x3[2,3] <- 0
-  return(confusionMatrix3x3)
+distributeTies <- function(confusion_matrix_3x3) {
+  ties <- confusion_matrix_3x3[2,1]
+  confusion_matrix_3x3[1,1] <- confusion_matrix_3x3[1,1] + 0.5 * ties
+  confusion_matrix_3x3[3,1] <- confusion_matrix_3x3[3,1] + 0.5 * ties
+  confusion_matrix_3x3[2,1] <- 0
+  ties <- confusion_matrix_3x3[2,2]
+  confusion_matrix_3x3[1,2] <- confusion_matrix_3x3[1,2] + 0.5 * ties
+  confusion_matrix_3x3[3,2] <- confusion_matrix_3x3[3,2] + 0.5 * ties
+  confusion_matrix_3x3[2,2] <- 0
+  ties <- confusion_matrix_3x3[2,3]
+  confusion_matrix_3x3[1,3] <- confusion_matrix_3x3[1,3] + 0.5 * ties
+  confusion_matrix_3x3[3,3] <- confusion_matrix_3x3[3,3] + 0.5 * ties
+  confusion_matrix_3x3[2,3] <- 0
+  return(confusion_matrix_3x3)
 }
 
 #' Collapses a 3x3 confusion matrix to a 2x2 confusion matrix.
 #'
-#' @param confusionMatrix3x3 A 3x3 confusion matrix.
+#' @param confusion_matrix_3x3 A 3x3 confusion matrix.
 #' @param guess_handling_fn A function to call on the 3x3 confusion matrix to
 #'   assign a model's guesses-- 0 predictions tracked in the 2nd column-- to
 #'   -1 or 1 counts.
