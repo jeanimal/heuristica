@@ -121,12 +121,12 @@ distributeTies <- function(confusionMatrix3x3) {
 #'   counts.
 #' @return A 2x2 confusion matrix.
 collapseConfusionMatrix3x3To2x2 <- function(
-  confusionMatrix3x3, guess_handling_fn=distributeGuessAsExpectedValue,
+  confusion_matrix_3x3, guess_handling_fn=distributeGuessAsExpectedValue,
   tie_handling_fn=distributeTies) {
-  matrix3x3 <- guess_handling_fn(confusionMatrix3x3)
-  matrix3x3 <- distributeTies(confusionMatrix3x3)
+  matrix3x3 <- guess_handling_fn(confusion_matrix_3x3)
+  matrix3x3 <- distributeTies(confusion_matrix_3x3)
   # Return a matrix without row 2 or column 2.
-  return(confusionMatrix3x3[c(1,3), c(1,3)])
+  return(confusion_matrix_3x3[c(1,3), c(1,3)])
 }
 
 #' Accuracy based on a predictPair confusion matrix.
