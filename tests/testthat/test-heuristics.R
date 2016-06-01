@@ -910,16 +910,16 @@ test_that("regInterceptModel predictPairProb city_population", {
 
 ### regModel ###
 
-test_that("regModel predictPairProb", {
+test_that("regModel predictPair", {
   tol <- 0.0001
   m_train <- data.frame(y=c(5:1), x1=c(1,1,1,0,1))
   model <- regModel(m_train, 1, c(2))
   # Reg cannot distinguish between rows 1 and 2 based on x1.
-  expect_equal(0.5, predictPairProb(oneRow(m_train, 1),
-                                   oneRow(m_train, 2), model))
+  expect_equal(0, predictPair(oneRow(m_train, 1),
+                                oneRow(m_train, 2), model))
   # But this should be predicted correctly.
-  expect_equal(1, predictPairProb(oneRow(m_train, 1),
-                                 oneRow(m_train, 4), model))
+  expect_equal(1, predictPair(oneRow(m_train, 1),
+                              oneRow(m_train, 4), model))
 })
 
 ### logRegModel ###
