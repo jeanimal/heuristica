@@ -56,8 +56,27 @@ confusionMatrixPredictPair <- function(ref_data, predicted_data) {
                                            predict_pair_categories))
 }
 
-# Moves half of guess counts (in column 2) to -1 (column 1) and the other half
-# to 1 (column 3).
+#' Given a 3x3 confusion matrix, distributes guesses in column 2 using 
+#'
+#' Given a 3x3 confusion matrix, distributes guesses in column 2 using the
+#' expected value.  That is, moves half of guess counts (in column 2) to -1
+#' (column 1) and the other half to 1 (column 3).
+#'
+#'    -1 0 1
+#' -1  2 2 2
+#' 0   4 4 4
+#' 1   6 6 6
+#' becomes
+#'    -1 0 1
+#' -1  3 0 3
+#' 0   6 0 6
+#' 1   9 0 9
+#'
+#' @param confusionMatrix3x3 A 3x3 matrix where the middle column is counts of
+#'   guesses.
+#' @return A 3x3 confusion matrix with 0's in the middle column.
+#'
+#' @export
 distributeGuessAsExpectedValue <- function(confusionMatrix3x3) {
   guesses <- confusionMatrix3x3[1,2]
   confusionMatrix3x3[1,1] <- confusionMatrix3x3[1,1] + 0.5 * guesses
