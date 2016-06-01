@@ -80,37 +80,37 @@ test_that("confusionMatrixPredictPair missing -1 factor in data", {
   expect_equal(c("-1", "0", "1"), dimnames(out)[[2]])
 })
 
-# accuracyFromConfusionMatrix
+# accuracyFromConfusionMatrix3x3
 
-test_that("accuracyFromConfusionMatrix 1", {
+test_that("accuracyFromConfusionMatrix3x3 1", {
   # Below accuracy is 1 (100% correct) because 4 -1's were correctly predicted,
   # and 2 1's were correctly predicted.  (On-diagonal elements are correct
    # predictions.)
-  expect_equal(1, accuracyFromConfusionMatrix(
+  expect_equal(1, accuracyFromConfusionMatrix3x3(
     cbind("-1"=c(4,0,0), "0"=c(0,0,0), "1"=c(0,0,2))))
 })
 
-test_that("accuracyFromConfusionMatrix 0", {
+test_that("accuracyFromConfusionMatrix3x3 0", {
   # 3 wrong and 3 more wrong for 0 accuracy.
-  expect_equal(0, accuracyFromConfusionMatrix(
+  expect_equal(0, accuracyFromConfusionMatrix3x3(
     cbind(c(0,0,3), c(0,0,0), c(3,0,0))))
 })
 
-test_that("accuracyFromConfusionMatrix 0.9", {
+test_that("accuracyFromConfusionMatrix3x3 0.9", {
   # Below is 4 + 5 correct, 1 incorrect, for 9/10 = 0.9 accuracy.
-  expect_equal(0.9, accuracyFromConfusionMatrix(
+  expect_equal(0.9, accuracyFromConfusionMatrix3x3(
     cbind(c(4,0,1), c(0,0,0), c(0,0,5))))
 })
 
-test_that("accuracyFromConfusionMatrix guess 0.5", {
+test_that("accuracyFromConfusionMatrix3x3 guess 0.5", {
   # Below has 3+1=4 guesses, and 0.5 are assigned correct.
-  expect_equal(0.5, accuracyFromConfusionMatrix(
+  expect_equal(0.5, accuracyFromConfusionMatrix3x3(
     cbind(c(0,0,0), c(3,0,1), c(0,0,0))))
 })
 
 # TODO(jeanw): What about this?  The 2 is on-diagonal, and that guess
 # is treated as automatically correct.  Should it be?
-# > accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,2,1), c(0,0,0)))
+# > accuracyFromConfusionMatrix3x3(cbind(c(0,0,0), c(3,2,1), c(0,0,0)))
 # [1] 0.6666667
 
 test_that("distributeGuessAsExpectedValue", {

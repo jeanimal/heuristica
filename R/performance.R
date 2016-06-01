@@ -147,16 +147,16 @@ collapseConfusionMatrix3x3To2x2 <- function(
 #' # Below accuracy is 1 (100% correct) because 4 -1's were correctly predicted,
 #' # and 2 1's were correctly predicted.  (On-diagonal elements are correct
 #' # predictions.)
-#' accuracyFromConfusionMatrix(cbind(c(4,0,0), c(0,0,0), c(0,0,2)))
+#' accuracyFromConfusionMatrix3x3(cbind(c(4,0,0), c(0,0,0), c(0,0,2)))
 #' 
 #' # 3 wrong and 3 more wrong for 0 accuracy.
-#' accuracyFromConfusionMatrix(cbind(c(0,0,3), c(0,0,0), c(3,0,0)))
+#' accuracyFromConfusionMatrix3x3(cbind(c(0,0,3), c(0,0,0), c(3,0,0)))
 #' 
 #' # Below is 4 + 5 correct, 1 incorrect, for 9/10 = 0.9 accuracy.
-#' accuracyFromConfusionMatrix(cbind(c(4,0,1), c(0,0,0), c(0,0,5)))
+#' accuracyFromConfusionMatrix3x3(cbind(c(4,0,1), c(0,0,0), c(0,0,5)))
 #' 
 #' # Below has 3+1=4 guesses, and 0.5 are assigned correct.
-#' accuracyFromConfusionMatrix(cbind(c(0,0,0), c(3,0,1), c(0,0,0)))
+#' accuracyFromConfusionMatrix3x3(cbind(c(0,0,0), c(3,0,1), c(0,0,0)))
 #' @seealso
 #' \code{\link{confusionMatrixPredictPair}} for generating the confusion
 #'   matrix.
@@ -165,7 +165,7 @@ collapseConfusionMatrix3x3To2x2 <- function(
 #' \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 #'
 #' @export
-accuracyFromConfusionMatrix <- function(confusion_matrix, zero_as_guess=TRUE) {
+accuracyFromConfusionMatrix3x3 <- function(confusion_matrix, zero_as_guess=TRUE) {
   if (nrow(confusion_matrix) != ncol(confusion_matrix)) {
     stop(paste("Matrix must be square but had ", nrow(confusion_matrix)),
          "rows and", ncol(confusion_matrix), "columns")
@@ -188,7 +188,7 @@ categoryAccuracyAll <- function(data, reference_col, cols_to_compare) {
   i <- 1
   for (col in cols_to_compare) {
     confusion_matrix <- confusionMatrixPredictPair(data[,reference_col], data[,col])
-    accuracy[,i] <- accuracyFromConfusionMatrix(confusion_matrix)
+    accuracy[,i] <- accuracyFromConfusionMatrix3x3(confusion_matrix)
     i <- i+1
   }
   colnames(accuracy) <- colnames(data)[cols_to_compare]
