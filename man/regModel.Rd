@@ -34,11 +34,7 @@ goal is predicting rank order because the intercept does not affect the
 ranking, but estimating it wastes a degree of freedom.
 }
 \seealso{
-\code{\link{predict.lm}} for prediction.
-
 \code{\link{predictPair}} for predicting whether row1 is greater.
-
-\code{\link{predictPairProb}} for predicting the probability row1 is
 greater.
 }
 

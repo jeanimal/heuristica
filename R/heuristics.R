@@ -536,13 +536,7 @@ predictProbInternal.regInterceptModel <- function(object, row1, row2) {
 #' @return An object of class regModel, which is a subclass of lm.
 #'
 #' @seealso
-#' \code{\link{predict.lm}} for prediction.
-#'
-#' @seealso
 #' \code{\link{predictPair}} for predicting whether row1 is greater.
-#'
-#' @seealso
-#' \code{\link{predictPairProb}} for predicting the probability row1 is
 #' greater.
 #'
 #' @export
@@ -567,13 +561,6 @@ predictPairInternal.regModel <- function(object, row1, row2) {
   direction_plus_minus_1 <- getWeightedCuePairDiffs(object$col_weights_clean,
                                                     row1, row2)
   return(direction_plus_minus_1)
-}
-
-predictProbInternal.regModel <- function(object, row1, row2) {
-  direction_plus_minus_1 <- predictPairInternal.regModel(object, row1, row2)
-  # Convert from the range [-1, 1] to the range [0, 1], which is the
-  # probability that row 1 > row 2.
-  return(rescale0To1(direction_plus_minus_1))
 }
 
 ### Logistic regression ###
