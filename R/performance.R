@@ -129,23 +129,6 @@ collapseConfusionMatrix3x3To2x2 <- function(
   return(confusionMatrix3x3[c(1,3), c(1,3)])
 }
 
-# All counts in the ties row (0 correct) are set to zero.  This will mean
-# the matrix' total counts will no longer be the number of row pairs.
-zeroOutTies <- function(confusionMatrix3x3) {
-  confusionMatrix3x3[2,] <- c(0,0,0)
-}
-
-confusionMatrix3x3to2x2 <- function(confusionMatrix3x3,
-                                    guess_handling_fn=guessExpectedValue,
-                                    tie_handling_fn=zeroOutTies) {
-  if (!is.null(guess_handling_fn)) {
-    confusionMatrix3x3 <- guess_handling_fn(confusionMatrix3x3)
-  }
-  
-  # Drop all zero rows.  TOODO(error checking).
-  matrix2x2 <- matrix3x3[c(1,3), c(1,3)]
-}
-
 #' Accuracy based on a predictPair confusion matrix.
 #' 
 #' Given a confusion matrix from pair predict (the output of

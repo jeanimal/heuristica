@@ -6,7 +6,7 @@
 \usage{
 predictPairConfusionMatrix(test_data, fitted_heuristic,
   guess_handling_fn = distributeGuessAsExpectedValue,
-  symmetric_model = TRUE)
+  tie_handling_fn = distributeTies, symmetric_model = TRUE)
 }
 \arguments{
 \item{test_data}{A data set.  Must have the criterion_column and cols_to_fit
@@ -15,7 +15,12 @@ that the heuristic expects.}
 \item{fitted_heuristic}{A fitted heuristic that implements predictPair}
 
 \item{guess_handling_fn}{A function to call on the 3x3 confusion matrix to
-assign a model's guesses-- 0 output-- to -1 or 1.}
+assign a model's guesses-- 0 predictions tracked in the 2nd column-- to
+-1 or 1 counts.}
+
+\item{tie_handling_fn}{A function to call on the 3x3 confusion matrix to
+distribute ties-- 0 correct answers tracked in the 2nd row-- to -1 or 1
+counts.}
 
 \item{symmetric_model}{Optional parameter that is TRUE by default because
 all models in heuristica are symmtric.  (For an asymmteric model, this
