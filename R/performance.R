@@ -72,25 +72,25 @@ confusionMatrixPredictPair <- function(ref_data, predicted_data) {
 #' 0   6 0 6
 #' 1   9 0 9
 #'
-#' @param confusionMatrix3x3 A 3x3 matrix where the middle column is counts of
+#' @param confusion_matrix_3x3 A 3x3 matrix where the middle column is counts of
 #'   guesses.
 #' @return A 3x3 confusion matrix with 0's in the middle column.
 #'
 #' @export
-distributeGuessAsExpectedValue <- function(confusionMatrix3x3) {
-  guesses <- confusionMatrix3x3[1,2]
-  confusionMatrix3x3[1,1] <- confusionMatrix3x3[1,1] + 0.5 * guesses
-  confusionMatrix3x3[1,3] <- confusionMatrix3x3[1,3] + 0.5 * guesses
-  confusionMatrix3x3[1,2] <- 0
-  guesses <- confusionMatrix3x3[2,2]
-  confusionMatrix3x3[2,1] <- confusionMatrix3x3[2,1] + 0.5 * guesses
-  confusionMatrix3x3[2,3] <- confusionMatrix3x3[2,3] + 0.5 * guesses
-  confusionMatrix3x3[2,2] <- 0
-  guesses <- confusionMatrix3x3[3,2]
-  confusionMatrix3x3[3,1] <- confusionMatrix3x3[3,1] + 0.5 * guesses
-  confusionMatrix3x3[3,3] <- confusionMatrix3x3[3,3] + 0.5 * guesses
-  confusionMatrix3x3[3,2] <- 0
-  return(confusionMatrix3x3)
+distributeGuessAsExpectedValue <- function(confusion_matrix_3x3) {
+  guesses <- confusion_matrix_3x3[1,2]
+  confusion_matrix_3x3[1,1] <- confusion_matrix_3x3[1,1] + 0.5 * guesses
+  confusion_matrix_3x3[1,3] <- confusion_matrix_3x3[1,3] + 0.5 * guesses
+  confusion_matrix_3x3[1,2] <- 0
+  guesses <- confusion_matrix_3x3[2,2]
+  confusion_matrix_3x3[2,1] <- confusion_matrix_3x3[2,1] + 0.5 * guesses
+  confusion_matrix_3x3[2,3] <- confusion_matrix_3x3[2,3] + 0.5 * guesses
+  confusion_matrix_3x3[2,2] <- 0
+  guesses <- confusion_matrix_3x3[3,2]
+  confusion_matrix_3x3[3,1] <- confusion_matrix_3x3[3,1] + 0.5 * guesses
+  confusion_matrix_3x3[3,3] <- confusion_matrix_3x3[3,3] + 0.5 * guesses
+  confusion_matrix_3x3[3,2] <- 0
+  return(confusion_matrix_3x3)
 }
 
 # Just like distributeGuessAsExpectedValue but applied to the tie row in row 2.

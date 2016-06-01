@@ -4,10 +4,10 @@
 \alias{distributeGuessAsExpectedValue}
 \title{Given a 3x3 confusion matrix, distributes guesses in column 2 using}
 \usage{
-distributeGuessAsExpectedValue(confusionMatrix3x3)
+distributeGuessAsExpectedValue(confusion_matrix_3x3)
 }
 \arguments{
-\item{confusionMatrix3x3}{A 3x3 matrix where the middle column is counts of
+\item{confusion_matrix_3x3}{A 3x3 matrix where the middle column is counts of
 guesses.}
 }
 \value{
