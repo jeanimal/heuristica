@@ -463,7 +463,7 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' lreg <- logRegModel(data, 1, c(2:ncol(data)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
-#' allRowPairApply(data, heuristics(ttb, reg))
+#' allRowPairApply(data, heuristics(ttb, lreg))
 #' ## Returns a matrix of 2 columns, named ttbModel and regModel, and 6 rows.
 #' ## The original data had 4 rows, meaning there are 4*3/2 = 6 row pairs.
 #'
