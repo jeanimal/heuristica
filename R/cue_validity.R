@@ -122,6 +122,8 @@ reverseAsNeeded <- function(cue_validities) {
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
 #' @inheritParams zzDocumentationStubReverseCues
+#' @param ties.method An optional parameter passed to rank: A character string
+#'   sepcifying how ties (in cue validity) are treated.
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
 #' @references
@@ -129,7 +131,8 @@ reverseAsNeeded <- function(cue_validities) {
 #' \url{https://en.wikipedia.org/wiki/Cue_validity}
 #' @export
 cueValidityComplete <- function(data, criterion_col, cols_to_fit,
-                                replaceNanWith=0.5, reverse_cues=FALSE) {
+                                replaceNanWith=0.5, reverse_cues=FALSE,
+                                ties.method="random") {
   cue_validities <- cueValidityAppliedToColumns(
     data, criterion_col, cols_to_fit, replaceNanWith)
   if (reverse_cues) {
@@ -140,7 +143,7 @@ cueValidityComplete <- function(data, criterion_col, cols_to_fit,
     cue_validities_with_reverse <- cue_validities
     cue_directions <- rep(1, length(cue_validities_with_reverse))
   }
-  raw_ranks <- rank(cue_validities_with_reverse, ties.method="random")
+  raw_ranks <- rank(cue_validities_with_reverse, ties.method=ties.method)
   # Reverse ranks so first is last.
   cue_ranks <- length(cue_validities_with_reverse) - raw_ranks + 1
 

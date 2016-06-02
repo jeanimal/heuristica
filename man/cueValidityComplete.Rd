@@ -5,7 +5,7 @@
 \title{Calculate cue validity with reverse, cue directions, and cue ranks.}
 \usage{
 cueValidityComplete(data, criterion_col, cols_to_fit, replaceNanWith = 0.5,
-  reverse_cues = FALSE)
+  reverse_cues = FALSE, ties.method = "random")
 }
 \arguments{
 \item{data}{The matrix or data.frame whose columns are treated as cues.}
@@ -22,6 +22,9 @@ cannot be calculated.}
 default, the model will reverse the cue values for cues with cue validity
 < 0.5, so a cue with validity 0 becomes a cue with validity 1.
 Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
+
+\item{ties.method}{An optional parameter passed to rank: A character string
+sepcifying how ties (in cue validity) are treated.}
 }
 \value{
 A list where $cue_validities has a vector of validities for
