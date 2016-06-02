@@ -129,6 +129,46 @@ collapseConfusionMatrix3x3To2x2 <- function(
   return(confusion_matrix_3x3[c(1,3), c(1,3)])
 }
 
+#' Accuracy, sensitivity, specificity, and precision of 2x2 confusion matrix.
+#'
+#' In heuristica, "positive" means the row1 > row2.  Other heuristica create
+#' confusion matrices with the expected layout, but below is documentation of
+#' that layout.  A package like 'caret' offers a more general-purpose
+#' confusion matrix.
+#'
+#' This assumes the input matrix is 2x2 qnd will STOP if not.  It also 
+#' assumes negatives are left and higher, and predictions are the rows,
+#' that is:
+#' true negative  [-1,-1]    false negative [-1,1]
+#' false negative [1, -1]    true positive  [1, 1]
+#'
+#' The outputs are defined as:
+#' accuracy = (true positive + true negatve) / all
+#' sensitivity = true pasitive rate = true positive / all positive
+#'   (sensitivity is also called recall)
+#' specificity = true negative rate = true negative / all negative
+#' precision = positive predictive velue = true positive
+#' 
+#' @param confusion_matrix A 2x2 confusion matrix.
+#' @return A list with accuracy, sensitivity, specificity, and precision
+statsFromConfusionMatrix <- function(confusion_matrix) {
+  if (nrow(confusion_matrix) != 2 || ncol(confusion_matrix) != 2) {
+    stop(paste("Expected 2x2 confustion matrix but got ",
+               nrow(confusion_matrix), "x", ncol(confusion_matrix)))
+  }
+  accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+  # Sensitivity = true positive rate.
+  sensitivity <- confusion_matrix["1", "1"] / 
+    sum(confusion_matrix[, "1"])
+  # Specificity = true negative rate.
+  specificity <- confusion_matrix["-1", "-1"] / 
+    sum(confusion_matrix[, "-1"])
+  # Precision = positive predictive value.
+  precision <- confusion_matrix["1", "1"] / sum(confusion_matrix["1", ])
+  return(list(accuracy=accuracy, sensitivity=sensitivity,
+              specificity=specificity, precision=precision))
+}
+
 #' Accuracy based on a predictPair confusion matrix.
 #' 
 #' Given a confusion matrix from pair predict (the output of

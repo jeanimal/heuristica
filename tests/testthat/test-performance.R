@@ -146,3 +146,21 @@ test_that("distributeTies", {
   expect_equal(3, nrow(out))
   expect_equal(3, ncol(out))
 })
+
+test_that("statsFromConfusionMatrix simple but asymmetric", {
+#          predictions
+#  correct "-1" "1"
+#     "-1"   2   1
+#      "1"   1   1
+  matrix <- cbind("-1"=c(2, 1), "1"=c(1,1))
+  rownames(matrix) <- c("-1", "1")
+  stats <- statsFromConfusionMatrix(matrix)
+  expect_equal(0.6, stats$accuracy)
+  expect_equal(0.5, stats$sensitivity)
+  expect_equal(0.6667, stats$specificity, tolerance=0.0001)
+  expect_equal(0.5, stats$precision)
+  # To compare with caret's confusion matrix function:
+  # data_str <- rbind(c("1", "1"), c("-1", "-1"), c("-1", "-1"), c("1", "-1"),
+  #    c("-1", "1"))
+  # confusionMatrix(data_str[,1], data_str[,2], positive="1")
+})
