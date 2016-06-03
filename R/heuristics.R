@@ -77,6 +77,11 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #' It sorts cues in order of \code{\link{cueValidity}}, making a decision
 #' based on the first cue that discriminates (has differing values on the
 #' two objects).
+#'
+#' Cues that are tied in validity are sorted once at fitting time, and that
+#' order is used consistently for all predictions with that model.  But re-
+#' fitting may lead to a different cue order.  (An alternative would be to
+#' randomly re-order on every prediction.)
 #' 
 #' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams zzDocumentationStubReverseCues

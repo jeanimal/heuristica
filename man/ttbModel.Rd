@@ -36,6 +36,12 @@ It sorts cues in order of \code{\link{cueValidity}}, making a decision
 based on the first cue that discriminates (has differing values on the
 two objects).
 }
+\details{
+Cues that are tied in validity are sorted once at fitting time, and that
+order is used consistently for all predictions with that model.  But re-
+fitting may lead to a different cue order.  (An alternative would be to
+randomly re-order on every prediction.)
+}
 \examples{
 # Fit column 1 (y) to columns 2 and 3 (x1 and x2) of train_matrix.
 train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,0))
