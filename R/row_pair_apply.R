@@ -216,7 +216,7 @@ createFunction.heuristics <- function(object, test_data) {
 
 # correctGreater (criterion function)
 
-#' Creates function for one column indicating whether row1 is greater.
+#' Creates function indicating whether row1[col] > row2[col].
 #'
 #' Using allRowPairApply, this can generate a column indicating the
 #' the correct direction of the criterion in comparing row 1 vs. row2 for
@@ -402,9 +402,8 @@ combineIntoOneFn <- function(function_list) {
 #' @param test_data The data to apply the functions to as a matrix or
 #'   data.frame.  Heuristics must have already been fitted to trying data and
 #'   must include the same criterion_col and cols_to_fit.
-#' @param function_creator_list List of the objects that generate the functions
-#'   to apply, using createFunction.  For example,
-#'    list(heuristicsProb(ttb, reg), probGreater(col), rowIndexes()).
+#' @param function_creator_list List of the functions that generate the
+#'   functions to apply, such as heuristics(ttb) and correctGreater(col).
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
 #'   output will have N x (N-1) rows.  The number of columns will be at least
@@ -447,9 +446,8 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' @param test_data The data to apply the functions to as a matrix or
 #'   data.frame.  Heuristics must have already been fitted to trying data and
 #'   must include the same criterion_col and cols_to_fit.
-#' @param ... The objects that generate the functions to apply, using
-#'   createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
-#'   colPairValues.
+#' @param ... The functions that generate the functions to apply, such as
+#'   heuristics(ttb) and correctGreater(col)-- see example below.
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
 #'   output will have N x (N-1) rows.  The number of columns will be at least
@@ -487,16 +485,16 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' ## Values range from 0.0 to 1.0.
 #'
 #' @seealso
-#' \code{\link{heuristics}} and \code{\link{heuristicsProb}} to wrap heuristics
+#' \code{\link{heuristics}} and \code{\link{heuristics}} to wrap heuristics
 #' to be applied.
 #' 
 #' @seealso
 #' \code{\link{rowIndexes}} to get apply to output row indexes for the pair.
 #' 
 #' @seealso
-#' \code{\link{correctGreater}} and \code{\link{probGreater}} to get the correct
-#' output based on the criterion column.  (CorrectGreater should be used with
-#' heuristics while probGreater should be used with heuristicsProb.)
+#' \code{\link{correctGreater}} to get the correct output based on the criterion column.
+#' (CorrectGreater should be used with heuristics while probGreater should be used with
+#' heuristicsProb.)
 #'
 #' @export
 allRowPairApply <- function(test_data, ...) {
@@ -538,9 +536,8 @@ assert_single_column <- function(obj) {
 #'   on object).
 #' @param row2 The second row (will apply cols_to_fit for you, based on
 #'   object).
-#' @param ... The objects that generate the functions to apply, using
-#'   createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
-#'   colPairValues.
+#' @param ... The functions that generate the functions to apply, such as
+#'   heuristics(ttb) and correctGreater(col).
 #' @return A matrix of function outputs.
 #'
 #' @seealso
