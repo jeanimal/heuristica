@@ -14,7 +14,7 @@ correct values.}
 }
 \value{
 A 3x3 matrix of counts.  Rows are outcomes of the reference data.
-  Columns are outcomes of predicted dta.
+  Columns are outcomes of predicted data.
 }
 \description{
 Measuring accuracy of predicting categories, where in the predictPair paradigm

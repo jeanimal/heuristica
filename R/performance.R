@@ -23,7 +23,7 @@ predict_pair_categories <- c(-1,0,1)
 #'   correct values.
 #' @param predicted_data A vector with outcome categories from a prediction source.
 #' @return A 3x3 matrix of counts.  Rows are outcomes of the reference data.
-#'   Columns are outcomes of predicted dta.
+#'   Columns are outcomes of predicted data.
 #' @examples
 #' # Example 1
 #' # Below, the correct outcome is always 1, so only the last row of the
