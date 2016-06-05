@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{rowPairApplyList}
 \alias{rowPairApplyList}
-\title{Apply functions to all row pairs.}
+\title{Apply list of functions to all row pairs.}
 \usage{
 rowPairApplyList(test_data, function_creator_list)
 }
@@ -22,8 +22,9 @@ A matrix of outputs from the functions.  The number of rows is based
   than one column.
 }
 \description{
-Apply functions like heuristic predictions to all row pairs in a matrix
-or data.frame.
+Apply a list of functions like heuristic predictions to all row pairs in a
+matrix or data.frame.  This does not accept arbitrary functions-- they must
+be functions designed to be run by rowPairApply.
 }
 \examples{
 # This function is called like 

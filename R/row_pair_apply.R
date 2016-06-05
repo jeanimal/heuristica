@@ -392,10 +392,11 @@ combineIntoOneFn <- function(function_list) {
 ###
 # The most general row pair apply function.  All others call this one.
 
-#' Apply functions to all row pairs.
+#' Apply list of functions to all row pairs.
 #' 
-#' Apply functions like heuristic predictions to all row pairs in a matrix
-#' or data.frame.
+#' Apply a list of functions like heuristic predictions to all row pairs in a
+#' matrix or data.frame.  This does not accept arbitrary functions-- they must
+#' be functions designed to be run by rowPairApply.
 #' 
 #' @param test_data The data to apply the functions to as a matrix or
 #'   data.frame.  Heuristics must have already been fitted to trying data and
@@ -439,7 +440,8 @@ rowPairApplyList <- function(test_data, function_creator_list) {
 #' Apply functions to all row pairs.
 #' 
 #' Apply functions like heuristic predictions to all row pairs in a matrix
-#' or data.frame.
+#' or data.frame.  This does not accept arbitrary functions-- they must be
+#' functions designed to be run by rowPairApply.
 #' 
 #' @param test_data The data to apply the functions to as a matrix or
 #'   data.frame.  Heuristics must have already been fitted to trying data and

@@ -23,7 +23,8 @@ A matrix of outputs from the functions.  The number of rows is based
 }
 \description{
 Apply functions like heuristic predictions to all row pairs in a matrix
-or data.frame.
+or data.frame.  This does not accept arbitrary functions-- they must be
+functions designed to be run by rowPairApply.
 }
 \examples{
 ## Fit two models to data.
