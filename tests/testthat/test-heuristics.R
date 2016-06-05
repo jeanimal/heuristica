@@ -12,7 +12,7 @@ test_that("predictPair error does not have row dimension", {
 test_that("predictPair error too many rows", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   model <- ttbModel(train_matrix, 1, c(2,3))
-  expect_error(predictPairProb(train_matrix[c(1:2),], train_matrix[2,], model),
+  expect_error(predictPair(train_matrix[c(1:2),], train_matrix[2,], model),
                "Expected a single row but got 2 rows")
 })
 
@@ -896,7 +896,7 @@ test_that("regInterceptModel predictPair with intercept (check bug)", {
 })
 
 # Warning: Not a self-contained test.  Uses city_population.
-test_that("regInterceptModel predictPairProb city_population", {
+test_that("regInterceptModel predictPair city_population", {
   tol <- 0.0001
   model <- regInterceptModel(city_population, 3, c(4:ncol(city_population)))
   # Hamburg (row 2) and Munich (row 3) differ only on the license plate, which has a
