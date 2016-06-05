@@ -479,7 +479,7 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
 
-  # Make clean weights that can be easily used in predictProbInternal.
+  # Make clean weights that can be easily used in predictPair.
   col_weights_clean <- stats::coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
@@ -497,15 +497,15 @@ regInterceptModel <- function(train_matrix, criterion_col, cols_to_fit) {
 # implemented predictProbInternal correctly using this, which is too slow
 # to use in practice.
 # TODO: use this in tests to compare with hand-coded predictions.
-predictProbInternalUsingPredict <- function(object, row1, row2) {
+predictPairInternalUsingPredict <- function(object, row1, row2) {
   p1 <- stats::predict(object, as.data.frame(row1))
   p2 <- stats::predict(object, as.data.frame(row2))
   if (p1 > p2) {
     return(1)
   } else if (p1 < p2) {
-    return(0)
+    return(-1)
   } else {
-    return(0.5)
+    return(0)
   }
 }
 
@@ -549,7 +549,7 @@ regModel <- function(train_matrix, criterion_col, cols_to_fit,
   # Functions in this package require criterion_col and cols_to_fit.
   model$criterion_col <- criterion_col
   model$cols_to_fit <- cols_to_fit
-  # Make clean weights that can be easily used in predictProbInternal.
+  # Make clean weights that can be easily used in predictPair.
   col_weights_clean <- stats::coef(model)
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
@@ -628,7 +628,7 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
   
   col_weights <- stats::coef(model)
   
-  # Make clean weights that can be easily used in predictProbInternal.
+  # Make clean weights that can be easily used in predictions.
   col_weights_clean <- col_weights
   # Set na to zero.
   col_weights_clean[is.na(col_weights_clean)] <- 0
