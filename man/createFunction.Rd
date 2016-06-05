@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{createFunction}
 \alias{createFunction}
-\title{Generic function to create functions for allRowPairApply.}
+\title{Generic function to create functions for rowPairApply.}
 \usage{
 createFunction(object, test_data)
 }
@@ -14,7 +14,7 @@ heuristicsProb(ttb).}
 We recommend}
 }
 \value{
-A function that can easily be used by allRowPairApply.  This
+A function that can easily be used by rowPairApply.  This
   is not normally used by ordinary users.
 }
 \description{

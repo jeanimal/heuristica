@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{heuristicsList}
 \alias{heuristicsList}
-\title{Wrapper for fitted heuristics to generate predictions with allRowPairApply.}
+\title{Wrapper for fitted heuristics to generate predictions with rowPairApply.}
 \usage{
 heuristicsList(list_of_fitted_heuristics, fn)
 }
@@ -17,7 +17,7 @@ that is implemented by the heuristics in list_of_fitted_heuristics.}
 }
 \value{
 An object of class heuristics, which implements createFunction.
-  Users will generally not use this directly-- allRowPairApply will.
+  Users will generally not use this directly-- rowPairApply will.
 }
 \description{
 One or more fitted heuristics can be passed in.  They must all implement
@@ -27,7 +27,7 @@ predictProbInternal.  Users will generally not use the output directly.
 ## This is typical usage:
 data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
 ttb <- ttbModel(data, 1, c(2:ncol(data)))
-allRowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
+rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
 ## This outputs ttb's predictions for all 6 row pairs of data.
 ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 ## by calling ttb's predictPairInternal.

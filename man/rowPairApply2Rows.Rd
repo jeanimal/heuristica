@@ -21,10 +21,10 @@ A matrix of function outputs.
 }
 \description{
 This has some asserts that exactly one row is passed in and exaclty one row
-is returned, but otherwise it just calls allRowPairApply.
+is returned, but otherwise it just calls rowPairApply.
 }
 \seealso{
-\code{\link{allRowPairApply}} to apply to all row pairs in a matrix or
+\code{\link{rowPairApply}} to apply to all row pairs in a matrix or
   data.frame.
 }
 \keyword{internal}

@@ -103,22 +103,22 @@ test_that("applyFunctionToRowPairs sum has one-column output", {
 })
 
 #
-#  allRowPairApply
+#  rowPairApply
 #
 
-test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
+test_that("rowPairApply ttb test: matrix, 2 rows = 1 pair", {
   train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
   ttb <- ttbModel(train_matrix, 1, c(2,3))
   
   # heuristics
   
-  out_1 <- allRowPairApply(train_matrix, heuristics(ttb))
+  out_1 <- rowPairApply(train_matrix, heuristics(ttb))
   # output should look like
   #      ttbModel
   # [1,]        1
   expect_equal(cbind(ttbModel=c(1)), out_1)
   
-  out_2 <- allRowPairApply(train_matrix, heuristics(ttb, ttb))
+  out_2 <- rowPairApply(train_matrix, heuristics(ttb, ttb))
   expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
   #           ttbModel ttbModel
   # [1,]        1        1
@@ -126,13 +126,13 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
   
   # heuristicsProb
   
-  out_p1 <- allRowPairApply(train_matrix, heuristicsProb(ttb))
+  out_p1 <- rowPairApply(train_matrix, heuristicsProb(ttb))
   # output should look like
   #      ttbModel
   # [1,]        1
   expect_equal(cbind(ttbModel=c(1)), out_p1)
   
-  out_p2 <- allRowPairApply(train_matrix, heuristicsProb(ttb, ttb))
+  out_p2 <- rowPairApply(train_matrix, heuristicsProb(ttb, ttb))
   expected_out2 <- matrix(c(1,1), 1, 2, dimnames=list(NULL, c("ttbModel", "ttbModel")))
   #           ttbModel ttbModel
   # [1,]        1        1
@@ -140,143 +140,143 @@ test_that("allRowPairApply ttb test: matrix, 2 rows = 1 pair", {
 })
 
 #TODO: Do this test with a dumber function than ttb.
-test_that("allRowPairApply dimension test: matrix, 2 rows = 1 pair", {
+test_that("rowPairApply dimension test: matrix, 2 rows = 1 pair", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
   model <- ttbModel(train_matrix, 1, c(2,3))
-  out1 <- allRowPairApply(train_matrix, heuristicsProb(model))
+  out1 <- rowPairApply(train_matrix, heuristicsProb(model))
   expect_equal(1, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_matrix, heuristicsProb(model, model))
+  out2 <- rowPairApply(train_matrix, heuristicsProb(model, model))
   expect_equal(1, nrow(out2))
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply dimension test: matrix, 3 rows = 3 pairs", {
+test_that("rowPairApply dimension test: matrix, 3 rows = 3 pairs", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))
-  out1 <- allRowPairApply(train_df, heuristicsProb(model))
+  out1 <- rowPairApply(train_df, heuristicsProb(model))
   expect_equal(3, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_df, heuristicsProb(model, model))
+  out2 <- rowPairApply(train_df, heuristicsProb(model, model))
   expect_equal(3, nrow(out2))
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply dimension test: data.frame", {
+test_that("rowPairApply dimension test: data.frame", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))
-  out1 <- allRowPairApply(train_df, heuristicsProb(model))
+  out1 <- rowPairApply(train_df, heuristicsProb(model))
   expect_equal(3, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_df, heuristicsProb(model, model))
+  out2 <- rowPairApply(train_df, heuristicsProb(model, model))
   expect_equal(3, nrow(out2))
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply dimension test: heuristics, heuristics", {
+test_that("rowPairApply dimension test: heuristics, heuristics", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))
-  out1 <- allRowPairApply(train_df, heuristicsProb(model))
+  out1 <- rowPairApply(train_df, heuristicsProb(model))
   expect_equal(3, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_df, heuristicsProb(model), heuristicsProb(model))
+  out2 <- rowPairApply(train_df, heuristicsProb(model), heuristicsProb(model))
   expect_equal(3, nrow(out2))
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply probGreater function dimensions", {
+test_that("rowPairApply probGreater function dimensions", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
-  out1 <- allRowPairApply(train_df, probGreater(1))
+  out1 <- rowPairApply(train_df, probGreater(1))
   expect_equal(3, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_df, probGreater(1), probGreater(1))
+  out2 <- rowPairApply(train_df, probGreater(1), probGreater(1))
   expect_equal(3, nrow(out2))
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply probGreater greater", {
+test_that("rowPairApply probGreater greater", {
   train_df <- data.frame(y=c(9,5))
-  out <- allRowPairApply(train_df, probGreater(1))
+  out <- rowPairApply(train_df, probGreater(1))
   expect_equal(c(ProbGreater=1), out[1,1])
 })
 
-test_that("allRowPairApply probGreater same", {
+test_that("rowPairApply probGreater same", {
   train_df <- data.frame(y=c(5,5))
-  out <- allRowPairApply(train_df, probGreater(1))
+  out <- rowPairApply(train_df, probGreater(1))
   expect_equal(c(ProbGreater=0.5), out[1,1])
 })
 
-test_that("allRowPairApply probGreater less", {
+test_that("rowPairApply probGreater less", {
   train_df <- data.frame(y=c(5,9))
-  out <- allRowPairApply(train_df, probGreater(1))
+  out <- rowPairApply(train_df, probGreater(1))
   expect_equal(c(ProbGreater=0), out[1,1])
 })
 
-test_that("allRowPairApply correctGreater function dimensions", {
+test_that("rowPairApply correctGreater function dimensions", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
-  out1 <- allRowPairApply(train_df, correctGreater(1))
+  out1 <- rowPairApply(train_df, correctGreater(1))
   expect_equal(3, nrow(out1))
   expect_equal(1, ncol(out1))
-  out2 <- allRowPairApply(train_df, correctGreater(1), correctGreater(1))
+  out2 <- rowPairApply(train_df, correctGreater(1), correctGreater(1))
   expect_equal(3, nrow(out2))
   expect_equal(2, ncol(out2))
 })
 
-test_that("allRowPairApply correctGreater greater", {
+test_that("rowPairApply correctGreater greater", {
   train_df <- data.frame(y=c(9,5))
-  out <- allRowPairApply(train_df, correctGreater(1))
+  out <- rowPairApply(train_df, correctGreater(1))
   expect_equal(c(CorrectGreater=1), out[1,1])
 })
 
-test_that("allRowPairApply correctGreater same", {
+test_that("rowPairApply correctGreater same", {
   train_df <- data.frame(y=c(5,5))
-  out <- allRowPairApply(train_df, correctGreater(1))
+  out <- rowPairApply(train_df, correctGreater(1))
   expect_equal(c(CorrectGreater=0), out[1,1])
 })
 
-test_that("allRowPairApply correctGreater less", {
+test_that("rowPairApply correctGreater less", {
   train_df <- data.frame(y=c(5,9))
-  out <- allRowPairApply(train_df, correctGreater(1))
+  out <- rowPairApply(train_df, correctGreater(1))
   expect_equal(c(CorrectGreater=-1), out[1,1])
 })
 
 
 
-test_that("allRowPairApply rowIndexes function", {
+test_that("rowPairApply rowIndexes function", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))
-  out1 <- allRowPairApply(train_df, rowIndexes())
+  out1 <- rowPairApply(train_df, rowIndexes())
   expect_equal(3, nrow(out1))
   expect_equal(2, ncol(out1))
-  out2 <- allRowPairApply(train_df, rowIndexes(), rowIndexes())
+  out2 <- rowPairApply(train_df, rowIndexes(), rowIndexes())
   expect_equal(3, nrow(out2))
   expect_equal(4, ncol(out2))
 })
 
-test_that("allRowPairApply colPairValues function numeric", {
+test_that("rowPairApply colPairValues function numeric", {
   train_df <- data.frame(y=c(5,4,3), x1=c(1,0,0), x2=c(0,1,0))
   model <- ttbModel(train_df, 1, c(2,3))
   # colPairValues outputs 2 columns
-  out1 <- allRowPairApply(train_df, colPairValues(1, "a"))
+  out1 <- rowPairApply(train_df, colPairValues(1, "a"))
   expect_equal(3, nrow(out1))
   expect_equal(2, ncol(out1))
-  out2 <- allRowPairApply(train_df, colPairValues(1, "a"),
+  out2 <- rowPairApply(train_df, colPairValues(1, "a"),
                           colPairValues(1, "b"))
   expect_equal(3, nrow(out2))
   expect_equal(4, ncol(out2))
 })
 
-test_that("allRowPairApply heuristics with fn", {
+test_that("rowPairApply heuristics with fn", {
   train_matrix <- cbind(y=c(5,4), x1=c(1,1))
   model <- ttbModel(train_matrix, 1, c(2))
   # Using heuristicsList.
-  out <- allRowPairApply(train_matrix,
+  out <- rowPairApply(train_matrix,
                          heuristicsList(list(model), fn=predictProbInternal),
                          heuristicsList(list(model), fn=predictPairInternal))
   # predictProbInternal guesses wtih 0.5.  predictPairInternal guesses with 0.
   expect_equal(cbind(0.5, 0), unname(out))
   # Using the shortcut wrappers, heuristicsProb and heuristics.
-  out2 <- allRowPairApply(train_matrix, heuristicsProb(model),
+  out2 <- rowPairApply(train_matrix, heuristicsProb(model),
                          heuristics(model))
   expect_equal(cbind(0.5, 0), unname(out))
 })

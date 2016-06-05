@@ -13,10 +13,10 @@ correctGreater(criterion_col, output_column_name = "CorrectGreater")
 }
 \value{
 An object that implements createFunction.
-  Users will generally not use this directly-- allRowPairApply will.
+  Users will generally not use this directly-- rowPairApply will.
 }
 \description{
-Using allRowPairApply, this can generate a column indicating the
+Using rowPairApply, this can generate a column indicating the
 the correct direction of the criterion in comparing row 1 vs. row2 for
 all row pairs in test_data.
   1 indicates row 1's criterion > row 2's criterion
@@ -33,6 +33,6 @@ wrapped with \code{\link{heuristics}}.
 \code{\link{heuristics}} is the wrapper to get the predicted greater
   row in the row pair for each heuristic passed in to it.
 
-\code{\link{allRowPairApply}} which has an example of using this.
+\code{\link{rowPairApply}} which has an example of using this.
 }
 

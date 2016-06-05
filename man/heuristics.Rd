@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{heuristics}
 \alias{heuristics}
-\title{Wrap fitted heuristics to pass to allRowPairApply to call predictPair.}
+\title{Wrap fitted heuristics to pass to rowPairApply to call predictPair.}
 \usage{
 heuristics(...)
 }
@@ -11,25 +11,25 @@ heuristics(...)
 }
 \value{
 An object of class heuristics, which implements createFunction.
-  Users will generally not use this directly-- allRowPairApply will.
+  Users will generally not use this directly-- rowPairApply will.
 }
 \description{
 One or more fitted heuristics can be passed in.  They must all implement
 predictPairInternal.  Users will generally not use the output directly
-but instead pass this to allRowPairApply.
+but instead pass this to rowPairApply.
 }
 \examples{
 ## This is typical usage:
 data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
 ttb <- ttbModel(data, 1, c(2:ncol(data)))
-allRowPairApply(data, heuristics(ttb))
+rowPairApply(data, heuristics(ttb))
 ## This outputs ttb's predictions for all 6 row pairs of data.
 ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 ## by calling ttb's predictPairInternal.
 
 }
 \seealso{
-\code{\link{allRowPairApply}} which is what heuristicsProb is passed in to.
+\code{\link{rowPairApply}} which is what heuristicsProb is passed in to.
 
 \code{\link{predictPairInternal}} which must be implemented by heuristics in
    order to use them with the heuristics() wrapper function.

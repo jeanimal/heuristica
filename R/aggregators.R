@@ -45,7 +45,7 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
   } else {
     stop(paste("Unrecognized goal_type: ", goal_type))
   }
-  predictions <- allRowPairApplyList(test_data, all_fn_creator_list)
+  predictions <- rowPairApplyList(test_data, all_fn_creator_list)
   return(predictions)
 }
 

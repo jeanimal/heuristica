@@ -13,10 +13,10 @@ probGreater(criterion_col, output_column_name = "ProbGreater")
 }
 \value{
 An object that implements createFunction.
-  Users will generally not use this directly-- allRowPairApply will.
+  Users will generally not use this directly-- rowPairApply will.
 }
 \description{
-Using allRowPairApply, this can generate a column with
+Using rowPairApply, this can generate a column with
 the correct probability that row 1 > row 2 for each row pair in 
 the test_data.  It can do this using the criterion column passed in.
 By default, the output column is called "ProbGreater," but you
@@ -32,6 +32,6 @@ with the same profile.
   that the first row in the row pair is greater, with output for each fitted
   heuristic passed to it.
 
-\code{\link{allRowPairApply}} which has examples of using this.
+\code{\link{rowPairApply}} which has examples of using this.
 }
 

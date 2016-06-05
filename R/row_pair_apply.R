@@ -13,7 +13,7 @@
 # for use in row pair apply functions.
 ################################################
 
-#' Generic function to create functions for allRowPairApply.
+#' Generic function to create functions for rowPairApply.
 #' 
 #' An example of solving something with another layer of indirection.
 #' https://en.wikipedia.org/wiki/Fundamental_theorem_of_software_engineering
@@ -22,7 +22,7 @@
 #'   heuristicsProb(ttb).
 #' @param test_data The test data that row_pairs will be drawn from.
 #'   We recommend 
-#' @return A function that can easily be used by allRowPairApply.  This
+#' @return A function that can easily be used by rowPairApply.  This
 #'   is not normally used by ordinary users.
 #'
 #' @keywords internal
@@ -64,7 +64,7 @@ applyFunctionToRowPairs <- function(data, fn) {
   return(results)
 }
 
-#' Wrapper for fitted heuristics to generate predictions with allRowPairApply.
+#' Wrapper for fitted heuristics to generate predictions with rowPairApply.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
 #' predictProbInternal.  Users will generally not use the output directly.
@@ -76,13 +76,13 @@ applyFunctionToRowPairs <- function(data, fn) {
 #'   but can be any function with the signature function(object, row1, row2)
 #'   that is implemented by the heuristics in list_of_fitted_heuristics.
 #' @return An object of class heuristics, which implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
+#'   Users will generally not use this directly-- rowPairApply will.
 #' 
 #' @examples
 #' ## This is typical usage:
 #' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
 #' ttb <- ttbModel(data, 1, c(2:ncol(data)))
-#' allRowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
+#' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
 #' ## This outputs ttb's predictions for all 6 row pairs of data.
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
@@ -110,27 +110,27 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
             class="heuristics")
 }
 
-#' Wrap fitted heuristics to pass to allRowPairApply to call predictPair.
+#' Wrap fitted heuristics to pass to rowPairApply to call predictPair.
 #' 
 #' One or more fitted heuristics can be passed in.  They must all implement
 #' predictPairInternal.  Users will generally not use the output directly
-#' but instead pass this to allRowPairApply.
+#' but instead pass this to rowPairApply.
 #' 
 #' @param ... A list of predictPairInternal implementers, e.g. a fitted ttb model.
 #' @return An object of class heuristics, which implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
+#'   Users will generally not use this directly-- rowPairApply will.
 #'
 #' @examples
 #' ## This is typical usage:
 #' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
 #' ttb <- ttbModel(data, 1, c(2:ncol(data)))
-#' allRowPairApply(data, heuristics(ttb))
+#' rowPairApply(data, heuristics(ttb))
 #' ## This outputs ttb's predictions for all 6 row pairs of data.
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
 #' 
 #' @seealso
-#' \code{\link{allRowPairApply}} which is what heuristicsProb is passed in to.
+#' \code{\link{rowPairApply}} which is what heuristicsProb is passed in to.
 #' @seealso
 #' \code{\link{predictPairInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
@@ -140,27 +140,27 @@ heuristics <- function(...) {
   return(heuristicsList(implementers, predictPairInternal))
 }
 
-#' Wrap fitted heuristics to pass to allRowPairApply to call predictProb.
+#' Wrap fitted heuristics to pass to rowPairApply to call predictProb.
 #'
 #' One or more fitted heuristics can be passed in.  They must all implement
 #' predictProbInternal.  Users will generally not use the output directly
-#' but instead pass this to allRowPairApply.
+#' but instead pass this to rowPairApply.
 #' 
 #' @param ... A list of predictProbInternal implementers, e.g. a fitted ttb model.
 #' @return An object of class heuristics, which implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
+#'   Users will generally not use this directly-- rowPairApply will.
 #' 
 #' @examples
 #' ## This is typical usage:
 #' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
 #' ttb <- ttbModel(data, 1, c(2:ncol(data)))
-#' allRowPairApply(data, heuristicsProb(ttb))
+#' rowPairApply(data, heuristicsProb(ttb))
 #' ## This outputs ttb's predictions for all 6 row pairs of data.
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictProbInternal.
 #' 
 #' @seealso
-#' \code{\link{allRowPairApply}} which is what heuristicsProb is passed in to.
+#' \code{\link{rowPairApply}} which is what heuristicsProb is passed in to.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristicsProb() wrapper function.
@@ -170,14 +170,14 @@ heuristicsProb <- function(...) {
   return(heuristicsList(implementers, fn=predictProbInternal))
 }
 
-#' Create function for heuristics prediction with allRowPairApply.
+#' Create function for heuristics prediction with rowPairApply.
 #'
 #' Creates a function that takes an index pair and returns a prediction
 #' for each of the predictProbInternal implementers.
 #'
 #' @param object A heuristics object.
 #' @inheritParams createFunction
-#' @return A function that can easily be used by allRowPairApply to
+#' @return A function that can easily be used by rowPairApply to
 #'   generate predictions for all heuristics the object was created with.
 #'   If it was created with M heuristics, it will generate M predictions.
 #'
@@ -216,7 +216,7 @@ createFunction.heuristics <- function(object, test_data) {
 
 #' Creates function indicating whether row1[col] > row2[col].
 #'
-#' Using allRowPairApply, this can generate a column indicating the
+#' Using rowPairApply, this can generate a column indicating the
 #' the correct direction of the criterion in comparing row 1 vs. row2 for
 #' all row pairs in test_data.
 #'   1 indicates row 1's criterion > row 2's criterion
@@ -231,14 +231,14 @@ createFunction.heuristics <- function(object, test_data) {
 #' @param criterion_col The integer index of the criterion in test_data.
 #' @param output_column_name An optional string
 #' @return An object that implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
+#'   Users will generally not use this directly-- rowPairApply will.
 #'
 #' @seealso
 #' \code{\link{heuristics}} is the wrapper to get the predicted greater
 #'   row in the row pair for each heuristic passed in to it.
 #'
 #' @seealso
-#' \code{\link{allRowPairApply}} which has an example of using this.
+#' \code{\link{rowPairApply}} which has an example of using this.
 #'
 #' @export
 correctGreater <- function(criterion_col, output_column_name="CorrectGreater") {
@@ -260,7 +260,7 @@ createFunction.correctGreater <- function(object, test_data) {
 
 #' Creates function for one column with correct probability row1 is greater.
 #'
-#' Using allRowPairApply, this can generate a column with
+#' Using rowPairApply, this can generate a column with
 #' the correct probability that row 1 > row 2 for each row pair in 
 #' the test_data.  It can do this using the criterion column passed in.
 #' By default, the output column is called "ProbGreater," but you
@@ -273,7 +273,7 @@ createFunction.correctGreater <- function(object, test_data) {
 #' @param criterion_col The integer index of the criterion in test_data.
 #' @param output_column_name An optional string
 #' @return An object that implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
+#'   Users will generally not use this directly-- rowPairApply will.
 #'
 #' @seealso
 #' \code{\link{heuristicsProb}} is the wrapper to get the predicted probability
@@ -281,7 +281,7 @@ createFunction.correctGreater <- function(object, test_data) {
 #'   heuristic passed to it.
 #'
 #' @seealso
-#' \code{\link{allRowPairApply}} which has examples of using this.
+#' \code{\link{rowPairApply}} which has examples of using this.
 #'
 #' @export
 probGreater <- function(criterion_col, output_column_name="ProbGreater") {
@@ -302,17 +302,17 @@ createFunction.probGreater <- function(object, test_data) {
 
 #' Wrapper to output two columns, row 1 and row 2.
 #'
-#' Using allRowPairApply, this can generate two columns, which by default
+#' Using rowPairApply, this can generate two columns, which by default
 #' are called "Row1" and "Row2"
 #' 
 #' @param rowIndexColNames An optional vector of 2 strings for column names.
 #' @return An object of class rowIndexes, which implements createFunction.
-#'   Users will generally not use this directly-- allRowPairApply will.
+#'   Users will generally not use this directly-- rowPairApply will.
 #' 
 #' @seealso
 #' \code{\link{createFunction}} which is what the returned object implements.
 #' @seealso
-#' \code{\link{allRowPairApply}} which uses createFunction.
+#' \code{\link{rowPairApply}} which uses createFunction.
 #' @export
 rowIndexes <- function(rowIndexColNames=c("Row1", "Row2")) {
   if (length(rowIndexColNames) != 2) {
@@ -410,17 +410,17 @@ combineIntoOneFn <- function(function_list) {
 #'
 #' @examples
 #' # This function is called like 
-#' # allRowPairApplyList(data, list(heuristics(ttb, reg)))
+#' # rowPairApplyList(data, list(heuristics(ttb, reg)))
 #' # instead of
-#' # allRowPairApply(data, heuristics(ttb, reg))
-#' # See allRowPairApply for details.
+#' # rowPairApply(data, heuristics(ttb, reg))
+#' # See rowPairApply for details.
 #' 
 #' @seealso
-#' \code{\link{allRowPairApply}} for no need to use a list.  Examples and details
+#' \code{\link{rowPairApply}} for no need to use a list.  Examples and details
 #'   are there.
 #'
 #' @export
-allRowPairApplyList <- function(test_data, function_creator_list) {
+rowPairApplyList <- function(test_data, function_creator_list) {
   # TODO(jean): Make a version that handles non-numeric as a data.frame.
   #  It will be slower, but it's a nice option to have for debugging.
   column_names <- vector()
@@ -459,26 +459,26 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' lreg <- logRegModel(data, 1, c(2:ncol(data)))
 #' 
 #' ## Generate predictions for all row pairs for these two models:
-#' allRowPairApply(data, heuristics(ttb, lreg))
+#' rowPairApply(data, heuristics(ttb, lreg))
 #' ## Returns a matrix of 2 columns, named ttbModel and regModel, and 6 rows.
 #' ## The original data had 4 rows, meaning there are 4*3/2 = 6 row pairs.
 #'
 #' ## To see which row pair is which row, use rowIndexes:
-#' allRowPairApply(data, rowIndexes(), heuristics(ttb, lreg))
+#' rowPairApply(data, rowIndexes(), heuristics(ttb, lreg))
 #' ## Returns a matrix with columns Row1, Row2, ttbModel, logRegModel.
 #' ## (RowIndexes returns *two* columns.)
 #' 
 #' ## To see whether the first row was actually greater than the second in the
 #' ## row pair, use correctGreater and give it the criterion column index, in
 #' ## this case 1.
-#' allRowPairApply(data, heuristics(lreg, ttb), correctGreater(1))
+#' rowPairApply(data, heuristics(lreg, ttb), correctGreater(1))
 #' ## Returns a matrix with columns logRegModel, ttbModel,
 #' ## CorrectGreater.  Values are -1, 0, or 1.
 #' 
 #' ## To do the same analysis for the *probabilty* that the first row is
 #' ## greater. use heuristicsProb and probGreater.  Warning: Not all heuristica
 #' ## models have implemented the prob greater function.
-#' allRowPairApply(data, heuristicsProb(lreg, ttb), probGreater(1))
+#' rowPairApply(data, heuristicsProb(lreg, ttb), probGreater(1))
 #' ## Returns a matrix with columns logRegModel, ttbModel, ProbGreater.
 #' ## Values range from 0.0 to 1.0.
 #'
@@ -495,9 +495,9 @@ allRowPairApplyList <- function(test_data, function_creator_list) {
 #' heuristicsProb.)
 #'
 #' @export
-allRowPairApply <- function(test_data, ...) {
+rowPairApply <- function(test_data, ...) {
   function_creator_list <- list(...)
-  return(allRowPairApplyList(test_data, function_creator_list))
+  return(rowPairApplyList(test_data, function_creator_list))
 }
 
 
@@ -531,7 +531,7 @@ assert_single_column <- function(obj) {
 #' Apply all functions to the two rows passed in.
 #'
 #' This has some asserts that exactly one row is passed in and exaclty one row
-#' is returned, but otherwise it just calls allRowPairApply.
+#' is returned, but otherwise it just calls rowPairApply.
 #'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based
 #'   on object).
@@ -542,7 +542,7 @@ assert_single_column <- function(obj) {
 #' @return A matrix of function outputs.
 #'
 #' @seealso
-#' \code{\link{allRowPairApply}} to apply to all row pairs in a matrix or
+#' \code{\link{rowPairApply}} to apply to all row pairs in a matrix or
 #'   data.frame.
 #'
 #' @keywords internal
@@ -550,7 +550,7 @@ rowPairApply2Rows <- function(row1, row2, ...) {
   assert_single_row(row1)
   assert_single_row(row2)
   test_data <- rbind(row1, row2)
-  out <- allRowPairApply(test_data, ...)
+  out <- rowPairApply(test_data, ...)
   # The asserts below ensures the functions produced only one row of output.
   assert_single_row(out)
   return(out)

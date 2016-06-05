@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{createFunction.heuristics}
 \alias{createFunction.heuristics}
-\title{Create function for heuristics prediction with allRowPairApply.}
+\title{Create function for heuristics prediction with rowPairApply.}
 \usage{
 \method{createFunction}{heuristics}(object, test_data)
 }
@@ -13,7 +13,7 @@
 We recommend}
 }
 \value{
-A function that can easily be used by allRowPairApply to
+A function that can easily be used by rowPairApply to
   generate predictions for all heuristics the object was created with.
   If it was created with M heuristics, it will generate M predictions.
 }

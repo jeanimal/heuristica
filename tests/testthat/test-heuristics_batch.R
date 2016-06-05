@@ -23,12 +23,12 @@ test_cue_reorder <- function(model, has_cv=TRUE) {
 
   # Make sure models agree on outputs when reversing *cues*.
   # predictPair:
-  out <- allRowPairApply(train_df, heuristics(fitted_model))
-  out_rev <- allRowPairApply(train_df, heuristics(fitted_model_rev))
+  out <- rowPairApply(train_df, heuristics(fitted_model))
+  out_rev <- rowPairApply(train_df, heuristics(fitted_model_rev))
   expect_equal(out, out_rev)
   # predictPairProb:
-  # out <- allRowPairApply(train_df, heuristicsProb(fitted_model))
-  # out_rev <- allRowPairApply(train_df, heuristicsProb(fitted_model_rev))
+  # out <- rowPairApply(train_df, heuristicsProb(fitted_model))
+  # out_rev <- rowPairApply(train_df, heuristicsProb(fitted_model_rev))
   # expect_equal(out, out_rev)
 }
 
@@ -59,12 +59,12 @@ test_row_reorder <- function(model, has_cv=TRUE) {
   }
   # Make sure models agree on outputs when reversing *rows*.
   # predictPair:
-  out <- allRowPairApply(train_df, heuristics(fitted_model))
-  out_rev <- allRowPairApply(train_df, heuristics(fitted_model_rev))
+  out <- rowPairApply(train_df, heuristics(fitted_model))
+  out_rev <- rowPairApply(train_df, heuristics(fitted_model_rev))
   expect_equal(out, out_rev)
   # predictPairProb:
-  # out <- allRowPairApply(train_df, heuristicsProb(fitted_model))
-  # out_rev <- allRowPairApply(train_df, heuristicsProb(fitted_model_rev))
+  # out <- rowPairApply(train_df, heuristicsProb(fitted_model))
+  # out_rev <- rowPairApply(train_df, heuristicsProb(fitted_model_rev))
   # expect_equal(out, out_rev)
 }
 
@@ -215,10 +215,10 @@ a_reordered_columns <- function(model) {
   # was enough data for regression models to fit parameters for all columns.
   df1 <- data.frame(criterion=c(397,385,327,301), x1=c(99,100,85,92), x2=c(0,1,2,3))
   fitted_model1 <- model(df1, 1, c(2,3))
-  out1 <- allRowPairApply(df1, heuristics(fitted_model1))
+  out1 <- rowPairApply(df1, heuristics(fitted_model1))
   df2 <- data.frame(x1=df1$x1, criterion=df1$criterion, x2=df1$x2)
   fitted_model2 <- model(df2, 2, c(1,3))
-  out2 <- allRowPairApply(df2, heuristics(fitted_model2))
+  out2 <- rowPairApply(df2, heuristics(fitted_model2))
   expect_equal(out1, out2)
   
   # Fitted parameters should be the same, too.

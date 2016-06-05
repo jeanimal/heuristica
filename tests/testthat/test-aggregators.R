@@ -2,7 +2,7 @@ context("aggregators")
 
 # require('testthat')
 
-test_that("allRowPairApply ProbGreater -1 bug", {
+test_that("rowPairApply ProbGreater -1 bug", {
   # Specify enough of a ttb model for prediction.
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),
                                linear_coef=c(4,2,1)),
@@ -10,7 +10,7 @@ test_that("allRowPairApply ProbGreater -1 bug", {
   # Below are rows from the fish fertility data set where we uncovered this bug.
   test_data <- data.frame(criterion=c(33200, 36184), a=c(5,3),
                           b=c(976,1437), c=c(50, 49.74))
-  results <- allRowPairApplyList(test_data,
+  results <- rowPairApplyList(test_data,
                                  list(heuristics(fitted_ttb), probGreater(1)))
   expect_equal(cbind(ttbModel=c(1), ProbGreater=c(0)), results)
 })
@@ -41,7 +41,7 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
   train_data <- cbind(y=c(5,4,3), x1=c(1,0,0))
   ttb <- ttbModel(train_data, 1, c(2))
   lreg <- logRegModel(train_data, 1, c(2))
-  pred <- allRowPairApplyList(
+  pred <- rowPairApplyList(
     train_data, list(rowIndexes(), heuristics(ttb, lreg), correctGreater(1)))
   pred_df <- as.data.frame(pred)
   
@@ -119,7 +119,7 @@ test_that("end to end test ttb vs. logistic regression input data.frame", {
   train_df <- data.frame(y=c(5,4,3), x=c(1,0,0), name=c("jo", "bo", "da"))
   ttb <- ttbModel(train_df, 1, c(2))
   lreg <- logRegModel(train_df, 1, c(2))
-  pred <- allRowPairApplyList(
+  pred <- rowPairApplyList(
     train_df, list(rowIndexes(), heuristics(ttb, lreg), correctGreater(1)))
   pred_df <- data.frame(pred)
 

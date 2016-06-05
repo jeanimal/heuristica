@@ -11,15 +11,15 @@ rowIndexes(rowIndexColNames = c("Row1", "Row2"))
 }
 \value{
 An object of class rowIndexes, which implements createFunction.
-  Users will generally not use this directly-- allRowPairApply will.
+  Users will generally not use this directly-- rowPairApply will.
 }
 \description{
-Using allRowPairApply, this can generate two columns, which by default
+Using rowPairApply, this can generate two columns, which by default
 are called "Row1" and "Row2"
 }
 \seealso{
 \code{\link{createFunction}} which is what the returned object implements.
 
-\code{\link{allRowPairApply}} which uses createFunction.
+\code{\link{rowPairApply}} which uses createFunction.
 }
 

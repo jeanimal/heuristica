@@ -727,12 +727,12 @@ test_that("validityWeightModel 2x3 predictPair pos neg", {
                               oneRow(train_matrix, 2), model))
 })
 
-test_that("validityWeightModel allRowPairApply 5x1 75", {
+test_that("validityWeightModel rowPairApply 5x1 75", {
   train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,1,1,0,1))
   model <- validityWeightModel(train_matrix, 1, c(2))
   expect_equal(c(x1=0.75),  model$cue_validities_unreversed) 
   expect_equal(c(x1=0.75),  model$linear_coef)
-  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  out <- rowPairApply(train_matrix, rowIndexes(), heuristics(model))
   
   expect_equal(0,  getPrediction_raw(out, c(1,2)), tolerance=0.002)
   expect_equal(0,  getPrediction_raw(out, c(1,3)), tolerance=0.002)
@@ -750,7 +750,7 @@ test_that("validityWeightModel 5x1 25 reverse_cues FALSE", {
   expect_equal(c(x1=0.25),  model$cue_validities)
   # No cue reversal means coefficients are same as cue validities.
   expect_equal(c(x1=0.25),  coef(model))
-  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  out <- rowPairApply(train_matrix, rowIndexes(), heuristics(model))
   expect_equal(1,  getPrediction_raw(out, c(1,2)), tolerance=0.002)
   expect_equal(0,  getPrediction_raw(out, c(1,3)), tolerance=0.002)
   expect_equal(0,  getPrediction_raw(out, c(1,4)), tolerance=0.002)
@@ -769,7 +769,7 @@ test_that("validityWeightModel 5x1 25", {
   # Cue reversal changes coefficient from 0.75 to -0.75.
   expect_equal(c(x1=-0.75),  coef(model))
   
-  out <- allRowPairApply(train_matrix, rowIndexes(), heuristics(model))
+  out <- rowPairApply(train_matrix, rowIndexes(), heuristics(model))
   expect_equal(-1, getPrediction_raw(out, c(1,2)), tolerance=0.002)
   expect_equal(0,  getPrediction_raw(out, c(1,3)), tolerance=0.002)
   expect_equal(0,  getPrediction_raw(out, c(1,4)), tolerance=0.002)
@@ -931,7 +931,7 @@ test_that("logRegModel predictPairProb 2x2 fit train_data", {
                                  oneRow(train_data, 2), model))
   expect_equal(0, predictPairProb(oneRow(train_data, 2),
                                  oneRow(train_data, 1), model))
-  out <- allRowPairApply(train_data, heuristicsProb(model))
+  out <- rowPairApply(train_data, heuristicsProb(model))
   # There is only one unique pair.
   expect_equal(1, nrow(out))
 })
@@ -944,7 +944,7 @@ test_that("logRegModel predictPair 2x2 fit train_data", {
                                  oneRow(train_data, 2), model))
   expect_equal(-1, predictPair(oneRow(train_data, 2),
                                  oneRow(train_data, 1), model))
-  out <- allRowPairApply(train_data, heuristicsProb(model))
+  out <- rowPairApply(train_data, heuristicsProb(model))
   # There is only one unique pair.
   expect_equal(1, nrow(out))
 })
@@ -979,7 +979,7 @@ test_that("logRegModel predictPairProb 2x2,3x2 all correct", {
   expect_equal(0.5, predictPairProb(oneRow(test_data, 3),
                                    oneRow(test_data, 2), model))
   
-  out <- allRowPairApply(test_data, heuristicsProb(model))
+  out <- rowPairApply(test_data, heuristicsProb(model))
   # There are three unique pairs.
   expect_equal(3, nrow(out))
 })
@@ -990,7 +990,7 @@ test_that("logRegModel predictPairProb 2x2,3x2 all incorrect", {
   model <- logRegModel(train_data, 1, c(2))
   test_data <- cbind(y=c(5,4,3), x1=c(0,1,1))
   
-  out <- allRowPairApply(test_data, rowIndexes(), heuristicsProb(model))
+  out <- rowPairApply(test_data, rowIndexes(), heuristicsProb(model))
   expect_equal(0,   getPrediction_raw(out, c(1,2)))
   expect_equal(0,   getPrediction_raw(out, c(1,3)))
   expect_equal(0.5, getPrediction_raw(out, c(2,3)))
@@ -1053,7 +1053,7 @@ test_that("logRegModel predictPairProb 2x2 data.frame", {
                                  oneRow(train_data, 2), model))
   expect_equal(0, predictPairProb(oneRow(train_data, 2),
                                  oneRow(train_data, 1), model))
-  out <- allRowPairApply(train_data, heuristicsProb(model))
+  out <- rowPairApply(train_data, heuristicsProb(model))
   # There is only one unique pair.
   expect_equal(1, nrow(out))
 })
