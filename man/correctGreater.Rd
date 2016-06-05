@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{correctGreater}
 \alias{correctGreater}
-\title{Creates function for one column indicating whether row1 is greater.}
+\title{Creates function indicating whether row1[col] > row2[col].}
 \usage{
 correctGreater(criterion_col, output_column_name = "CorrectGreater")
 }

@@ -13,9 +13,8 @@ on object).}
 \item{row2}{The second row (will apply cols_to_fit for you, based on
 object).}
 
-\item{...}{The objects that generate the functions to apply, using
-createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
-colPairValues.}
+\item{...}{The functions that generate the functions to apply, such as
+heuristics(ttb) and correctGreater(col).}
 }
 \value{
 A matrix of function outputs.

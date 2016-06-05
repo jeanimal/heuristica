@@ -11,9 +11,8 @@ allRowPairApplyList(test_data, function_creator_list)
 data.frame.  Heuristics must have already been fitted to trying data and
 must include the same criterion_col and cols_to_fit.}
 
-\item{function_creator_list}{List of the objects that generate the functions
-to apply, using createFunction.  For example,
- list(heuristicsProb(ttb, reg), probGreater(col), rowIndexes()).}
+\item{function_creator_list}{List of the functions that generate the
+functions to apply, such as heuristics(ttb) and correctGreater(col).}
 }
 \value{
 A matrix of outputs from the functions.  The number of rows is based

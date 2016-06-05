@@ -11,9 +11,8 @@ allRowPairApply(test_data, ...)
 data.frame.  Heuristics must have already been fitted to trying data and
 must include the same criterion_col and cols_to_fit.}
 
-\item{...}{The objects that generate the functions to apply, using
-createFunction.  For example, heuristicsProb(ttb), probGreater(col), or
-colPairValues.}
+\item{...}{The functions that generate the functions to apply, such as
+heuristics(ttb) and correctGreater(col)-- see example below.}
 }
 \value{
 A matrix of outputs from the functions.  The number of rows is based
@@ -58,13 +57,13 @@ allRowPairApply(data, heuristicsProb(lreg, ttb), probGreater(1))
 
 }
 \seealso{
-\code{\link{heuristics}} and \code{\link{heuristicsProb}} to wrap heuristics
+\code{\link{heuristics}} and \code{\link{heuristics}} to wrap heuristics
 to be applied.
 
 \code{\link{rowIndexes}} to get apply to output row indexes for the pair.
 
-\code{\link{correctGreater}} and \code{\link{probGreater}} to get the correct
-output based on the criterion column.  (CorrectGreater should be used with
-heuristics while probGreater should be used with heuristicsProb.)
+\code{\link{correctGreater}} to get the correct output based on the criterion column.
+(CorrectGreater should be used with heuristics while probGreater should be used with
+heuristicsProb.)
 }
 
