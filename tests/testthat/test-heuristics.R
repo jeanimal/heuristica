@@ -1177,11 +1177,6 @@ test_that("singleCueModel 4x2 guess when first cue non-discriminate", {
   expect_equal(c(a=1, b=0.6), model$cue_validities, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=1, b=0), coef(model), tolerance=0.002)
-  expect_equal(0.5, predictPairProb(oneRow(train_df, 1),
-                                   oneRow(train_df, 2), model))
-  expect_equal(0.5, predictPairProb(oneRow(train_df, 2),
-                                   oneRow(train_df, 1), model))
-  
   expect_equal(0, predictPair(oneRow(train_df, 1),
                               oneRow(train_df, 2), model))
   expect_equal(0, predictPair(oneRow(train_df, 2),
@@ -1199,12 +1194,6 @@ test_that("singleCueModel 4x3 real value cue c dominates", {
   expect_equal(c(a=0.667, b=0.667, c=1), model$cue_validities, tolerance=0.002)
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=0, b=0, c=1), coef(model), tolerance=0.002)
-  
-  expect_equal(1, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
-  
   expect_equal(1, predictPair(oneRow(train_df, 3),
                               oneRow(train_df, 4), model))
   expect_equal(-1, predictPair(oneRow(train_df, 4),
@@ -1223,10 +1212,10 @@ test_that("singleCueModel 4x3 real value cue c dominates after reversal", {
   # Only the highest-validity cue gets a weight-- the rest are zeroes.
   expect_equal(c(a=0, b=0, c=-1), coef(model), tolerance=0.002)
   
-  expect_equal(1, predictPairProb(oneRow(train_df, 3),
-                                 oneRow(train_df, 4), model))
-  expect_equal(0, predictPairProb(oneRow(train_df, 4),
-                                 oneRow(train_df, 3), model))
+  expect_equal(1, predictPair(oneRow(train_df, 3),
+                              oneRow(train_df, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_df, 4),
+                               oneRow(train_df, 3), model))
 })
 
 
