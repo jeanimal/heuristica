@@ -29,8 +29,7 @@ allRowPairApply(data, heuristicsProb(ttb))
 
 }
 \seealso{
-\code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
-   what heuristicsProb is normally passed in to.
+\code{\link{allRowPairApply}} which is what heuristicsProb is passed in to.
 
 \code{\link{predictProbInternal}} which must be implemented by heuristics in
    order to use them with the heuristicsProb() wrapper function.

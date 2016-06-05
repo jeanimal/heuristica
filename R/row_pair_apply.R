@@ -130,8 +130,7 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 #' ## by calling ttb's predictPairInternal.
 #' 
 #' @seealso
-#' \code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
-#'    what heuristicsProb is normally passed in to.
+#' \code{\link{allRowPairApply}} which is what heuristicsProb is passed in to.
 #' @seealso
 #' \code{\link{predictPairInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
@@ -161,8 +160,7 @@ heuristics <- function(...) {
 #' ## by calling ttb's predictProbInternal.
 #' 
 #' @seealso
-#' \code{\link{allRowPairApply}} and \code{\link{rowPairApply}} which are
-#'    what heuristicsProb is normally passed in to.
+#' \code{\link{allRowPairApply}} which is what heuristicsProb is passed in to.
 #' @seealso
 #' \code{\link{predictProbInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristicsProb() wrapper function.
@@ -532,6 +530,9 @@ assert_single_column <- function(obj) {
 
 #' Apply all functions to the two rows passed in.
 #'
+#' This has some asserts that exactly one row is passed in and exaclty one row
+#' is returned, but otherwise it just calls allRowPairApply.
+#'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based
 #'   on object).
 #' @param row2 The second row (will apply cols_to_fit for you, based on
@@ -544,8 +545,8 @@ assert_single_column <- function(obj) {
 #' \code{\link{allRowPairApply}} to apply to all row pairs in a matrix or
 #'   data.frame.
 #'
-#' @export
-rowPairApply <- function(row1, row2, ...) {
+#' @keywords internal
+rowPairApply2Rows <- function(row1, row2, ...) {
   assert_single_row(row1)
   assert_single_row(row2)
   test_data <- rbind(row1, row2)
@@ -569,7 +570,7 @@ rowPairApply <- function(row1, row2, ...) {
 #'   have a greater criterion, -1 means row2 is greater, and 0 is a tie.
 #' @export
 predictPair <- function(row1, row2, object) {
-  out <- rowPairApply(row1, row2, heuristics(object))
+  out <- rowPairApply2Rows(row1, row2, heuristics(object))
   # The asserts below ensure predictPairInternal returned just one value.
   assert_single_row(out)
   assert_single_column(out)
@@ -592,7 +593,7 @@ predictPair <- function(row1, row2, object) {
 #'   criterion is greater than row2's criterion.
 #' @export
 predictPairProb <- function(row1, row2, object) {
-  out <- rowPairApply(row1, row2, heuristicsProb(object))
+  out <- rowPairApply2Rows(row1, row2, heuristicsProb(object))
   # The asserts below ensure predictProbInternal had a reasonable implementation.
   assert_single_row(out)
   assert_single_column(out)
