@@ -571,9 +571,6 @@ rowPairApply2Rows <- function(row1, row2, ...) {
 #' @export
 predictPair <- function(row1, row2, object) {
   out <- rowPairApply2Rows(row1, row2, heuristics(object))
-  # The asserts below ensure predictPairInternal returned just one value.
-  assert_single_row(out)
-  assert_single_column(out)
   #TODO(jean): stop unnaming!
   return(unname(out[1,1]))
 }
@@ -594,9 +591,6 @@ predictPair <- function(row1, row2, object) {
 #' @export
 predictPairProb <- function(row1, row2, object) {
   out <- rowPairApply2Rows(row1, row2, heuristicsProb(object))
-  # The asserts below ensure predictProbInternal had a reasonable implementation.
-  assert_single_row(out)
-  assert_single_column(out)
   #TODO(jean): stop unnaming!
   return(unname(out[1,1]))
 }
