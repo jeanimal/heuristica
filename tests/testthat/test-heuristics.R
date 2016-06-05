@@ -1126,8 +1126,11 @@ test_that("logRegModel predictPairProb cue order by validity shifted", {
                                  oneRow(train_data, 2), model_2_3))
 })
 
-test_that("logRegModel predictPairProb keepOrder", {
-  train_data <- cbind(y=c(5,4), x1=c(1,1), x2=c(1,0))
+test_that("logRegModel overspecified keepOrder", {
+  # Cues x1 and x2 are the same in training data, equally predictive of y.
+  # Either cue could be used while the other is dropped because the model is
+  # overspecified (two cues for only one row).
+  train_data <- cbind(y=c(5,4), x1=c(1,0), x2=c(1,0))
   model_2_3 <- logRegModel(train_data, 1, c(2, 3),
                            cue_order_fn=keepOrder)
   expect_equal(c(2 ,3), model_2_3$cols_to_fit)
@@ -1136,10 +1139,14 @@ test_that("logRegModel predictPairProb keepOrder", {
                            cue_order_fn=keepOrder)
   expect_equal(c(3, 2), model_3_2$cols_to_fit)
   
-  #expect_equal(1, predictPairProb(oneRow(train_data, 1),
-  #                               oneRow(train_data, 2), model_2_3))
-  #expect_equal(0.5, predictPairProb(oneRow(train_data, 1),
-  #                               oneRow(train_data, 2), model_3_2))
+  # In test data, cues x1 and x2 point in opposite direction, so the
+  # prediction depends on which cue is used first.
+  test_data <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  
+  expect_equal(1, predictPairProb(oneRow(test_data, 1),
+                                  oneRow(test_data, 2), model_2_3))
+  expect_equal(0, predictPairProb(oneRow(test_data, 1),
+                                  oneRow(test_data, 2), model_3_2))
 })
 
 # TODO: Move tests below to a new batch test file.

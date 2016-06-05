@@ -670,7 +670,8 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
 #' 
 #' @inheritParams zzDocumentationStubModelParams
 #' @param cue_order_fn Optional argument as a function that orders cues.  This
-#'   affects which cues are dropped for underspecified models. The rightmost
+#'   only matters for overspecified models (e.g. too many cues for the number
+#'   of rows), in which case it affects which cues are dropped. The rightmost
 #'   cues in the order are dropped first, so the function rankByCueValidity
 #'   means cues with the lowest cueValidity in the training set will be
 #'   be dropped first.  The function must have the signature
