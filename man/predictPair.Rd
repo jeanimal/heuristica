@@ -13,14 +13,29 @@ passed to the heuristic.}
 \item{row2}{The second row of data.  The cues object$cols_to_fit will be
 passed to the heuristic.}
 
-\item{object}{The object that implements predictPairInternal, e.g. a fitted
-ttbModel or logRegModel.}
+\item{object}{The fitted heuristic, e.g. a fitted ttbModel or logRegModel.
+(More technically, it's any object that implements predictPairInternal.)}
 }
 \value{
 A number in the set {-1, 0, 1}, where 1 means row1 is predicted to
-  have a greater criterion, -1 means row2 is greater, and 0 is a tie.
+  have a greater criterion, -1 means row2 is greater, and 0 is a guess or
+  tie.
 }
 \description{
-Assumes the object implements predictProbInternal and has $cols_to_fit.
+Given two rows and a fitted heuristic, returns the heuristic's prediction
+of whether the criterion of the first row will be greater than that of
+the 2nd row.
+}
+\examples{
+##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
+## validity 0.
+train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+singlecue <- singleCueModel(train_matrix, 1, c(2,3))
+predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue)
+
+}
+\seealso{
+\code{\link{rowPairApply}} to get predictions for all row pairs of a
+matrix or data.frame.
 }
 

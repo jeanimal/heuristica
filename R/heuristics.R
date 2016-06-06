@@ -753,16 +753,17 @@ predictProbInternal.logRegModel <- function(object, row1, row2) {
 #' @inheritParams zzDocumentationStubModelParams
 #' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
-#'   It defaults to the class name. 
+#'   It defaults to the class name.
+#'
 #' @examples
 #' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
 #' ## validity 0.
 #' train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
 #' singlecue <- singleCueModel(train_matrix, 1, c(2,3))
 #' predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue)
+#'
 #' @seealso
 #' \code{\link{predictPairProb}} for prediction.
-#' @seealso
 #'
 #' @export
 singleCueModel <- function(train_data, criterion_col, cols_to_fit,
