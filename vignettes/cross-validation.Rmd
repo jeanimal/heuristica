@@ -1,5 +1,5 @@
 ---
-title: "Comparing the predictive performance of models in the heuristica package"
+title: "Comparing the performance of simple heuristics using the Heuristica R package "
 author: "Daniel Barkoczi"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This document provides a simple example of how to compare the predictive performance of different models in the heuristica package. It uses cross-validation on the German cities dataset and measures model performance by the percentage of correct predictions.
+This document provides a simple example of how to compare the out-of-sample performance of different models in the heuristica package. 
 
 **Replication**
 
@@ -32,7 +32,8 @@ devtools::load_all() # For development work.
 library("heuristica")
 ```
 
-Now we can load the German cities dataset which is included in the heuristica package.  The criterion column may change depending on your data set, so set it correctly!
+Now we can load the German cities dataset which is included in the heuristica package.
+The criterion column may change depending on your data set, so set it correctly!
 
 ```{r}
 data(city_population)
@@ -43,33 +44,22 @@ cols_to_fit <- 4:ncol(data_set)
 
 Let's enter the models we want to test:
 ```{r}
-vec_of_models <-c(ttbModel, unitWeightModel, validityWeightModel, regModel, logRegModel)
-```
-Next we define the size of the training and test sets.
-```{r}
-trainVec <- seq(0.2,0.8,0.2)
-# Uncomment the row below if in interactive mode.
-#trainVec <- seq(0.1,0.9,0.1)
-trainS <- round(nrow(data_set)*trainVec)
-testS <- nrow(data_set)-trainS
+vec_of_models <-c(ttbModel, unitWeightModel, regModel,minModel)
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
-crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, reps, max_test_size) {
-  results <- vector()
-  for ( i in 1:reps) {
-  
-    train <- sample(1:nrow(x), train_size)
-    test <- setdiff(1:nrow(x), train)
-    # Keep test set a constant size for comparable statistics.
-    # Note that head will use all data if it has less than max_test_size
-    if (max_test_size > length(test)) {
-      max_test_size = length(test)
-    }
-    test <- sample(test, max_test_size)
-
-    training_set <- x[train,]
-    test_set <- x[test,]
+crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, train_size, reps){
+  fitting <- vector()
+  prediction <- vector()
+  for(i in 1:reps){
+    
+    #randomly sample training and test items
+    train <- sample(1:nrow(data), nrow(data)*0.5)
+    test <- setdiff(1:nrow(data), train)
+   
+    #create training and test set
+    training_set <- data[train,]
+    test_set <- data[test,]
     
     # If a regression is overdetermined (e.g. has too many columns(), it will
     # drop the right-most columns.  To instead make it drop random columns,
@@ -84,43 +74,34 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, x, train_size, rep
     }
 
     #calculate percentage of correct predictions
-    pctCorr <- percentCorrect(models, test_set)
-    results <- rbind(results, pctCorr)
+    fittingAccuracy <- percentCorrect(models, training_set)
+    predictionAccuracy <- percentCorrect(models, test_set)
+    fitting <- rbind(fitting,fittingAccuracy)
+    prediction <- rbind(prediction,predictionAccuracy)
   }
 
-  return (colMeans(results))
-}  
+  return (rbind(colMeans(fitting),colMeans(prediction)))
+} 
 ```
 
 **City population**
 
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
-accuracy<-vector()
-reps <- 3
-# Uncomment the row below if in interactive mode.
-# reps <- 30 
-max_test_size <- 8 # Max number of rows in test set to keep stats comparable
-for (s in 1:length(trainS)){
-  train_size <- trainS[s]
-  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps, max_test_size))
-}
+reps <- 100
+results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps)
 ```
 Finally, let's plot the results:
 ```{r fig.width=7, fig.height=5}
-library(reshape)
 library(ggplot2)
-
-p <- melt(accuracy)
-p$X1 <- rep(100*trainVec, ncol(accuracy))
-colnames(p)<-c("size","model","value")
-
-ggplot(p, aes(x=size, y=value, colour=model)) + 
-     geom_line() +
-     geom_point() + xlab("Size of training set") + ylab("Percent correct")+
-     scale_x_continuous(limits=c(10,90),breaks=seq(10,90,10),expand=c(0.01,0.01)) +
-     scale_y_continuous(limits=c(min(accuracy)-0.01, max(accuracy)+0.01),breaks=seq(0.6,0.8, 0.1),expand=c(0.01,0.01))
-
+library(reshape)
+rownames(results) <- c("Fitting","Prediction")
+p <- melt(results)
+colnames(p) <- c("condition","model","value")
+ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
+  geom_line() + 
+  geom_point() + 
+  xlab("Condition") + ylab("Percent correct")
 ```
 
 **High school drop-outs**
@@ -128,27 +109,24 @@ ggplot(p, aes(x=size, y=value, colour=model)) +
 Now do the same analysis for the school drop-out data set.  It has  real-valued cues rather than binary cues.  Also, it has a whopping 23 cues for the 63 Chicago public high schools.
 
 Note that this data set has na's, so we use na.omit to clean them because not all heuristics can handle them properly.
-```{r}
+```{r fig.width=7, fig.height=5}
 data(highschool_dropout)
 data_set <- na.omit(highschool_dropout)
 criterion_col <- 4
 cols_to_fit <- 6:ncol(data_set)
-trainVec <- seq(0.1,0.9,0.1)
-trainS <- round(nrow(data_set)*trainVec)
-testS <- nrow(data_set)-trainS
-accuracy<-vector()
-reps <- 30
-max_test_size <- 8 # Max number of rows in test set to keep stats comparable
-for (s in 1:length(trainS)){
-  train_size <- trainS[s]
-  accuracy <- rbind(accuracy, crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps, max_test_size))
-  p <- melt(accuracy)
-}
-p$X1 <- rep(100*trainVec, ncol(accuracy))
-colnames(p)<-c("size","model","value")
-ggplot(p, aes(x=size, y=value, colour=model)) +
-     geom_line() +
-     geom_point() + xlab("Size of training set") + ylab("Percent correct")
+
+reps <- 100
+results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps) 
+
+rownames(results) <- c("Fitting","Prediction")
+p <- melt(results)
+colnames(p) <- c("condition","model","value")
+ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
+  geom_line() + 
+  geom_point() + 
+  xlab("Condition") + ylab("Percent correct")
+
+
 ```
 
-Validity weight model and dawes model do really well at all training set sizes.  Take the Best is not far behind and catches up at about 40% of the training set size.  Regresssion and logistic regression are noticeably weaker, scoring barely above chance for small training sets, when there are more rows than the 23 columns.  They do better as the training set gets larger.  Surprisingly logistic regression does not particularly outperform regression, despite seeming like a more natural fit for two-alternative choice.
+
