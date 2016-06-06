@@ -160,7 +160,8 @@ test_that("statsFromConfusionMatrix simple but asymmetric", {
   expect_equal(0.6667, stats$specificity, tolerance=0.0001)
   expect_equal(0.5, stats$precision)
   # To compare with caret's confusion matrix function:
-  # data_str <- rbind(c("1", "1"), c("-1", "-1"), c("-1", "-1"), c("1", "-1"),
-  #    c("-1", "1"))
-  # confusionMatrix(data_str[,1], data_str[,2], positive="1")
+  # d <- c(rep(c("-1", "-1"), 2), rep(c("-1", "1"), 1), rep(c("1", "-1"), 1),
+  #  rep(c("1", "1"), 1))
+  # data_mat <- t(matrix(d, 2, length(d)/2))
+  # confusionMatrix(data_mat[,1], data_mat[,2], data_mat="1")
 })
