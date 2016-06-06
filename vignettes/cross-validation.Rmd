@@ -22,7 +22,7 @@ set.seed(3)
 ```
 **Helper functions**
 
-First let's load the heuristica package to get the heuristics we will compare.  It also includes functions to calculate accuracy.  (The package is only on github for now.)
+First let's load the heuristica package to get the heuristics we will compare.  It also includes functions to calculate accuracy. 
 
 ```{r}
 # Uncomment and execute if you do not already have devtools.
@@ -42,9 +42,9 @@ criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
 
-Let's enter the models we want to test:
+Let's enter the models we want to test (note we fit linear regression with an intercept term because the original study by Czerlinski, Gigerenzer and Goldstein, 1999 also included an intercept. For regression with no intercept use regModel():
 ```{r}
-vec_of_models <-c(ttbModel, unitWeightModel, regModel,minModel)
+vec_of_models <-c(ttbModel, unitWeightModel, regInterceptModel,minModel)
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
@@ -101,7 +101,7 @@ colnames(p) <- c("condition","model","value")
 ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
   geom_line() + 
   geom_point() + 
-  xlab("Condition") + ylab("Percent correct")
+  xlab("Condition") + ylab("Proportion correct")
 ```
 
 **High school drop-outs**
@@ -124,9 +124,11 @@ colnames(p) <- c("condition","model","value")
 ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
   geom_line() + 
   geom_point() + 
-  xlab("Condition") + ylab("Percent correct")
+  xlab("Condition") + ylab("Proportion correct")
 
 
 ```
+As expected, the performance of all models drops when they are predicting unseen data. Importantly, for some of the simple models (TTB and UnitWeightModel) the drop in accuracy is smaller than for linear regression. 
 
+How would other models compare to take-the-best? Try some of the existing models in the heuristica package (e.g., logRegModel for logistic regression) or create your own model (see vignette on 'how to make a heuristic'). 
 
