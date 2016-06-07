@@ -48,13 +48,13 @@ vec_of_models <-c(ttbModel, unitWeightModel, regModel,minModel)
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
-crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps){
+crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,training_proportion){
   fitting <- vector()
   prediction <- vector()
   for(i in 1:reps){
     
     #randomly sample training and test items
-    train <- sample(1:nrow(data), nrow(data)*0.5)
+    train <- sample(1:nrow(data), nrow(data)*training_proportion)
     test <- setdiff(1:nrow(data), train)
    
     #create training and test set
@@ -89,7 +89,8 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps){
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 reps <- 100
-results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps)
+training_proportion <- 0.5
+results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps,training_proportion)
 ```
 Finally, let's plot the results:
 ```{r fig.width=7, fig.height=5}
@@ -116,7 +117,8 @@ criterion_col <- 4
 cols_to_fit <- 6:ncol(data_set)
 
 reps <- 100
-results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps) 
+training_proportion <- 0.5
+results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps,training_proportion) 
 
 rownames(results) <- c("Fitting","Prediction")
 p <- melt(results)
