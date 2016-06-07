@@ -15,7 +15,7 @@ This document provides a simple example of how to compare the out-of-sample perf
 
 ```{r}
 # Use this seed to exactly replicate my tables and graphs below.
-set.seed(3)
+#set.seed(3)
 # Remove it to see a new sampling-- and whether my overall conclusions still
 # hold.
 
@@ -36,15 +36,15 @@ Now we can load the German cities dataset which is included in the heuristica pa
 The criterion column may change depending on your data set, so set it correctly!
 
 ```{r}
-data(city_population)
-data_set <- city_population
+data("city_population_original")
+data_set <- city_population_original
 criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
 
 Let's enter the models we want to test (note we fit linear regression with an intercept term because the original study by Czerlinski, Gigerenzer and Goldstein, 1999 also included an intercept. For regression with no intercept use regModel():
 ```{r}
-vec_of_models <-c(ttbModel, unitWeightModel, regInterceptModel,minModel)
+vec_of_models <-c(ttbModel, unitWeightModel, regModel,minModel)
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
@@ -128,7 +128,7 @@ ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
 
 
 ```
-As expected, the performance of all models drops when they are predicting unseen data. Importantly, for some of the simple models (TTB and UnitWeightModel) the drop in accuracy is smaller than for linear regression. 
+The performance of all models drops when they are predicting unseen data. In the city population dataset the rank-order of the models remains the same for fitting and prediction. However, when predicting high-school dropout some of the simple models (TTB and UnitWeightModel) outperform linear regression in prediction. These results suggests, that different environmental structures (such as the number of cues in the environment) favor different strategies.
 
 How would other models compare to take-the-best? Try some of the existing models in the heuristica package (e.g., logRegModel for logistic regression) or create your own model (see vignette on 'how to make a heuristic'). 
 
