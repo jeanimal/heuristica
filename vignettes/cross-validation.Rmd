@@ -42,13 +42,13 @@ criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
 
-Let's enter the models we want to test (note we fit linear regression with an intercept term because the original study by Czerlinski, Gigerenzer and Goldstein, 1999 also included an intercept. For regression with no intercept use regModel():
+Let's enter the models we want to test:
 ```{r}
 vec_of_models <-c(ttbModel, unitWeightModel, regModel,minModel)
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
-crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, train_size, reps){
+crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps){
   fitting <- vector()
   prediction <- vector()
   for(i in 1:reps){
@@ -89,7 +89,7 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, train_size, 
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
 ```{r}
 reps <- 100
-results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps)
+results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps)
 ```
 Finally, let's plot the results:
 ```{r fig.width=7, fig.height=5}
@@ -116,7 +116,7 @@ criterion_col <- 4
 cols_to_fit <- 6:ncol(data_set)
 
 reps <- 100
-results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, train_size, reps) 
+results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps) 
 
 rownames(results) <- c("Fitting","Prediction")
 p <- melt(results)
@@ -128,7 +128,10 @@ ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
 
 
 ```
-The performance of all models drops when they are predicting unseen data. In the city population dataset the rank-order of the models remains the same for fitting and prediction. However, when predicting high-school dropout some of the simple models (TTB and UnitWeightModel) outperform linear regression in prediction. These results suggests, that different environmental structures (such as the number of cues in the environment) favor different strategies.
+
+**Discussion**
+
+The performance of all models drops when they are predicting unseen data. In the city population dataset the rank-order of the models remains the same for fitting and prediction. However, when predicting high-school dropout some of the simple models (TTB and UnitWeightModel) outperform linear regression in prediction. These results suggests that different environmental structures (such as the number of cues in the environment) favor different strategies.
 
 How would other models compare to take-the-best? Try some of the existing models in the heuristica package (e.g., logRegModel for logistic regression) or create your own model (see vignette on 'how to make a heuristic'). 
 
