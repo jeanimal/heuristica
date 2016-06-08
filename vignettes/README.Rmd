@@ -129,7 +129,7 @@ You can add your own models by also implementing a function related to `predictP
 The package comes with two data sets used by many heuristic researchers.
 
 * `city_population`:  The 83 German cities with more than 100,000 inhabitants in 1993.  All cues are binary.  (There is another version called `city_population_original` that has some transciption errors from the almanac source but exactly matches the data set in Simple Heuristics That Make Us Smart)
-* `highschool_dropout`: Drop-out rates for all 63 Chicago public high school plus associated variables like average students per teacher and percent low income students.  The data is
+* `highschool_dropout`: Drop-out rates for all 63 Chicago public high schools plus associated variables like average students per teacher and percent low income students.  The data is
 from 1995.  All cues are real-valued but some have N/A values.  (This data set does not exactly match that used in Simple Heuristics That Make Us Smart.)
 
 # Citations
