@@ -123,6 +123,7 @@ Uncomment and execute the line below to get the development version.
 # Models
 
 The package comes with the following models that you can call with predictPair.
+
 * `logRegModel`: A logistic regression model, a wrapper around R's glm.  This estimates the probability that one school's drop-out rate is greater than the other and chooses the school with probability greater than 50%.
 * `minModel`: It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two items / schools).
 * `regModel`: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It fits a regression based on the column indices.  For predictPair, it predicts the criterion for each item in the pair-- e.g. estimates the drop-out rate of each school-- and then predicts the item with the higher estimate-- higher drop-out rate.  (A variant that fits with an intercept, `regInterceptModel`, is provided in order to confirm prior research results, but it is not recommended for future research.)
@@ -137,6 +138,7 @@ You can add your own models by also implementing a function related to `predictP
 # Data
 
 The package comes with two data sets used in the book, Simple Heuristics That Make Us Smart.
+
 * `city_population`:  The 83 German cities with more than 100,000 inhabitants in 1993.  All cues are binary.
 * `highschool_dropout`: Drop-out rates for all 63 Chicago public high school plus associated variables like average students per teacher and percent low income students.  The data is
 from 1995.  All cues are real-valued but some have N/A values.
