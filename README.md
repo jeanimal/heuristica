@@ -20,6 +20,7 @@ This package is focused on two-alternative choice tasks, e.g. given two schools,
 
 Here is a subset of data on Chicago public high school drop-out rates.
 
+
 ```r
 schools <- data.frame(Name=c("Bowen", "Collins", "Fenger", "Juarez", "Young"), Dropout_Rate=c(25.5, 11.8, 28.7, 21.6, 4.5), Low_Income_Students=c(82.5, 88.8, 63.2, 84.5, 30.3), Limited_English_Students=c(11.4, 0.1, 0, 28.3, 0.1))
 schools
@@ -95,10 +96,10 @@ subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 #> 3  Fenger         28.7
 ```
 
-Using heuristica's __allRowPairApply__ function, we can even get a nice summary table of these predictions.
+Using heuristica's __rowPairApply__ function, we can even get a nice summary table of these predictions.
 
 ```r
-out <- allRowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
+out <- rowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
 out[c(1,2),]
 #>      Row1 Row2 CorrectGreater ttbModel regModel
 #> [1,]    1    2              1        1       -1
