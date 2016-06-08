@@ -32,19 +32,9 @@ devtools::load_all() # For development work.
 library("heuristica")
 ```
 
-Now we can load the German cities dataset which is included in the heuristica package.
-The criterion column may change depending on your data set, so set it correctly!
-
-```{r}
-data("city_population_original")
-data_set <- city_population_original
-criterion_col <- 3
-cols_to_fit <- 4:ncol(data_set)
-```
-
 Let's enter the models we want to test:
 ```{r}
-vec_of_models <-c(ttbModel, unitWeightModel, regModel,minModel)
+vec_of_models <-c(ttbModel, unitWeightModel, regModel, minModel)
 ```
 Here's a function that does cross-validation taking the vector of models, criterion column, columns to fit, the dataset, and the number of repetitions as input:
 ```{r}
@@ -53,7 +43,7 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,trainin
   prediction <- vector()
   for(i in 1:reps){
     
-    #randomly sample training and test items
+    #randomly sample training and test row indexes
     train <- sample(1:nrow(data), nrow(data)*training_proportion)
     test <- setdiff(1:nrow(data), train)
    
@@ -86,13 +76,25 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,trainin
 
 **City population**
 
-Then we can just run this function to calculate predictive accuracy for different training and test set sizes:
+Then we can just run this function to calculate predictive accuracy for different training and test set sizes. First let's have the models predict the populations of 83 German cities using 9 binary cues. The criterion column may change depending on your data set, so set it correctly!
+
+```{r}
+data("city_population_original")
+data_set <- city_population_original
+criterion_col <- 3
+cols_to_fit <- 4:ncol(data_set)
+```
+
+Below we have the models train on 0.5 of the data (50%) and predict the other half, and we repeat this for 100 samples of splitting the data in half.
+
 ```{r}
 reps <- 100
 training_proportion <- 0.5
 results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps,training_proportion)
 ```
+
 Finally, let's plot the results:
+
 ```{r fig.width=7, fig.height=5}
 library(ggplot2)
 library(reshape)
@@ -107,7 +109,7 @@ ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
 
 **High school drop-outs**
 
-Now do the same analysis for the school drop-out data set.  It has  real-valued cues rather than binary cues.  Also, it has a whopping 23 cues for the 63 Chicago public high schools.
+Now do the same analysis for the high school drop-out data set.  It has 23 real-valued cues (rather than binary cues) for 63 Chicago public high schools.
 
 Note that this data set has na's, so we use na.omit to clean them because not all heuristics can handle them properly.
 ```{r fig.width=7, fig.height=5}
