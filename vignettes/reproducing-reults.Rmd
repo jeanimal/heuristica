@@ -1,0 +1,74 @@
+---
+title: "Reproducing Results"
+author: "Jean Czerlinski Whitmore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reproducing Results}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(heuristica)
+```
+
+# Prior results
+
+Heuristica can be used to reproduce results from prior research, making sure to have the same data set and heuristics.  Consider the city population results on page 103 of Simple Heuristics That Make Us Smart (citation below).  It reported the following percent correct:
+
+| Regression | Dawes | Take The Best | Minimalist |
+|-----------:|:-----:|:-------------:|:----------:|
+|        74  |   74  |          74   |        70  |
+
+# Getting the same data and models
+
+## Data set
+
+To use the exact same data set as that research, we need `city_population_original`, even though it had some transcription errors from the almanac.  (`city_population` corrected these.)
+
+## Models
+
+Most of the models map easily to heuristica models.
+
+| Regression        | Dawes' model    | Take The Best | Minimalist |
+|------------------:|:---------------:|:-------------:|:----------:|
+| regInterceptModel | unitWeightModel |   ttbModel    |  minModel  |
+
+Two of the mappings are non-obvious.
+
+`regInterceptModel` By default, regression models include the intercept, so prior research included it, and that maps to regInterceptModel.  However, when comparing two estimates, the intercepts cancel out, so fitting the intercept just wastes a degree of freedom.  Future research should use `regModel`.
+
+`unitWeightModel` Because the term "dawes model" did not catch on, this package uses the more commonly-known descriptive name, `unitWeightModel`.  The models are the same.
+
+(Likewise Franklin's model from the book maps to `validityWeightModel` in this package.)
+
+# Simulation
+
+Fit the models to the data.
+
+```{r}
+data_set <- city_population_original
+criterion_col <- 3    # Population
+cols_to_fit <- 4:ncol(data_set) # The 9 cues
+
+reg <- regInterceptModel(data_set, criterion_col, cols_to_fit)
+ttb <- ttbModel(data_set, criterion_col, cols_to_fit)
+unit <- unitWeightModel(data_set, criterion_col, cols_to_fit)
+min <- minModel(data_set, criterion_col, cols_to_fit)
+```
+
+
+Measure the percent of correct inferences on the data.
+
+```{r}
+out <- percentCorrect(list(reg, ttb, unit, min), data_set)
+# Round values to make comparison easier.
+round(100*out)
+```
+
+And we match the results reported in the book!
+
+# Citations
+
+Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
