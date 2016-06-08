@@ -23,14 +23,6 @@ This document provides a simple example of how to compare the out-of-sample perf
 
 First let's load the heuristica package to get the heuristics we will compare.  It also includes functions to calculate accuracy. 
 
-```{r}
-# Uncomment and execute if you do not already have devtools.
-#install.packages("devtools")
-#devtools::install_github("jeanimal/heuristica")
-devtools::load_all() # For development work.
-library("heuristica")
-```
-
 Let's enter the models we want to test:
 ```{r}
 vec_of_models <-c(ttbModel, unitWeightModel, regModel, minModel)

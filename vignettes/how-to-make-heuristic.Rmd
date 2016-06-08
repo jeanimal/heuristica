@@ -11,20 +11,6 @@ vignette: >
 
 So you have your own idea for a heuristic.  Just implement a few functions-- a fitting function and a predicting function-- and you can evaluate performance with heuristica and compare it with other models.
 
-## Installation
-
-```{r}
-# Uncomment and execute install functions you may need.
-# install.packages("devtools") 
-# Uncomment and execute 
-# install.packages("heuristica") 
-#    -- OR --
-# devtools::install_github("jeanimal/heuristica")
-#    -- OR --
-devtools::load_all()
-#library("heuristica")
-```
-
 ## A toy model
 
 ### Fitting function
