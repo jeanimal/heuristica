@@ -76,8 +76,8 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,trainin
 Then we can just run this function to calculate predictive accuracy for different training and test set sizes. First let's have the models predict the populations of 83 German cities using 9 binary cues. The criterion column may change depending on your data set, so set it correctly!
 
 ```{r}
-data("city_population_original")
-data_set <- city_population_original
+data("city_population")
+data_set <- city_population
 criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
