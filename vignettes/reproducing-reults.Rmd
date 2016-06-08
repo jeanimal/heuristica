@@ -15,7 +15,7 @@ library(heuristica)
 
 # Prior results
 
-Heuristica can be used to reproduce results from prior research, making sure to have the same data set and heuristics.  Consider the city population results on page 103 of Simple Heuristics That Make Us Smart (citation below).  It reported the following percent correct:
+Heuristica can be used to reproduce results from prior research, making sure to have the same data set and heuristics.  Consider the city population results on page 103 of Simple Heuristics That Make Us Smart (citation below).  It reported the following percent correct for models fitting city populations-- that is, when the models are given all 83 cities to fit and then are asked to estimate the poulation of the same 83 cities:
 
 | Regression | Dawes | Take The Best | Minimalist |
 |-----------:|:-----:|:-------------:|:----------:|
@@ -25,11 +25,11 @@ Heuristica can be used to reproduce results from prior research, making sure to 
 
 ## Data set
 
-To use the exact same data set as that research, we need `city_population_original`, even though it had some transcription errors from the almanac.  (`city_population` corrected these.)
+To use the exact same data set as that research, we need `city_population_original`, even though it had some transcription errors from the almanac.  (`city_population` corrected the transciption errors.)
 
 ## Models
 
-Most of the models map easily to heuristica models.
+Here is how the models from prior research map the heuristica models:
 
 | Regression        | Dawes' model    | Take The Best | Minimalist |
 |------------------:|:---------------:|:-------------:|:----------:|
@@ -41,11 +41,11 @@ Two of the mappings are non-obvious.
 
 `unitWeightModel` Because the term "dawes model" did not catch on, this package uses the more commonly-known descriptive name, `unitWeightModel`.  The models are the same.
 
-(Likewise Franklin's model from the book maps to `validityWeightModel` in this package.)
+(Likewise Franklin's model from the book maps to `validityWeightModel` in heuristica.)
 
 # Simulation
 
-Fit the models to the data.
+Now fit the models to the data.  Regression will determine its beta weights, ttb will determine cue order, and unit weight linear and minimalist will determine cue direction (whether having a soccer team is associate with higher or lower population).
 
 ```{r}
 data_set <- city_population_original
@@ -58,8 +58,7 @@ unit <- unitWeightModel(data_set, criterion_col, cols_to_fit)
 min <- minModel(data_set, criterion_col, cols_to_fit)
 ```
 
-
-Measure the percent of correct inferences on the data.
+To determin the percent of correct inference in fitting, pass the exact same data set into the percent correct function with the fitted models.
 
 ```{r}
 out <- percentCorrect(list(reg, ttb, unit, min), data_set)
@@ -67,7 +66,11 @@ out <- percentCorrect(list(reg, ttb, unit, min), data_set)
 round(100*out)
 ```
 
-And we match the results reported in the book!
+The results match the results reported in the book-- 74% correct for all models except minimalist, which got only 70% correct.
+
+# Prediction
+
+The code abov simulations fitting. To simulate prediction, fit the models with a subset of the cities and run percentCorrect with the other cities.  Then repeat for various ways to split the data and run summary statistics on the results.  A demonstration of how to do this is in the cross-validation vignette.
 
 # Citations
 
