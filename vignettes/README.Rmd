@@ -1,18 +1,18 @@
 ---
-title: "Heuristica"
-output: github_document
+title: "README"
+author: "Jean Czerlinski Whitmore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file and then run: -->
-<!-- library(knitr); knit("README.Rmd") -->
-
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
-)
-```
+<!-- Copy & paste & alter from ../README.Rmd 
+     * Changed header to produce vignette, not github markdown.
+     * Removed installation info.
+-->
 
 This R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) and Gigerenzer and Goldstein's [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB), which uses just one cue to make its inference.  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as overall proportion correct.  These measure can be used in-sample or out-of-sample.
 
@@ -102,23 +102,6 @@ Regression is the best linear unbiased model for the data.  But this data had a 
 This is an unusual case where TTB actually beat regression in a fitting task.  Usually ttb only wins in out-of-sample performance, e.g. fitting 5 schools and then predicting on other schools not used in the fit.
 
 For a more realistic example, see the vignette with cross-validated out-of-sample performance on a complete data set.
-
-# Package Installation
-
-Uncomment and execute the line below to get the CRAN version:
-
-```{r}
-# install.packages("heuristica") 
-```
-
-Uncomment and execute the line below to get the development version.
-
-```{r}
-# Uncomment and execute the line below if you do not have devtools.
-# install.packages("devtools") 
-# devtools::install_github("jeanimal/heuristica")
-# library("heuristica")
-```
 
 # Models
 
