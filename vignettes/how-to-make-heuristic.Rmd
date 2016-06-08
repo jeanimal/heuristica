@@ -1,6 +1,6 @@
 ---
 title: "How to make your own heuristic"
-author: "Jean Whitmore"
+author: "Jean Czerlinski Whitmore"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,6 +8,11 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r}
+library(heuristica)
+```
+
 
 So you have your own idea for a heuristic.  Just implement a few functions-- a fitting function and a predicting function-- and you can evaluate performance with heuristica and compare it with other models.
 
