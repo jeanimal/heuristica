@@ -58,7 +58,7 @@ coef(reg)
 ```
 Both Take The Best and regression give a higher weight to `Low_Income_Students` than `Limited_English_Students`, although of course how they use the weights differs.  Take The Best will use a lexicographic order, making its prediction based solely on `Low_Income_Students` as long as the schools have differing values-- which they do for all 5 schools in this data set.  That means it will ignore `Limited_English_Students` when predicting on this data set.  In contrast, regression will use a weighted sum of both cues, but with the most important cues weighted more.  
 
-## Predicting
+## Predicting the fitted data
 
 To see a model's predictions, we give it two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropout rate.  In Bowen vs. Fenger, it outputs -1, meaning it predicts Fenger has a higher dropout rate.
 
@@ -76,17 +76,7 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 #> [1] -1
 ```
 
-
-Now ask the fitted regression model to predict the same school pairs.  Interestingly, it makes the opposite predictions, choosing Collins over Bown and Bowen over Fenger.
-
-```r
-predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), reg)
-#> [1] -1
-predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), reg)
-#> [1] 1
-```
-
-Looking at the data set, we see that Take The Best was correct about Bowen vs. Collins because Bowen has the higher `Dropout_Rate`.  Take The Best was also correct about Bowen vs. Fenger.  Regression was wrong for both pairs.
+Looking at the data set, we see that Take The Best was correct about Bowen vs. Collins because Bowen has the higher `Dropout_Rate`.  And it was correct about Bowen vs. Fenger.
 
 ```r
 subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
@@ -96,7 +86,10 @@ subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
 #> 3  Fenger         28.7
 ```
 
-Using heuristica's __rowPairApply__ function, we can even get a nice summary table of these predictions.
+## All rows
+
+We could run the same functions on regression, but heuristica makes it easy to compare with the __rowPairApply__ function.  It can be used to request various types of output on all row pairs in a data set.  Below we request rowIndexes (which will be the index of row1 and the index of row 2), which row is greater using the data in row2, and predictions from the two models we fitted above, ttb, and reg.
+
 
 ```r
 out <- rowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
@@ -114,6 +107,7 @@ out_df[c(1,2),]
 #> 2 Bowen  Fenger             -1       -1        1
 ```
 
+Notice that regression incorrectly predicted both Bowen vs. Collins and Bowen vs. Fenger.
 
 ## Assessing Overall Performance
 
