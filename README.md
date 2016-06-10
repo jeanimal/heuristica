@@ -116,7 +116,7 @@ For an overall measure of performance, we can measure the percent of correct inf
 ```r
 percentCorrect(list(ttb, reg), schools)
 #>   ttbModel regModel
-#> 1      0.6      0.5
+#> 1       60       50
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.

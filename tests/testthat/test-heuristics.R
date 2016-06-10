@@ -527,7 +527,7 @@ test_that("ttbModel on 2 same cues- differs from greedy ttb", {
   full_matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,1,0))
   out <- percentCorrect(list(model), full_matrix)
   # TTB uses both cues, so it can get 100% correct.
-  expect_equal(1, out$ttbModel)
+  expect_equal(100, out$ttbModel)
   expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
 })
 
@@ -588,7 +588,7 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
   out <- percentCorrect(list(model), full_matrix)
   # Greedy TTB uses only one cue (random which one), so it has to guess on
   # one row pair.  Accuracy = (1+1+0.5)/3.
-  expect_equal(0.83333, out$ttbGreedyModel, tolerance=0.0001)
+  expect_equal(83.333, out$ttbGreedyModel, tolerance=0.001)
   # One cue has NA, but we don't know which one.
   expect_equal(c(1.0, NA), sort(unname(model$cue_validities),
                                 na.last=TRUE))
@@ -1043,7 +1043,7 @@ test_that("logRegModel percentCorrect", {
   train_data <- cbind(y=c(5:1), x=c(1,1,1,0,1))
   model <- logRegModel(train_data, 1, c(2))
   fit_accuracy <- percentCorrect(list(model), train_data)
-  expect_equal(0.6, fit_accuracy$logRegModel, tolerance=0.001)
+  expect_equal(60, fit_accuracy$logRegModel, tolerance=0.01)
 })
 
 test_that("logRegModel predictPairProb 2x2 data.frame", {
@@ -1155,21 +1155,21 @@ test_that("logRegModel percentCorrect easy 100%", {
   df <- data.frame(Criterion=c(5,4,3,2,1), a=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
   out <- percentCorrect(list(model), df)
-  expect_equal(1, out[, "logRegModel"])
+  expect_equal(100, out[, "logRegModel"])
 })
 
 test_that("logRegModel percentCorrect cue reverse easy 100%", {
   df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,2,3,4,5))
   model <- logRegModel(df, 1, c(2))
   out <- percentCorrect(list(model), df)
-  expect_equal(1, out[, "logRegModel"])
+  expect_equal(100, out[, "logRegModel"])
 })
 
 test_that("logRegModel percentCorrect criterion reverse easy 100%", {
   df <- data.frame(Criterion=c(1,2,3,4,5), a=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
   out <- percentCorrect(list(model), df)
-  expect_equal(1, out[, "logRegModel"])
+  expect_equal(100, out[, "logRegModel"])
 })
 
 ## singleCueModel

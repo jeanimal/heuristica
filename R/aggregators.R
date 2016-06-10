@@ -123,7 +123,7 @@ percentCorrectReturnMatrix <- function(fitted_heuristic_list,
   goal_type <- 'CorrectGreater'
   predictions <- aggregatePredictPair(
     fitted_heuristic_list, test_data, goal_type)
-  return(categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
+  return(100 * categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
 }
 
 #' Percent correct of heuristics' predictPair on test_data.
@@ -198,7 +198,7 @@ percentCorrectNonSymmetric <- function(fitted_heuristic_list,
   predictions <- rbind(predictions_fwd, predictions_rev)
   pct_correct_matrix <- categoryAccuracyAll(
     predictions, 1, c(2:ncol(predictions)))
-  return(data.frame(pct_correct_matrix))
+  return(100 * data.frame(pct_correct_matrix))
 }
 
 

@@ -56,8 +56,8 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
   
   pct_correct_df <- percentCorrect(list(ttb, lreg), train_data)
   #expect_equal(c("ttbModel", "logRegModel"), names(pct_correct_df))
-  expect_equal(0.8333, pct_correct_df$ttbModel, tolerance=0.001)
-  expect_equal(0.8333, pct_correct_df$logRegModel, tolerance=0.001)
+  expect_equal(83.33, pct_correct_df$ttbModel, tolerance=0.001)
+  expect_equal(83.33, pct_correct_df$logRegModel, tolerance=0.001)
   expect_equal(1, nrow(pct_correct_df))
 })
 
@@ -133,8 +133,8 @@ test_that("end to end test ttb vs. logistic regression input data.frame", {
   
   pct_correct_df <- percentCorrect(list(ttb, lreg), train_df)
   #expect_equal(c("ttbModel", "logRegModel"), names(pct_correct_df))
-  expect_equal(0.8333, pct_correct_df$ttbModel, tolerance=0.001)
-  expect_equal(0.8333, pct_correct_df$logRegModel, tolerance=0.001)
+  expect_equal(83.33, pct_correct_df$ttbModel, tolerance=0.01)
+  expect_equal(83.33, pct_correct_df$logRegModel, tolerance=0.01)
   expect_equal(1, nrow(pct_correct_df))
 })
 
@@ -173,13 +173,13 @@ test_that("percentCorrect vs percentCorrectNonSymmetric", {
   # decisions: if it chooses A > B, it wil chose B < A, so the function
   # only checks the former of those two cases.
   pct_correct_df <- percentCorrect(list(fitted_always_1), data)
-  expect_equal(1, pct_correct_df$all1Model, tolerance=0.001)
+  expect_equal(100, pct_correct_df$all1Model, tolerance=0.001)
 
   # percentCorrectNonSymmetric does not assume symmetry and so
   # correctly says this heuristic is 50% correct.
   pct_correct_df <- percentCorrectNonSymmetric(
     list(fitted_always_1), data)
-  expect_equal(0.5, pct_correct_df$all1Model, tolerance=0.001)
+  expect_equal(50, pct_correct_df$all1Model, tolerance=0.01)
 })
 
 #
