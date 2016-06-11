@@ -8,7 +8,7 @@ output: github_document
 
 
 
-This R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) and Gigerenzer and Goldstein's [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB), which uses just one cue to make its inference.  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as overall proportion correct.  These measure can be used in-sample or out-of-sample.
+This R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and  [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
 
 The goal is to make it easy to explore the range of conditions in which simple heuristics are better than more complex models.  Optimizing is not always better!
 
@@ -18,12 +18,11 @@ This package is focused on two-alternative choice tasks, e.g. given two schools,
 
 # A Simple Example
 
-Here is a subset of data on Chicago public high school drop-out rates.  The criterion to predict is the Dropout_Rate, which is in column 2/
+Here is a subset of data on Chicago public high school drop-out rates.  The criterion to predict is the Dropout_Rate, which is in column 2.
 
 
 ```r
 schools <- data.frame(Name=c("Bowen", "Collins", "Fenger", "Juarez", "Young"), Dropout_Rate=c(25.5, 11.8, 28.7, 21.6, 4.5), Low_Income_Students=c(82.5, 88.8, 63.2, 84.5, 30.3), Limited_English_Students=c(11.4, 0.1, 0, 28.3, 0.1))
-criterion_col <- 2
 schools
 #>      Name Dropout_Rate Low_Income_Students Limited_English_Students
 #> 1   Bowen         25.5                82.5                     11.4
@@ -35,14 +34,15 @@ schools
 
 ## Fitting
 
-To fit a model, we give it the data set and the columns to use.  The 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, indexes 3 and 4, percent of `Low_Income_Students` and percent of `Limited_English_Students`.
+To fit a model, we give it the data set and the columns to use.  The 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, percent of `Low_Income_Students` and percent of `Limited_English_Students`.  They are at indexes 3 and 4.
 
 Let's fit two models:
-* ttbModel, Take The Best, which uses the highest-validity cue that discriminates.
-* regModel, a wrapped version of R's "lm" function for a linear regression.
+* ttbModel, Take The Best, which uses the highest-validity cue that discriminates (more details below).
+* regModel, a version of R's "lm" function for linear regression wrapped to fit into heurstica's interface.
 
 
 ```r
+criterion_col <- 2
 ttb <- ttbModel(schools, criterion_col, c(3:4))
 reg <- regModel(schools, criterion_col, c(3:4))
 ```
@@ -61,7 +61,7 @@ Both Take The Best and regression give a higher weight to `Low_Income_Students` 
 
 ## Predicting the fitted data
 
-To see a model's predictions, we give it two rows and the fitted model to the __predictPair__ function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropout rate.  In Bowen vs. Fenger, it outputs -1, meaning it predicts Fenger has a higher dropout rate.
+To see a model's predictions, we give it two rows and the fitted model to the `predictPair` function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropout rate.  In Bowen vs. Fenger, it outputs -1, meaning it predicts Fenger has a higher dropout rate.
 
 ```r
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), ttb)
@@ -70,7 +70,7 @@ predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), ttb
 #> [1] -1
 ```
 
-Note that the output depends on the order of the rows.  In the reversed pair of Collins vs. Bowen, -1 indicate Bowen had the higher drop-out rate.
+Note that the output depends on the order of the rows.  In the reversed pair of Collins vs. Bowen, the output is -1.  This is consistent because it still picks Bowen, regardless of order.
 
 ```r
 predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), ttb)
@@ -80,7 +80,7 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 
 ## All rows
 
-We could run the same functions on regression, but doing predictions one at a time is tedious.  Let's use heurstica's `predictPairSummary` function instead, which is a beginner's way to look at many predictions.  We simply pass it the data and the heuristics whose predictions we are interested in.  It produces a matrix with all row pairs, which in this case is 10 (5 * 4 / 2).
+It is tedious to predict one row pair at a time, so let's use heurstica's `predictPairSummary` function instead.  We simply pass it the data and the heuristics whose predictions we are interested in.  It produces a matrix with all row pairs, which in this case is 10 (5 * 4 / 2).
 
 
 ```r
@@ -88,7 +88,8 @@ out <- predictPairSummary(schools, ttg, reg)
 #> Error in predictPairSummary(schools, ttg, reg): object 'ttg' not found
 # See the first row: It has row indexes.
 out_same[1,]
-#> Error in eval(expr, envir, enclos): object 'out_same' not found
+#>           Row1           Row2 CorrectGreater       ttbModel       regModel 
+#>              1              2              1              1             -1
 # Convert indexes to school names for easier interpretation
 out_df <- data.frame(out)
 out_df$Row1 <- schools$Name[out_df$Row1]
@@ -109,7 +110,7 @@ out_df
 
 The first row shows the Bowen vs. Collins example we considered above.  Because CorrectGreater is 1, that means TTB predicted it correctly-- Bowen really does have a higher drop-out rate.  But regression predicted -1 for this row pair, which is incorrect.
 
-heuristica offers full flexibility in output with the `rowPairApply` function.  After passing it the data, you can pass it any number of generators to make the columns you want.  Some examples are below, where we print only the first row.
+predictPairSummary is for beginners.  heuristica offers full flexibility in output with the `rowPairApply` function.  After passing it the data, you can pass it any number of generators to make the columns you want.  Some examples are below, where we print only the first row.
 
 
 ```r
