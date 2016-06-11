@@ -189,13 +189,14 @@ percentCorrect <- function(fitted_heuristic_list, test_data) {
 #' @export
 percentCorrectNonSymmetric <- function(fitted_heuristic_list,
                                                 test_data) {
-  goal_type <- 'CorrectGreater'
-  predictions_fwd <- aggregatePredictPair(
-    fitted_heuristic_list, test_data, goal_type)
-  test_data_rev <- test_data[c(nrow(test_data):1),]
-  predictions_rev <- aggregatePredictPair(
-    fitted_heuristic_list, test_data_rev, goal_type)
-  predictions <- rbind(predictions_fwd, predictions_rev)
+  # Assume the criterion_col is same for all heuristics.
+  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  
+  all_fn_creator_list <- list(
+    correctGreater(criterion_col),
+    heuristicsList(fitted_heuristic_list, fn=predictPairInternal))
+  predictions <- rowPairApplyList(test_data, all_fn_creator_list,
+                                  also_reverse_row_pairs=TRUE)
   pct_correct_matrix <- categoryAccuracyAll(
     predictions, 1, c(2:ncol(predictions)))
   return(100 * data.frame(pct_correct_matrix))
