@@ -30,18 +30,39 @@ test_that("bindFunctionToRowPairs diff preserve column names", {
 
 # pairMatrix
 
-test_that("paiMatirx basic one column one pair", {
+test_that("pairMatrix one column one pair", {
   one_row <- matrix(c(1), 1, 1)
   out <- pairMatrix(2, function(x) { one_row })
   expect_equal(one_row, out)
 })
 
-test_that("paiMatirx basic one column 6 pairs", {
-  one_row <- matrix(c(1), 1, 1)
-  out <- pairMatrix(4, function(x) { one_row })
-  # 4 * 3 / 2 = 6 rows.
-  expect_equal(matrix(rep(1, 6), 6, 1), out)
+test_that("pairMatrix two columns 3 pairs", {
+  one_row <- matrix(c(10, 11), 1, 2)
+  out <- pairMatrix(3, function(x) { one_row })
+  # 3 * 2 / 2 = 3 rows.
+  expect_equal(matrix(rep(c(10,11), 3), 3, 2, byrow = TRUE), out)
 })
+
+test_that("pairMatrix two columns 3 pairs return row_pair", {
+  out <- pairMatrix(3, function(row_pair) { matrix(row_pair, 1, 2) })
+  # 3 * 2 / 2 = 3 rows.
+  expected_matrix <- rbind(c(1,2), c(1,3), c(2,3))
+  expect_equal(rbind(c(1,2), c(1,3), c(2,3)), out)
+})
+
+test_that("pairMatrix two columns 3 pairs return row_pair", {
+  out <- pairMatrix(3, function(row_pair) { matrix(row_pair, 1, 2) })
+  # 3 * 2 / 2 = 3 rows.
+  expected_matrix <- rbind(c(1,2), c(1,3), c(2,3))
+  expect_equal(rbind(c(1,2), c(1,3), c(2,3)), out)
+})
+
+test_that("pairMatrix error when not row", {
+  expect_error(pairMatrix(2, identity),
+               "pair evaluator function did not return rows")
+})
+
+# combineIntoOneFn
 
 test_that("combineIntoOneFn identity once and twice", {
   expect_equal(111, identity(111)) # A sanity check

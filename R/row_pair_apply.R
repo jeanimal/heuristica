@@ -361,6 +361,9 @@ pairMatrix <- function(num_row, pair_evaluator_fn) {
   if (length(out) < 1) {
     stop("pairMatrix got no output to process")
   }
+  if (is.null(nrow(out[[1]]))) {
+    stop("pair evaluator function did not return rows")
+  }
   rows <- length(out) * nrow(out[[1]])
   cols <- ncol(out[[1]])
   out_matrix <- matrix(unlist(out), rows, cols, byrow=TRUE)
