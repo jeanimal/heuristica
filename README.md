@@ -18,11 +18,12 @@ This package is focused on two-alternative choice tasks, e.g. given two schools,
 
 # A Simple Example
 
-Here is a subset of data on Chicago public high school drop-out rates.
+Here is a subset of data on Chicago public high school drop-out rates.  The criterion to predict is the Dropout_Rate, which is in column 2/
 
 
 ```r
 schools <- data.frame(Name=c("Bowen", "Collins", "Fenger", "Juarez", "Young"), Dropout_Rate=c(25.5, 11.8, 28.7, 21.6, 4.5), Low_Income_Students=c(82.5, 88.8, 63.2, 84.5, 30.3), Limited_English_Students=c(11.4, 0.1, 0, 28.3, 0.1))
+criterion_col <- 2
 schools
 #>      Name Dropout_Rate Low_Income_Students Limited_English_Students
 #> 1   Bowen         25.5                82.5                     11.4
@@ -42,8 +43,8 @@ Let's fit two models:
 
 
 ```r
-ttb <- ttbModel(schools, 2, c(3:4))
-reg <- regModel(schools, 2, c(3:4))
+ttb <- ttbModel(schools, criterion_col, c(3:4))
+reg <- regModel(schools, criterion_col, c(3:4))
 ```
 
 What does the fit look like?  We can examine Take The Best's cue validities and the regression coefficients.
@@ -76,42 +77,58 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 #> [1] -1
 ```
 
-Looking at the data set, we see that Take The Best was correct about Bowen vs. Collins because Bowen has the higher `Dropout_Rate`.  And it was correct about Bowen vs. Fenger.
-
-```r
-subset(schools, Name %in% c("Bowen", "Collins", "Fenger"))[,c(1:2)]
-#>      Name Dropout_Rate
-#> 1   Bowen         25.5
-#> 2 Collins         11.8
-#> 3  Fenger         28.7
-```
 
 ## All rows
 
-We could run the same functions on regression, but heuristica makes it easy to compare with the __rowPairApply__ function.  It can be used to request various types of output on all row pairs in a data set.  Below we request rowIndexes (which will be the index of row1 and the index of row 2), which row is greater using the data in row2, and predictions from the two models we fitted above, ttb, and reg.
+We could run the same functions on regression, but doing predictions one at a time is tedious.  Let's use heurstica's `predictPairSummary` function instead, which is a beginner's way to look at many predictions.  We simply pass it the data and the heuristics whose predictions we are interested in.  It produces a matrix with all row pairs, which in this case is 10 (5 * 4 / 2).
 
 
 ```r
-out <- rowPairApply(schools, rowIndexes(), correctGreater(2), heuristics(ttb, reg))
-out[c(1,2),]
-#>      Row1 Row2 CorrectGreater ttbModel regModel
-#> [1,]    1    2              1        1       -1
-#> [2,]    1    3             -1       -1        1
-# Convert indexes to school names.
+out <- predictPairSummary(schools, ttg, reg)
+#> Error in predictPairSummary(schools, ttg, reg): object 'ttg' not found
+# See the first row: It has row indexes.
+out_same[1,]
+#> Error in eval(expr, envir, enclos): object 'out_same' not found
+# Convert indexes to school names for easier interpretation
 out_df <- data.frame(out)
 out_df$Row1 <- schools$Name[out_df$Row1]
 out_df$Row2 <- schools$Name[out_df$Row2]
-out_df[c(1,2),]
-#>    Row1    Row2 CorrectGreater ttbModel regModel
-#> 1 Bowen Collins              1        1       -1
-#> 2 Bowen  Fenger             -1       -1        1
+out_df
+#>       Row1    Row2 CorrectGreater ttbModel regModel
+#> 1    Bowen Collins              1        1       -1
+#> 2    Bowen  Fenger             -1       -1        1
+#> 3    Bowen  Juarez              1        1       -1
+#> 4    Bowen   Young              1       -1        1
+#> 5  Collins  Fenger             -1       -1        1
+#> 6  Collins  Juarez             -1       -1       -1
+#> 7  Collins   Young              1       -1        1
+#> 8   Fenger  Juarez              1        1       -1
+#> 9   Fenger   Young              1       -1        1
+#> 10  Juarez   Young              1       -1        1
 ```
 
-Notice that regression incorrectly predicted both Bowen vs. Collins and Bowen vs. Fenger.
+The first row shows the Bowen vs. Collins example we considered above.  Because CorrectGreater is 1, that means TTB predicted it correctly-- Bowen really does have a higher drop-out rate.  But regression predicted -1 for this row pair, which is incorrect.
+
+heuristica offers full flexibility in output with the `rowPairApply` function.  After passing it the data, you can pass it any number of generators to make the columns you want.  Some examples are below, where we print only the first row.
+
+
+```r
+# Same as predictPairSummary.
+out_same <- rowPairApply(schools, rowIndexes(), correctGreater(criterion_col), heuristics(ttb, reg))
+out_same[1,]
+#>           Row1           Row2 CorrectGreater       ttbModel       regModel 
+#>              1              2              1              1             -1
+
+# Show first the heuristic predictions, then CorrectGreater.  No row indexes.
+out_simple <- rowPairApply(schools, heuristics(ttb, reg), correctGreater(criterion_col))
+out_simple[1,]
+#>       ttbModel       regModel CorrectGreater 
+#>              1             -1              1
+```
 
 ## Assessing Overall Performance
 
-For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with __percentCorrect__.  The function also lets us readily compare ttb and regression in one function call.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.
 
 ```r
 percentCorrect(list(ttb, reg), schools)
