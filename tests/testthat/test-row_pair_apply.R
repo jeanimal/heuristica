@@ -147,6 +147,24 @@ test_that("applyFunctionToRowPairs sum has one-column output", {
 })
 
 #
+#  rowPairApplyList
+#
+test_that("rowPairApplyList rowIndexes ttb", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  ttb <- ttbModel(train_matrix, 1, c(2,3), fit_name="ttb1")
+  out <- rowPairApplyList(train_matrix, list(rowIndexes(), heuristics(ttb)))
+  expect_equal(cbind(Row1=c(1), Row2=c(2), ttb1=c(1)), out)
+})
+
+test_that("rowPairApplyList rowIndexes ttb also_reverse_row_pairs", {
+  train_matrix <- matrix(c(5,4,1,0,0,1), 2, 3)
+  ttb <- ttbModel(train_matrix, 1, c(2,3), fit_name="ttb1")
+  out <- rowPairApplyList(train_matrix, list(rowIndexes(), heuristics(ttb)),
+                          also_reverse_row_pairs=TRUE)
+  expect_equal(cbind(Row1=c(1,2), Row2=c(2,1), ttb1=c(1,-1)), out)
+})
+
+#
 #  rowPairApply
 #
 

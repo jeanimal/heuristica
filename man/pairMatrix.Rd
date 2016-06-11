@@ -12,11 +12,11 @@ pairMatrix(num_row, pair_evaluator_fn, also_reverse_row_pairs = FALSE)
 \item{pair_evaluator_fn}{The function you want applied.  It should
 accept a list of two numbers, the index of row 1 and the index of row2.}
 
-\item{also_reverse_row_pairs}{Optional parameter.  When it has its optional
+\item{also_reverse_row_pairs}{Optional parameter.  When it has its default
 value of FALSE, it will apply every function only once to any given row
-pair, e.g. myFunction(row1, row2).  When it is true, it will also apply
-the function to every reverse row pair, e.g. myFunction(row1, row2) and
-myFunction(row2, row1).}
+pair, e.g. myFunction(1, 2).  When it is true, it will also apply
+the function to every reverse row pair, e.g. myFunction(1, 2) and
+myFunction(2, 1).}
 }
 \value{
 A matrix of the output of the function for all unique row pairs:

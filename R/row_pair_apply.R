@@ -351,11 +351,11 @@ createFunction.colPairValues<- function(object, test_data) {
 #' @param num_row The number of rows to generate index pairs for.
 #' @param pair_evaluator_fn The function you want applied.  It should
 #'   accept a list of two numbers, the index of row 1 and the index of row2.
-#' @param also_reverse_row_pairs Optional parameter.  When it has its optional
+#' @param also_reverse_row_pairs Optional parameter.  When it has its default
 #'   value of FALSE, it will apply every function only once to any given row
-#'   pair, e.g. myFunction(row1, row2).  When it is true, it will also apply
-#'   the function to every reverse row pair, e.g. myFunction(row1, row2) and
-#'   myFunction(row2, row1).
+#'   pair, e.g. myFunction(1, 2).  When it is true, it will also apply
+#'   the function to every reverse row pair, e.g. myFunction(1, 2) and
+#'   myFunction(2, 1).
 #' @return A matrix of the output of the function for all unique row pairs:
 #'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
 pairMatrix <- function(num_row, pair_evaluator_fn, also_reverse_row_pairs=FALSE) {
@@ -416,6 +416,10 @@ combineIntoOneFn <- function(function_list) {
 #'   must include the same criterion_col and cols_to_fit.
 #' @param function_creator_list List of the functions that generate the
 #'   functions to apply, such as heuristics(ttb) and correctGreater(col).
+#' @param also_reverse_row_pairs Optional parameter.  When it has its default
+#'   value of FALSE, it will apply every function only once to any given row
+#'   pair, e.g. myFunction(row1, row2).  When it is true, it will also apply
+#'   the function to every reverse row pair, e.g. myFunction(row2, row1).
 #' @return A matrix of outputs from the functions.  The number of rows is based
 #'   on the number of row pairs in test_data.  If the input has N rows, the
 #'   output will have N x (N-1) rows.  The number of columns will be at least
@@ -434,7 +438,8 @@ combineIntoOneFn <- function(function_list) {
 #'   are there.
 #'
 #' @export
-rowPairApplyList <- function(test_data, function_creator_list) {
+rowPairApplyList <- function(test_data, function_creator_list,
+                             also_reverse_row_pairs=FALSE) {
   # TODO(jean): Make a version that handles non-numeric as a data.frame.
   #  It will be slower, but it's a nice option to have for debugging.
   column_names <- vector()
@@ -445,7 +450,8 @@ rowPairApplyList <- function(test_data, function_creator_list) {
     column_names <- c(column_names, function_creator$column_names)
   }
   all_fn <- combineIntoOneFn(function_list)
-  raw_matrix <- pairMatrix(nrow(test_data), all_fn)
+  raw_matrix <- pairMatrix(nrow(test_data), all_fn,
+                           also_reverse_row_pairs=also_reverse_row_pairs)
   colnames(raw_matrix) <- column_names
   return(raw_matrix)
 }

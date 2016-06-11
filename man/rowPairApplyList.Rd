@@ -4,7 +4,8 @@
 \alias{rowPairApplyList}
 \title{Apply list of functions to all row pairs.}
 \usage{
-rowPairApplyList(test_data, function_creator_list)
+rowPairApplyList(test_data, function_creator_list,
+  also_reverse_row_pairs = FALSE)
 }
 \arguments{
 \item{test_data}{The data to apply the functions to as a matrix or
@@ -13,6 +14,11 @@ must include the same criterion_col and cols_to_fit.}
 
 \item{function_creator_list}{List of the functions that generate the
 functions to apply, such as heuristics(ttb) and correctGreater(col).}
+
+\item{also_reverse_row_pairs}{Optional parameter.  When it has its default
+value of FALSE, it will apply every function only once to any given row
+pair, e.g. myFunction(row1, row2).  When it is true, it will also apply
+the function to every reverse row pair, e.g. myFunction(row2, row1).}
 }
 \value{
 A matrix of outputs from the functions.  The number of rows is based
