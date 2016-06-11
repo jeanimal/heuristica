@@ -11,59 +11,57 @@ vignette: >
 
 Predicting between pairs produces categorical output: -1, 0, or 1.  Using a (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] allows us to see how often the predicted category aligns with the correct category.  This matrix let's us learn about the structure of the problem and calculate various stats, such as the accuracy-- percentCorrect / 100-- which heuristica reports.  However, there are some quirks to applying confusion matrices to this task, so I explain them below.
 
-## Row symmetry
+## Generating data for the confusion matrix
 
-rowPairApply generates output efficiently, so if it has done A vs. B, it does not also do B vs. A.  That works well when
+A confusion matrix compares the predicted values with the actual, correct values.  rowPairApply can generate these values, and here we walk through an example, comparing Take the Best and Greedy Take The Best on a Guttman environment, which has every possible binary cue of validity one.  This is one of the cases analyzed in the paper, "The Bias Bias" (citation below).
 
-1) Your heuristics are symmetric, e.g. predictPair(A, B, heuristic) = -predictPair(A, B, heuristic)
-2) Your goal is measuring accuracy.
-
-In case #1 is violated-- e.g. for a heuristic that always predicts 1-- you can use rowPairApplyNonSymmetric.  It runs both A vs. B and B vs. A.
-
-============
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+Here is a function to generate a Guttman environment:
+```{r}
+# Makes a Guttman binary data set.  E.g.
+# > makeGuttman(3)
+#      y   x1  x2 x3
+# [1,] 4   1   1   1
+# [2,] 3   0   1   1
+# [3,] 2   0   0   1
+# [4,] 1   0   0   0
+# Not efficient, but it works.
+makeGuttman <- function(num_cues) {
+  num_rows <- num_cues + 1
+  mat <- cbind(y=c(num_rows:1))
+  for (num_1s in 1:num_cues) {
+    num_0s <- num_rows - num_1s
+    vec <- c(rep(1, num_1s), rep(0, num_0s))
+    mat <- cbind(mat, vec)
+    colnames(mat)[ncol(mat)] <- paste0("x", num_1s)
+  }
+  return(mat)
+}
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+Now use it to generate a data set with 32 cues (33 rows).
+```{r}
+all_data <- makeGuttman(32)
 ```
 
-Also a quote using `>`:
+Fit the two models.  Notice they agree that all cue_validities are 1.
+```{r}
+train_data <- all_data
+ttb <- ttbModel(train_data, 1, c(2:ncol(data)))
+ttb$cue_validities
+ttbG <- ttbGreedyModel(train_data, 1, c(2:ncol(data)))
+ttbG$cue_validities
+```
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+
+Now let's us
+
+Notice the optional parameter `also_reverse_row_pairs=TRUE`.
+
+Why is this wrong?  rowPairApply tries to be efficient, so be default it runs each unique row pair only once.  That is, if it applies a function to row1 vs. row2, it does not also apply it to row2 vs. row1.  That works well when both these conditions hold:
+
+1) Your heuristics are symmetric, e.g. predictPair(, B, heuristic) = -predictPair(row1, row2, heuristic).  (A heuristic that always predicts 1 violatees this.)
+2) Your goal is measuring accuracy, # correct predictions / # predictions.
+
+Condition 2 is violated when calculating a confusion matrix because it shows specifically what happens for _all_ outcomes.  So in order to generate data for a confusion matrix, it is important to use the optional `also_reverse_row_pairs=TRUE` parameter.
+
+
