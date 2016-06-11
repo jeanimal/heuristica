@@ -18,10 +18,10 @@ A one-row matrix of numbers from 0 to 1, meaning proportion
 }
 \description{
 Same as percentCorrect but for weird heuristics that do not
-consistently choose the same row.  If a symmetric heuristics says
-row1 > row2, then it will also says row2 < row1.  Those can be used
+consistently choose the same row.  When a symmetric heuristic predicts
+row1 > row2, then it also predicts row2 < row1.  Those can be used
 with percentCorrect.  All heuristics built into heuristica
-quality.  They will get the same answers for percentCorrect
+qualify.  They will get the same answers for percentCorrect
 and percentCorrectNonSymmetric.  But a non-symmetric heuristic
 will only get correct answers for percentCorrectNonSymmetric.
 }

@@ -15,7 +15,7 @@
 #' # Which row pairs is ttb better on?  By "better" we mean chooses the
 #' # correct larger row-- that's our goal_type.
 #' goal_type <- 'CorrectGreater'
-#' out <- aggregatePredictPair(list(ttb, reg), city_population, goal_type,
+#' out <- predictPairSummary(list(ttb, reg), city_population, goal_type,
 #'   rowIndexes())
 #' out_df <- data.frame(out)
 #' head(out_df[out_df$ttbModel > out_df$regModel,])
@@ -29,7 +29,7 @@
 #' # 7 times, so it's a tougher city for regression to predict than ttb.
 #' @keywords internal
 #' @export
-aggregatePredictPair <- function(fitted_heuristic_list, test_data,
+predictPairSummary <- function(fitted_heuristic_list, test_data,
                                  goal_type, ...) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
@@ -54,14 +54,14 @@ aggregatePredictPair <- function(fitted_heuristic_list, test_data,
 predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
                                            symmetric_model=TRUE) {
   goal_type <- 'CorrectGreater'
-  out_fwd <- aggregatePredictPair(list(fitted_heuristic), test_data, goal_type)
+  out_fwd <- predictPairSummary(list(fitted_heuristic), test_data, goal_type)
   test_data_rev <- test_data[c(nrow(test_data):1),]
   if (symmetric_model) {
     # The model's prediction in A vs. B = - prediction in B vs. A.
     out <- rbind(out_fwd, -out_fwd)
   } else {
     # Need to re-run the model to figure out what it says in B vs. A.
-    out_rev <- aggregatePredictPair(list(fitted_heuristic), test_data_rev, goal_type)
+    out_rev <- predictPairSummary(list(fitted_heuristic), test_data_rev, goal_type)
     out <- rbind(out_fwd, out_rev)
   }
   correct <- out[,1]

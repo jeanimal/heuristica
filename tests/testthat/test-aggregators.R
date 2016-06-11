@@ -62,15 +62,15 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
 })
 
 
-# aggregatePredictPair
+# predictPairSummary
 
-test_that("aggregatePredictPair 3 models", {
+test_that("predictPairSummary 3 models", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3))
   ttbG <- ttbGreedyModel(data, 1, c(2:3))
   reg <- regModel(data, 1, c(2:3))
   goal_type <- 'CorrectGreater'
-  out <- aggregatePredictPair(list(ttb, ttbG, reg), data, goal_type)
+  out <- predictPairSummary(list(ttb, ttbG, reg), data, goal_type)
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
                      regModel=c(1)), oneRow(out, 1))
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
@@ -79,11 +79,11 @@ test_that("aggregatePredictPair 3 models", {
                      regModel=c(-1)), oneRow(out, 3))
 })
 
-test_that("aggregatePredictPair 1 model with rowIndexes()", {
+test_that("predictPairSummary 1 model with rowIndexes()", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3))
   goal_type <- 'CorrectGreater'
-  out <- aggregatePredictPair(list(ttb), data, goal_type, rowIndexes())
+  out <- predictPairSummary(list(ttb), data, goal_type, rowIndexes())
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), Row1=c(1),
                      Row2=c(2)), oneRow(out, 1))
   expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), Row1=c(1),
@@ -93,11 +93,11 @@ test_that("aggregatePredictPair 1 model with rowIndexes()", {
 })
 
 # TODO: Add more models to this test.
-test_that("aggregatePredictPair 1 model ProbGreater", {
+test_that("predictPairSummary 1 model ProbGreater", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3))
   goal_type <- 'ProbGreater'
-  out <- aggregatePredictPair(list(ttb), data, goal_type)
+  out <- predictPairSummary(list(ttb), data, goal_type)
   expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 1))
   expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 2))
   # This is the row that differs: When it can't decide between row 2
@@ -105,10 +105,10 @@ test_that("aggregatePredictPair 1 model ProbGreater", {
   expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0.5)), oneRow(out, 3))
 })
 
-test_that("aggregatePredictPair custom model fit_name", {
+test_that("predictPairSummary custom model fit_name", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3), reverse_cues=FALSE, fit_name="ttbNoRev")
-  out <- aggregatePredictPair(list(ttb), data, 'CorrectGreater')
+  out <- predictPairSummary(list(ttb), data, 'CorrectGreater')
   expect_equal(colnames(out), c('CorrectGreater', 'ttbNoRev'))
 })
 
