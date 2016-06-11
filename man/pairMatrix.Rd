@@ -4,13 +4,19 @@
 \alias{pairMatrix}
 \title{Apply a function to all unique pairs of row indices up to num_row.}
 \usage{
-pairMatrix(num_row, pair_evaluator_fn)
+pairMatrix(num_row, pair_evaluator_fn, also_reverse_row_pairs = FALSE)
 }
 \arguments{
 \item{num_row}{The number of rows to generate index pairs for.}
 
 \item{pair_evaluator_fn}{The function you want applied.  It should
 accept a list of two numbers, the index of row 1 and the index of row2.}
+
+\item{also_reverse_row_pairs}{Optional parameter.  When it has its optional
+value of FALSE, it will apply every function only once to any given row
+pair, e.g. myFunction(row1, row2).  When it is true, it will also apply
+the function to every reverse row pair, e.g. myFunction(row1, row2) and
+myFunction(row2, row1).}
 }
 \value{
 A matrix of the output of the function for all unique row pairs:
