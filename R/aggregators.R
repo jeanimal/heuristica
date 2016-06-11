@@ -19,12 +19,13 @@
 #' lreg <- logRegModel(train_df, criterion_col, c(2:3))
 #'
 #' # Generate predictions and correct answers with predictPairSummary.
-#' out <- predictPairSummary(train_df, list(ttb, lreg))
+#' out <- predictPairSummary(train_df, ttb, lreg)
 #'
-#' # Find rows where the models make differing predictions
+#' # Find rows where the models make differing predictions, subsetting on a
+#' # data.frame.
 #' out_df <- data.frame(out)
 #' out_df[out_df$ttbModel != out_df$logRegModel,]
-#' # Should output:
+#' # Outputs:
 #' #   Row1 Row2 CorrectGreater ttbModel logRegModel
 #' #    1    2              1        1          -1
 #' #    3    4              1       -1           1
