@@ -114,6 +114,11 @@ distributeTies <- function(confusion_matrix_3x3) {
 
 #' Collapses a 3x3 confusion matrix to a 2x2 confusion matrix.
 #'
+#' A 3x3 confusion matrix results from predictPair.
+#' 
+#' The middle column repressents guesses.
+#' The middle row represents ties.  T
+#'
 #' @param confusion_matrix_3x3 A 3x3 confusion matrix.
 #' @param guess_handling_fn A function to call on the 3x3 confusion matrix to
 #'   assign a model's guesses-- 0 predictions tracked in the 2nd column-- to
@@ -122,6 +127,7 @@ distributeTies <- function(confusion_matrix_3x3) {
 #'   distribute ties-- 0 correct answers tracked in the 2nd row-- to -1 or 1
 #'   counts.
 #' @return A 2x2 confusion matrix.
+#' @export
 collapseConfusionMatrix3x3To2x2 <- function(
   confusion_matrix_3x3, guess_handling_fn=distributeGuessAsExpectedValue,
   tie_handling_fn=distributeTies) {
@@ -153,6 +159,7 @@ collapseConfusionMatrix3x3To2x2 <- function(
 #' 
 #' @param confusion_matrix A 2x2 confusion matrix.
 #' @return A list with accuracy, sensitivity, specificity, and precision
+#' @export
 statsFromConfusionMatrix <- function(confusion_matrix) {
   if (nrow(confusion_matrix) != 2 || ncol(confusion_matrix) != 2) {
     stop(paste("Expected 2x2 confustion matrix but got ",

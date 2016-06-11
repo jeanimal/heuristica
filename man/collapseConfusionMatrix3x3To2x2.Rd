@@ -23,6 +23,10 @@ counts.}
 A 2x2 confusion matrix.
 }
 \description{
-Collapses a 3x3 confusion matrix to a 2x2 confusion matrix.
+A 3x3 confusion matrix results from predictPair.
+}
+\details{
+The middle column repressents guesses.
+The middle row represents ties.  T
 }
 
