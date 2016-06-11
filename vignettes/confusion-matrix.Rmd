@@ -9,6 +9,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r}
+library(heuristica)
+```
+
+
 This is a topic of advanced users.
 
 Predicting between pairs produces categorical output: -1, 0, or 1.  Using a (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] allows us to see how often the predicted category aligns with the correct category.  This matrix let's us learn about the structure of the problem and calculate various stats, such as the accuracy-- percentCorrect / 100-- which heuristica reports.  However, there are some quirks to applying confusion matrices to this task, so I explain them below.
