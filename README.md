@@ -8,7 +8,7 @@ output: github_document
 
 
 
-This R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and  [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
+The `heuristica` R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
 
 The goal is to make it easy to explore the range of conditions in which simple heuristics are better than more complex models.  Optimizing is not always better!
 
@@ -34,7 +34,7 @@ schools
 
 ## Fitting
 
-To fit a model, we give it the data set and the columns to use.  The 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, percent of `Low_Income_Students` and percent of `Limited_English_Students`.  They are at indexes 3 and 4.
+To fit a model, we give it the data set and the columns to use.  In this case, the 2nd column, `Dropout_Rate`, is the __criterion__ to be predicted.  The __cues__ are the following columns, percent of `Low_Income_Students` and percent of `Limited_English_Students`.  They are at indexes 3 and 4.
 
 Let's fit two models:
 * ttbModel, Take The Best, which uses the highest-validity cue that discriminates (more details below).
@@ -47,7 +47,7 @@ ttb <- ttbModel(schools, criterion_col, c(3:4))
 reg <- regModel(schools, criterion_col, c(3:4))
 ```
 
-What does the fit look like?  We can examine Take The Best's cue validities and the regression coefficients.
+What do the fits look like?  We can examine Take The Best's cue validities and the regression coefficients.
 
 ```r
 ttb$cue_validities
@@ -61,7 +61,13 @@ Both Take The Best and regression give a higher weight to `Low_Income_Students` 
 
 ## Predicting the fitted data
 
-To see a model's predictions, we give it two rows and the fitted model to the `predictPair` function.  It outputs 1 when it selects the first row passed to it and -1 when it selects the second row passed to it.  In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropout rate.  In Bowen vs. Fenger, it outputs -1, meaning it predicts Fenger has a higher dropout rate.
+To see a model's predictions, we use the `predictPair` function.  It takes two rows of data-- which together comprise a "row pair"-- and the fitted model.  `predictPair` outputs three possible values:
+
+* 1 predicst the first row passed to it
+* -1 predicts the second row passed to it.
+* 0 is a guess.
+
+In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropout rate.  In Bowen vs. Fenger, it outputs -1, meaning it predicts Fenger has a higher dropout rate.
 
 ```r
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), ttb)
