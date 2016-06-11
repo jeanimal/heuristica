@@ -1,0 +1,69 @@
+---
+title: "Confusion Matrix"
+author: "Jean Czerlinski Whitmore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Confusion Matrix}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Predicting between pairs produces categorical output: -1, 0, or 1.  Using a (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] allows us to see how often the predicted category aligns with the correct category.  This matrix let's us learn about the structure of the problem and calculate various stats, such as the accuracy-- percentCorrect / 100-- which heuristica reports.  However, there are some quirks to applying confusion matrices to this task, so I explain them below.
+
+## Row symmetry
+
+rowPairApply generates output efficiently, so if it has done A vs. B, it does not also do B vs. A.  That works well when
+
+1) Your heuristics are symmetric, e.g. predictPair(A, B, heuristic) = -predictPair(A, B, heuristic)
+2) Your goal is measuring accuracy.
+
+In case #1 is violated-- e.g. for a heuristic that always predicts 1-- you can use rowPairApplyNonSymmetric.  It runs both A vs. B and B vs. A.
+
+============
+
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
