@@ -2,47 +2,57 @@
 % Please edit documentation in R/aggregators.R
 \name{predictPairSummary}
 \alias{predictPairSummary}
-\title{Predicts with heuristics and criterion, returning all row pairs.}
+\title{Returns the row indices, correct answer, and predictions for all row pairs.}
 \usage{
-predictPairSummary(fitted_heuristic_list, test_data, goal_type, ...)
+predictPairSummary(test_data, ...)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data,
-e.g. ttbModel.}
+\item{test_data}{Data to try to predict.}
 
-\item{test_data}{Data to try to predict; must match columns in fit.}
-
-\item{goal_type}{String identifying the goal of the models and criterion.
-'CorrectGreater' indicates to use correctGreater and predictPairInternal.
-'ProbGreater' indicates to use probGreater and predictProbInternal.}
-
-\item{...}{Optionally additional row pair functions, e.g. rowIndexes().}
+\item{...}{On or more heuristics already fitted to data, e.g. the output of
+calling ttbModel.}
 }
 \value{
-A one-row matrix of numbers from 0 to 1, meaning proportion
-  correct.  Each column is named with the heuristic's class.
+A matrix with output for indices, the correct row pair answer, and
+  predictions for each heuristic with as many rows as row pairs in the data.
+  The columns names are Row1, Row2, CorrectGreater, and each heuristic fit_name
+  (which is its class name by default, e.g. ttbModel).
 }
 \description{
-Predicts with heuristics and criterion, returning all row pairs.
+This makes it easy to see and evaluate predictions for all row pairs on
+a data set.  It is intended for beginners.  Advanced users can get more
+fine-grained control with rowPairApply.
 }
 \examples{
-ttb <- ttbModel(city_population, 3, c(4:ncol(city_population)))
-reg <- regModel(city_population, 3, c(4:ncol(city_population)))
-# Which row pairs is ttb better on?  By "better" we mean chooses the
-# correct larger row-- that's our goal_type.
-goal_type <- 'CorrectGreater'
-out <- predictPairSummary(list(ttb, reg), city_population, goal_type,
-  rowIndexes())
+# Get some data and fit it with two models.
+train_df <- data.frame(criterion=c(9,8,7,6), a=c(101,101,2,2), b=c(59,58,5,59))
+criterion_col <- 1
+ttb <- ttbModel(train_df, criterion_col, c(2:3))
+lreg <- logRegModel(train_df, criterion_col, c(2:3))
+
+# Generate predictions and correct answers with predictPairSummary.
+out <- predictPairSummary(train_df, list(ttb, lreg))
+
+# Find rows where the models make differing predictions
 out_df <- data.frame(out)
-head(out_df[out_df$ttbModel > out_df$regModel,])
-# So one example where ttb was right and reg was wrong was row 4 vs.
-# row 7.  Let's put some city names on this.
-out_df$Row1_City <- city_population$Name_of_City[out_df$Row1]
-out_df$Row2_City <- city_population$Name_of_City[out_df$Row2]
-head(out_df[out_df$ttbModel > out_df$regModel,])
-# So row 4 vs. 7 was Cologne vs. Dortmund.  Looking through the list,
-# this is the only time Cologne appeared.  In contrast, Halle appears
-# 7 times, so it's a tougher city for regression to predict than ttb.
+out_df[out_df$ttbModel != out_df$logRegModel,]
+# Should output:
+#   Row1 Row2 CorrectGreater ttbModel logRegModel
+#    1    2              1        1          -1
+#    3    4              1       -1           1
+# So there are only two cases of differing predictions.
+# 1) For row 1 vs. 2, TTB predicted 1 and logReg predicted -1.
+#    CorrectGreater says 1, so TTB was right.
+# 2) For row 3 vs. 4, TTB predicted -1 and logReg predicted 1.
+#    CorrectGreater says -1, so logReg was right.
+
+# Note that under the hood, the above predictPairSummary call could be
+# done with rowPairApply like this:
+out2 <- rowPairApply(train_df, rowIndexes(),
+                     correctGreater(criterion_col), heuristics(ttb, lreg))
+
 }
-\keyword{internal}
+\seealso{
+\code{\link{rowPairApply}} for full flexibility.
+}
 

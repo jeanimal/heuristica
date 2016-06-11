@@ -64,52 +64,37 @@ test_that("end to end test ttb vs. logistic regression input matrix", {
 
 # predictPairSummary
 
+test_that("predictPairSummary 1 model", {
+  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
+  ttb <- ttbModel(data, 1, c(2:3))
+  out <- predictPairSummary(data, ttb)
+  expect_equal(cbind(Row1=c(1), Row2=c(2), CorrectGreater=c(1), ttbModel=c(1)),
+               oneRow(out, 1))
+  expect_equal(cbind(Row1=c(1), Row2=c(3), CorrectGreater=c(1), ttbModel=c(1)),
+               oneRow(out, 2))
+  expect_equal(cbind(Row1=c(2), Row2=c(3), CorrectGreater=c(1), ttbModel=c(0)),
+               oneRow(out, 3))
+})
+
 test_that("predictPairSummary 3 models", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3))
   ttbG <- ttbGreedyModel(data, 1, c(2:3))
   reg <- regModel(data, 1, c(2:3))
-  goal_type <- 'CorrectGreater'
-  out <- predictPairSummary(list(ttb, ttbG, reg), data, goal_type)
-  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
-                     regModel=c(1)), oneRow(out, 1))
-  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), ttbGreedyModel=c(1),
-                     regModel=c(1)), oneRow(out, 2))
-  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(0), ttbGreedyModel=c(1),
-                     regModel=c(-1)), oneRow(out, 3))
-})
-
-test_that("predictPairSummary 1 model with rowIndexes()", {
-  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
-  ttb <- ttbModel(data, 1, c(2:3))
-  goal_type <- 'CorrectGreater'
-  out <- predictPairSummary(list(ttb), data, goal_type, rowIndexes())
-  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), Row1=c(1),
-                     Row2=c(2)), oneRow(out, 1))
-  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(1), Row1=c(1),
-                     Row2=c(3)), oneRow(out, 2))
-  expect_equal(cbind(CorrectGreater=c(1), ttbModel=c(0), Row1=c(2),
-                     Row2=c(3)), oneRow(out, 3))
-})
-
-# TODO: Add more models to this test.
-test_that("predictPairSummary 1 model ProbGreater", {
-  data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
-  ttb <- ttbModel(data, 1, c(2:3))
-  goal_type <- 'ProbGreater'
-  out <- predictPairSummary(list(ttb), data, goal_type)
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 1))
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(1)), oneRow(out, 2))
-  # This is the row that differs: When it can't decide between row 2
-  # vs. row 3, it outputs a probability row 2 is greater of 0.5.
-  expect_equal(cbind(ProbGreater=c(1), ttbModel=c(0.5)), oneRow(out, 3))
+  out <- predictPairSummary(data, ttb, ttbG, reg)
+  expect_equal(cbind(Row1=c(1), Row2=c(2), CorrectGreater=c(1), ttbModel=c(1),
+                     ttbGreedyModel=c(1), regModel=c(1)), oneRow(out, 1))
+  expect_equal(cbind(Row1=c(1), Row2=c(3), CorrectGreater=c(1), ttbModel=c(1),
+                     ttbGreedyModel=c(1), regModel=c(1)), oneRow(out, 2))
+  expect_equal(cbind(Row1=c(2), Row2=c(3), CorrectGreater=c(1), ttbModel=c(0),
+                     ttbGreedyModel=c(1), regModel=c(-1)), oneRow(out, 3))
 })
 
 test_that("predictPairSummary custom model fit_name", {
   data <- cbind(y=c(5,4,3), x1=c(1,0,0), x2=c(1,0,1))
   ttb <- ttbModel(data, 1, c(2:3), reverse_cues=FALSE, fit_name="ttbNoRev")
-  out <- predictPairSummary(list(ttb), data, 'CorrectGreater')
-  expect_equal(colnames(out), c('CorrectGreater', 'ttbNoRev'))
+  out <- predictPairSummary(data, ttb)
+  expect_equal(colnames(out), c('Row1', 'Row2', 'CorrectGreater', 'ttbNoRev'))
 })
 
 # percentCorrect and
