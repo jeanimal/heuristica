@@ -296,7 +296,7 @@ test_that("ttbModel 4x4 predictPairProb x1 cue dominates", {
                       x3=c(1,1,0,1))
   # How this data looks:
   # > train_data
-  #         y  x1   x2   x3
+  #         y   x1   x2   x3
   # [1,]    9    1    1    1
   # [2,]    8    1    1    1
   # [3,]    7    1    0    0
