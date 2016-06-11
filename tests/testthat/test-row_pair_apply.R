@@ -59,7 +59,8 @@ test_that("pairMatrix return row_pair", {
 test_that("pairMatrix return row_pair also_reverse_row_pairs", {
   out <- pairMatrix(3, function(row_pair) { matrix(row_pair, 1, 2) },
                     also_reverse_row_pairs=TRUE)
-  # 3 * 2 / 2 = 3 rows.
+  # 3 rows in usual order + 3 rows in reverse order.
+  # Ideally this test would not care about the order of the rows.
   expect_equal(
     rbind(c(1,2), c(1,3), c(2,3), c(3,2), c(3,1), c(2,1)), out)
 })
