@@ -28,6 +28,22 @@ test_that("bindFunctionToRowPairs diff preserve column names", {
 
 # TODO: Test row index out of range.  Should that live in oneRow?
 
+# pairMatrix
+
+test_that("paiMatirx basic one column one pair", {
+  one_row <- matrix(c(1), 1, 1)
+  out <- pairMatrix(2, function(x) { one_row })
+  expect_equal(one_row, out)
+})
+
+test_that("paiMatirx basic one column 6 pairs", {
+  one_row <- matrix(c(1), 1, 1)
+  out <- pairMatrix(4, function(x) { one_row })
+  # 4 * 3 / 2 = 6 rows
+  expect_equal(6, nrow(out))
+  #expect_equal(one_row, out)
+})
+
 test_that("combineIntoOneFn identity once and twice", {
   expect_equal(111, identity(111)) # A sanity check
   fn_all <- combineIntoOneFn(list(identity))
