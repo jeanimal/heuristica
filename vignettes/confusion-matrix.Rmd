@@ -9,9 +9,75 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+This is a topic of advanced users.
+
 Predicting between pairs produces categorical output: -1, 0, or 1.  Using a (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] allows us to see how often the predicted category aligns with the correct category.  This matrix let's us learn about the structure of the problem and calculate various stats, such as the accuracy-- percentCorrect / 100-- which heuristica reports.  However, there are some quirks to applying confusion matrices to this task, so I explain them below.
 
-## Generating data for the confusion matrix
+A confusion matrix compares the predicted values with the actual, correct values.  rowPairApply can generate these values, and here we walk through an example
+
+# City population example
+
+```{r}
+data("city_population")
+data_set <- na.omit(city_population)
+criterion_col <- 3
+cols_to_fit <- 4:ncol(data_set)
+```
+
+Fit Take the Best and regression on a subset of the data.  For this example, we arbitrarily pick the first N rows rather than sampling, but in practice the training rows should be sampled.
+
+```{r}
+num_training_rows <- 5
+train_data <- city_population[c(1:num_training_rows),]
+ttb <- ttbModel(train_data, criterion_col, cols_to_fit)
+reg <- regModel(train_data, criterion_col, cols_to_fit)
+```
+
+Generate data using rowPairApply.  Since we request correctGreater, then ttb, then reg, the output column names will be "CorrectGreater", "ttbModel", and "regModel".
+Setting `also_reverse_row_pairs=TRUE` is key for analyzing the output.
+
+```{r}
+out <- rowPairApplyList(data_set, list(correctGreater(criterion_col), heuristics(ttb, reg)), also_reverse_row_pairs=TRUE)
+```
+
+Take a look at a few rows.  But these are boring rows.
+```{r}
+head(out)
+```
+
+Generate confusion matrices for each heuristic, first Take The Best, then regression.
+```{r}
+confusion_matrix_3x3_ttb <- confusionMatrixPredictPair(out[,"CorrectGreater"], out[,"ttbModel"])
+confusion_matrix_3x3_ttb
+
+confusion_matrix_3x3_reg <- confusionMatrixPredictPair(out[,"CorrectGreater"], out[,"regModel"])
+confusion_matrix_3x3_reg
+```
+
+First, notice that the first and third rows are the same.  This is becuase ttb and regression are symmetric heuristics.  When a symmetric heuristic chooses Berlin when given Berlin vs. Munich-- an output of "1" in predictPair-- it will still choose Berlin when given the reverse, Munich vs. Berlin-- and output of "-1" in predictPair.  It's also confirmation that we set `also_reverse_row_pairs=TRUE`.  If you forget to set this, the first and third rows might not be equal.
+
+Second, notice that Take The Best guesses a lot more.  Focusing on the first row, Take The Best guessed 1,213 times while regression guessed roughly half as much 678 times.
+
+Now view both matrices with guesses-- 0 predictions-- allocated.  There are different ways to allocate guesses, but by default this fucntion assignes 50% of them to correct and 50% to incorrect.
+```{r}
+confusion_matrix_ttb <- collapseConfusionMatrix3x3To2x2(confusion_matrix_3x3_ttb)
+confusion_matrix_ttb
+confusion_matrix_reg <- collapseConfusionMatrix3x3To2x2(confusion_matrix_3x3_reg)
+confusion_matrix_reg
+```
+
+
+Calculate stats, including accuracy from these confusion matrices.
+
+```{r}
+statsFromConfusionMatrix(confusion_matrix_ttb)
+statsFromConfusionMatrix(confusion_matrix_reg)
+```
+
+
+# Analyzing a Guttman environment
+
+This is an even more advanced example inspired by the paper, "The Bias Bias" (citation below).
 
 A confusion matrix compares the predicted values with the actual, correct values.  rowPairApply can generate these values, and here we walk through an example, comparing Take the Best and Greedy Take The Best on a Guttman environment, which has every possible binary cue of validity one.  This is one of the cases analyzed in the paper, "The Bias Bias" (citation below).
 
@@ -40,17 +106,30 @@ makeGuttman <- function(num_cues) {
 
 Now use it to generate a data set with 32 cues (33 rows).
 ```{r}
-all_data <- makeGuttman(32)
+all_data <- makeGuttman(4)
 ```
 
-Fit the two models.  Notice they agree that all cue_validities are 1.
+Fit the Take The Best model and confirm it thinks all cue validities are 1.
 ```{r}
 train_data <- all_data
-ttb <- ttbModel(train_data, 1, c(2:ncol(data)))
+criterion_col <- 1
+ttb <- ttbModel(train_data, criterion_col, c(2:ncol(train_data)))
 ttb$cue_validities
-ttbG <- ttbGreedyModel(train_data, 1, c(2:ncol(data)))
-ttbG$cue_validities
 ```
+
+To generate data for the confusion matrix, we need correct values, which can be generated with correctGreater, and the predictions from the ttb model.  Generate it like this:
+
+```{r}
+out <- rowPairApplyList(train_data, list(correctGreater(criterion_col), heuristics(ttb)), also_reverse_row_pairs=FALSE)
+```
+
+Now send the data to the confusion matrix function.
+
+```{r}
+confusion_matrix <- confusionMatrixPredictPair(out[,"CorrectGreater"], out[,"ttbModel"])
+#confusion_matrix
+```
+
 
 
 Now let's us

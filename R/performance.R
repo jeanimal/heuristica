@@ -51,6 +51,8 @@ predict_pair_categories <- c(-1,0,1)
 #' \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 #'
 #' @export
+#'TODO(jean): This is a terrible name.  Rename it.  e.g.
+#'confusionMatrix3x3FromPredictPair
 confusionMatrixPredictPair <- function(ref_data, predicted_data) {
   return(confusionMatrixRequiredCategories(ref_data, predicted_data,
                                            predict_pair_categories))
