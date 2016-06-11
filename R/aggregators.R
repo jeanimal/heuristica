@@ -118,11 +118,16 @@ predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
 #' \code{\link{percentCorrect}} for a version that returns a
 #'   data.frame and includes several examples.
 #' @export
-percentCorrectReturnMatrix <- function(fitted_heuristic_list,
-                                       test_data) {
-  goal_type <- 'CorrectGreater'
-  predictions <- aggregatePredictPair(
-    fitted_heuristic_list, test_data, goal_type)
+percentCorrectReturnMatrix <- function(fitted_heuristic_list, test_data) {
+  # Assume the criterion_col is same for all heuristics.
+  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  
+  all_fn_creator_list <- list(
+    correctGreater(criterion_col),
+    heuristicsList(fitted_heuristic_list, fn=predictPairInternal))
+  predictions <- rowPairApplyList(test_data, all_fn_creator_list,
+                                  also_reverse_row_pairs=FALSE)
+  
   return(100 * categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
 }
 
@@ -172,10 +177,10 @@ percentCorrect <- function(fitted_heuristic_list, test_data) {
 #' percentCorrect for non-symmetric heuristics
 #'
 #' Same as percentCorrect but for weird heuristics that do not
-#' consistently choose the same row.  If a symmetric heuristics says
-#' row1 > row2, then it will also says row2 < row1.  Those can be used
+#' consistently choose the same row.  When a symmetric heuristic predicts
+#' row1 > row2, then it also predicts row2 < row1.  Those can be used
 #' with percentCorrect.  All heuristics built into heuristica
-#' quality.  They will get the same answers for percentCorrect
+#' qualify.  They will get the same answers for percentCorrect
 #' and percentCorrectNonSymmetric.  But a non-symmetric heuristic
 #' will only get correct answers for percentCorrectNonSymmetric.
 #'
