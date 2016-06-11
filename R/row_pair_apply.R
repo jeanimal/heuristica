@@ -351,10 +351,20 @@ createFunction.colPairValues<- function(object, test_data) {
 #' @param num_row The number of rows to generate index pairs for.
 #' @param pair_evaluator_fn The function you want applied.  It should
 #'   accept a list of two numbers, the index of row 1 and the index of row2.
+#' @param also_reverse_row_pairs Optional parameter.  When it has its optional
+#'   value of FALSE, it will apply every function only once to any given row
+#'   pair, e.g. myFunction(row1, row2).  When it is true, it will also apply
+#'   the function to every reverse row pair, e.g. myFunction(row1, row2) and
+#'   myFunction(row2, row1).
 #' @return A matrix of the output of the function for all unique row pairs:
 #'    c(pair_evaluator_fn(c(1,2), pair_evaluator_fn(c(1,3)), etc.) 
-pairMatrix <- function(num_row, pair_evaluator_fn) {
-  out <- utils::combn(num_row, 2, pair_evaluator_fn, simplify=FALSE)
+pairMatrix <- function(num_row, pair_evaluator_fn, also_reverse_row_pairs=FALSE) {
+  if (also_reverse_row_pairs) {
+    out <- cbind(utils::combn(num_row, 2, pair_evaluator_fn, simplify=FALSE),
+                 utils::combn(num_row:1, 2, pair_evaluator_fn, simplify=FALSE))
+  } else {
+    out <- utils::combn(num_row, 2, pair_evaluator_fn, simplify=FALSE) 
+  }
   # The output of combn is a complicated nested mess.  Below we make it a
   # simple matrix by assuming the dimensions of every list element are the
   # same as the first list element.

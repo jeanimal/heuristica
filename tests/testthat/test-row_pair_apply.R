@@ -50,11 +50,18 @@ test_that("pairMatrix two columns 3 pairs return row_pair", {
   expect_equal(rbind(c(1,2), c(1,3), c(2,3)), out)
 })
 
-test_that("pairMatrix two columns 3 pairs return row_pair", {
+test_that("pairMatrix return row_pair", {
   out <- pairMatrix(3, function(row_pair) { matrix(row_pair, 1, 2) })
   # 3 * 2 / 2 = 3 rows.
-  expected_matrix <- rbind(c(1,2), c(1,3), c(2,3))
   expect_equal(rbind(c(1,2), c(1,3), c(2,3)), out)
+})
+
+test_that("pairMatrix return row_pair also_reverse_row_pairs", {
+  out <- pairMatrix(3, function(row_pair) { matrix(row_pair, 1, 2) },
+                    also_reverse_row_pairs=TRUE)
+  # 3 * 2 / 2 = 3 rows.
+  expect_equal(
+    rbind(c(1,2), c(1,3), c(2,3), c(3,2), c(3,1), c(2,1)), out)
 })
 
 test_that("pairMatrix error when not row", {
