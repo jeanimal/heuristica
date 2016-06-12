@@ -4,17 +4,19 @@
 \alias{percentCorrect}
 \title{Percent correct of heuristics' predictPair on test_data.}
 \usage{
-percentCorrect(fitted_heuristic_list, test_data)
+percentCorrect(test_data, fitted_heuristic_list)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data,
-e.g. ttbModel.}
+\item{test_data}{Data to try to predict.  Must have same criterion column
+and cols_to_fit as the data heuristics were fit to.}
 
-\item{test_data}{Data to try to predict; must match columns in fit.}
+\item{fitted_heuristic_list}{A list of one or more heuristics fitted to
+data, e.g. the output of ttbModel.}
 }
 \value{
-A one-row data.frame of numbers from 0 to 1, meaning proportion
-  correct.  Each column is named with the heuristic's class or the fit name.
+A one-row data.frame of numbers from 0 to 100, the percent correc
+  of each heuristic.  Each column is named with the heuristic's class or
+  the fit name.
 }
 \description{
 Returns overall percent correct for all heuristics.
@@ -29,7 +31,7 @@ df <- data.frame(y=c(30,20,10,5), name=c("a", "b", "c", "d"),
                  x1=c(1,1,0,0), x2=c(1,1,0,1))
 ttb <- ttbModel(df, 1, c(3:4))
 sing <- singleCueModel(df, 1, c(3:4))
-percentCorrect(list(ttb, sing), df)
+percentCorrect(df, list(ttb, sing))
 #    ttbModel singleCueModel
 #  1     0.75      0.8333333
 # TTB gets 75\% correct while single cue model gets 83\%.
@@ -40,7 +42,7 @@ set.seed(1) # If you want to reproduce the same output as below.
 ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
 ttb2 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit2")
 ttb3 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit3")
-percentCorrect(list(ttb1, ttb2, ttb3), df)
+percentCorrect(df, list(ttb1, ttb2, ttb3))
 #        fit1 fit2 fit3
 # 1 0.8333333 0.75 0.75
 

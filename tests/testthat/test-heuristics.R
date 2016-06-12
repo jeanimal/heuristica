@@ -525,7 +525,7 @@ test_that("ttbModel on 2 same cues- differs from greedy ttb", {
   matrix <- cbind(y=c(2:1), x1=c(1,0), x2=c(1,0))
   model <- ttbModel(matrix, 1, c(2:3))
   full_matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,1,0))
-  out <- percentCorrect(list(model), full_matrix)
+  out <- percentCorrect(full_matrix, list(model))
   # TTB uses both cues, so it can get 100% correct.
   expect_equal(100, out$ttbModel)
   expect_equal(c(x1=1.0, x2=1.0), model$cue_validities)
@@ -544,8 +544,8 @@ test_that("ttbModel override fit_name", {
   ttb2 <- ttbModel(train_matrix, 1, c(2,3), fit_name="fit2")
   expect_equal("fit2", ttb2$fit_name)
   
-  # Is the fit_name properly used by other code?
-  out <- percentCorrect(list(ttb1, ttb2), train_matrix)
+  # Checks taht the fit_name was properly used by other code.
+  out <- percentCorrect(train_matrix, list(ttb1, ttb2))
   expect_equal(c("fit1", "fit2"), colnames(out))
 })
 
@@ -585,7 +585,7 @@ test_that("ttbGreedyModel on 2 same cues- differs from regular ttb", {
   matrix <- cbind(y=c(2:1), x1=c(1,0), x2=c(1,0))
   model <- ttbGreedyModel(matrix, 1, c(2:3))
   full_matrix <- cbind(y=c(3:1), x1=c(1,0,0), x2=c(1,1,0))
-  out <- percentCorrect(list(model), full_matrix)
+  out <- percentCorrect(full_matrix, list(model))
   # Greedy TTB uses only one cue (random which one), so it has to guess on
   # one row pair.  Accuracy = (1+1+0.5)/3.
   expect_equal(83.333, out$ttbGreedyModel, tolerance=0.001)
@@ -1042,7 +1042,7 @@ test_that("logRegModel percentCorrect", {
   tol <- 0.0001
   train_data <- cbind(y=c(5:1), x=c(1,1,1,0,1))
   model <- logRegModel(train_data, 1, c(2))
-  fit_accuracy <- percentCorrect(list(model), train_data)
+  fit_accuracy <- percentCorrect(train_data, list(model))
   expect_equal(60, fit_accuracy$logRegModel, tolerance=0.01)
 })
 
@@ -1154,21 +1154,21 @@ test_that("logRegModel overspecified keepOrder", {
 test_that("logRegModel percentCorrect easy 100%", {
   df <- data.frame(Criterion=c(5,4,3,2,1), a=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
-  out <- percentCorrect(list(model), df)
+  out <- percentCorrect(df, list(model))
   expect_equal(100, out[, "logRegModel"])
 })
 
 test_that("logRegModel percentCorrect cue reverse easy 100%", {
   df <- data.frame(Criterion=c(5,4,3,2,1), a=c(1,2,3,4,5))
   model <- logRegModel(df, 1, c(2))
-  out <- percentCorrect(list(model), df)
+  out <- percentCorrect(df, list(model))
   expect_equal(100, out[, "logRegModel"])
 })
 
 test_that("logRegModel percentCorrect criterion reverse easy 100%", {
   df <- data.frame(Criterion=c(1,2,3,4,5), a=c(5,4,3,2,1))
   model <- logRegModel(df, 1, c(2))
-  out <- percentCorrect(list(model), df)
+  out <- percentCorrect(df, list(model))
   expect_equal(100, out[, "logRegModel"])
 })
 

@@ -77,9 +77,9 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 It is tedious to predict one row pair at a time, so let's use heurstica's `predictPairSummary` function instead.  We simply pass it the data and the heuristics whose predictions we are interested in.  It produces a matrix with all row pairs, which in this case is 10 (5 * 4 / 2).
 
 ```{r}
-out <- predictPairSummary(schools, ttg, reg)
+out <- predictPairSummary(schools, ttb, reg)
 # See the first row: It has row indexes.
-out_same[1,]
+out[1,]
 # Convert indexes to school names for easier interpretation
 out_df <- data.frame(out)
 out_df$Row1 <- schools$Name[out_df$Row1]
@@ -103,9 +103,9 @@ out_simple[1,]
 
 ## Assessing Overall Performance
 
-For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.  We give the function the data to be predicted (in this case the same as what was fit) and a list of the fitted models to assess.
 ```{r}
-percentCorrect(list(ttb, reg), schools)
+percentCorrect(schools, list(ttb, reg))
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.

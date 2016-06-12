@@ -4,9 +4,11 @@
 #' a data set.  It is intended for beginners.  Advanced users can get more
 #' fine-grained control with rowPairApply.
 #'
-#' @param test_data Data to try to predict.
-#' @param ... On or more heuristics already fitted to data, e.g. the output of
-#'   calling ttbModel.
+#' @param test_data Data to try to predict.  Must have same criterion column
+#'   and cols_to_fit as the data heuristics were fit to.
+#' @param ... One or more heuristics already fitted to data, e.g. the output
+#'   of ttbModel.
+#'
 #' @return A matrix with output for indices, the correct row pair answer, and
 #'   predictions for each heuristic with as many rows as row pairs in the data.
 #'   The columns names are Row1, Row2, CorrectGreater, and each heuristic fit_name
@@ -56,7 +58,7 @@ predictPairSummary <- function(test_data, ...) {
   return(predictions)
 }
 
-# Same as predictPairFullConfusionMatrix bur returns a 3x3 matrix,
+# Same as predictPairFullConfusionMatrix but returns a 3x3 matrix,
 # leaving guesses intact as 0's.
 predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
                                            symmetric_model=TRUE) {
@@ -115,11 +117,13 @@ predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
 
 #' Percent correct of heuristics' predictPair on test_data, returning a matrix.
 #'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data,
-#'   e.g. ttbModel.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row matrix of numbers from 0 to 1, meaning proportion correct.
-#'   Each column is named with the heuristic's class or the fit name.
+#' @param test_data Data to try to predict.  Must have same criterion column
+#'   and cols_to_fit as the data heuristics were fit to.
+#' @param fitted_heuristic_list A list of one or more heuristics fitted to
+#'   data, e.g. the output of ttbModel.
+#' @return A one-row matrix of numbers from 0 to 100, the percent correc
+#'   of each heuristic.  Each column is named with the heuristic's class or
+#'   the fit name.
 #'
 #' @examples
 #' # See examples for percentCorrect, which returns a data.frame.
@@ -128,7 +132,7 @@ predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
 #' \code{\link{percentCorrect}} for a version that returns a
 #'   data.frame and includes several examples.
 #' @export
-percentCorrectReturnMatrix <- function(fitted_heuristic_list, test_data) {
+percentCorrectReturnMatrix <- function(test_data, fitted_heuristic_list) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   
@@ -150,18 +154,20 @@ percentCorrectReturnMatrix <- function(fitted_heuristic_list, test_data) {
 #' Assumes the heuristics passed in have already been fitted to training
 #' data and all have the same criterion column.
 #'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data,
-#'   e.g. ttbModel.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row data.frame of numbers from 0 to 1, meaning proportion
-#'   correct.  Each column is named with the heuristic's class or the fit name.
+#' @param test_data Data to try to predict.  Must have same criterion column
+#'   and cols_to_fit as the data heuristics were fit to.
+#' @param fitted_heuristic_list A list of one or more heuristics fitted to
+#'   data, e.g. the output of ttbModel.
+#' @return A one-row data.frame of numbers from 0 to 100, the percent correc
+#'   of each heuristic.  Each column is named with the heuristic's class or
+#'   the fit name.
 #'
 #' @examples
 #' df <- data.frame(y=c(30,20,10,5), name=c("a", "b", "c", "d"),
 #'                  x1=c(1,1,0,0), x2=c(1,1,0,1))
 #' ttb <- ttbModel(df, 1, c(3:4))
 #' sing <- singleCueModel(df, 1, c(3:4))
-#' percentCorrect(list(ttb, sing), df)
+#' percentCorrect(df, list(ttb, sing))
 #' #    ttbModel singleCueModel
 #' #  1     0.75      0.8333333
 #' # TTB gets 75% correct while single cue model gets 83%.
@@ -172,16 +178,16 @@ percentCorrectReturnMatrix <- function(fitted_heuristic_list, test_data) {
 #' ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
 #' ttb2 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit2")
 #' ttb3 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit3")
-#' percentCorrect(list(ttb1, ttb2, ttb3), df)
+#' percentCorrect(df, list(ttb1, ttb2, ttb3))
 #' #        fit1 fit2 fit3
 #' # 1 0.8333333 0.75 0.75
 #'
 #' @seealso
 #'   using one fitted heuristic.
 #' @export
-percentCorrect <- function(fitted_heuristic_list, test_data) {
+percentCorrect <- function(test_data, fitted_heuristic_list) {
   return(as.data.frame(percentCorrectReturnMatrix(
-    fitted_heuristic_list, test_data)))
+    test_data, fitted_heuristic_list)))
 }
 
 #' percentCorrect for non-symmetric heuristics
@@ -194,16 +200,17 @@ percentCorrect <- function(fitted_heuristic_list, test_data) {
 #' and percentCorrectNonSymmetric.  But a non-symmetric heuristic
 #' will only get correct answers for percentCorrectNonSymmetric.
 #'
-#' @param fitted_heuristic_list A list of heuristics already fitted to data,
-#'   e.g. ttbModel.
-#' @param test_data Data to try to predict; must match columns in fit.
-#' @return A one-row matrix of numbers from 0 to 1, meaning proportion
-#'   correct.  Each column is named with the heuristic's class.
+#' @param test_data Data to try to predict.  Must have same criterion column
+#'   and cols_to_fit as the data heuristics were fit to.
+#' @param fitted_heuristic_list A list of one or more heuristics fitted to
+#'   data, e.g. the output of ttbModel.
+#' @return A one-row data.frame of numbers from 0 to 100, the percent correc
+#'   of each heuristic.  Each column is named with the heuristic's class or
+#'   the fit name.
 #' @seealso
 #' \code{\link{percentCorrect}} for prediction.
 #' @export
-percentCorrectNonSymmetric <- function(fitted_heuristic_list,
-                                                test_data) {
+percentCorrectNonSymmetric <- function(test_data, fitted_heuristic_list) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   

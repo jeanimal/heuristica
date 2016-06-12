@@ -7,10 +7,11 @@
 predictPairSummary(test_data, ...)
 }
 \arguments{
-\item{test_data}{Data to try to predict.}
+\item{test_data}{Data to try to predict.  Must have same criterion column
+and cols_to_fit as the data heuristics were fit to.}
 
-\item{...}{On or more heuristics already fitted to data, e.g. the output of
-calling ttbModel.}
+\item{...}{One or more heuristics already fitted to data, e.g. the output
+of ttbModel.}
 }
 \value{
 A matrix with output for indices, the correct row pair answer, and

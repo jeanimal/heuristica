@@ -4,17 +4,19 @@
 \alias{percentCorrectReturnMatrix}
 \title{Percent correct of heuristics' predictPair on test_data, returning a matrix.}
 \usage{
-percentCorrectReturnMatrix(fitted_heuristic_list, test_data)
+percentCorrectReturnMatrix(test_data, fitted_heuristic_list)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data,
-e.g. ttbModel.}
+\item{test_data}{Data to try to predict.  Must have same criterion column
+and cols_to_fit as the data heuristics were fit to.}
 
-\item{test_data}{Data to try to predict; must match columns in fit.}
+\item{fitted_heuristic_list}{A list of one or more heuristics fitted to
+data, e.g. the output of ttbModel.}
 }
 \value{
-A one-row matrix of numbers from 0 to 1, meaning proportion correct.
-  Each column is named with the heuristic's class or the fit name.
+A one-row matrix of numbers from 0 to 100, the percent correc
+  of each heuristic.  Each column is named with the heuristic's class or
+  the fit name.
 }
 \description{
 Percent correct of heuristics' predictPair on test_data, returning a matrix.

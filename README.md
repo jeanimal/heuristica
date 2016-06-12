@@ -90,10 +90,9 @@ It is tedious to predict one row pair at a time, so let's use heurstica's `predi
 
 
 ```r
-out <- predictPairSummary(schools, ttg, reg)
-#> Error in predictPairSummary(schools, ttg, reg): object 'ttg' not found
+out <- predictPairSummary(schools, ttb, reg)
 # See the first row: It has row indexes.
-out_same[1,]
+out[1,]
 #>           Row1           Row2 CorrectGreater       ttbModel       regModel 
 #>              1              2              1              1             -1
 # Convert indexes to school names for easier interpretation
@@ -135,10 +134,10 @@ out_simple[1,]
 
 ## Assessing Overall Performance
 
-For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.  We give the function the data to be predicted (in this case the same as what was fit) and a list of the fitted models to assess.
 
 ```r
-percentCorrect(list(ttb, reg), schools)
+percentCorrect(schools, list(ttb, reg))
 #>   ttbModel regModel
 #> 1       60       50
 ```

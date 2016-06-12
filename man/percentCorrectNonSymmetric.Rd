@@ -4,17 +4,19 @@
 \alias{percentCorrectNonSymmetric}
 \title{percentCorrect for non-symmetric heuristics}
 \usage{
-percentCorrectNonSymmetric(fitted_heuristic_list, test_data)
+percentCorrectNonSymmetric(test_data, fitted_heuristic_list)
 }
 \arguments{
-\item{fitted_heuristic_list}{A list of heuristics already fitted to data,
-e.g. ttbModel.}
+\item{test_data}{Data to try to predict.  Must have same criterion column
+and cols_to_fit as the data heuristics were fit to.}
 
-\item{test_data}{Data to try to predict; must match columns in fit.}
+\item{fitted_heuristic_list}{A list of one or more heuristics fitted to
+data, e.g. the output of ttbModel.}
 }
 \value{
-A one-row matrix of numbers from 0 to 1, meaning proportion
-  correct.  Each column is named with the heuristic's class.
+A one-row data.frame of numbers from 0 to 100, the percent correc
+  of each heuristic.  Each column is named with the heuristic's class or
+  the fit name.
 }
 \description{
 Same as percentCorrect but for weird heuristics that do not
