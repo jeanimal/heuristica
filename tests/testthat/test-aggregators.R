@@ -176,6 +176,11 @@ test_that("percentCorrectList vs percentCorrectListNonSymmetric", {
   expect_equal(50, pct_correct_df$all1Model, tolerance=0.01)
 })
 
+test_that("percentCorrectList vs percentCorrectListNonSymmetric", {
+  expect_error(percentCorrectList(data, fitted_always_1),
+    "Second argument to percentCorrectList should be list but got all1Model")
+})
+
 #
 # predictPairConfusionMatrix
 #

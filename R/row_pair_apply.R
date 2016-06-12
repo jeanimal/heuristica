@@ -442,6 +442,10 @@ rowPairApplyList <- function(test_data, function_creator_list,
                              also_reverse_row_pairs=FALSE) {
   # TODO(jean): Make a version that handles non-numeric as a data.frame.
   #  It will be slower, but it's a nice option to have for debugging.
+  if (class(function_creator_list) != "list") {
+    stop(paste("Second argument to rowPairApplyList should be list but got",
+               class(fitted_heuristic_list)))
+  }
   column_names <- vector()
   function_list <- vector()
   for (function_creator in function_creator_list) {

@@ -187,6 +187,10 @@ percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
 #'   as parameters rather than wrapped in a list.
 #' @export
 percentCorrectList <- function(test_data, fitted_heuristic_list) {
+  if (class(fitted_heuristic_list) != "list") {
+    stop(paste("Second argument to percentCorrectList should be list but got",
+               class(fitted_heuristic_list)))
+  }
   return(as.data.frame(percentCorrectListReturnMatrix(
     test_data, fitted_heuristic_list)))
 }
