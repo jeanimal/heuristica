@@ -61,8 +61,8 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,trainin
     }
 
     #calculate percentage of correct predictions
-    fittingAccuracy <- percentCorrect(training_set, models)
-    predictionAccuracy <- percentCorrect(test_set, models)
+    fittingAccuracy <- percentCorrectList(training_set, models)
+    predictionAccuracy <- percentCorrectList(test_set, models)
     fitting <- rbind(fitting,fittingAccuracy)
     prediction <- rbind(prediction,predictionAccuracy)
   }

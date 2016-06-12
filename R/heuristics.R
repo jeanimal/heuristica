@@ -91,7 +91,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #'
 #' @return An object of \code{\link[base]{class}} ttbModel, which can be passed
 #' to a variety of functions to make predictions, e.g.
-#' \code{\link{predictPair}} and \code{\link{percentCorrect}}.
+#' \code{\link{predictPair}} and \code{\link{percentCorrectList}}.
 #'
 #' @examples
 #' # Fit column 1 (y) to columns 2 and 3 (x1 and x2) of train_matrix.
@@ -122,7 +122,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #' greater.
 #' 
 #' @seealso
-#' \code{\link{percentCorrect}} for the accuracy of predicting all
+#' \code{\link{percentCorrectList}} for the accuracy of predicting all
 #' row pairs in a matrix or data.frame.
 #'
 #' @references

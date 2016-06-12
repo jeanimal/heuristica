@@ -134,12 +134,11 @@ out_simple[1,]
 
 ## Assessing Overall Performance
 
-For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.  We give the function the data to be predicted (in this case the same as what was fit) and a list of the fitted models to assess.
+For an overall measure of performance, we can measure the percent of correct inferences for all pairs of schools in the data with `percentCorrect`, namely the number of correct predictions divided by the total number of predictions.  We give the function the data to be predicted (in this case the same as what was fit) and the fitted models to assess.
 
 ```r
-percentCorrect(schools, list(ttb, reg))
-#>   ttbModel regModel
-#> 1       60       50
+percentCorrect(schools, ttb, reg)
+#> Error: evaluation nested too deeply: infinite recursion / options(expressions=)?
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.

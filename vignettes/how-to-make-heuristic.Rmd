@@ -143,7 +143,7 @@ What percent correct is this?  In this case, it's an easy division of 6/10 = 0.6
 ```{r}
 set.seed(1)
 myFit <- myRandModel(schools, 2, c(3:5))
-percentCorrect(schools, list(myFit))
+percentCorrect(schools, myFit)
 ```
 
 ## Wrapping lasso regression
@@ -219,7 +219,7 @@ predictPair(oneRow(my_data, 1), oneRow(my_data, 2), lasso)
 
 Now predict all row pairs in our data set.  It got 91% correct-- pretty good!
 ```{r}
-percentCorrect(my_data, list(lasso))
+percentCorrect(my_data, lasso)
 ```
 
 Which comparison did it miss?  Check out the helper function below.  We predict all row pairs and then find the row pairs where Lasso did not agree with the Correct answer.  Lasso missed only one comparison, namely row 3 vs. row 4, where it guessed.  It predicted the other 5 row pairs correctly!

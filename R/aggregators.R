@@ -126,13 +126,13 @@ predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
 #'   the fit name.
 #'
 #' @examples
-#' # See examples for percentCorrect, which returns a data.frame.
+#' # See examples for percentCorrectList, which returns a data.frame.
 #'
 #' @seealso
-#' \code{\link{percentCorrect}} for a version that returns a
+#' \code{\link{percentCorrectList}} for a version that returns a
 #'   data.frame and includes several examples.
 #' @export
-percentCorrectReturnMatrix <- function(test_data, fitted_heuristic_list) {
+percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   
@@ -145,7 +145,7 @@ percentCorrectReturnMatrix <- function(test_data, fitted_heuristic_list) {
   return(100 * categoryAccuracyAll(predictions, 1, c(2:ncol(predictions))))
 }
 
-#' Percent correct of heuristics' predictPair on test_data.
+#' Percent correct of a list of heuristics' predictPair on test_data.
 #'
 #' Returns overall percent correct for all heuristics.
 #' 1. Create predictions using predictPair for all row pairs for all
@@ -167,7 +167,7 @@ percentCorrectReturnMatrix <- function(test_data, fitted_heuristic_list) {
 #'                  x1=c(1,1,0,0), x2=c(1,1,0,1))
 #' ttb <- ttbModel(df, 1, c(3:4))
 #' sing <- singleCueModel(df, 1, c(3:4))
-#' percentCorrect(df, list(ttb, sing))
+#' percentCorrectList(df, list(ttb, sing))
 #' #    ttbModel singleCueModel
 #' #  1     0.75      0.8333333
 #' # TTB gets 75% correct while single cue model gets 83%.
@@ -178,27 +178,74 @@ percentCorrectReturnMatrix <- function(test_data, fitted_heuristic_list) {
 #' ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
 #' ttb2 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit2")
 #' ttb3 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit3")
-#' percentCorrect(df, list(ttb1, ttb2, ttb3))
+#' percentCorrectList(df, list(ttb1, ttb2, ttb3))
 #' #        fit1 fit2 fit3
 #' # 1 0.8333333 0.75 0.75
 #'
 #' @seealso
-#'   using one fitted heuristic.
+#' \code{\link{percentCorrectList}} for a version which takes heuristics
+#'   as parameters rather than wrapped in a list.
 #' @export
-percentCorrect <- function(test_data, fitted_heuristic_list) {
-  return(as.data.frame(percentCorrectReturnMatrix(
+percentCorrectList <- function(test_data, fitted_heuristic_list) {
+  return(as.data.frame(percentCorrectListReturnMatrix(
     test_data, fitted_heuristic_list)))
 }
 
-#' percentCorrect for non-symmetric heuristics
+#' Percent correct of heuristics' predictPair on test_data.
 #'
-#' Same as percentCorrect but for weird heuristics that do not
+#' Returns overall percent correct for all heuristics.
+#' 1. Create predictions using predictPair for all row pairs for all
+#' fitted heuristics in the list.
+#' 2. Calculate percent correct for each heuristic.
+#' Assumes the heuristics passed in have already been fitted to training
+#' data and all have the same criterion column.
+#'
+#' @param test_data Data to try to predict.  Must have same criterion column
+#'   and cols_to_fit as the data heuristics were fit to.
+#' @param ... One or more heuristics fitted to
+#'   data, e.g. the output of ttbModel.
+#' @return A one-row data.frame of numbers from 0 to 100, the percent correc
+#'   of each heuristic.  Each column is named with the heuristic's class or
+#'   the fit name.
+#'
+#' @examples
+#' df <- data.frame(y=c(30,20,10,5), name=c("a", "b", "c", "d"),
+#'                  x1=c(1,1,0,0), x2=c(1,1,0,1))
+#' ttb <- ttbModel(df, 1, c(3:4))
+#' sing <- singleCueModel(df, 1, c(3:4))
+#' percentCorrect(df, ttb, sing)
+#' #    ttbModel singleCueModel
+#' #  1     0.75      0.8333333
+#' # TTB gets 75% correct while single cue model gets 83%.
+#'
+#' # Now repeatedly sample 2 rows of the data set and see how outcomes are
+#' # affected, tracking with the fit_name.
+#' set.seed(1) # If you want to reproduce the same output as below.
+#' ttb1 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit1")
+#' ttb2 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit2")
+#' ttb3 <- ttbModel(df[sample(nrow(df), 2),], 1, c(3:4), fit_name="fit3")
+#' percentCorrect(df, ttb1, ttb2, ttb3)
+#' #        fit1 fit2 fit3
+#' # 1 0.8333333 0.75 0.75
+#'
+#' @seealso
+#' \code{\link{percentCorrectList}} for a version which takes a list of
+#'   heuristics.
+#' @export
+percentCorrect <- function(test_data, ...) {
+  fitted_heuristics_list <- list(...)
+  return(percentCorrectList(test_data, fitted_heuristics_list))
+}
+
+#' percentCorrectList for non-symmetric heuristics
+#'
+#' Same as percentCorrectList but for weird heuristics that do not
 #' consistently choose the same row.  When a symmetric heuristic predicts
 #' row1 > row2, then it also predicts row2 < row1.  Those can be used
-#' with percentCorrect.  All heuristics built into heuristica
-#' qualify.  They will get the same answers for percentCorrect
-#' and percentCorrectNonSymmetric.  But a non-symmetric heuristic
-#' will only get correct answers for percentCorrectNonSymmetric.
+#' with percentCorrectList.  All heuristics built into heuristica
+#' qualify.  They will get the same answers for percentCorrectList
+#' and percentCorrectListNonSymmetric.  But a non-symmetric heuristic
+#' will only get correct answers for percentCorrectListNonSymmetric.
 #'
 #' @param test_data Data to try to predict.  Must have same criterion column
 #'   and cols_to_fit as the data heuristics were fit to.
@@ -207,10 +254,13 @@ percentCorrect <- function(test_data, fitted_heuristic_list) {
 #' @return A one-row data.frame of numbers from 0 to 100, the percent correc
 #'   of each heuristic.  Each column is named with the heuristic's class or
 #'   the fit name.
+#'
 #' @seealso
-#' \code{\link{percentCorrect}} for prediction.
+#' \code{\link{percentCorrectList}} which is faster but wil only be accurate
+#'   for symmetric heuristics.  (percentCorrectListNonSymmetric will be
+#'   accurate for both symmetric and non-symmetric heuristics, but it's slower.)
 #' @export
-percentCorrectNonSymmetric <- function(test_data, fitted_heuristic_list) {
+percentCorrectListNonSymmetric <- function(test_data, fitted_heuristic_list) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   

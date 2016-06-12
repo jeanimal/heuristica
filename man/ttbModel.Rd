@@ -28,7 +28,7 @@ if you are making multiple fits, e.g. "ttb1", "ttb2", "ttbNoReverse."}
 \value{
 An object of \code{\link[base]{class}} ttbModel, which can be passed
 to a variety of functions to make predictions, e.g.
-\code{\link{predictPair}} and \code{\link{percentCorrect}}.
+\code{\link{predictPair}} and \code{\link{percentCorrectList}}.
 }
 \description{
 An implementation of the Take The Best heuristic.
@@ -76,7 +76,7 @@ Wikipedia's entry on
 \code{\link{predictPairProb}} for predicting the probability row1 is
 greater.
 
-\code{\link{percentCorrect}} for the accuracy of predicting all
+\code{\link{percentCorrectList}} for the accuracy of predicting all
 row pairs in a matrix or data.frame.
 }
 

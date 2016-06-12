@@ -61,7 +61,7 @@ min <- minModel(data_set, criterion_col, cols_to_fit)
 To determin the percent of correct inference in fitting, pass the exact same data set into the percent correct function with the fitted models.
 
 ```{r}
-out <- percentCorrect(data_set, list(reg, ttb, unit, min))
+out <- percentCorrectList(data_set, list(reg, ttb, unit, min))
 # Round values to make comparison easier.
 round(100*out)
 ```
