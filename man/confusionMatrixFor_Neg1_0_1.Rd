@@ -2,15 +2,16 @@
 % Please edit documentation in R/performance.R
 \name{confusionMatrixFor_Neg1_0_1}
 \alias{confusionMatrixFor_Neg1_0_1}
-\title{Confusion matrix for categories -1, 0, 1, the output of predictPair.}
+\title{Confusion matrix for categories -1, 0, 1 (the output of predictPair).}
 \usage{
 confusionMatrixFor_Neg1_0_1(ref_data, predicted_data)
 }
 \arguments{
-\item{ref_data}{A vector with outcome categories from a reference source, typically
-correct values.}
+\item{ref_data}{A vector with outcome categories from a reference source to
+be predicted (e.g. the output of correctGreater.)}
 
-\item{predicted_data}{A vector with outcome categories from a prediction source.}
+\item{predicted_data}{A vector with outcome categories from a prediction
+source that is trying to match ref_data (e.g. ttbModel predictions).}
 }
 \value{
 A 3x3 matrix of counts.  Rows are outcomes of the reference data.
@@ -19,9 +20,9 @@ A 3x3 matrix of counts.  Rows are outcomes of the reference data.
 \description{
 Measuring accuracy of predicting categories, where in the predictPair paradigm
 the categories are the relative ranks of a pair of rows.  The categories are:
--1 means Row2 is bigger
+-1 means Row1 < Row2
 0 means the rows are equal or guess
-1 means Row1 is bigger
+1 means Row1 > Row2
 }
 \examples{
 # Example 1

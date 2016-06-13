@@ -12,16 +12,17 @@ confusionMatrixRequiredCategories <- function(data_1, data_2, required_categorie
 
 categories_neg1_0_1 <- c(-1,0,1)
 
-#' Confusion matrix for categories -1, 0, 1, the output of predictPair.
+#' Confusion matrix for categories -1, 0, 1 (the output of predictPair).
 #' 
 #' Measuring accuracy of predicting categories, where in the predictPair paradigm
 #' the categories are the relative ranks of a pair of rows.  The categories are:
-#' -1 means Row2 is bigger
+#' -1 means Row1 < Row2
 #' 0 means the rows are equal or guess
-#' 1 means Row1 is bigger
-#' @param ref_data A vector with outcome categories from a reference source, typically
-#'   correct values.
-#' @param predicted_data A vector with outcome categories from a prediction source.
+#' 1 means Row1 > Row2
+#' @param ref_data A vector with outcome categories from a reference source to
+#'   be predicted (e.g. the output of correctGreater.)
+#' @param predicted_data A vector with outcome categories from a prediction
+#'   source that is trying to match ref_data (e.g. ttbModel predictions).
 #' @return A 3x3 matrix of counts.  Rows are outcomes of the reference data.
 #'   Columns are outcomes of predicted data.
 #' @examples
