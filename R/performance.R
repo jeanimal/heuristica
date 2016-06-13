@@ -161,7 +161,7 @@ collapseConfusionMatrix3x3To2x2 <- function(
 #' @export
 statsFromConfusionMatrix <- function(confusion_matrix) {
   if (nrow(confusion_matrix) != 2 || ncol(confusion_matrix) != 2) {
-    stop(paste("Expected 2x2 confustion matrix but got ",
+    stop(paste("Expected 2x2 confusion matrix but got ",
                nrow(confusion_matrix), "x", ncol(confusion_matrix)))
   }
   accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
