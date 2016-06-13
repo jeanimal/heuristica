@@ -10,7 +10,7 @@ confusionMatrixRequiredCategories <- function(data_1, data_2, required_categorie
   return(cleaned)
 }
 
-predict_pair_categories <- c(-1,0,1)
+categories_neg1_0_1 <- c(-1,0,1)
 
 #' Confusion matrix for categories -1, 0, 1, the output of predictPair.
 #' 
@@ -29,7 +29,7 @@ predict_pair_categories <- c(-1,0,1)
 #' # Below, the correct outcome is always 1, so only the last row of the
 #' # confusion matrix has non-zero counts.  But the predictor makes a few
 #' # mistakes, so some non-zero counts are off the diagonal.
-#' confusionMatrixPredictPair(c(1,1,1), c(1,-1,-1))
+#' confusionMatrixFor_Neg1_0_1(c(1,1,1), c(1,-1,-1))
 #' # outputs:
 #' #    -1 0 1
 #' # -1  0 0 0
@@ -39,7 +39,7 @@ predict_pair_categories <- c(-1,0,1)
 #' # Example 2
 #' # The prediction always matches the reference outcome, so all non-zero
 #' # counts are on the diagonal.
-#' confusionMatrixPredictPair(c(1,1,0,0,-1,-1), c(1,1,0,0,-1,-1))
+#' confusionMatrixFor_Neg1_0_1(c(1,1,0,0,-1,-1), c(1,1,0,0,-1,-1))
 #' # outputs:
 #' #    -1 0 1
 #' # -1  2 0 0
@@ -51,11 +51,9 @@ predict_pair_categories <- c(-1,0,1)
 #' \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 #'
 #' @export
-confusionMatrixPredictPair <- function(ref_data, predicted_data) {
-  # TODO(jean): This is a terrible name.  Rename it.  e.g.
-  # confusionMatrix3x3FromPredictPair
+confusionMatrixFor_Neg1_0_1 <- function(ref_data, predicted_data) {
   return(confusionMatrixRequiredCategories(ref_data, predicted_data,
-                                           predict_pair_categories))
+                                           categories_neg1_0_1))
 }
 
 #' Given a 3x3 confusion matrix, distributes guesses in column 2 using 
@@ -181,7 +179,7 @@ statsFromConfusionMatrix <- function(confusion_matrix) {
 #' Accuracy based on a predictPair confusion matrix.
 #' 
 #' Given a confusion matrix from pair predict (the output of
-#' confusionMatrixPredictPair), calculate an accuracy.  By default assumes
+#' confusionMatrixFor_Neg1_0_1), calculate an accuracy.  By default assumes
 #' zeroes are guesses and that half of them are correct.  This guessing
 #' assumptions helps measures of accuracy converge faster for small samples,
 #' but it will artificially reduce the variance of an algorithm's predictions,
@@ -207,7 +205,7 @@ statsFromConfusionMatrix <- function(confusion_matrix) {
 #' # Below has 3+1=4 guesses, and 0.5 are assigned correct.
 #' accuracyFromConfusionMatrix3x3(cbind(c(0,0,0), c(3,0,1), c(0,0,0)))
 #' @seealso
-#' \code{\link{confusionMatrixPredictPair}} for generating the confusion
+#' \code{\link{confusionMatrixFor_Neg1_0_1}} for generating the confusion
 #'   matrix.
 #' @references
 #' Wikipedia's entry on
@@ -236,7 +234,7 @@ categoryAccuracyAll <- function(data, reference_col, cols_to_compare) {
   accuracy <- matrix(rep(NA, length(cols_to_compare)), 1, length(cols_to_compare))
   i <- 1
   for (col in cols_to_compare) {
-    confusion_matrix <- confusionMatrixPredictPair(data[,reference_col], data[,col])
+    confusion_matrix <- confusionMatrixFor_Neg1_0_1(data[,reference_col], data[,col])
     accuracy[,i] <- accuracyFromConfusionMatrix3x3(confusion_matrix)
     i <- i+1
   }

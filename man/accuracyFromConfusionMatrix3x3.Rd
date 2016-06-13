@@ -18,7 +18,7 @@ A value from 0 to 1 for the proportion correct.
 }
 \description{
 Given a confusion matrix from pair predict (the output of
-confusionMatrixPredictPair), calculate an accuracy.  By default assumes
+confusionMatrixFor_Neg1_0_1), calculate an accuracy.  By default assumes
 zeroes are guesses and that half of them are correct.  This guessing
 assumptions helps measures of accuracy converge faster for small samples,
 but it will artificially reduce the variance of an algorithm's predictions,
@@ -44,7 +44,7 @@ Wikipedia's entry on
 \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 }
 \seealso{
-\code{\link{confusionMatrixPredictPair}} for generating the confusion
+\code{\link{confusionMatrixFor_Neg1_0_1}} for generating the confusion
   matrix.
 }
 

@@ -65,15 +65,15 @@ test_that("confusionMatrixRequiredCategories missing 1 factor in data2", {
 })
 
 
-# confusionMatrixPredictPair
+# confusionMatrixFor_Neg1_0_1
 # (Most tests of this are via the more generic (but non-public)
 # confusionMatrix function.)
 
-test_that("confusionMatrixPredictPair missing -1 factor in data", {
+test_that("confusionMatrixFor_Neg1_0_1 missing -1 factor in data", {
   # Below, the correct outcome is always 1, so only the last row of the
   # confusion matrix has non-zero counts.  But the predictor makes a few
   # mistakes, so some non-zero counts are off the diagonal.
-  out <- confusionMatrixPredictPair(c(1,1,1), c(1,0,0))
+  out <- confusionMatrixFor_Neg1_0_1(c(1,1,1), c(1,0,0))
   expected <- cbind(c(0,0,0), c(0,0,2), c(0,0,1))
   expect_equal(expected, matrix(out, 3, 3))
   expect_equal(c("-1", "0", "1"), dimnames(out)[[1]])

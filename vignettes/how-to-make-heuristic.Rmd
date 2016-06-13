@@ -133,7 +133,7 @@ Heuristica can assess the performance of this categorizing of ranking.  First, t
 ```{r}
 set.seed(1)
 predictions <- data.frame(rowPairApply(schools, correctGreater(2), heuristics(myFit)))
-confusionMatrixPredictPair(predictions$CorrectGreater, predictions$myRandModel)
+confusionMatrixFor_Neg1_0_1(predictions$CorrectGreater, predictions$myRandModel)
 ```
 
 Assuming you used the same random seed as this module, the matrix shows that out of the 10 cases, 6 were predicted correctly (the prediction was 1 and the correct answer was 1) and 4 were not (the prediction was -1 but the correct answer was 1).

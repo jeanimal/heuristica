@@ -62,10 +62,10 @@ head(out)
 
 Generate confusion matrices for each heuristic, first Take The Best, then regression.
 ```{r}
-confusion_matrix_3x3_ttb <- confusionMatrixPredictPair(out[,"CorrectGreater"], out[,"ttbModel"])
+confusion_matrix_3x3_ttb <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"ttbModel"])
 confusion_matrix_3x3_ttb
 
-confusion_matrix_3x3_reg <- confusionMatrixPredictPair(out[,"CorrectGreater"], out[,"regModel"])
+confusion_matrix_3x3_reg <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"regModel"])
 confusion_matrix_3x3_reg
 ```
 
@@ -141,7 +141,7 @@ out <- rowPairApplyList(train_data, list(correctGreater(criterion_col), heuristi
 Now send the data to the confusion matrix function.
 
 ```{r}
-confusion_matrix <- confusionMatrixPredictPair(out[,"CorrectGreater"], out[,"ttbModel"])
+confusion_matrix <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"ttbModel"])
 #confusion_matrix
 ```
 
