@@ -72,7 +72,7 @@ confusionMatrixFor_Neg1_0_1 <- function(ref_data, predicted_data) {
 #' @param data A data.frame or matrix.
 #' @return A data.frame or matrix with rows reversed and columns reversed.
 #' @export
-reverseRowsAndColumns <- function(data) {
+reverseRowsAndReverseColumns <- function(data) {
   return(data[c(nrow(data):1),c(ncol(data):1)])
 }
 
@@ -151,9 +151,9 @@ collapseConfusionMatrix3x3To2x2 <- function(
   confusion_matrix_3x3, guess_handling_fn=distributeGuessAsExpectedValue,
   tie_handling_fn=distributeTies) {
   matrix3x3 <- guess_handling_fn(confusion_matrix_3x3)
-  matrix3x3 <- distributeTies(confusion_matrix_3x3)
+  matrix3x3 <- distributeTies(matrix3x3)
   # Return a matrix without row 2 or column 2.
-  return(confusion_matrix_3x3[c(1,3), c(1,3)])
+  return(matrix3x3[c(1,3), c(1,3)])
 }
 
 #' Accuracy, sensitivity, specificity, and precision of 2x2 confusion matrix.

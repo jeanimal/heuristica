@@ -18,15 +18,8 @@ This is a topic for advanced users.
 
 Predicting between pairs produces categorical output: -1, 0, or 1.  A (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] shows how often the predictor matched each category.  For example, it can be enlightening to see that one heuristic had to guess (predict 0) more often than another.  The confusion matrix also allows us to calculate various stats, such as the accuracy (which heuristica already reports), sensitivity (true positive / all positive), specificity (true negative / all negative) and precision (true positive / predicted positive).  However, there are some quirks to applying confusion matrices to this task, and this vignette explains them.
 
-* Most heuristica functions exploit the fact that row pairs are inherently symmetric (A vs B = - B vs. A), so non-default flags need to be used for confusion matrix output.
+* Most heuristica functions exploit the fact that row pairs are inherently symmetric (A vs B = - B vs. A), so we need to run reverse row pairs to generate the correct data for a confusion matrix.
 * Guesses and ties need to be categorized as 1 or -1 for measures like accuracy.
-
-
-#' accuracy = (true positive + true negatve) / all
-#' sensitivity = true pasitive rate = true positive / all positive
-#'   (sensitivity is also called recall)
-#' specificity = true negative rate = true negative / all negative
-#' precision = positive predictive velue = true positive
 
 # Running reverse row pairs
 
@@ -64,7 +57,7 @@ predictions <- out_fwd_row_pairs_only[,"ttbModel"]
 confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
-The fix is to generate row pairs for "backward" row pairs, too, e.g. Row2 vs. Row 1 in addition to Row 1 vs. Row 2.
+The fix is to generate row pairs for "backward" row pairs, too, e.g. Row2 vs. Row 1 in addition to Row 1 vs. Row 2.  We will now see three ways to do that, beginning with more explicit and manual ways.
 
 ## Generating "reverse" row pairs
 
@@ -88,27 +81,30 @@ predictions <- out[,"ttbModel"]
 confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
-You might also notice a symmetry.  For example, there are 7 cases where TTB accurately predicted 1 where the value was 1.  When these rows were reversed, they resulted in 7 cases where TTB accurately predicted -1 where the correct value was -1.  This happens because TTB is a symmetric model: predictPair(Row1, Row2) = - predictPair(Row2, Row1).  All the models included in heuristica have this property.  We can exploit it directly in calculating the confusion matrix.  A hand-coded example is below.
+You might also notice a symmetry.  For example, there are 7 cases where TTB accurately predicted 1 where the value was 1.  When these rows were reversed, they resulted in 7 cases where TTB accurately predicted -1 where the correct value was -1.  This happens because TTB is a symmetric model: predictPair(Row1, Row2) = - predictPair(Row2, Row1).  All the models included in heuristica have this property.  We can exploit it directly in calculating the confusion matrix.  A hand-coded example of copying the values from one row is shown below first.  But note that the results for the reversed rows can be obtained more generally by reversing all rows and then also reversing all columns.  If we sum the original matrix and the reversed row reversed column matrix, we obtain a matrix with all the counts.
 
 ```{r}
 ref_data <- out_fwd_row_pairs_only[,"CorrectGreater"]
 predictions <- out_fwd_row_pairs_only[,"ttbModel"]
 ttb_fwd_confusion_matrix <- confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ttb_confusion_matrix <- ttb_fwd_confusion_matrix
+# The lines below copy over the few values we need for this matrix.
 ttb_confusion_matrix["-1", "-1"] <- ttb_fwd_confusion_matrix["1", "1"]
 ttb_confusion_matrix["-1", "0"] <- ttb_fwd_confusion_matrix["1", "0"]
 ttb_confusion_matrix["-1", "1"] <- ttb_fwd_confusion_matrix["1", "-1"]
 ttb_confusion_matrix
+# But here is a more generlizeable way.
+ttb_fwd_confusion_matrix + reverseRowsAndReverseColumns(ttb_fwd_confusion_matrix)
 ```
 
-Yet another way is to use the more flexible rowPairApplyList function, which can take optional arguments.  Setting `also_reverse_row_pairs=TRUE` is key for producing output where CorrectGreater is -1.
+Yet another way is to use the more flexible rowPairApplyList function rather than predictPairSummary to generate the prediction data because rowPairApplyList can take optional arguments to revere rows.  Specifically, add the optional setting `also_reverse_row_pairs=TRUE`.  
 
 ```{r}
 out <- rowPairApplyList(train_data, list(correctGreater(criterion_col), heuristics(ttb, reg, lreg)), also_reverse_row_pairs=TRUE)
 out
 ```
 
-We can look at Take The Best's confusion matrix and confirm it agrees with those above.
+Calculating Take The Best's confusion matrix from this output produces the same result as above.
 
 ```{r}
 ref_data <- out[,"CorrectGreater"]
@@ -118,7 +114,7 @@ confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 
 ## Analyzing output of the three models
 
-Let's generate a confusion matrices for each heuristic.
+Let's generate a confusion matrices for each heuristic and anlyze the output.
 ```{r}
 confusion_matrix_3x3_ttb <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"ttbModel"])
 confusion_matrix_3x3_ttb
@@ -130,102 +126,58 @@ confusion_matrix_3x3_lreg <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"],
 confusion_matrix_3x3_lreg
 ```
 
-Interestingly, regression and logistic regression have the exact same confusion matrix, even though the output showed they sometimes disagreed.  Below are the cases where they diagreed.
+Take The Best does worse on this data because it guesses much more than the regression models-- 12 guesses (6+6) vs. only 4 (2+2).  When TTB is not guessing, it is highly accurate, getting 7 correct for every 2 incorrect, an excellent ratio of 3.5.  The regression models have a non-guessing correctness ration of 9 vs. 4 =  2.25.  We will see in the next section the impact thes numbers have on the percent correct, but we will need a way to deal with guesses to do that. 
+
+It interesting that regression and logistic regression have the exact same confusion matrix, even though the output showed they sometimes disagreed.  Below are the cases where they diagreed, and we see that their correct and incorrect values exactly balance out.  Notice also that these were rows that Take The Best guessed on, deeming them too hard to distinguish.
 ```{r}
 out_df <- data.frame(out)
 out_df[out_df$regModel != out_df$logRegModel,]
 ```
 
+# Distributing guesses and ties to get stats
 
-======
+In order to calculate percentCorrect from the confusion matrix, we need to handle the guesses.  Heuristica offers a function that allocates thes by their expected values, so half the guess counts are moved to +1 and half are moved to -1.  Then the guess row can be removed.  Below we see the original matrix and how it looks after having guesses distributed by `collapseConfusionMatrix3x3To2x2`.  (Likewise `collapseConfusionMatrix3x3To2x2` distributes half the ties to +1 and half to -1, although in this data set there were no ties.)
 
-First, notice that the first and third rows are the same.  This is becuase ttb and regression are symmetric heuristics.  When a symmetric heuristic chooses Berlin when given Berlin vs. Munich-- an output of "1" in predictPair-- it will still choose Berlin when given the reverse, Munich vs. Berlin-- and output of "-1" in predictPair.  It's also confirmation that we set `also_reverse_row_pairs=TRUE`.  If you forget to set this, the first and third rows might not be equal.
-
-Second, notice that Take The Best guesses a lot more.  Focusing on the first row, Take The Best guessed 1,213 times while regression guessed roughly half as much 678 times.
-
-Now view both matrices with guesses-- 0 predictions-- allocated.  There are different ways to allocate guesses, but by default this fucntion assignes 50% of them to correct and 50% to incorrect.
 ```{r}
+confusion_matrix_3x3_ttb
 confusion_matrix_ttb <- collapseConfusionMatrix3x3To2x2(confusion_matrix_3x3_ttb)
 confusion_matrix_ttb
+```
+
+The number of correct predictions is along the diagonal-- where correct was -1 and the prediction was -1 and where correct was 1 and the prediction was 1.  So the percent correct is the sum of the diagonal divided by the sum of the whole matrix.
+
+```{r}
+percent_correct_ttb <- 100 *sum(diag(confusion_matrix_ttb)) / sum(confusion_matrix_ttb)
+percent_correct_ttb
+```
+
+This agrees with the output of heuristica's one-step `percentCorrect` function would tell us.
+```{r}
+percentCorrect(train_data, ttb)
+```
+
+Now distribute guesses for the regression models.  Funnily enough, we end up with the same confusion matrix and accuracy as Take The Best.  In other words, the additional "predictions" that regression models made did no better than Take The Best's guesses!  (Perhaps a regression user would be "overconfident.")
+
+```{r}
+confusion_matrix_3x3_reg
 confusion_matrix_reg <- collapseConfusionMatrix3x3To2x2(confusion_matrix_3x3_reg)
 confusion_matrix_reg
 ```
 
+## Statistics
 
-Calculate stats, including accuracy from these confusion matrices.
+So why bother with the confusion matrix?  Because it gives us insight into the details of how the algorithms achieve their percent correct.  We now know that Take The Best guessed 3 times more on this data set than regressions models.  And with the confusion matrix, we can calculate a variety of stats in addition to accuracy:
+
+* accuracy = (true positive + true negatve) / all (100 times this is the same as percentCorrect)
+* sensitivity = true pasitive rate = true positive / all positive (sensitivity is also called recall)
+* specificity = true negative rate = true negative / all negative
+* precision = positive predictive velue = true positive rate
+
+Since all the models ended up with the same confusion matrix, we only need to calculate these stats once.  But when models differ, the stats can be enlightening.
 
 ```{r}
 statsFromConfusionMatrix(confusion_matrix_ttb)
-statsFromConfusionMatrix(confusion_matrix_reg)
 ```
 
-
-# Analyzing a Guttman environment
-
-This is an even more advanced example inspired by the paper, "The Bias Bias" (citation below).
-
-A confusion matrix compares the predicted values with the actual, correct values.  rowPairApply can generate these values, and here we walk through an example, comparing Take the Best and Greedy Take The Best on a Guttman environment, which has every possible binary cue of validity one.  This is one of the cases analyzed in the paper, "The Bias Bias" (citation below).
-
-Here is a function to generate a Guttman environment:
-```{r}
-# Makes a Guttman binary data set.  E.g.
-# > makeGuttman(3)
-#      y   x1  x2 x3
-# [1,] 4   1   1   1
-# [2,] 3   0   1   1
-# [3,] 2   0   0   1
-# [4,] 1   0   0   0
-# Not efficient, but it works.
-makeGuttman <- function(num_cues) {
-  num_rows <- num_cues + 1
-  mat <- cbind(y=c(num_rows:1))
-  for (num_1s in 1:num_cues) {
-    num_0s <- num_rows - num_1s
-    vec <- c(rep(1, num_1s), rep(0, num_0s))
-    mat <- cbind(mat, vec)
-    colnames(mat)[ncol(mat)] <- paste0("x", num_1s)
-  }
-  return(mat)
-}
-```
-
-Now use it to generate a data set with 32 cues (33 rows).
-```{r}
-all_data <- makeGuttman(4)
-```
-
-Fit the Take The Best model and confirm it thinks all cue validities are 1.
-```{r}
-train_data <- all_data
-criterion_col <- 1
-ttb <- ttbModel(train_data, criterion_col, c(2:ncol(train_data)))
-ttb$cue_validities
-```
-
-To generate data for the confusion matrix, we need correct values, which can be generated with correctGreater, and the predictions from the ttb model.  Generate it like this:
-
-```{r}
-out <- rowPairApplyList(train_data, list(correctGreater(criterion_col), heuristics(ttb)), also_reverse_row_pairs=FALSE)
-```
-
-Now send the data to the confusion matrix function.
-
-```{r}
-confusion_matrix <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"ttbModel"])
-#confusion_matrix
-```
-
-
-
-Now let's us
-
-Notice the optional parameter `also_reverse_row_pairs=TRUE`.
-
-Why is this wrong?  rowPairApply tries to be efficient, so be default it runs each unique row pair only once.  That is, if it applies a function to row1 vs. row2, it does not also apply it to row2 vs. row1.  That works well when both these conditions hold:
-
-1) Your heuristics are symmetric, e.g. predictPair(, B, heuristic) = -predictPair(row1, row2, heuristic).  (A heuristic that always predicts 1 violatees this.)
-2) Your goal is measuring accuracy, # correct predictions / # predictions.
-
-Condition 2 is violated when calculating a confusion matrix because it shows specifically what happens for _all_ outcomes.  So in order to generate data for a confusion matrix, it is important to use the optional `also_reverse_row_pairs=TRUE` parameter.
-
+Note that due to the row reversing, sensitivity and specificity will always be the same for symmetric heuristics.
 

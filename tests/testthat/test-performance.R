@@ -147,6 +147,20 @@ test_that("distributeTies", {
   expect_equal(3, ncol(out))
 })
 
+test_that("collapseConfusionMatrix3x3To2x2", {
+  m <- cbind(c("-1"=1, "0"=2, "1"=4), c("-1"=10, "0"=20, "1"=30),
+             c("-1"=100, "0"=150, "1"=1000))
+  colnames(m) <- c("-1", "0", "1")
+  out <- collapseConfusionMatrix3x3To2x2(m)
+
+  expect_equal(c("-1"=12, "1"=185), out["-1",])
+  expect_equal(c("-1"=25, "1"=1095), out["1",])
+  
+  # Check dimensions-- now there are 2.
+  expect_equal(2, nrow(out))
+  expect_equal(2, ncol(out))
+})
+
 test_that("statsFromConfusionMatrix simple but asymmetric", {
   matrix <- cbind("-1"=c(2, 1), "1"=c(1,1))
   rownames(matrix) <- c("-1", "1")
