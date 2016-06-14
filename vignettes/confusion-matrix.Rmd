@@ -179,5 +179,5 @@ Since all the models ended up with the same confusion matrix, we only need to ca
 statsFromConfusionMatrix(confusion_matrix_ttb)
 ```
 
-Note that due to the row reversing, sensitivity and specificity will always be the same for symmetric heuristics.
+Note that due to the row reversing, sensitivity and specificity will always be the same for symmetric heuristics.  The others are just accidentally the same on this data set.
 
