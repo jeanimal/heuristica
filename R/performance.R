@@ -57,7 +57,27 @@ confusionMatrixFor_Neg1_0_1 <- function(ref_data, predicted_data) {
                                            categories_neg1_0_1))
 }
 
-#' Given a 3x3 confusion matrix, distributes guesses in column 2 using 
+#' Reverse rows and columns of data
+#'
+#'      [,1] [,2]
+#' [1,]    1    2
+#' [2,]    3    4
+#' becomes
+#'       [,1] [,2]
+#' [1,]    4    3
+#' [2,]    2    1
+#' This can be used to get confusion matrix counts for a symmetric heuristic
+#' run on reversed rows of t dat set.
+#' 
+#' @param data A data.frame or matrix.
+#' @return A data.frame or matrix with rows reversed and columns reversed.
+#' @export
+reverseRowsAndColumns <- function(data) {
+  return(data[c(nrow(data):1),c(ncol(data):1)])
+}
+
+
+#' Distributes guesses of 3x3 confusion matrix to expected value of 1 and -1. 
 #'
 #' Given a 3x3 confusion matrix, distributes guesses in column 2 using the
 #' expected value.  That is, moves half of guess counts (in column 2) to -1

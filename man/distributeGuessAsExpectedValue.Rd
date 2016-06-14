@@ -2,7 +2,7 @@
 % Please edit documentation in R/performance.R
 \name{distributeGuessAsExpectedValue}
 \alias{distributeGuessAsExpectedValue}
-\title{Given a 3x3 confusion matrix, distributes guesses in column 2 using}
+\title{Distributes guesses of 3x3 confusion matrix to expected value of 1 and -1.}
 \usage{
 distributeGuessAsExpectedValue(confusion_matrix_3x3)
 }

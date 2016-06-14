@@ -444,7 +444,7 @@ rowPairApplyList <- function(test_data, function_creator_list,
   #  It will be slower, but it's a nice option to have for debugging.
   if (class(function_creator_list) != "list") {
     stop(paste("Second argument to rowPairApplyList should be list but got",
-               class(fitted_heuristic_list)))
+               class(function_creator_list)))
   }
   column_names <- vector()
   function_list <- vector()

@@ -14,9 +14,12 @@ library(heuristica)
 ```
 
 
-This is a topic of advanced users.
+This is a topic for advanced users.
 
-Predicting between pairs produces categorical output: -1, 0, or 1.  Using a (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] allows us to see how often the predicted category aligns with the correct category.  In the case of heuristica simulations, it can be useful to see if one heuristic has to guess (predict 0) more often than another.  The confusion matrix also allows us to calculate various stats, such as the accuracy (which heuristica already reports), sensitivity (true positive / all positive), specificity (true negative / all negative) and precision (true positive / predicted positive).  However, there are some quirks to applying confusion matrices to this task, and this vignette explains them.
+Predicting between pairs produces categorical output: -1, 0, or 1.  A (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] shows how often the predictor matched each category.  For example, it can be enlightening to see that one heuristic had to guess (predict 0) more often than another.  The confusion matrix also allows us to calculate various stats, such as the accuracy (which heuristica already reports), sensitivity (true positive / all positive), specificity (true negative / all negative) and precision (true positive / predicted positive).  However, there are some quirks to applying confusion matrices to this task, and this vignette explains them.
+
+* Most heuristica functions exploit the fact that row pairs are inherently symmetric (A vs B = - B vs. A), so non-default flags need to be used for confusion matrix output.
+* Guesses and ties need to be categorized as 1 or -1 for measures like accuracy.
 
 
 #' accuracy = (true positive + true negatve) / all
@@ -25,7 +28,7 @@ Predicting between pairs produces categorical output: -1, 0, or 1.  Using a (con
 #' specificity = true negative rate = true negative / all negative
 #' precision = positive predictive velue = true positive
 
-# City population example
+# Running reverse row pairs
 
 ```{r}
 data("city_population")
@@ -34,40 +37,107 @@ criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
 
-Fit Take the Best and regression on a subset of the data.  For this example, we arbitrarily pick the first N rows rather than sampling, but in practice the training rows should be sampled.
+Fit Take the Best and regression on a subset of the data.  (For this example, some interested rows were selected, but in practice the training rows would be randomly sampled.  Also, in practice we would want to check predictions on the non-training data.)
 
 ```{r}
 num_training_rows <- 5
-train_data <- city_population[c(1:num_training_rows),]
+train_data <- city_population[c(3:(3+num_training_rows)),]
 ttb <- ttbModel(train_data, criterion_col, cols_to_fit)
 reg <- regModel(train_data, criterion_col, cols_to_fit)
+lreg <- logRegModel(train_data, criterion_col, cols_to_fit)
 ```
 
+## Analyzing just "forward" row pairs
 
-We want something like the output of `predictPairSummary`, but as I'll soon explain, we need to run reverse rows, too.
-
-So generate predictions using rowPairApplyList, which can take optional arguments.
-
-We pass it the full data set.  Also include correctGreater so we can assess how well the heuristics match the correct output.
-Setting `also_reverse_row_pairs=TRUE` is key for analyzing the output.
+We normally use `predictPairSummary`, but that efficiently applies the functions to only one set of unique row pairs.  For example, the output below shows CorrectGreater as only having the output of 1 because the data is sorted in descening order.  But for a confusion matrix, we also want to count what the heuristics would have predicted for -1 rows.
 
 ```{r}
-out <- rowPairApplyList(data_set, list(correctGreater(criterion_col), heuristics(ttb, reg)), also_reverse_row_pairs=TRUE)
+out_fwd_row_pairs_only <- predictPairSummary(train_data, ttb, reg, lreg)
+out_fwd_row_pairs_only
 ```
 
-Take a look at a few rows.
+Just for kicks-- even though it's incomplete-- let's look at a confusion matrix for TakeTheBest.  Notice only the last row, named "1" has values.  That is because the only category in "ref_data" was "1".  (The function still produces the other rows so that we always get the same 3x3 shape for analysis.)
+
 ```{r}
-head(out)
+ref_data <- out_fwd_row_pairs_only[,"CorrectGreater"]
+predictions <- out_fwd_row_pairs_only[,"ttbModel"]
+confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
-Generate confusion matrices for each heuristic, first Take The Best, then regression.
+The fix is to generate row pairs for "backward" row pairs, too, e.g. Row2 vs. Row 1 in addition to Row 1 vs. Row 2.
+
+## Generating "reverse" row pairs
+
+There are several ways to generate the confusion matrix to include the "reverse" row pairs. 
+
+The most straightforward way to handle this is to run predictPairSummary twice, once with the rows in the usual "forward" order and then again with the rows in "reverse order."  Below we see that CorrectGreater now includes -1's.
+
+```{r}
+out_fwd_row_pairs_only <- predictPairSummary(train_data, ttb, reg, lreg)
+train_data_rev_rows <- train_data[c(nrow(train_data):1),]
+out_rev_row_pairs_only <- predictPairSummary(train_data_rev_rows, ttb, reg, lreg)
+out <- rbind(out_fwd_row_pairs_only, out_rev_row_pairs_only)
+out
+```
+
+With that output, we can generate a complete confusion matrix for Take The Best with non-zero data in both the first "-1" row and the last "1" row.
+
+```{r}
+ref_data <- out[,"CorrectGreater"]
+predictions <- out[,"ttbModel"]
+confusionMatrixFor_Neg1_0_1(ref_data, predictions)
+```
+
+You might also notice a symmetry.  For example, there are 7 cases where TTB accurately predicted 1 where the value was 1.  When these rows were reversed, they resulted in 7 cases where TTB accurately predicted -1 where the correct value was -1.  This happens because TTB is a symmetric model: predictPair(Row1, Row2) = - predictPair(Row2, Row1).  All the models included in heuristica have this property.  We can exploit it directly in calculating the confusion matrix.  A hand-coded example is below.
+
+```{r}
+ref_data <- out_fwd_row_pairs_only[,"CorrectGreater"]
+predictions <- out_fwd_row_pairs_only[,"ttbModel"]
+ttb_fwd_confusion_matrix <- confusionMatrixFor_Neg1_0_1(ref_data, predictions)
+ttb_confusion_matrix <- ttb_fwd_confusion_matrix
+ttb_confusion_matrix["-1", "-1"] <- ttb_fwd_confusion_matrix["1", "1"]
+ttb_confusion_matrix["-1", "0"] <- ttb_fwd_confusion_matrix["1", "0"]
+ttb_confusion_matrix["-1", "1"] <- ttb_fwd_confusion_matrix["1", "-1"]
+ttb_confusion_matrix
+```
+
+Yet another way is to use the more flexible rowPairApplyList function, which can take optional arguments.  Setting `also_reverse_row_pairs=TRUE` is key for producing output where CorrectGreater is -1.
+
+```{r}
+out <- rowPairApplyList(train_data, list(correctGreater(criterion_col), heuristics(ttb, reg, lreg)), also_reverse_row_pairs=TRUE)
+out
+```
+
+We can look at Take The Best's confusion matrix and confirm it agrees with those above.
+
+```{r}
+ref_data <- out[,"CorrectGreater"]
+predictions <- out[,"ttbModel"]
+confusionMatrixFor_Neg1_0_1(ref_data, predictions)
+```
+
+## Analyzing output of the three models
+
+Let's generate a confusion matrices for each heuristic.
 ```{r}
 confusion_matrix_3x3_ttb <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"ttbModel"])
 confusion_matrix_3x3_ttb
 
 confusion_matrix_3x3_reg <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"regModel"])
 confusion_matrix_3x3_reg
+
+confusion_matrix_3x3_lreg <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"logRegModel"])
+confusion_matrix_3x3_lreg
 ```
+
+Interestingly, regression and logistic regression have the exact same confusion matrix, even though the output showed they sometimes disagreed.  Below are the cases where they diagreed.
+```{r}
+out_df <- data.frame(out)
+out_df[out_df$regModel != out_df$logRegModel,]
+```
+
+
+======
 
 First, notice that the first and third rows are the same.  This is becuase ttb and regression are symmetric heuristics.  When a symmetric heuristic chooses Berlin when given Berlin vs. Munich-- an output of "1" in predictPair-- it will still choose Berlin when given the reverse, Munich vs. Berlin-- and output of "-1" in predictPair.  It's also confirmation that we set `also_reverse_row_pairs=TRUE`.  If you forget to set this, the first and third rows might not be equal.
 
