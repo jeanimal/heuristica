@@ -13,14 +13,13 @@ reverseRowsAndColumns(data)
 A data.frame or matrix with rows reversed and columns reversed.
 }
 \description{
-[,1] [,2]
+This matrix
+     [,1] [,2]
 [1,]    1    2
 [2,]    3    4
 becomes
       [,1] [,2]
 [1,]    4    3
 [2,]    2    1
-This can be used to get confusion matrix counts for a symmetric heuristic
-run on reversed rows of t dat set.
 }
 

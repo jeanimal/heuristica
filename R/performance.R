@@ -59,6 +59,7 @@ confusionMatrixFor_Neg1_0_1 <- function(ref_data, predicted_data) {
 
 #' Reverse rows and columns of data
 #'
+#' This matrix
 #'      [,1] [,2]
 #' [1,]    1    2
 #' [2,]    3    4
@@ -66,8 +67,7 @@ confusionMatrixFor_Neg1_0_1 <- function(ref_data, predicted_data) {
 #'       [,1] [,2]
 #' [1,]    4    3
 #' [2,]    2    1
-#' This can be used to get confusion matrix counts for a symmetric heuristic
-#' run on reversed rows of t dat set.
+#'
 #' 
 #' @param data A data.frame or matrix.
 #' @return A data.frame or matrix with rows reversed and columns reversed.
