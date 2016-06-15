@@ -18,10 +18,12 @@ This is a topic for advanced users.
 
 Predicting between pairs produces categorical output: -1, 0, or 1.  A (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] shows how often the predictor matched each category.  For example, it can be enlightening to see that one heuristic had to guess (predict 0) more often than another.  The confusion matrix also allows us to calculate various stats, such as the accuracy (which heuristica already reports), sensitivity (true positive / all positive), specificity (true negative / all negative) and precision (true positive / predicted positive).  However, there are some quirks to applying confusion matrices to this task, and this vignette explains them.
 
-* Most heuristica functions exploit the fact that row pairs are inherently symmetric (A vs B = - B vs. A), so we need to run reverse row pairs to generate the correct data for a confusion matrix.
+* Most heuristica functions exploit the fact that row pairs are inherently symmetric (A vs B = - B vs. A), so we need to run reverse row pairs to generate the complete data for a confusion matrix.
 * Guesses and ties need to be categorized as 1 or -1 for measures like accuracy.
 
 # Running reverse row pairs
+
+Here is some data we will use for an example-- the city population data.
 
 ```{r}
 data("city_population")
@@ -30,7 +32,7 @@ criterion_col <- 3
 cols_to_fit <- 4:ncol(data_set)
 ```
 
-Fit Take the Best and regression on a subset of the data.  (For this example, some interested rows were selected, but in practice the training rows would be randomly sampled.  Also, in practice we would want to check predictions on the non-training data.)
+Next, the code below fits Take the Best and regression on a subset of this data.  (For this example, five rows were selected, but in practice the training rows would be randomly sampled.  Furthermore, the predictions would be measured on non-training data.)
 
 ```{r}
 num_training_rows <- 5
@@ -49,7 +51,7 @@ out_fwd_row_pairs_only <- predictPairSummary(train_data, ttb, reg, lreg)
 out_fwd_row_pairs_only
 ```
 
-Just for kicks-- even though it's incomplete-- let's look at a confusion matrix for TakeTheBest.  Notice only the last row, named "1" has values.  That is because the only category in "ref_data" was "1".  (The function still produces the other rows so that we always get the same 3x3 shape for analysis.)
+Just for kicks-- even though it's incomplete-- let's look at a confusion matrix for TakeTheBest on this "forward row pairs only" data.  Oonly the last row, named "1," has non-zero values.  That is because the only category in "ref_data" was "1".  (The function still produces rows with zeroes to ensure the output always has the same 3x3 shape for analysis.)
 
 ```{r}
 ref_data <- out_fwd_row_pairs_only[,"CorrectGreater"]
@@ -57,13 +59,11 @@ predictions <- out_fwd_row_pairs_only[,"ttbModel"]
 confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
-The fix is to generate row pairs for "backward" row pairs, too, e.g. Row2 vs. Row 1 in addition to Row 1 vs. Row 2.  We will now see three ways to do that, beginning with more explicit and manual ways.
+The fix is to generate row pairs for "reverse" row pairs, too, e.g. Row2 vs. Row 1 in addition to Row 1 vs. Row 2.  Below we will see three ways to do that.
 
 ## Generating "reverse" row pairs
 
-There are several ways to generate the confusion matrix to include the "reverse" row pairs. 
-
-The most straightforward way to handle this is to run predictPairSummary twice, once with the rows in the usual "forward" order and then again with the rows in "reverse order."  Below we see that CorrectGreater now includes -1's.
+The most straightforward way to generate both "forward" and "reverse" row pairs is to run predictPairSummary twice, once with the rows in the usual "forward" order and then again with the rows in "reverse"" order using the reverse order of row indices.  Below we see that CorrectGreater now includes -1's.
 
 ```{r}
 out_fwd_row_pairs_only <- predictPairSummary(train_data, ttb, reg, lreg)
@@ -73,7 +73,7 @@ out <- rbind(out_fwd_row_pairs_only, out_rev_row_pairs_only)
 out
 ```
 
-With that output, we can generate a complete confusion matrix for Take The Best with non-zero data in both the first "-1" row and the last "1" row.
+With that output, we can generate a complete confusion matrix for Take The Best.  It has non-zero data in both the first "-1" row and the last "1" row.
 
 ```{r}
 ref_data <- out[,"CorrectGreater"]
@@ -81,7 +81,9 @@ predictions <- out[,"ttbModel"]
 confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
-You might also notice a symmetry.  For example, there are 7 cases where TTB accurately predicted 1 where the value was 1.  When these rows were reversed, they resulted in 7 cases where TTB accurately predicted -1 where the correct value was -1.  This happens because TTB is a symmetric model: predictPair(Row1, Row2) = - predictPair(Row2, Row1).  All the models included in heuristica have this property.  We can exploit it directly in calculating the confusion matrix.  A hand-coded example of copying the values from one row is shown below first.  But note that the results for the reversed rows can be obtained more generally by reversing all rows and then also reversing all columns.  If we sum the original matrix and the reversed row reversed column matrix, we obtain a matrix with all the counts.
+You might also notice a symmetry.  For example, there are 7 cases where TTB accurately predicted 1 where the value was 1.  When these rows were reversed, they resulted in 7 cases where TTB accurately predicted -1 where the correct value was -1.  This happens because TTB is a symmetric model, meaning predictPair(Row1, Row2) = - predictPair(Row2, Row1).  All the models included in heuristica have this property.
+
+We can exploit model symmetry in calculating the confusion matrix.  A hand-coded example of copying the values from one row is shown below.
 
 ```{r}
 ref_data <- out_fwd_row_pairs_only[,"CorrectGreater"]
@@ -93,11 +95,16 @@ ttb_confusion_matrix["-1", "-1"] <- ttb_fwd_confusion_matrix["1", "1"]
 ttb_confusion_matrix["-1", "0"] <- ttb_fwd_confusion_matrix["1", "0"]
 ttb_confusion_matrix["-1", "1"] <- ttb_fwd_confusion_matrix["1", "-1"]
 ttb_confusion_matrix
-# But here is a more generlizeable way.
+```
+
+But note that the prediction counts for reversed rows in the city data can be obtained more generally by reversing all rows and then also reversing all columns in the confusion matrix.  If we sum the original "forward" confustion matrix and the "reverse" confusion matrix, we obtain a matrix with the complete confusion matrix counts.
+
+```{r}
+# A more generalizeable calculation.
 ttb_fwd_confusion_matrix + reverseRowsAndReverseColumns(ttb_fwd_confusion_matrix)
 ```
 
-Yet another way is to use the more flexible rowPairApplyList function rather than predictPairSummary to generate the prediction data because rowPairApplyList can take optional arguments to revere rows.  Specifically, add the optional setting `also_reverse_row_pairs=TRUE`.  
+Yet another way to calculate this complete confusion matrix is to use the more flexible rowPairApplyList function rather than predictPairSummary to generate the prediction data because rowPairApplyList can take optional arguments to revere rows.  Specifically, add the optional setting `also_reverse_row_pairs=TRUE`.  
 
 ```{r}
 out <- rowPairApplyList(train_data, list(correctGreater(criterion_col), heuristics(ttb, reg, lreg)), also_reverse_row_pairs=TRUE)
@@ -112,9 +119,12 @@ predictions <- out[,"ttbModel"]
 confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
+Note that the flag does *not* assume the heuristic is symmtric-- it actually runs applies the prediction function to reversed row pairs.
+
 ## Analyzing output of the three models
 
-Let's generate a confusion matrices for each heuristic and anlyze the output.
+Now let's analyze the confusion matrices for the three models we fit to the city population data.  Here are their 3x3 confusion matrices based on the predictions with `also_reverse_row_pairs=TRUE`.
+
 ```{r}
 confusion_matrix_3x3_ttb <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"], out[,"ttbModel"])
 confusion_matrix_3x3_ttb
@@ -179,5 +189,21 @@ Since all the models ended up with the same confusion matrix, we only need to ca
 statsFromConfusionMatrix(confusion_matrix_ttb)
 ```
 
-Note that due to the row reversing, sensitivity and specificity will always be the same for symmetric heuristics.  The others are just accidentally the same on this data set.
+Surprised?  Symmetric models will always have this pattern where all four values are the same.  Why?  Suppose the forward row pair matrix looks like this:
+
+|   a   |    b   |
+|   c   |    d   |
+
+The as described above, running the reverse row pairs will produce counts with rows and columns reversed:
+
+|   d   |    c   |
+|   b   |    a   |
+
+Summing these gives the total counts:
+
+| a + d   |   b + c   |
+| b + c   |   a + d   |
+
+All the statistics on this matrix reduce to (a+d) / (a + b + c + d).
+
 
