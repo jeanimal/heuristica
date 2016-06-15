@@ -58,63 +58,6 @@ predictPairSummary <- function(test_data, ...) {
   return(predictions)
 }
 
-# Same as predictPairFullConfusionMatrix but returns a 3x3 matrix,
-# leaving guesses intact as 0's.
-predictPairFullConfusionMatrix <- function(test_data, fitted_heuristic,
-                                           symmetric_model=TRUE) {
-  criterion_col <- fitted_heuristic$criterion_col
-  
-  out_fwd <- rowPairApply(test_data, correctGreater(criterion_col),
-                          heuristics(fitted_heuristic))
-  test_data_rev <- test_data[c(nrow(test_data):1),]
-  if (symmetric_model) {
-    # The model's prediction in A vs. B = - prediction in B vs. A.
-    out <- rbind(out_fwd, -out_fwd)
-  } else {
-    # Need to re-run the model to figure out what it says in B vs. A.
-    out_rev <- rowPairApply(test_data_rev, correctGreater(criterion_col),
-                            heuristics(fitted_heuristic))
-    out <- rbind(out_fwd, out_rev)
-  }
-  correct <- out[,1]
-  predictions <- out[,2]
-  return(confusionMatrixRequiredCategories(correct, predictions, c(-1,0,1)))
-}
-
-#' Make a confusion matrix using predictPair with the heuristic and test_data.
-#'
-#' @param test_data A data set.  Must have the criterion_column and cols_to_fit
-#'   that the heuristic expects.
-#' @param fitted_heuristic A fitted heuristic that implements predictPair
-#' @param guess_handling_fn A function to call on the 3x3 confusion matrix to
-#'   assign a model's guesses-- 0 predictions tracked in the 2nd column-- to
-#'   -1 or 1 counts.
-#' @param tie_handling_fn A function to call on the 3x3 confusion matrix to
-#'   distribute ties-- 0 correct answers tracked in the 2nd row-- to -1 or 1
-#'   counts.
-#' @param symmetric_model Optional parameter that is TRUE by default because
-#'   all models in heuristica are symmtric.  (For an asymmteric model, this
-#'   function will run both A vs. B and B vs. A through predicPair.)
-#' @return A 2x2 confusion matrix with rows and columns for -1 and 1.  It will
-#'   be 2x2 even if predictions and correct do not cover the full range.
-#'
-#' @references
-#' Wikipedia's entry on
-#' \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
-#'
-#' @export
-predictPairConfusionMatrix <- function(test_data, fitted_heuristic,
-                                       guess_handling_fn=distributeGuessAsExpectedValue,
-                                       tie_handling_fn=distributeTies,
-                                       symmetric_model=TRUE) {
-  matrix3x3 <- predictPairFullConfusionMatrix(test_data, fitted_heuristic,
-                                              symmetric_model=symmetric_model)
-  matrix2x2 <- collapseConfusionMatrix3x3To2x2(matrix3x3,
-                                               guess_handling_fn=guess_handling_fn,
-                                               tie_handling_fn=tie_handling_fn)
-  return(matrix2x2)
-}
-
 #' Percent correct of heuristics' predictPair on test_data, returning a matrix.
 #'
 #' @param test_data Data to try to predict.  Must have same criterion column
