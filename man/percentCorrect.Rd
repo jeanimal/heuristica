@@ -26,6 +26,12 @@ fitted heuristics in the list.
 Assumes the heuristics passed in have already been fitted to training
 data and all have the same criterion column.
 }
+\details{
+In cases where a heuristic guesses (predictPair outputs 0), percentCorrect
+will use the expected value, so output will be deterministic and repeatable.
+That is, if 10 guesses happen across the data set, percentCorrect will always
+allocate 5 to 1 and 5 to -1.
+}
 \examples{
 df <- data.frame(y=c(30,20,10,5), name=c("a", "b", "c", "d"),
                  x1=c(1,1,0,0), x2=c(1,1,0,1))

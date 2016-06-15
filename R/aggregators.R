@@ -147,6 +147,11 @@ percentCorrectList <- function(test_data, fitted_heuristic_list) {
 #' Assumes the heuristics passed in have already been fitted to training
 #' data and all have the same criterion column.
 #'
+#' In cases where a heuristic guesses (predictPair outputs 0), percentCorrect
+#' will use the expected value, so output will be deterministic and repeatable.
+#' That is, if 10 guesses happen across the data set, percentCorrect will always
+#' allocate 5 to 1 and 5 to -1.
+#'
 #' @param test_data Data to try to predict.  Must have same criterion column
 #'   and cols_to_fit as the data heuristics were fit to.
 #' @param ... One or more heuristics fitted to
