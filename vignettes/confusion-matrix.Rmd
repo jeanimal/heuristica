@@ -206,4 +206,6 @@ Summing these gives the total counts:
 
 All the statistics on this matrix-- accuracy, sensitivity, specificity, and precision, reduce to (a+d) / (a + b + c + d).
 
+# Heuristica's deterministic percent correct (percentCorrect)
 
+Heuristica `percentCorrect` function handles a model's guess predictions as described in this vignette-- it assigns half to 1 and half to -1.  The advantage is that the output of `percentCorrect` is deterministic even for heuristics that guess, and it matches the long-run average, so results converge with fewer simulations.  In this vignette's 5 cities example, using the expected value gave Take The Best the exact same percentCorrect (2/3) as regression and logistic regression.  But in practice, if Take The Best really guessed, sometimes it would do better than 2/3 and sometimes it would do worse.  Users who wish to study this sort of variance will have to write their own guess-handling functions based on the output of predictPairSummary or rowPairApply.
