@@ -59,7 +59,7 @@ Notice this has Munich vs. Cologne but not the other way around, Cologne vs. Fra
 ```{r}
 ref_data <- out_fwd_row_pairs_only[,"CorrectGreater"]
 predictions <- out_fwd_row_pairs_only[,"ttbModel"]
-confusionMatrixFor_Neg1_0_1(ref_data, predictions)
+ttb_fwd_confusion_matrix <- confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
 Notice that only the last row, named "1," has non-zero values.  That is because the only category in CorrectGreater was "1".  (The function still produces rows for "-1" and "0" to ensure the output always has the same 3x3 shape for analysis.)
@@ -84,8 +84,8 @@ both_df
 With that output, we can generate a complete confusion matrix for Take The Best.  It has non-zero data in both the first "-1" row and the last "1" row.
 
 ```{r}
-ref_data <- out[,"CorrectGreater"]
-predictions <- out[,"ttbModel"]
+ref_data <- out_both[,"CorrectGreater"]
+predictions <- out_both[,"ttbModel"]
 confusionMatrixFor_Neg1_0_1(ref_data, predictions)
 ```
 
