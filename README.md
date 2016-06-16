@@ -138,7 +138,8 @@ For an overall measure of performance, we can measure the percent of correct inf
 
 ```r
 percentCorrect(schools, ttb, reg)
-#> Error: evaluation nested too deeply: infinite recursion / options(expressions=)?
+#>   ttbModel regModel
+#> 1       60       50
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.
@@ -200,6 +201,6 @@ All of these heuristics were run on many data sets and analyzed in:
 Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
 
 The research was also inspried by:
-Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. doi:10.1037/0003-066X.34.7.571 [archived pdf](http://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
+Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. \doi:10.1037/0003-066X.34.7.571 [archived pdf](http://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
 
 
