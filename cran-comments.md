@@ -6,7 +6,7 @@
 ## R CMD check results
 ERRORs: 0
 WARNINGS: 0
-NOTES: 0 but 1 on win-builder
+NOTES: 1 
 * New submission
 
 ## Downstream dependencies
