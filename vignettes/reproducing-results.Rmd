@@ -63,7 +63,7 @@ To determin the percent of correct inference in fitting, pass the exact same dat
 ```{r}
 out <- percentCorrectList(data_set, list(reg, ttb, unit, min))
 # Round values to make comparison easier.
-round(100*out)
+round(out)
 ```
 
 The results match the results reported in the book-- 74% correct for all models except minimalist, which got only 70% correct.
