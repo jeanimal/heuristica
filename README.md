@@ -44,18 +44,18 @@ Let's fit two models:
 ```r
 criterion_col <- 2
 ttb <- ttbModel(schools, criterion_col, c(3:4))
-#> Error in eval(expr, envir, enclos): could not find function "ttbModel"
 reg <- regModel(schools, criterion_col, c(3:4))
-#> Error in eval(expr, envir, enclos): could not find function "regModel"
 ```
 
 What do the fits look like?  We can examine Take The Best's cue validities and the regression coefficients.
 
 ```r
 ttb$cue_validities
-#> Error in eval(expr, envir, enclos): object 'ttb' not found
+#>      Low_Income_Students Limited_English_Students 
+#>                0.6000000                0.5555556
 coef(reg)
-#> Error in coef(reg): object 'reg' not found
+#>      Low_Income_Students Limited_English_Students 
+#>               0.24985315               0.07322294
 ```
 Both Take The Best and regression give a higher weight to `Low_Income_Students` than `Limited_English_Students`, although of course how they use the weights differs.  Take The Best will use a lexicographic order, making its prediction based solely on `Low_Income_Students` as long as the schools have differing values-- which they do for all 5 schools in this data set.  That means it will ignore `Limited_English_Students` when predicting on this data set.  In contrast, regression will use a weighted sum of both cues, but with the most important cues weighted more.  
 
@@ -63,7 +63,7 @@ Both Take The Best and regression give a higher weight to `Low_Income_Students` 
 
 To see a model's predictions, we use the `predictPair` function.  It takes two rows of data-- which together comprise a "row pair"-- and the fitted model.  `predictPair` outputs three possible values:
 
-* 1 predicst the first row passed to it
+* 1 predicts the first row passed to it
 * -1 predicts the second row passed to it.
 * 0 is a guess.
 
@@ -71,16 +71,16 @@ In Bowen vs. Collins, it outputs 1, meaning it predicts Bowen has a higher dropo
 
 ```r
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Collins"), ttb)
-#> Error in eval(expr, envir, enclos): could not find function "predictPair"
+#> [1] 1
 predictPair(subset(schools, Name=="Bowen"), subset(schools, Name=="Fenger"), ttb)
-#> Error in eval(expr, envir, enclos): could not find function "predictPair"
+#> [1] -1
 ```
 
 Note that the output depends on the order of the rows.  In the reversed pair of Collins vs. Bowen, the output is -1.  This is consistent because it still picks Bowen, regardless of order.
 
 ```r
 predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), ttb)
-#> Error in eval(expr, envir, enclos): could not find function "predictPair"
+#> [1] -1
 ```
 
 
@@ -91,19 +91,26 @@ It is tedious to predict one row pair at a time, so let's use heurstica's `predi
 
 ```r
 out <- predictPairSummary(schools, ttb, reg)
-#> Error in eval(expr, envir, enclos): could not find function "predictPairSummary"
 # See the first row: It has row indexes.
 out[1,]
-#> Error in eval(expr, envir, enclos): object 'out' not found
+#>           Row1           Row2 CorrectGreater       ttbModel       regModel 
+#>              1              2              1              1             -1
 # Convert indexes to school names for easier interpretation
 out_df <- data.frame(out)
-#> Error in data.frame(out): object 'out' not found
 out_df$Row1 <- schools$Name[out_df$Row1]
-#> Error in NextMethod("["): object 'out_df' not found
 out_df$Row2 <- schools$Name[out_df$Row2]
-#> Error in NextMethod("["): object 'out_df' not found
 out_df
-#> Error in eval(expr, envir, enclos): object 'out_df' not found
+#>       Row1    Row2 CorrectGreater ttbModel regModel
+#> 1    Bowen Collins              1        1       -1
+#> 2    Bowen  Fenger             -1       -1        1
+#> 3    Bowen  Juarez              1        1       -1
+#> 4    Bowen   Young              1       -1        1
+#> 5  Collins  Fenger             -1       -1        1
+#> 6  Collins  Juarez             -1       -1       -1
+#> 7  Collins   Young              1       -1        1
+#> 8   Fenger  Juarez              1        1       -1
+#> 9   Fenger   Young              1       -1        1
+#> 10  Juarez   Young              1       -1        1
 ```
 
 The first row shows the Bowen vs. Collins example we considered above.  Because CorrectGreater is 1, that means TTB predicted it correctly-- Bowen really does have a higher drop-out rate.  But regression predicted -1 for this row pair, which is incorrect.
@@ -114,15 +121,15 @@ predictPairSummary is for beginners.  heuristica offers full flexibility in outp
 ```r
 # Same as predictPairSummary.
 out_same <- rowPairApply(schools, rowIndexes(), correctGreater(criterion_col), heuristics(ttb, reg))
-#> Error in eval(expr, envir, enclos): could not find function "rowPairApply"
 out_same[1,]
-#> Error in eval(expr, envir, enclos): object 'out_same' not found
+#>           Row1           Row2 CorrectGreater       ttbModel       regModel 
+#>              1              2              1              1             -1
 
 # Show first the heuristic predictions, then CorrectGreater.  No row indexes.
 out_simple <- rowPairApply(schools, heuristics(ttb, reg), correctGreater(criterion_col))
-#> Error in eval(expr, envir, enclos): could not find function "rowPairApply"
 out_simple[1,]
-#> Error in eval(expr, envir, enclos): object 'out_simple' not found
+#>       ttbModel       regModel CorrectGreater 
+#>              1             -1              1
 ```
 
 ## Assessing Overall Performance
@@ -131,7 +138,8 @@ For an overall measure of performance, we can measure the percent of correct inf
 
 ```r
 percentCorrect(schools, ttb, reg)
-#> Error in eval(expr, envir, enclos): could not find function "percentCorrect"
+#>   ttbModel regModel
+#> 1       60       50
 ```
 
 Take The Best got 60% correct and regression got 50% correct, which is the same as chance.

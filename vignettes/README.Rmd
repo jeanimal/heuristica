@@ -62,7 +62,7 @@ Both Take The Best and regression give a higher weight to `Low_Income_Students` 
 
 To see a model's predictions, we use the `predictPair` function.  It takes two rows of data-- which together comprise a "row pair"-- and the fitted model.  `predictPair` outputs three possible values:
 
-* 1 predicst the first row passed to it
+* 1 predicts the first row passed to it.
 * -1 predicts the second row passed to it.
 * 0 is a guess.
 
