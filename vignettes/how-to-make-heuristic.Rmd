@@ -23,7 +23,7 @@ So you have your own idea for a heuristic.  Just implement a few functions-- a f
 First, write a function to fit data.  All of the heuristica models have three required arguments, and they are recommended:
 
 1. train_data.  This is the data to train on and can be either a matrix or data.frame
-2 criterion_col.  The index of the criterion column, the "Y" in a regression.
+2. criterion_col.  The index of the criterion column, the "Y" in a regression.
 3. cols_to_fit.  A vector of indexes of columns to fit, the "X's" in a regression.
 
 The function is required to output a structure with these elements:
