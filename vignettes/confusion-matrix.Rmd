@@ -190,18 +190,24 @@ statsFromConfusionMatrix(confusion_matrix_ttb)
 
 Surprised?  Symmetric models will always have this pattern where all four values are the same.  Why?  Suppose the forward row pair matrix looks like this:
 
-|   a   |    b   |
-|   c   |    d   |
+<table>
+<tr><td> a </td><td> b </td></tr>
+<tr><td> c </td><td> d </td></tr>
+</table>
 
 The as described above, running the reverse row pairs will produce counts with rows and columns reversed:
 
-|   d   |    c   |
-|   b   |    a   |
+<table>
+<tr><td> d </td><td> c </td></tr>
+<tr><td> b </td><td> a </td></tr>
+</table>
 
 Summing these gives the total counts:
 
-| a + d   |   b + c   |
-| b + c   |   a + d   |
+<table>
+<tr><td> a + d </td><td> b + c </td></tr>
+<tr><td> b + c </td><td> a + d </td></tr>
+</table>
 
 All the statistics on this matrix-- accuracy, sensitivity, specificity, and precision, reduce to (a+d) / (a + b + c + d).
 
