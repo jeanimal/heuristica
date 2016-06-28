@@ -13,7 +13,6 @@ vignette: >
 library(heuristica)
 ```
 
-
 This is a topic for advanced users.
 
 Predicting between pairs produces categorical output: -1, 0, or 1.  A (confusion matrix)[https://en.wikipedia.org/wiki/Confusion_matrix] counts how many times the predicted category mapped to the various true categories.  For example, it can be helpful to see that one heuristic had to guess (predict 0) more often than another.  However, there are some quirks to applying confusion matrices to this task, and this vignette explains them.
@@ -138,7 +137,7 @@ out_df <- data.frame(out)
 out_df[out_df$regModel != out_df$logRegModel,]
 ```
 
-# Distributing guesses and ties to get stats
+# Distributing guesses and ties
 
 In order to calculate percentCorrect from the confusion matrix, we need to handle the guesses.  Heuristica offers a function that allocates these by their expected values, so half the guess counts are moved to +1 and half are moved to -1.  Then the guess row can be removed.  (Note that there are other ways to handle guesses, e.g. counting them all as correct or not counting them at all.)
 
@@ -169,6 +168,10 @@ confusion_matrix_3x3_reg
 confusion_matrix_reg <- collapseConfusionMatrix3x3To2x2(confusion_matrix_3x3_reg)
 confusion_matrix_reg
 ```
+
+## Alternatives
+
+Note that thre are altenative options.  Simsek and Buckman (2015) counted all ties as correct rather than half correct.  They did, however, have the same handling of guesses, counting half of guesses as correct.  Citation:  Simsek, Özgür, and Buckmann, Marcus. (2015). Learning From Small Samples: An Analysis of Simple Decision Heuristics. Advances in Neural Information Processing Systems 28.
 
 ## Statistics
 
