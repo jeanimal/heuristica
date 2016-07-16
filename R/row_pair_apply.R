@@ -91,7 +91,17 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
 #'
-#' ## For more examples see \code{\link{heuristics}}.
+#' ## It can handle multiple models at the same time.
+#' unit <- unitWeightModel(data, 1, c(2:ncol(data)))
+#' rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal)
+#' ## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
+#'
+#' ## But if another model uses different cols_to_fit, put it in a separate
+#' ## heuristicsList function.
+#' ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
+#' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
+#'   heuristicsList(list(ttb_just3), predictPairInternal))
+#' ## This outputs predictions with columns 'ttbModel' and 'ttb_just3'.
 #'
 #' @seealso
 #' \code{\link{heuristics}} for a simpler version of this function with more
@@ -113,7 +123,7 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
         col_str2 <- paste(implementer$cols_to_fit, collapse=", ")
         stop(paste("ERROR: Models with different cols_to_fit:", col_str1,
                    "vs.", col_str2, ".  Instead, put the models in separate",
-                   "functions: heuristics(m1, m2), heuristics(m3)."))
+                   "heuristics functions, as shown in documentation examples."))
       }
       if (is.null(implementer$fit_name)) {
         return(c(class(implementer)[[1]]))
@@ -149,12 +159,12 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
 #'
-#' ## It can handle multiple models.
+#' ## It can handle multiple models at the same time.
 #' unit <- unitWeightModel(data, 1, c(2:ncol(data)))
 #' rowPairApply(data, heuristics(ttb, unit))
 #' ## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
 #'
-#' ## If another model uses different cols_to_fit, put it in a separate
+#' ## But if another model uses different cols_to_fit, put it in a separate
 #' ## heuristics function.
 #' ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
 #' rowPairApply(data, heuristics(ttb, unit), heuristics(ttb_just3))

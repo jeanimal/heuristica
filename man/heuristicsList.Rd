@@ -37,7 +37,17 @@ rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
 ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 ## by calling ttb's predictPairInternal.
 
-## For more examples see \\code{\\link{heuristics}}.
+## It can handle multiple models at the same time.
+unit <- unitWeightModel(data, 1, c(2:ncol(data)))
+rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal)
+## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
+
+## But if another model uses different cols_to_fit, put it in a separate
+## heuristicsList function.
+ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
+rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
+  heuristicsList(list(ttb_just3), predictPairInternal))
+## This outputs predictions with columns 'ttbModel' and 'ttb_just3'.
 
 }
 \seealso{
