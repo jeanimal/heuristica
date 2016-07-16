@@ -205,4 +205,4 @@ Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision
 
 # Acknowledgements
 
-Thanks to coding advice and testing go to Marcus Buckmann, Daniel G. Goldstein, and Özgür Simsek.
+Thanks for coding advice and beta testing go to Marcus Buckmann, Daniel G. Goldstein, and Özgür Simsek.
