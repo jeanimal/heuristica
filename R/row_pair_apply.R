@@ -104,6 +104,8 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' ttb_just_col_3 <- ttbModel(data, 1, c(3), fit_name="ttb3")
 #' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
 #'   heuristicsList(list(ttb_just_col_3), predictPairInternal))
+#' # This outputs predictions with column names 'ttbModel' and
+#' # 'ttb3'.
 #'
 #' @seealso
 #' \code{\link{heuristics}} for a simpler version of this function with more
@@ -176,6 +178,8 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 #' # cols_to_fit.  This has to be put in a separate heuristicsList function.
 #' ttb_just_col_3 <- ttbModel(data, 1, c(3), fit_name="ttb3")
 #' rowPairApply(data, heuristics(ttb), heuristics(unit))
+#' # This outputs predictions with column names 'ttbModel' and
+#' # 'ttb3'.
 #'
 #' @seealso
 #' \code{\link{predictPairInternal}} which must be implemented by heuristics in

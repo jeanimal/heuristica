@@ -43,6 +43,8 @@ rowPairApply(data, heuristics(ttb, unit))
 # cols_to_fit.  This has to be put in a separate heuristicsList function.
 ttb_just_col_3 <- ttbModel(data, 1, c(3), fit_name="ttb3")
 rowPairApply(data, heuristics(ttb), heuristics(unit))
+# This outputs predictions with column names 'ttbModel' and
+# 'ttb3'.
 
 }
 \seealso{

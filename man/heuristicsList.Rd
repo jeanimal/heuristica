@@ -50,6 +50,8 @@ rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal))
 ttb_just_col_3 <- ttbModel(data, 1, c(3), fit_name="ttb3")
 rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
   heuristicsList(list(ttb_just_col_3), predictPairInternal))
+# This outputs predictions with column names 'ttbModel' and
+# 'ttb3'.
 
 }
 \seealso{
