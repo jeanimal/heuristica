@@ -112,12 +112,13 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
   # If no fit_name is set, use the first-level class as the name.
   # e.g. Regression has class [regModel, lm], so it will use regModel.
   names <- sapply(implementers, function(implementer) {
-      if (! isTRUE(all.equal(cols_to_fit, implementer$cols_to_fit)) ) {
-        col_str1 <- paste(cols_to_fit, collapse=", ")
-        col_str2 <- paste(implementer$cols_to_fit, collapse=", ")
-        stop(paste("ERROR: Models with different cols_to_fit:", col_str1,
-                   "vs.", col_str2, ".  Instead, put the models in separate",
-                   "heuristics functions, as shown in documentation examples."))
+    if (! isTRUE(all.equal(cols_to_fit, implementer$cols_to_fit)) ) {
+      col_str1 <- paste(cols_to_fit, collapse=", ")
+      col_str2 <- paste(implementer$cols_to_fit, collapse=", ")
+      stop(paste("ERROR: Models with different cols_to_fit:", col_str1,
+                 "vs.", col_str2, ".  Instead, put the models in separate",
+                 "heuristics functions, as shown in documentation examples."))
+
       }
       if (is.null(implementer$fit_name)) {
         return(c(class(implementer)[[1]]))
