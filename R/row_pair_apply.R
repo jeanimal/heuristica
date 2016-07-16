@@ -89,15 +89,22 @@ applyFunctionToRowPairs <- function(data, fn) {
 #'
 #' @seealso
 #' \code{\link{heuristics}} and  \code{\link{heuristicsProb}} for 
-#'   simpler versions of this function.
+#'   simpler versions of this function-- recommended!
 #' @export
 heuristicsList <- function(list_of_fitted_heuristics, fn) {
   implementers <- list_of_fitted_heuristics
   # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
+  # TODO(jean): Throw error if not.
+
   # If no fit_name is set, use the first-level class as the name.
   # e.g. Regression has class [regModel, lm], so it will use regModel.
   names <- sapply(implementers, function(implementer) {
+    # TODO(jean): Check more than just length.
+      if (! identical(implementer$cols_to_fit, cols_to_fit)) {
+        stop(paste("ERROR: heuristics with different cols_to_fit should be",
+                   "in separate heuristics()"))
+      }
       if (is.null(implementer$fit_name)) {
         return(c(class(implementer)[[1]]))
       } else {

@@ -35,6 +35,6 @@ rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
 }
 \seealso{
 \code{\link{heuristics}} and  \code{\link{heuristicsProb}} for 
-  simpler versions of this function.
+  simpler versions of this function-- recommended!
 }
 
