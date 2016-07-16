@@ -55,6 +55,9 @@ rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
 
 }
 \seealso{
+\code{\link{rowPairApply}} which is what the output of heuristicsList is
+normally passed in to.
+
 \code{\link{heuristics}} for a simpler version of this function with more
 examples.  It is recommended for most uses.  (It is hard-coded for
 fn=predictPairInternal, which is what most people use.)

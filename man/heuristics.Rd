@@ -48,7 +48,14 @@ rowPairApply(data, heuristics(ttb), heuristics(unit))
 
 }
 \seealso{
+\code{\link{rowPairApply}} which is what the output of heuristics is
+normally passed in to.
+
+\code{\link{heuristicsList}} for a version of this function where you can
+control the function called (not necessarily predictPairInternal).
+
 \code{\link{predictPairInternal}} which must be implemented by heuristics in
-   order to use them with the heuristics() wrapper function.
+order to use them with the heuristics() wrapper function.  This only
+matters for people implementing their own heuristics.
 }
 
