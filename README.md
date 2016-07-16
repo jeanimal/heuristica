@@ -203,4 +203,6 @@ Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that mak
 The research was also inspried by:
 Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. [archived pdf](http://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
 
+# Acknowledgements
 
+Thanks to coding advice and testing go to Marcus Buckmann, Daniel G. Goldstein, and Özgür Simsek.
