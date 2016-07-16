@@ -29,33 +29,26 @@ Users will generally not use the output directly-- instead just pass this
 into one of the rowPairApply functions.
 }
 \examples{
-## This is typical usage:
+# Use one fitted ttbModel with column 1 as criterion and columns 2,3 as
+# cues.
 data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
-ttb <- ttbModel(data, 1, c(2:ncol(data)))
+ttb <- ttbModel(data, 1, c(2:3))
 rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
-## This outputs ttb's predictions for all 6 row pairs of data.
-## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
-## by calling ttb's predictPairInternal.
+# This outputs ttb's predictions for all 6 row pairs of data.
+# (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
+# by calling ttb's predictPairInternal.
 
-## It can handle multiple models at the same time.
-unit <- unitWeightModel(data, 1, c(2:ncol(data)))
-rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal)
-## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
+# Use the same fitted ttbModel plus a unit weight model with the same
+# criterion and cues.
+unit <- unitWeightModel(data, 1, c(2,3))
+rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal))
+# This outputs predictions with column names 'ttbModel' and
+# 'unitWeightLinearModel'.
 
-## But if another model uses different cols_to_fit, put it in a separate
-## heuristicsList function.
-ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
+# Use the same fitted ttbModel plus another ttbModel that has different
+# cols_to_fit.  This has to be put in a separate heuristicsList function.
+ttb_just_col_3 <- ttbModel(data, 1, c(3), fit_name="ttb3")
 rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
-  heuristicsList(list(ttb_just3), predictPairInternal))
-## This outputs predictions with columns 'ttbModel' and 'ttb_just3'.
-
-}
-\seealso{
-\code{\link{heuristics}} for a simpler version of this function with more
-examples.  It is recommended for most uses.  (It is hard-coded for
-fn=predictPairInternal, which is what most people use.)
-
-\code{\link{heuristicsProb}} for a version of this function tailored for
-predictProbInternal rather than predictPairInternal.
+  heuristicsList(list(ttb_just_col_3), predictPairInternal))
 }
 

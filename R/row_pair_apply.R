@@ -83,32 +83,27 @@ applyFunctionToRowPairs <- function(data, fn) {
 #'   Users will generally not use this directly-- rowPairApply will.
 #' 
 #' @examples
-#' ## This is typical usage:
+#' # Use one fitted ttbModel with column 1 as criterion and columns 2,3 as
+#' # cues.
 #' data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
-#' ttb <- ttbModel(data, 1, c(2:ncol(data)))
+#' ttb <- ttbModel(data, 1, c(2:3))
 #' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
-#' ## This outputs ttb's predictions for all 6 row pairs of data.
-#' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
-#' ## by calling ttb's predictPairInternal.
+#' # This outputs ttb's predictions for all 6 row pairs of data.
+#' # (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
+#' # by calling ttb's predictPairInternal.
 #'
-#' ## It can handle multiple models at the same time.
-#' unit <- unitWeightModel(data, 1, c(2:ncol(data)))
-#' rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal)
-#' ## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
+#' # Use the same fitted ttbModel plus a unit weight model with the same
+#' # criterion and cues.
+#' unit <- unitWeightModel(data, 1, c(2,3))
+#' rowPairApply(data, heuristicsList(list(ttb, unit), predictPairInternal))
+#' # This outputs predictions with column names 'ttbModel' and
+#' # 'unitWeightLinearModel'.
 #'
-#' ## But if another model uses different cols_to_fit, put it in a separate
-#' ## heuristicsList function.
-#' ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
-#' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal), heuristicsList(list(ttb_just3), predictPairInternal))
-#' ## This outputs predictions with columns 'ttbModel' and 'ttb_just3'.
-#'
-#' @seealso
-#' \code{\link{heuristics}} for a simpler version of this function with more
-#' examples.  It is recommended for most uses.  (It is hard-coded for
-#' fn=predictPairInternal, which is what most people use.)
-#' @seealso
-#'\code{\link{heuristicsProb}} for a version of this function tailored for
-#' predictProbInternal rather than predictPairInternal.
+#' # Use the same fitted ttbModel plus another ttbModel that has different
+#' # cols_to_fit.  This has to be put in a separate heuristicsList function.
+#' ttb_just_col_3 <- ttbModel(data, 1, c(3), fit_name="ttb3")
+#' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
+#'   heuristicsList(list(ttb_just_col_3), predictPairInternal))
 #' @export
 heuristicsList <- function(list_of_fitted_heuristics, fn) {
   implementers <- list_of_fitted_heuristics
@@ -117,7 +112,7 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
   # If no fit_name is set, use the first-level class as the name.
   # e.g. Regression has class [regModel, lm], so it will use regModel.
   names <- sapply(implementers, function(implementer) {
-      if (! identical(cols_to_fit, implementer$cols_to_fit)) {
+      if (! isTRUE(all.equal(cols_to_fit, implementer$cols_to_fit)) ) {
         col_str1 <- paste(cols_to_fit, collapse=", ")
         col_str2 <- paste(implementer$cols_to_fit, collapse=", ")
         stop(paste("ERROR: Models with different cols_to_fit:", col_str1,
@@ -157,25 +152,6 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 #' ## This outputs ttb's predictions for all 6 row pairs of data.
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
-#'
-#' ## It can handle multiple models at the same time.
-#' unit <- unitWeightModel(data, 1, c(2:ncol(data)))
-#' rowPairApply(data, heuristics(ttb, unit))
-#' ## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
-#'
-#' ## But if another model uses different cols_to_fit, put it in a separate
-#' ## heuristics function.
-#' ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
-#' rowPairApply(data, heuristics(ttb, unit), heuristics(ttb_just3))
-#' ## This outputs predictions with columns 'ttbModel', 'unitWeightModel',
-#' ## and 'ttb_just3'.
-#'
-#' @seealso
-#' \code{\link{heuristicsList}} for a version of this function where you can
-#' control the function called (not necessarily predictPairInternal).
-#'
-#' @seealso
-#' \code{\link{rowPairApply}} which is what heuristicsProb is passed in to.
 #'
 #' @seealso
 #' \code{\link{predictPairInternal}} which must be implemented by heuristics in
