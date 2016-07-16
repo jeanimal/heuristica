@@ -122,7 +122,7 @@ test_that("heuristics_list mismatched cols_to_fit", {
   model2 <- structure(list(criterion_col=1, cols_to_fit=c(4,5)),
                       class="model2")
   expect_error(heuristicsList(list(model1, model2), fn=identity),
-               "ERROR")
+               "ERROR: Models with different cols_to_fit: 2, 3 vs. 4, 5")
 })
 
 #
