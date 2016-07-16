@@ -14,9 +14,13 @@ An object of class heuristics, which implements createFunction.
   Users will generally not use this directly-- rowPairApply will.
 }
 \description{
-One or more fitted heuristics can be passed in.  They must all implement
-predictPairInternal.  Users will generally not use the output directly
-but instead pass this to rowPairApply.
+One or more fitted heuristics can be passed in.  They must all have the
+same cols_to_fit.  If they differ on cols_to_fit, then group them in separate
+heuristics functions.
+}
+\details{
+Users will generally not use the output directly but instead pass this to
+rowPairApply.
 }
 \examples{
 ## This is typical usage:
@@ -27,8 +31,23 @@ rowPairApply(data, heuristics(ttb))
 ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 ## by calling ttb's predictPairInternal.
 
+## It can handle multiple models.
+unit <- unitWeightModel(data, 1, c(2:ncol(data)))
+rowPairApply(data, heuristics(ttb, unit))
+## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
+
+## If another model uses different cols_to_fit, put it in a separate
+## heuristics function.
+ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
+rowPairApply(data, heuristics(ttb, unit), heuristics(ttb_just3))
+## This outputs predictions with columns 'ttbModel', 'unitWeightModel',
+## and 'ttb_just3'.
+
 }
 \seealso{
+\code{\link{heuristicsList}} for a version of this function where you can
+control the function called (not necessarily predictPairInternal).
+
 \code{\link{rowPairApply}} which is what heuristicsProb is passed in to.
 
 \code{\link{predictPairInternal}} which must be implemented by heuristics in

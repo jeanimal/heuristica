@@ -20,8 +20,13 @@ An object of class heuristics, which implements createFunction.
   Users will generally not use this directly-- rowPairApply will.
 }
 \description{
-One or more fitted heuristics can be passed in.  They must all implement
-predictProbInternal.  Users will generally not use the output directly.
+A list of fitted heuristics are passed in.  They must all implement
+the fn function passed in, and they must all have the same cols_to_fit.
+If they differ on these, then group them in separate heuristicsLists.
+}
+\details{
+Users will generally not use the output directly-- instead just pass this
+into one of the rowPairApply functions.
 }
 \examples{
 ## This is typical usage:
@@ -32,9 +37,15 @@ rowPairApply(data, heuristicsList(list(ttb), predictPairInternal))
 ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 ## by calling ttb's predictPairInternal.
 
+## For more examples see \\code{\\link{heuristics}}.
+
 }
 \seealso{
-\code{\link{heuristics}} and  \code{\link{heuristicsProb}} for 
-  simpler versions of this function-- recommended!
+\code{\link{heuristics}} for a simpler version of this function with more
+examples.  It is recommended for most uses.  (It is hard-coded for
+fn=predictPairInternal, which is what most people use.)
+
+\code{\link{heuristicsProb}} for a version of this function tailored for
+predictProbInternal rather than predictPairInternal.
 }
 

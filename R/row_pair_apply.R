@@ -66,9 +66,13 @@ applyFunctionToRowPairs <- function(data, fn) {
 
 #' Wrapper for fitted heuristics to generate predictions with rowPairApply.
 #'
-#' One or more fitted heuristics can be passed in.  They must all implement
-#' predictProbInternal.  Users will generally not use the output directly.
+#' A list of fitted heuristics are passed in.  They must all implement
+#' the fn function passed in, and they must all have the same cols_to_fit.
+#' If they differ on these, then group them in separate heuristicsLists.
 #' 
+#' Users will generally not use the output directly-- instead just pass this
+#' into one of the rowPairApply functions.
+#'
 #' @param list_of_fitted_heuristics Normally a list of predictProbInternal
 #'   implementers, e.g. a fitted ttb model.
 #' @param fn The function to be called on the heuristics, which is typically
@@ -87,15 +91,19 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
 #'
+#' ## For more examples see \code{\link{heuristics}}.
+#'
 #' @seealso
-#' \code{\link{heuristics}} and  \code{\link{heuristicsProb}} for 
-#'   simpler versions of this function-- recommended!
+#' \code{\link{heuristics}} for a simpler version of this function with more
+#' examples.  It is recommended for most uses.  (It is hard-coded for
+#' fn=predictPairInternal, which is what most people use.)
+#' @seealso
+#'\code{\link{heuristicsProb}} for a version of this function tailored for
+#' predictProbInternal rather than predictPairInternal.
 #' @export
 heuristicsList <- function(list_of_fitted_heuristics, fn) {
   implementers <- list_of_fitted_heuristics
-  # Assume the cols_to_fit are the same for all heuristics.
   cols_to_fit <- implementers[[1]]$cols_to_fit
-  # TODO(jean): Throw error if not.
 
   # If no fit_name is set, use the first-level class as the name.
   # e.g. Regression has class [regModel, lm], so it will use regModel.
@@ -119,9 +127,12 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 
 #' Wrap fitted heuristics to pass to rowPairApply to call predictPair.
 #' 
-#' One or more fitted heuristics can be passed in.  They must all implement
-#' predictPairInternal.  Users will generally not use the output directly
-#' but instead pass this to rowPairApply.
+#' One or more fitted heuristics can be passed in.  They must all have the
+#' same cols_to_fit.  If they differ on cols_to_fit, then group them in separate
+#' heuristics functions.
+#' 
+#' Users will generally not use the output directly but instead pass this to
+#' rowPairApply.
 #' 
 #' @param ... A list of predictPairInternal implementers, e.g. a fitted ttb model.
 #' @return An object of class heuristics, which implements createFunction.
@@ -135,9 +146,26 @@ heuristicsList <- function(list_of_fitted_heuristics, fn) {
 #' ## This outputs ttb's predictions for all 6 row pairs of data.
 #' ## (It has 6 row pairs because 4*2/2 = 6.)  It gets the predictions
 #' ## by calling ttb's predictPairInternal.
-#' 
+#'
+#' ## It can handle multiple models.
+#' unit <- unitWeightModel(data, 1, c(2:ncol(data)))
+#' rowPairApply(data, heuristics(ttb, unit))
+#' ## This outputs predictions with columns 'ttbModel' and 'unitWeightModel'.
+#'
+#' ## If another model uses different cols_to_fit, put it in a separate
+#' ## heuristics function.
+#' ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
+#' rowPairApply(data, heuristics(ttb, unit), heuristics(ttb_just3))
+#' ## This outputs predictions with columns 'ttbModel', 'unitWeightModel',
+#' ## and 'ttb_just3'.
+#'
+#' @seealso
+#' \code{\link{heuristicsList}} for a version of this function where you can
+#' control the function called (not necessarily predictPairInternal).
+#'
 #' @seealso
 #' \code{\link{rowPairApply}} which is what heuristicsProb is passed in to.
+#'
 #' @seealso
 #' \code{\link{predictPairInternal}} which must be implemented by heuristics in
 #'    order to use them with the heuristics() wrapper function.
