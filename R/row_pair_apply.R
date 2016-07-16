@@ -99,8 +99,7 @@ applyFunctionToRowPairs <- function(data, fn) {
 #' ## But if another model uses different cols_to_fit, put it in a separate
 #' ## heuristicsList function.
 #' ttb_just3 <- ttbModel(data, 1, c(3), fit_name="ttb_just3")
-#' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal),
-#'   heuristicsList(list(ttb_just3), predictPairInternal))
+#' rowPairApply(data, heuristicsList(list(ttb), predictPairInternal), heuristicsList(list(ttb_just3), predictPairInternal))
 #' ## This outputs predictions with columns 'ttbModel' and 'ttb_just3'.
 #'
 #' @seealso
