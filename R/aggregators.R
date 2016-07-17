@@ -58,29 +58,21 @@ predictPairSummary <- function(test_data, ...) {
   return(predictions)
 }
 
-#' Percent correct of heuristics' predictPair on test_data, returning a matrix.
-#'
-#' @param test_data Data to try to predict.  Must have same criterion column
-#'   and cols_to_fit as the data heuristics were fit to.
-#' @param fitted_heuristic_list A list of one or more heuristics fitted to
-#'   data, e.g. the output of ttbModel.
-#' @return A one-row matrix of numbers from 0 to 100, the percent correc
-#'   of each heuristic.  Each column is named with the heuristic's class or
-#'   the fit name.
-#'
-#' @examples
-#' # See examples for percentCorrectList, which returns a data.frame.
-#'
-#' @seealso
-#' \code{\link{percentCorrectList}} for a version that returns a
-#'   data.frame and includes several examples.
-#' @export
-percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
-  # Assume the criterion_col is same for all heuristics.
+# In the simplest case, if all heuristics have the same cols_to_fit, returns
+# list(heuristicsList(fitted_heuristic_list), fn).
+# If the heuristics have differing col_to_fit, there are put in separate
+# heursticsList() groups, with order preserved.
+# It will throw an error if any heuristics disagree on the criterion_col.
+# fitted_heuristic_list: list of fitted heuristics
+# fn: the function to pass to heuristicsList, e.g. predictPairInternal
+# private
+heuristicsListGroupedByColsToFit <- function(fitted_heuristic_list, fn) {
+  if (length(fitted_heuristic_list) == 0) {
+    stop("No fitted heuristics in list")
+  }
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
   cols_to_fit <- fitted_heuristic_list[[1]]$cols_to_fit
-
-  all_fn_creator_list <- list(correctGreater(criterion_col))
+  all_fn_creator_list <- list()
   implementer_list <- list()
   for (implementer in fitted_heuristic_list) {
     if (! isTRUE(all.equal(criterion_col, implementer$criterion_col)) ) {
@@ -103,6 +95,33 @@ percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
   # Finish off any remaining implementers.
   all_fn_creator_list[[length(all_fn_creator_list)+1]] <-
     heuristicsList(implementer_list, fn=predictPairInternal)
+  return(all_fn_creator_list)
+}
+
+#' Percent correct of heuristics' predictPair on test_data, returning a matrix.
+#'
+#' @param test_data Data to try to predict.  Must have same criterion column
+#'   and cols_to_fit as the data heuristics were fit to.
+#' @param fitted_heuristic_list A list of one or more heuristics fitted to
+#'   data, e.g. the output of ttbModel.
+#' @return A one-row matrix of numbers from 0 to 100, the percent correc
+#'   of each heuristic.  Each column is named with the heuristic's class or
+#'   the fit name.
+#'
+#' @examples
+#' # See examples for percentCorrectList, which returns a data.frame.
+#'
+#' @seealso
+#' \code{\link{percentCorrectList}} for a version that returns a
+#'   data.frame and includes several examples.
+#' @export
+percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
+  heuristic_fn_creator_list <- heuristicsListGroupedByColsToFit(fitted_heuristic_list)
+  # The prior function ensured all heuristics have the same criterion_col, so get it
+  # from any heuristic.
+  criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  all_fn_creator_list <- c(list(correctGreater(criterion_col)),
+                           heuristic_fn_creator_list)
   
   predictions <- rowPairApplyList(test_data, all_fn_creator_list,
                                   also_reverse_row_pairs=FALSE)
