@@ -14,6 +14,7 @@ test_that("heuristicsListGroupedByColsToFit all in one", {
   out <- heuristicsListGroupedByColsToFit(list(m1, m2))
   expect_equal(1, length(out))
   expect_equal(c(2,3), out[[1]]$cols_to_fit)
+  expect_equal(c("m1","m2"), out[[1]]$column_names)
 })
 
 test_that("heuristicsListGroupedByColsToFit group in two", {
@@ -26,7 +27,10 @@ test_that("heuristicsListGroupedByColsToFit group in two", {
   out <- heuristicsListGroupedByColsToFit(list(m1, m2, m3))
   expect_equal(2, length(out))
   expect_equal(c(2,3), out[[1]]$cols_to_fit)
+  expect_equal(c("m1","m2"), out[[1]]$column_names)
+  
   expect_equal(c(3), out[[2]]$cols_to_fit)
+  expect_equal(c("m3"), out[[2]]$column_names)
 })
 
 test_that("heuristicsListGroupedByColsToFit group separate but keep order", {
@@ -41,8 +45,13 @@ test_that("heuristicsListGroupedByColsToFit group separate but keep order", {
   out <- heuristicsListGroupedByColsToFit(list(m1, m2, m3, m4))
   expect_equal(3, length(out))
   expect_equal(c(2,3), out[[1]]$cols_to_fit)
+  expect_equal(c("m1","m2"), out[[1]]$column_names)
+  
   expect_equal(c(3), out[[2]]$cols_to_fit)
+  expect_equal(c("m3"), out[[2]]$column_names)
+  
   expect_equal(c(2,3), out[[3]]$cols_to_fit)
+  expect_equal(c("m4"), out[[3]]$column_names)
 })
 
 #
