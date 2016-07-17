@@ -3,6 +3,49 @@ context("aggregators")
 # require('testthat')
 
 #
+# heuristicsListGroupedByColsToFit
+#
+
+test_that("heuristicsListGroupedByColsToFit all in one", {
+  m1 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m1")
+  m2 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m2")
+  out <- heuristicsListGroupedByColsToFit(list(m1, m2))
+  expect_equal(1, length(out))
+  expect_equal(c(2,3), out[[1]]$cols_to_fit)
+})
+
+test_that("heuristicsListGroupedByColsToFit group in two", {
+  m1 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m1")
+  m2 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m2")
+  m3 <- structure(list(criterion_col=1, cols_to_fit=c(3)),
+                  class="m3")
+  out <- heuristicsListGroupedByColsToFit(list(m1, m2, m3))
+  expect_equal(2, length(out))
+  expect_equal(c(2,3), out[[1]]$cols_to_fit)
+  expect_equal(c(3), out[[2]]$cols_to_fit)
+})
+
+test_that("heuristicsListGroupedByColsToFit group separate but keep order", {
+  m1 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m1")
+  m2 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m2")
+  m3 <- structure(list(criterion_col=1, cols_to_fit=c(3)),
+                  class="m3")
+  m4 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                  class="m4")
+  out <- heuristicsListGroupedByColsToFit(list(m1, m2, m3, m4))
+  expect_equal(3, length(out))
+  expect_equal(c(2,3), out[[1]]$cols_to_fit)
+  expect_equal(c(3), out[[2]]$cols_to_fit)
+  expect_equal(c(2,3), out[[3]]$cols_to_fit)
+})
+
+#
 # percentCorrectListReturnMatrix
 #
 
@@ -22,6 +65,7 @@ test_that("percentCorrectListReturnMatrix mismatched cols_to_fit", {
   ttb_2_3 <- ttbModel(data, 1, c(2,3), fit_name="ttb_2_3")
   ttb_2 <- ttbModel(data, 1, c(2), fit_name="ttb_2")
   out <- percentCorrectListReturnMatrix(data, list(ttb_2_3, ttb_2))
+  expect_equal(c("ttb_2_3", "ttb_2"), colnames(out))
 })
 
 #
