@@ -107,16 +107,17 @@ test_that("combineIntoOneFn two column function with header", {
 # heuristicsList 
 #
 
-test_that("heuristics_list all good", {
+test_that("heuristicsList all good", {
   model1 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
                        class="model1")
   model2 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
-                       class="model2")
+                       class=c("model2", "superclass"))
   out <- heuristicsList(list(model1, model2), fn=identity)
   expect_equal(c(2,3), out$cols_to_fit)
+  expect_equal(c("model1", "model2"), out$column_names)
 })
 
-test_that("heuristics_list mismatched cols_to_fit", {
+test_that("heuristicsList mismatched cols_to_fit", {
   model1 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
                       class="model1")
   model2 <- structure(list(criterion_col=1, cols_to_fit=c(4,5)),
