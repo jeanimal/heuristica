@@ -153,7 +153,7 @@ Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal way: Mo
 All of these heuristics were run on many data sets and analyzed in:
 Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
 
-The research was also inspried by:
+The research was also inspired by:
 Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. [archived pdf](http://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
 
 # Acknowledgements

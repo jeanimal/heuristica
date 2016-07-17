@@ -128,7 +128,7 @@ confusion_matrix_3x3_lreg <- confusionMatrixFor_Neg1_0_1(out[,"CorrectGreater"],
 confusion_matrix_3x3_lreg
 ```
 
-Take The Best does worse on this data because it guesses much more than the regression models-- 12 guesses (6+6) vs. only 4 (2+2).  When TTB is not guessing, it is highly accurate, getting 7 correct for every 2 incorrect, an excellent ratio of 3.5.  The regression models have a non-guessing correctness ration of 9 vs. 4 =  2.25.  We will see in the next section the impact thes numbers have on the percent correct, but we will need a way to deal with guesses to do that. 
+Take The Best does worse on this data because it guesses much more than the regression models-- 12 guesses (6+6) vs. only 4 (2+2).  When TTB is not guessing, it is highly accurate, getting 7 correct for every 2 incorrect, an excellent ratio of 3.5.  The regression models have a non-guessing correctness ration of 9 vs. 4 =  2.25.  We will see in the next section the impact these numbers have on the percent correct, but we will need a way to deal with guesses to do that.
 
 It interesting that regression and logistic regression have the exact same confusion matrix, even though the output showed they sometimes disagreed.  Below are the cases where they diagreed, and we see that their correct and incorrect values exactly balance out.  Notice also that these were rows that Take The Best guessed on, deeming them too hard to distinguish.
 
