@@ -17,7 +17,7 @@ test_that("percentCorrectListReturnMatrix mismatched cols_to_fit", {
                "ERROR: Models with different cols_to_fit: 2, 3 vs. 4, 5")
 })
 
-test_that("percentCorrectListReturnMatrix mismatched cols_to_fit", {
+test_that("percentCorrectListReturnMatrix mismatched criterion", {
   data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
   model1 <- structure(list(criterion_col=1, cols_to_fit=c(3)),
                       class="model1")
