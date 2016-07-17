@@ -2,6 +2,36 @@ context("aggregators")
 
 # require('testthat')
 
+#
+# percentCorrectListReturnMatrix
+#
+
+test_that("percentCorrectListReturnMatrix mismatched cols_to_fit", {
+  data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+  model1 <- structure(list(criterion_col=1, cols_to_fit=c(2,3)),
+                      class="model1")
+  model2 <- structure(list(criterion_col=1, cols_to_fit=c(4,5)),
+                      class="model2")
+  # The error message actually comes from heuristicsList.
+  expect_error(percentCorrectListReturnMatrix(data, list(model1, model2)),
+               "ERROR: Models with different cols_to_fit: 2, 3 vs. 4, 5")
+})
+
+test_that("percentCorrectListReturnMatrix mismatched cols_to_fit", {
+  data <- cbind(y=c(30,20,10,5), x1=c(1,1,0,0), x2=c(1,1,0,1))
+  model1 <- structure(list(criterion_col=1, cols_to_fit=c(3)),
+                      class="model1")
+  model2 <- structure(list(criterion_col=2, cols_to_fit=c(3)),
+                      class="model2")
+  # The error message actually comes from heuristicsList.
+  expect_error(percentCorrectListReturnMatrix(data, list(model1, model2)),
+               "ERROR: Models with different criterion_col: 1 vs. 2")
+})
+
+#
+# tests for -1 bug
+#
+
 test_that("rowPairApply ProbGreater -1 bug", {
   # Specify enough of a ttb model for prediction.
   fitted_ttb <- structure(list(criterion_col=1, cols_to_fit=c(2:4),

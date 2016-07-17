@@ -78,6 +78,11 @@ predictPairSummary <- function(test_data, ...) {
 percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
+  sapply(fitted_heuristic_list, function(implementer) {
+    if (! isTRUE(all.equal(criterion_col, implementer$criterion_col)) ) {
+      stop(paste("ERROR: Models with different criterion_col:", criterion_col,
+                 "vs.", implementer$criterion_col, "."))
+      }})
   
   all_fn_creator_list <- list(
     correctGreater(criterion_col),
