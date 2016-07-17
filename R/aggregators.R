@@ -78,15 +78,32 @@ predictPairSummary <- function(test_data, ...) {
 percentCorrectListReturnMatrix <- function(test_data, fitted_heuristic_list) {
   # Assume the criterion_col is same for all heuristics.
   criterion_col <- fitted_heuristic_list[[1]]$criterion_col
-  sapply(fitted_heuristic_list, function(implementer) {
+  cols_to_fit <- fitted_heuristic_list[[1]]$cols_to_fit
+
+  all_fn_creator_list <- list(correctGreater(criterion_col))
+  implementer_list <- list()
+  for (implementer in fitted_heuristic_list) {
     if (! isTRUE(all.equal(criterion_col, implementer$criterion_col)) ) {
       stop(paste("ERROR: Models with different criterion_col:", criterion_col,
                  "vs.", implementer$criterion_col, "."))
-      }})
+    }
+    
+    if (isTRUE(all.equal(cols_to_fit, implementer$cols_to_fit)) ) {
+      # If cols_to_fit agree, they can be in the same list together.
+      implementer_list[[length(implementer_list)+1]] <- implementer
+    } else {
+      # We detected an implementer with different cols_to_fit.
+      # Finish off the previous list and start a new one.
+      temp <- heuristicsList(implementer_list, fn=predictPairInternal)
+      all_fn_creator_list[[length(all_fn_creator_list)+1]] <- temp
+      implementer_list <- list(implementer)
+      cols_to_fit <- implementer$cols_to_fit
+    }
+  }
+  # Finish off any remaining implementers.
+  all_fn_creator_list[[length(all_fn_creator_list)+1]] <-
+    heuristicsList(implementer_list, fn=predictPairInternal)
   
-  all_fn_creator_list <- list(
-    correctGreater(criterion_col),
-    heuristicsList(fitted_heuristic_list, fn=predictPairInternal))
   predictions <- rowPairApplyList(test_data, all_fn_creator_list,
                                   also_reverse_row_pairs=FALSE)
   
