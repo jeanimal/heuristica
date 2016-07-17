@@ -1,6 +1,6 @@
 Package: heuristica
 Title: Heuristics Including Take the Best and Unit-Weight Linear
-Version: 1.0.0.9000
+Version: 1.0.1
 Authors@R: c(
 	person("Jean", "Whitmore", email = "jeanimal@gmail.com",
                   role = c("aut", "cre")),
