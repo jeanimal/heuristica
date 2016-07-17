@@ -1,3 +1,6 @@
+# heuristica 1.0.1.9000
+
+
 # heuristica 1.0.1
 
 * Fixed bug when using models with differing cols_to_fit.  https://github.com/jeanimal/heuristica/issues/38
