@@ -804,6 +804,71 @@ test_that("validityWeightModel 4x4 predictPair 3nd cue dominates non-binary reve
                               oneRow(train_df, 3), model))
 })
 
+### tallyModel ###
+
+test_that("tallyModel 2x3 predictPair pos", {
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0))
+  model <- tallyModel(train_matrix, 1, c(2))
+  expect_equal(c(x1=1),  model$linear_coef)
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+})
+
+test_that("tallyModel 2x3 predictPair neg", {
+  train_matrix <- cbind(y=c(5,4), x2=c(0,1))
+  model <- tallyModel(train_matrix, 1, c(2))
+  expect_equal(c(x2=-1),  model$linear_coef)
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+})
+
+test_that("tallyModel 2x3 predictPair pos neg", {
+  train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))
+  model <- tallyModel(train_matrix, 1, c(2, 3))
+  expect_equal(c(x1=1, x2=-1),  model$linear_coef)
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+})
+
+test_that("tallyModel rowPairApply 5x1 75", {
+  train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,1,1,0,1))
+  model <- tallyModel(train_matrix, 1, c(2))
+  expect_equal(c(x1=1),  model$linear_coef)
+  expect_equal(0, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_matrix, 4),
+                               oneRow(train_matrix, 5), model))
+})
+
+test_that("tallyModel rowPairApply 5x2 75 2/3", {
+  train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,1,1,0,1), x2=c(1,1,1,0,1))
+  model <- tallyModel(train_matrix, 1, c(2, 3))
+  expect_equal(c(x1=1, x2=1),  model$linear_coef)
+  expect_equal(0, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 2), model))
+  expect_equal(0, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 3), model))
+  expect_equal(1, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 4), model))
+  expect_equal(0, predictPair(oneRow(train_matrix, 1),
+                              oneRow(train_matrix, 5), model))
+  expect_equal(1, predictPair(oneRow(train_matrix, 3),
+                              oneRow(train_matrix, 4), model))
+  expect_equal(-1, predictPair(oneRow(train_matrix, 4),
+                               oneRow(train_matrix, 5), model))
+
+})
+
+test_that("tallyModel rowPairApply 5x2 cues disagree", {
+  train_matrix <- cbind(y=c(5,4,3,2,1), x1=c(1,1,1,0,1), x2=c(1,1,1,1,0))
+  model <- tallyModel(train_matrix, 1, c(2, 3))
+  expect_equal(c(x1=1, x2=1),  model$linear_coef)
+  expect_equal(0, predictPair(oneRow(train_matrix, 4),
+                               oneRow(train_matrix, 5), model))
+})
+
 ### regInterceptModel ###
 
 test_that("regInterceptModel 2x2 fit pos slope", {
