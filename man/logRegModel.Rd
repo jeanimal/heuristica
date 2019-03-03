@@ -46,4 +46,3 @@ http://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
 Note that our criterion is the probability that row 1 is greater than row 2
 when a pair is encountered.
 }
-

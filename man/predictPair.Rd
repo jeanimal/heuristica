@@ -38,4 +38,3 @@ predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue)
 \code{\link{rowPairApply}} to get predictions for all row pairs of a
 matrix or data.frame.
 }
-

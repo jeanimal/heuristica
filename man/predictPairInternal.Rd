@@ -24,4 +24,3 @@ Instead, call predictPair.  Heuristics implement this function in order to
 be callable with predictPair.
 }
 \keyword{internal}
-

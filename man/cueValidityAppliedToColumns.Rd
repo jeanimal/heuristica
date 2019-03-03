@@ -35,4 +35,3 @@ Wikipedia's entry on
 \seealso{
 \code{\link{cueValidityComplete}} for more complete output.
 }
-

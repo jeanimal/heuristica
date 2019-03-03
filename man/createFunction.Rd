@@ -22,4 +22,3 @@ An example of solving something with another layer of indirection.
 https://en.wikipedia.org/wiki/Fundamental_theorem_of_software_engineering
 }
 \keyword{internal}
-

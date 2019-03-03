@@ -47,4 +47,3 @@ Wikipedia's entry on
 \code{\link{confusionMatrixFor_Neg1_0_1}} for generating the confusion
   matrix.
 }
-

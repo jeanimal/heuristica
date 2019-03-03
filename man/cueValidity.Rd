@@ -46,4 +46,3 @@ Wikipedia's entry on
 
 \code{\link{cueAccuracy}} for a measure that takes guesses into account.
 }
-

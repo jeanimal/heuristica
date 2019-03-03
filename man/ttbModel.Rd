@@ -79,4 +79,3 @@ greater.
 \code{\link{percentCorrectList}} for the accuracy of predicting all
 row pairs in a matrix or data.frame.
 }
-

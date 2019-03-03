@@ -57,4 +57,3 @@ out2 <- rowPairApply(train_df, rowIndexes(),
 \seealso{
 \code{\link{rowPairApply}} for full flexibility.
 }
-

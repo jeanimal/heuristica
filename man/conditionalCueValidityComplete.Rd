@@ -61,4 +61,3 @@ heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
 \code{\link{cueValidity}} and \code{\link{cueValidityComplete}} for the
 unconditional version.
 }
-

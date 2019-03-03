@@ -67,4 +67,3 @@ to be applied.
 (CorrectGreater should be used with heuristics while probGreater should be used with
 heuristicsProb.)
 }
-

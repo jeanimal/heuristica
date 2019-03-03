@@ -19,4 +19,3 @@ the criterion.}
 Documentation stub.  Just a way to share parameter documentation.
 }
 \keyword{internal}
-

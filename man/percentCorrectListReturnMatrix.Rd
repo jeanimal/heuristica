@@ -29,4 +29,3 @@ Percent correct of heuristics' predictPair on test_data, returning a matrix.
 \code{\link{percentCorrectList}} for a version that returns a
   data.frame and includes several examples.
 }
-

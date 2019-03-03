@@ -22,4 +22,3 @@ Creates a function that takes an index pair and returns a prediction
 for each of the predictProbInternal implementers.
 }
 \keyword{internal}
-

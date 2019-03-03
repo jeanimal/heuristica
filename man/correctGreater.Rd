@@ -35,4 +35,3 @@ wrapped with \code{\link{heuristics}}.
 
 \code{\link{rowPairApply}} which has an example of using this.
 }
-

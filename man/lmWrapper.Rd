@@ -4,7 +4,8 @@
 \alias{lmWrapper}
 \title{Create an lm model just specifying columns, generating a formula for you.}
 \usage{
-lmWrapper(train_matrix, criterion_col, cols_to_fit, include_intercept = TRUE)
+lmWrapper(train_matrix, criterion_col, cols_to_fit,
+  include_intercept = TRUE)
 }
 \arguments{
 \item{train_matrix}{A matrix (or data.frame) of data to train (fit) the
@@ -25,4 +26,3 @@ An object of class lm.
 Create an lm model just specifying columns, generating a formula for you.
 }
 \keyword{internal}
-

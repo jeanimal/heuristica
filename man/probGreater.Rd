@@ -34,4 +34,3 @@ with the same profile.
 
 \code{\link{rowPairApply}} which has examples of using this.
 }
-

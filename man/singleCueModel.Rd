@@ -4,8 +4,8 @@
 \alias{singleCueModel}
 \title{Single Cue Model}
 \usage{
-singleCueModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
-  fit_name = "singleCueModel")
+singleCueModel(train_data, criterion_col, cols_to_fit,
+  reverse_cues = TRUE, fit_name = "singleCueModel")
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
@@ -49,4 +49,3 @@ predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), singlecue)
 \seealso{
 \code{\link{predictPairProb}} for prediction.
 }
-

@@ -28,4 +28,3 @@ is returned, but otherwise it just calls rowPairApply.
   data.frame.
 }
 \keyword{internal}
-

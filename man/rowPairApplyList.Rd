@@ -44,4 +44,3 @@ be functions designed to be run by rowPairApply.
 \code{\link{rowPairApply}} for no need to use a list.  Examples and details
   are there.
 }
-

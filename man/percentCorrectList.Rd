@@ -51,4 +51,3 @@ percentCorrectList(df, list(ttb1, ttb2, ttb3))
 \code{\link{percentCorrectList}} for a version which takes heuristics
   as parameters rather than wrapped in a list.
 }
-

@@ -32,4 +32,3 @@ sensitivity = true pasitive rate = true positive / all positive
 specificity = true negative rate = true negative / all negative
 precision = positive predictive velue = true positive
 }
-

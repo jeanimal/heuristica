@@ -34,4 +34,3 @@ predictPairProb(oneRow(train_matrix, 1), oneRow(train_matrix, 2), lreg)
 \code{\link{rowPairApply}} to get predictions for all row pairs of a
 matrix or data.frame.
 }
-

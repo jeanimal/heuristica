@@ -58,4 +58,3 @@ control the function called (not necessarily predictPairInternal).
 order to use them with the heuristics() wrapper function.  This only
 matters for people implementing their own heuristics.
 }
-

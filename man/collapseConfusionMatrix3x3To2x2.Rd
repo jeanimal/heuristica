@@ -29,4 +29,3 @@ A 3x3 confusion matrix results from predictPair.
 The middle column repressents guesses.
 The middle row represents ties.  T
 }
-

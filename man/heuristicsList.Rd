@@ -65,4 +65,3 @@ fn=predictPairInternal, which is what most people use.)
 \code{\link{heuristicsProb}} for a version of this function tailored for
 predictProbInternal rather than predictPairInternal.
 }
-

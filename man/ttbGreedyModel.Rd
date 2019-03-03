@@ -72,4 +72,3 @@ heuristics for paired comparisons.  Theory and Decision, 52: 29-71.
 \code{\link{predictPairProb}} for predicting the probability row1 is
 greater.
 }
-

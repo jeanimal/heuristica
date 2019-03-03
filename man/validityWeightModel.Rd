@@ -45,4 +45,3 @@ Validity Weight Model is a linear model with weights calculated by
 \code{\link{predictPairProb}} for predicting the probability row1 is
 greater.
 }
-

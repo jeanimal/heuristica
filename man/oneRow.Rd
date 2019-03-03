@@ -21,4 +21,3 @@ but is shorter and helps you avoid forgetting drop=FALSE.  The need
 for drop=FALSE when selecting just one row is explained here:
 http://www.hep.by/gnu/r-patched/r-faq/R-FAQ_56.html
 }
-

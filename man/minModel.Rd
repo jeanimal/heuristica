@@ -42,4 +42,3 @@ predictPair(oneRow(train_matrix, 1), oneRow(train_matrix, 2), min)
 
 
 }
-

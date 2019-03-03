@@ -22,4 +22,3 @@ are called "Row1" and "Row2"
 
 \code{\link{rowPairApply}} which uses createFunction.
 }
-

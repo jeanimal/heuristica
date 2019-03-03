@@ -39,4 +39,3 @@ ranking, but estimating it wastes a degree of freedom.
 \code{\link{predictPair}} for predicting whether row1 is greater.
 greater.
 }
-

@@ -25,4 +25,3 @@ A matrix of the output of the function for all unique row pairs:
 \description{
 Apply a function to all unique pairs of row indices up to num_row.
 }
-

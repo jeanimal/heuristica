@@ -36,4 +36,3 @@ cueAccuracy(c(5,2,1), c(1,0,0))
 \seealso{
 \code{\link{cueValidity}} for an alternate measure used in Take The Best.
 }
-

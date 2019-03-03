@@ -34,4 +34,3 @@ rowPairApply(data, heuristicsProb(ttb))
 \code{\link{predictProbInternal}} which must be implemented by heuristics in
    order to use them with the heuristicsProb() wrapper function.
 }
-

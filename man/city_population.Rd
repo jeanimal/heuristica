@@ -47,4 +47,3 @@ This is the data set used in simulations by the ABC (Adaptive Behavior
 and Cognition) research group.
 }
 \keyword{datasets}
-

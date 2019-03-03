@@ -32,4 +32,3 @@ will only get correct answers for percentCorrectListNonSymmetric.
   for symmetric heuristics.  (percentCorrectListNonSymmetric will be
   accurate for both symmetric and non-symmetric heuristics, but it's slower.)
 }
-

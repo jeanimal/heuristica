@@ -33,4 +33,3 @@ This version assumes you always want to include the intercept.
 
 \code{\link{predictPairProb}} for predicting between a pair of rows.
 }
-

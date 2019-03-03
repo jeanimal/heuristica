@@ -51,4 +51,3 @@ confusionMatrixFor_Neg1_0_1(c(1,1,0,0,-1,-1), c(1,1,0,0,-1,-1))
 Wikipedia's entry on
 \url{https://en.wikipedia.org/wiki/Confusion_matrix}.
 }
-
