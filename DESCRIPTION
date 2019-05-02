@@ -4,7 +4,7 @@ Version: 1.0.1.9000
 Authors@R: c(
 	person("Jean", "Whitmore", email = "jeanimal@gmail.com",
                   role = c("aut", "cre")),
-	person("Daniel", "Barkoczi", email = "barkoczi@mpib-berlin.mpg.de",
+	person("Daniel", "Barkoczi", email = "dnlbrkc@gmail.com",
 		role = "aut")
 	)
 Description: Implements various heuristics like Take The Best and
