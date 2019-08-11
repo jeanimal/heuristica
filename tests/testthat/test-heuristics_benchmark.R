@@ -15,14 +15,19 @@ test_that("Benchmark ttbModel on city_population", {
   times <- system.time(rowPairApply(city_population, heuristics(ttb)))
   print("ttb")
   print(times)
+  expect_lt(times[[2]], 1)
 
   # 2016-01-11 Jan on Jean's macbook:
   #    user  system elapsed
   #   0.137   0.006   0.143
   #
   # 2016-05-23 Jan on Jean's macbook-- a REGRESSION
-  # user  system elapsed 
+  #  user  system elapsed 
   # 0.173   0.002   0.182 
+  #
+  # 2019-08-11 on Jean's Macbook Pro:
+  #    user  system elapsed
+  #   0.049   0.000   0.049
 })
 
 test_that("Benchmark regModel on city_population", {
@@ -39,5 +44,9 @@ test_that("Benchmark regModel on city_population", {
   # 2016-05-23 Jan on Jean's macbook-- a REGRESSION
   # user  system elapsed 
   # 0.150   0.002   0.158 
+  #
+  # 2019-08-11 on Jean's Macbook Pro:
+  #    user  system elapsed
+  #   0.051   0.000   0.050
 })
 
