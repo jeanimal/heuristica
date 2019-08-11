@@ -1,5 +1,7 @@
-# heuristica 1.0.1.9000
+# heuristica 1.0.2
 
+* Updated to Roxygen version 6 and re-generated documentation with it-- some changes to newlines.
+* Added more info to vignette on reproducing results.
 
 # heuristica 1.0.1
 

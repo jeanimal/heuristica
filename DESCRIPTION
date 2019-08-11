@@ -30,7 +30,7 @@ Suggests:
     plyr,
     reshape,
     reshape2,
-    testthat,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1
