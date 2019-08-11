@@ -39,15 +39,15 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,trainin
   fitting <- vector()
   prediction <- vector()
   for(i in 1:reps){
-    
+
     #randomly sample training and test row indexes
     train <- sample(1:nrow(data), nrow(data)*training_proportion)
     test <- setdiff(1:nrow(data), train)
-   
+
     #create training and test set
     training_set <- data[train,]
     test_set <- data[test,]
-    
+
     # If a regression is overdetermined (e.g. has too many columns(), it will
     # drop the right-most columns.  To instead make it drop random columns,
     # we shuffle the column order.
@@ -67,8 +67,10 @@ crossV <- function(vec_of_models, criterion_col, cols_to_fit, data, reps,trainin
     prediction <- rbind(prediction,predictionAccuracy)
   }
 
-  return (rbind(colMeans(fitting),colMeans(prediction)))
-} 
+  results <- (rbind(colMeans(fitting),colMeans(prediction)))
+  rownames(results) <- c("Fitting","Prediction")
+  results
+}
 ```
 
 **City population**
@@ -88,6 +90,7 @@ Below we have the models train on 0.5 of the data (50%) and predict the other ha
 reps <- 100
 training_proportion <- 0.5
 results <- crossV(vec_of_models, criterion_col, cols_to_fit, data_set, reps,training_proportion)
+round(results, 1)
 ```
 
 Finally, let's plot the results:
@@ -126,13 +129,10 @@ ggplot(p, aes(x=condition, y=value, colour=model,group=model)) +
   geom_line() + 
   geom_point() + 
   xlab("Condition") + ylab("Proportion correct")
-
-
 ```
 
 **Discussion**
 
 The performance of all models drops when they are predicting unseen data. In the city population dataset the rank-order of the models remains the same for fitting and prediction. However, when predicting high-school dropout some of the simple models (TTB and UnitWeightModel) outperform linear regression in prediction. These results suggests that different environmental structures (such as the number of cues in the environment) favor different strategies.
 
-How would other models compare to take-the-best? Try some of the existing models in the heuristica package (e.g., logRegModel for logistic regression) or create your own model (see vignette on 'how to make a heuristic'). 
-
+How would other models compare to take-the-best? Try some of the existing models in the heuristica package (e.g., logRegModel for logistic regression) or create your own model (see vignette on 'how to make a heuristic').
