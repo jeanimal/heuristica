@@ -416,34 +416,7 @@ predictPairInternal.validityWeightModel <- function(object, row1, row2) {
   return(direction_plus_minus_1)
 }
 
-### Tally model ###
-#' Tally model, a heuristic that counts positive evidence.
-#' 
-#'
-#' @inheritParams zzDocumentationStubModelParams
-#' @inheritParams zzDocumentationStubReverseCues
-#' @param fit_name Optional The name other functions can use to label output.
-#'   It defaults to the class name.
-#'
-#' @return An object of \code{\link[base]{class}} tallytModel.  This is a
-#' list containing at least the following components:
-#'   \itemize{
-#'    \item "cue_validities": A list of cue validities for the cues in order of
-#'      cols_to_fit.
-#'    \item "linear_coef": Same as cue validities for this model.
-#'   }
-#'
-#' @seealso
-#' \code{\link{cueValidity}} for the metric used to to determine cue direction.
-#'
-#' @seealso
-#' \code{\link{predictPair}} for predicting whether row1 is greater.
-#'
-#' @seealso
-#' \code{\link{predictPairProb}} for predicting the probability row1 is
-#' greater.
-#'
-#' @export 
+### Tally model not released, same as unit weighted ###
 tallyModel <- function(train_data, criterion_col, cols_to_fit) {
   stopIfTrainingSetHasLessThanTwoRows(train_data)
   cv <- cueValidityComplete(train_data, criterion_col, cols_to_fit,
