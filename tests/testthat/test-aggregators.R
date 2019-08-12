@@ -2,6 +2,32 @@ context("aggregators")
 
 # require('testthat')
 
+
+
+# percentCorrect and related functions
+
+test_that("end to end test ttb vs. logistic regression input data.frame", {
+  train_df <- data.frame(y=c(5,4,3), x=c(1,0,0), name=c("jo", "bo", "da"))
+  ttb <- ttbModel(train_df, 1, c(2))
+  lreg <- logRegModel(train_df, 1, c(2))
+  pred <- rowPairApplyList(
+    train_df, list(rowIndexes(), heuristics(ttb, lreg), correctGreater(1)))
+  pred_df <- data.frame(pred)
+
+  row <- pred_df[which(pred_df$Row1==1 && pred_df$Row2==2),]
+  expect_equal(1, row$ttbModel, tolerance=0.001)
+  expect_equal(1, row$logRegModel, tolerance=0.001)
+  row <- pred_df[which(pred_df$Row1==2),]
+  expect_equal(0, row$ttbModel, tolerance=0.001)
+  expect_equal(0, row$logRegModel, tolerance=0.001)
+  expect_equal(3, nrow(pred_df))
+
+  pct_correct_df <- percentCorrectList(train_df, list(ttb, lreg))
+  expect_equal(83.33, pct_correct_df$ttbModel, tolerance=0.01)
+  expect_equal(83.33, pct_correct_df$logRegModel, tolerance=0.01)
+  expect_equal(1, nrow(pct_correct_df))
+})
+
 # Warning: This test is NOT self-contained.  It relies on the provided
 # city_population data set.
 test_that("city_population ttb vs. regression on dirty four cities", {
