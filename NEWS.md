@@ -1,3 +1,7 @@
+# heuristica 1.0.2.9000
+
+(placeholder)
+
 # heuristica 1.0.2
 
 * Updated to Roxygen version 6 and re-generated documentation with it-- some changes to newlines.
