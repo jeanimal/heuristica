@@ -4,7 +4,8 @@
 \name{city_population_original}
 \alias{city_population_original}
 \title{Original, uncorrected Population size of the 83 largest German cities.}
-\format{A data frame.
+\format{
+A data frame.
 \describe{
   \item{Name}{Name of city}
   \item{Running_Number}{Running Number}
@@ -27,7 +28,8 @@
     0 that it is not.}
   \item{University}{1 indicates that the city has a University, 0 that it
     does not.}
-}}
+}
+}
 \usage{
 city_population_original
 }

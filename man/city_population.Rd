@@ -4,7 +4,8 @@
 \name{city_population}
 \alias{city_population}
 \title{Population size of the 83 largest German cities.}
-\format{A data frame.
+\format{
+A data frame.
 \describe{
   \item{Name}{Name of city}
   \item{Running_Number}{Running Number}
@@ -27,7 +28,8 @@
     0 that it is not.}
   \item{University}{1 indicates that the city has a University, 0 that it
     does not.}
-}}
+}
+}
 \usage{
 city_population
 }
@@ -40,8 +42,9 @@ University, etc.  All cues are binary.
 \details{
 The data is based on:
 
-Fischer Welt Almanach [Fischer World Almanac]. (1993).  Frankfurt,
+ Fischer Welt Almanach [Fischer World Almanac]. (1993).  Frankfurt,
    Germany: Fischer.
+
 
 This is the data set used in simulations by the ABC (Adaptive Behavior
 and Cognition) research group.

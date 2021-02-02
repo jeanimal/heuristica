@@ -4,8 +4,12 @@
 \alias{cueValidityAppliedToColumns}
 \title{Calculate the cue validity for the cols_to_fit columns.}
 \usage{
-cueValidityAppliedToColumns(data, criterion_col, cols_to_fit,
-  replaceNanWith = 0.5)
+cueValidityAppliedToColumns(
+  data,
+  criterion_col,
+  cols_to_fit,
+  replaceNanWith = 0.5
+)
 }
 \arguments{
 \item{data}{The matrix or data.frame whose columns are treated as cues.}

@@ -4,8 +4,13 @@
 \alias{minModel}
 \title{Minimalist Model}
 \usage{
-minModel(train_data, criterion_col, cols_to_fit, reverse_cues = TRUE,
-  fit_name = "minModel")
+minModel(
+  train_data,
+  criterion_col,
+  cols_to_fit,
+  reverse_cues = TRUE,
+  fit_name = "minModel"
+)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}

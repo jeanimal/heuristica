@@ -4,8 +4,7 @@
 \alias{zzDocumentationStubFormulaModelParams}
 \title{Documentation stub. Just to share documentation.}
 \usage{
-zzDocumentationStubFormulaModelParams(train_matrix, criterion_col,
-  cols_to_fit)
+zzDocumentationStubFormulaModelParams(train_matrix, criterion_col, cols_to_fit)
 }
 \arguments{
 \item{train_matrix}{A matrix (or data.frame) of data to train (fit) the

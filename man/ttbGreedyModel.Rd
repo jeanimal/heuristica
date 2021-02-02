@@ -4,8 +4,12 @@
 \alias{ttbGreedyModel}
 \title{Greedy Take The Best}
 \usage{
-ttbGreedyModel(train_data, criterion_col, cols_to_fit,
-  fit_name = "ttbGreedyModel")
+ttbGreedyModel(
+  train_data,
+  criterion_col,
+  cols_to_fit,
+  fit_name = "ttbGreedyModel"
+)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}

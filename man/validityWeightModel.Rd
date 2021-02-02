@@ -4,8 +4,13 @@
 \alias{validityWeightModel}
 \title{Validity Weight Model, a linear model weighted by cue validities}
 \usage{
-validityWeightModel(train_data, criterion_col, cols_to_fit,
-  reverse_cues = TRUE, fit_name = "validityWeightModel")
+validityWeightModel(
+  train_data,
+  criterion_col,
+  cols_to_fit,
+  reverse_cues = TRUE,
+  fit_name = "validityWeightModel"
+)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}

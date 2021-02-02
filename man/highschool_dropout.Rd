@@ -4,7 +4,8 @@
 \name{highschool_dropout}
 \alias{highschool_dropout}
 \title{Chicago high school dropout rates.}
-\format{A data frame.
+\format{
+A data frame.
 \describe{
   \item{Name}{Name of School}
   \item{Running_Number}{Running Number}
@@ -41,7 +42,8 @@
   \item{Science}{Science score on IGAP}
   \item{Social_Science}{Social science score on IGAP}
   \item{Writing}{Writing score on IGAP}
-}}
+}
+}
 \usage{
 highschool_dropout
 }
@@ -54,10 +56,10 @@ accidentally omitted in prior research.
 \details{
 The data is based on:
 
-Morton, Felicia B. (1995). Charting a School's Course. Chicago.
+ Morton, Felicia B. (1995). Charting a School's Course. Chicago.
     February, pp. 86-95.
 
-Rodkin, Dennis. (1995). 10 Keys for Creating Top High Schools.
+ Rodkin, Dennis. (1995). 10 Keys for Creating Top High Schools.
     Chicago. February, pp. 78-85.
 
 This is the data set used in simulations by the ABC (Adaptive Behavior

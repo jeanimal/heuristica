@@ -4,8 +4,11 @@
 \alias{rowPairApplyList}
 \title{Apply list of functions to all row pairs.}
 \usage{
-rowPairApplyList(test_data, function_creator_list,
-  also_reverse_row_pairs = FALSE)
+rowPairApplyList(
+  test_data,
+  function_creator_list,
+  also_reverse_row_pairs = FALSE
+)
 }
 \arguments{
 \item{test_data}{The data to apply the functions to as a matrix or

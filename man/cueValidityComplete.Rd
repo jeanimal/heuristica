@@ -4,8 +4,14 @@
 \alias{cueValidityComplete}
 \title{Calculate cue validity with reverse, cue directions, and cue ranks.}
 \usage{
-cueValidityComplete(data, criterion_col, cols_to_fit,
-  replaceNanWith = 0.5, reverse_cues = FALSE, ties.method = "random")
+cueValidityComplete(
+  data,
+  criterion_col,
+  cols_to_fit,
+  replaceNanWith = 0.5,
+  reverse_cues = FALSE,
+  ties.method = "random"
+)
 }
 \arguments{
 \item{data}{The matrix or data.frame whose columns are treated as cues.}

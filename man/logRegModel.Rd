@@ -4,9 +4,14 @@
 \alias{logRegModel}
 \title{Logistic Regression model using cue differences as predictors}
 \usage{
-logRegModel(train_data, criterion_col, cols_to_fit,
-  cue_order_fn = rankByCueValidity, suppress_warnings = TRUE,
-  fit_name = "logRegModel")
+logRegModel(
+  train_data,
+  criterion_col,
+  cols_to_fit,
+  cue_order_fn = rankByCueValidity,
+  suppress_warnings = TRUE,
+  fit_name = "logRegModel"
+)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}

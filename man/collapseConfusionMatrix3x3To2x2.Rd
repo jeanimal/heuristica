@@ -4,9 +4,11 @@
 \alias{collapseConfusionMatrix3x3To2x2}
 \title{Collapses a 3x3 confusion matrix to a 2x2 confusion matrix.}
 \usage{
-collapseConfusionMatrix3x3To2x2(confusion_matrix_3x3,
+collapseConfusionMatrix3x3To2x2(
+  confusion_matrix_3x3,
   guess_handling_fn = distributeGuessAsExpectedValue,
-  tie_handling_fn = distributeTies)
+  tie_handling_fn = distributeTies
+)
 }
 \arguments{
 \item{confusion_matrix_3x3}{A 3x3 confusion matrix.}

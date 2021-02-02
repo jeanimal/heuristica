@@ -4,8 +4,13 @@
 \alias{unitWeightModel}
 \title{Unit-weight linear model}
 \usage{
-unitWeightModel(train_data, criterion_col, cols_to_fit,
-  reverse_cues = TRUE, fit_name = "unitWeightModel")
+unitWeightModel(
+  train_data,
+  criterion_col,
+  cols_to_fit,
+  reverse_cues = TRUE,
+  fit_name = "unitWeightModel"
+)
 }
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
