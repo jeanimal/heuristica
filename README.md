@@ -86,7 +86,7 @@ predictPair(subset(schools, Name=="Collins"), subset(schools, Name=="Bowen"), tt
 
 ## All rows
 
-It is tedious to predict one row pair at a time, so let's use heurstica's `predictPairSummary` function instead.  We simply pass it the data and the heuristics whose predictions we are interested in.  It produces a matrix with all row pairs, which in this case is 10 (5 * 4 / 2).
+It is tedious to predict one row pair at a time, so let's use heurstica's `predictPairSummary` function instead.  We simply pass it the data and the heuristics whose predictions we are interested in.  It produces a matrix with all row pairs, which in this case is 10 = (5 * 4 / 2).
 
 
 ```r
