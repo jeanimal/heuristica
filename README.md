@@ -5,6 +5,8 @@ Heuristica
 
 <!-- library(knitr); knit("README.Rmd") -->
 
+[![](https://cranlogs.r-pkg.org/badges/heuristica)](https://cran.rstudio.com/web/packages/heuristica/index.html)
+
 The `heuristica` R package implements
 [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models,
 such as [Take The
