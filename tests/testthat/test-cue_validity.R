@@ -44,7 +44,7 @@ test_that("cueValidityAppliedToColumns with 3-cue matrix", {
 expect_equal(c(1), cueValidityComplete(
   matrix(c(5,4,1,0), 2, 2), 1, c(2))$cue_validities, tolerance=0.001)
 expect_equal(c(1), cueValidityComplete(
-  matrix(c(5,4,1,0,0,1), 2, 2), 1, c(2))$cue_validities, tolerance=0.001)
+  matrix(c(5,4,1,0), 2, 2), 1, c(2))$cue_validities, tolerance=0.001)
 expect_equal(c(1,0), cueValidityComplete(
   matrix(c(5,4,1,0,0,1), 2, 3), 1, c(2,3))$cue_validities, tolerance=0.001)
 expect_equal(c(1,0), cueValidityComplete(
