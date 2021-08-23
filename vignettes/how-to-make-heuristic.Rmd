@@ -48,7 +48,7 @@ myRandModel <- function(train_data, criterion_col, cols_to_fit) {
 ```
 
 The class name-- myRandModel-- will tell heuristica how to find the
-predicting functions.  But if you are curious, you can read more about [S3 classes](http://adv-r.had.co.nz/OO-essentials.html).
+predicting functions.  But if you are curious, you can read more about [S3 classes](https://adv-r.hadley.nz/s3.html).
 
 ### Prediction functions
 

@@ -47,7 +47,7 @@ fits the model with R's glm function.
 This version assumes you do not want to include the intercept.
 
 For a discussion of how logistic regression works, see:
-http://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
+https://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
 Note that our criterion is the probability that row 1 is greater than row 2
 when a pair is encountered.
 }

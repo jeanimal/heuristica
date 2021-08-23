@@ -148,4 +148,4 @@ ggplot(p, aes(x=condition, y=value, colour=model,group=model)) + geom_point() + 
 
 # Citations
 
-Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
+Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](https://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 

@@ -20,7 +20,7 @@ The cue validity, a value in the range [0,1].
 }
 \description{
 Calculate the
-\href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
+\href{https://en.wikipedia.org/wiki/Cue_validity}{cue validity}
 for a pair of vectors.  It is calculated as
 correct / (correct + incorrect).
 }

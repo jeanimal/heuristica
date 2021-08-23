@@ -71,7 +71,7 @@ Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal
  way: Models of bounded rationality". Psychological Review, 103, 650-669.
 
 Wikipedia's entry on
-\url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
+\url{https://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 }
 \seealso{
 \code{\link{cueValidity}} for the metric used to sort cues.

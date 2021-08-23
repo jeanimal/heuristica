@@ -51,7 +51,7 @@ convergence of average accuracy.
 }
 \references{
 Wikipedia's entry on
-\url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
+\url{https://en.wikipedia.org/wiki/Unit-weighted_regression}.
 }
 \seealso{
 \code{\link{cueValidity}} for the metric used to to determine cue direction.
