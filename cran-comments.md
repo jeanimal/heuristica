@@ -9,6 +9,8 @@ WARNINGS: 0
 NOTES: 0 
 * Maintainer: 'Jean Whitmore Ortega <jeanimal@gmail.com>'
 
+Package was previously archived on CRAN
+
 ## Downstream dependencies
 None.
 
