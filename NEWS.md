@@ -1,6 +1,8 @@
 # heuristica 1.0.3
 
-Version update only.  No functionality updates.
+* Fixed a unit test that had warning turned to error.  
+* No functionality updates.
+* Minor updates to some documentation (e.g. http -> https).
 
 # heuristica 1.0.2
 
