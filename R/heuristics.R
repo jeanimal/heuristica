@@ -130,7 +130,7 @@ getWeightedCuePairDiffs <- function(coefficients, row1, row2) {
 #'  way: Models of bounded rationality". Psychological Review, 103, 650-669.
 #' @references
 #' Wikipedia's entry on
-#' \url{http://en.wikipedia.org/wiki/Take-the-best_heuristic}.
+#' \url{https://en.wikipedia.org/wiki/Take-the-best_heuristic}.
 #'
 #' @export
 ttbModel <- function(train_data, criterion_col, cols_to_fit,
@@ -332,7 +332,7 @@ predictPairInternal.ttbGreedyModel <- function(object, row1, row2) {
 #' 
 #' @references
 #' Wikipedia's entry on
-#' \url{http://en.wikipedia.org/wiki/Unit-weighted_regression}.
+#' \url{https://en.wikipedia.org/wiki/Unit-weighted_regression}.
 #'
 #' @param reverse_cues Optional parameter to reverse cues as needed.
 #' @export
@@ -700,7 +700,7 @@ logRegModelGeneral <- function(train_data, criterion_col, cols_to_fit,
 #' This version assumes you do not want to include the intercept.
 #' 
 #' For a discussion of how logistic regression works, see:
-#' http://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
+#' https://www.r-bloggers.com/what-does-a-generalized-linear-model-do/
 #' Note that our criterion is the probability that row 1 is greater than row 2
 #' when a pair is encountered.
 #' 

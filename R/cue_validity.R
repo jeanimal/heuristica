@@ -14,7 +14,7 @@ zzDocumentationStubReverseCues <- function(reverse_cues=TRUE) NULL
 #' Calculate the cue validity.
 #'
 #' Calculate the
-#' \href{http://en.wikipedia.org/wiki/Cue_validity}{cue validity}
+#' \href{https://en.wikipedia.org/wiki/Cue_validity}{cue validity}
 #' for a pair of vectors.  It is calculated as
 #' correct / (correct + incorrect).
 #'

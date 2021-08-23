@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 [![](https://cranlogs.r-pkg.org/badges/heuristica)](https://cran.rstudio.com/web/packages/heuristica/index.html)
 
-The `heuristica` R package implements [heuristic](http://en.wikipedia.org/wiki/Heuristic) decision models, such as [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and a [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
+The `heuristica` R package implements [heuristic](https://en.wikipedia.org/wiki/Heuristic) decision models, such as [Take The Best](https://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and a [unit-weighted linear model](https://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
 
 The goal is to make it easy to explore the range of conditions in which simple heuristics are better than more complex models.  Optimizing is not always better!
 
@@ -144,9 +144,9 @@ The package comes with the following models that you can call with predictPair.
 * `minModel`: It searches cues in a random order, making a decision based on the first cue that discriminates (has differing values on the two items / schools).
 * `regModel`: A regression model, a wrapper around R's lm to make it easier to compare with heuristics.  It fits a regression based on the column indices.  For predictPair, it predicts the criterion for each item in the pair-- e.g. estimates the drop-out rate of each school-- and then predicts the item with the higher estimate-- higher drop-out rate.  (A variant that fits with an intercept, `regInterceptModel`, is provided in order to confirm prior research results, but it is not recommended for future research.)
 * `singleCueModel`: In the fitting stage, this selects the cue with the higest cue validity.  It only uses that cue, and if the cue does not discriminate, it guesses.
-* `ttbModel`: An implementation of [Take The Best](http://en.wikipedia.org/wiki/Take-the-best_heuristic). In the fitting stage, it sorts cues in order of cue validity.  When predicting between two items, it finds the highest-validity that discriminates (has differing values on the two items) and bases its prediction on that cue, ignoring other cues.  The cue used can vary based on the cue values of the two items.
+* `ttbModel`: An implementation of [Take The Best](https://en.wikipedia.org/wiki/Take-the-best_heuristic). In the fitting stage, it sorts cues in order of cue validity.  When predicting between two items, it finds the highest-validity that discriminates (has differing values on the two items) and bases its prediction on that cue, ignoring other cues.  The cue used can vary based on the cue values of the two items.
 * `ttbGreedyModel`: Take the Best using conditional cue validity (rather than cue validity).
-* `unitWeightModel`: A [unit-weighted linear model](http://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
+* `unitWeightModel`: A [unit-weighted linear model](https://en.wikipedia.org/wiki/Unit-weighted_regression) that uses weights of +1 or -1 only.  An exception is that a cue with no variance-- every value is the same-- gets a weight of 0.  Inspired by psychologist Robyn Dawes-- see citation below.
 * `validityWeightModel`: A cue-validity-weighted linear model.  (In some publications, this was called franklinModel after Ben Franklin.)
 
 You can add your own models by also implementing a function related to `predictPair`, as described in a vignette.
@@ -165,10 +165,10 @@ Take The Best was first described in:
 Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal way: Models of bounded rationality". Psychological Review, 103, 650-669.
 
 All of these heuristics were run on many data sets and analyzed in:
-Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](http://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
+Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](https://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
 
 The research was also inspired by:
-Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. [archived pdf](http://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
+Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. [archived pdf](https://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
 
 # Acknowledgements
 
