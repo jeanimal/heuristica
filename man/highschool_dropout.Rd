@@ -48,7 +48,7 @@ A data frame.
 highschool_dropout
 }
 \description{
-Chicago high school droput rates from 1995 and associated variables
+Chicago high school dropout rates from 1995 and associated variables
 like average students per teacher and percent low income students.
 All cues are real-valued but some have N/A values.  It includes rows
 accidentally omitted in prior research.

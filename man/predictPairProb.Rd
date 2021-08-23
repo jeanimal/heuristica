@@ -2,7 +2,7 @@
 % Please edit documentation in R/row_pair_apply.R
 \name{predictPairProb}
 \alias{predictPairProb}
-\title{Predict the probablity that row1 has a higher criterion than row2.}
+\title{Predict the probability that row1 has a higher criterion than row2.}
 \usage{
 predictPairProb(row1, row2, object)
 }
@@ -22,7 +22,7 @@ A double from 0 to 1, representing the probability that row1's
 }
 \description{
 Given two rows and a fitted heuristic, returns the heuristic's predicted
-probability that row1's criterion will be greter than row2's.
+probability that row1's criterion will be greater than row2's.
 }
 \examples{
 train_matrix <- cbind(y=c(5,4), x1=c(1,0), x2=c(0,1))

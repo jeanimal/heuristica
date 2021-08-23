@@ -111,7 +111,7 @@ row2
 predictPair(row1, row2, myFit)
 ```
 
-We can see in the original data.frame that Austin had the higher dropout rate, meaning 1 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct choice based on the criterion-- which we tell it is in row 2 using correctGrater.  It outputs the correct answer of the rowPair, which could be -1 or 1, and we see it turned out to be 1.
+We can see in the original data.frame that Austin had the higher dropout rate, meaning 1 would have been correct output.  We can get heuristica to show this using a more general rowPair function to view the correct choice based on the criterion-- which we tell it is in row 2 using correctGreater.  It outputs the correct answer of the rowPair, which could be -1 or 1, and we see it turned out to be 1.
 ```{r}
 myFit <- myRandModel(schools, 2, c(3:5))
 myData <- rbind(oneRow(schools, 1), oneRow(schools, 2))

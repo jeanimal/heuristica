@@ -15,7 +15,7 @@ library(heuristica)
 
 # Prior results
 
-Heuristica can be used to reproduce results from prior research, making sure to have the same data set and heuristics.  Consider the city population results on page 103 of Simple Heuristics That Make Us Smart (citation below).  It reported the following percent correct for models fitting city populations-- that is, when the models are given all 83 cities to fit and then are asked to estimate the poulation of the same 83 cities:
+Heuristica can be used to reproduce results from prior research, making sure to have the same data set and heuristics.  Consider the city population results on page 103 of Simple Heuristics That Make Us Smart (citation below).  It reported the following percent correct for models fitting city populations-- that is, when the models are given all 83 cities to fit and then are asked to estimate the population of the same 83 cities:
 
 | Regression | Dawes | Take The Best | Minimalist |
 |-----------:|:-----:|:-------------:|:----------:|
@@ -58,7 +58,7 @@ unit <- unitWeightModel(data_set, criterion_col, cols_to_fit)
 min <- minModel(data_set, criterion_col, cols_to_fit)
 ```
 
-To determin the percent of correct inference in fitting, pass the exact same data set into the percent correct function with the fitted models.
+To determine the percent of correct inference in fitting, pass the exact same data set into the percent correct function with the fitted models.
 
 ```{r}
 results <- percentCorrectList(data_set, list(reg, ttb, unit, min))

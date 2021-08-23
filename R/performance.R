@@ -163,18 +163,18 @@ collapseConfusionMatrix3x3To2x2 <- function(
 #' that layout.  A package like 'caret' offers a more general-purpose
 #' confusion matrix.
 #'
-#' This assumes the input matrix is 2x2 qnd will STOP if not.  It also 
+#' This assumes the input matrix is 2x2 and will STOP if not.  It also 
 #' assumes negatives are left and higher, and predictions are the rows,
 #' that is:
 #' true negative  [-1,-1]    false negative [-1,1]
 #' false negative [1, -1]    true positive  [1, 1]
 #'
 #' The outputs are defined as:
-#' accuracy = (true positive + true negatve) / all
-#' sensitivity = true pasitive rate = true positive / all positive
+#' accuracy = (true positive + true negative) / all
+#' sensitivity = true positive rate = true positive / all positive
 #'   (sensitivity is also called recall)
 #' specificity = true negative rate = true negative / all negative
-#' precision = positive predictive velue = true positive
+#' precision = positive predictive value = true positive
 #' 
 #' @param confusion_matrix A 2x2 confusion matrix.
 #' @return A list with accuracy, sensitivity, specificity, and precision

@@ -15,7 +15,7 @@ unitWeightModel(
 \arguments{
 \item{train_data}{Training/fitting data as a matrix or data.frame.}
 
-\item{criterion_col}{The index of the colum in train_data that has the
+\item{criterion_col}{The index of the column in train_data that has the
 criterion.}
 
 \item{cols_to_fit}{A vector of column indices in train_data, used to fit
@@ -32,7 +32,7 @@ containing at least the following components:
   \itemize{
    \item "cue_validities": A list of cue validities for the cues in order of
      cols_to_fit.
-   \item "linear_coef": A list of linear model coefficents (-1 or +1)
+   \item "linear_coef": A list of linear model coefficients (-1 or +1)
           for the cues in order of cols_to_fit.  (It can only return -1's if
           reverse_cues=TRUE.)
   }

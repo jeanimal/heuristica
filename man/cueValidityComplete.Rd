@@ -37,7 +37,7 @@ A list where $cue_validities has a vector of validities for
   each of the columns in cols_to_fit.
 }
 \description{
-This provides a vector of cue_validities and potentially other useufl
+This provides a vector of cue_validities and potentially other useful
 information, particularly if reverse_cues=TRUE.  For example, education
 is negatively associated with number of felonies.  If reverse_cues=FALSE,
 education will get validity < 0.5.  If reverse_cues=TRUE, then LESS

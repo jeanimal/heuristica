@@ -21,7 +21,7 @@ the correct direction of the criterion in comparing row 1 vs. row2 for
 all row pairs in test_data.
   1 indicates row 1's criterion > row 2's criterion
   0 indicates they are equal
- -1 indicaties row 2's criterion is greater
+ -1 indicates row 2's criterion is greater
 By default, the output column is called "CorrectGreater," but you
 can override the name with output_column_name.
 }

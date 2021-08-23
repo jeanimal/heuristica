@@ -104,7 +104,7 @@ heuristicsListGroupedByColsToFit <- function(fitted_heuristic_list, fn) {
 #'   and cols_to_fit as the data heuristics were fit to.
 #' @param fitted_heuristic_list A list of one or more heuristics fitted to
 #'   data, e.g. the output of ttbModel.
-#' @return A one-row matrix of numbers from 0 to 100, the percent correc
+#' @return A one-row matrix of numbers from 0 to 100, the percent correct
 #'   of each heuristic.  Each column is named with the heuristic's class or
 #'   the fit name.
 #'

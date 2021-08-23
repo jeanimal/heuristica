@@ -285,7 +285,7 @@ createFunction.heuristics <- function(object, test_data) {
 #' all row pairs in test_data.
 #'   1 indicates row 1's criterion > row 2's criterion
 #'   0 indicates they are equal
-#'  -1 indicaties row 2's criterion is greater
+#'  -1 indicates row 2's criterion is greater
 #' By default, the output column is called "CorrectGreater," but you
 #' can override the name with output_column_name.
 #' 
@@ -679,10 +679,10 @@ predictPair <- function(row1, row2, object) {
   return(unname(out[1,1]))
 }
 
-#' Predict the probablity that row1 has a higher criterion than row2.
+#' Predict the probability that row1 has a higher criterion than row2.
 #'
 #' Given two rows and a fitted heuristic, returns the heuristic's predicted
-#' probability that row1's criterion will be greter than row2's.
+#' probability that row1's criterion will be greater than row2's.
 #'
 #' @param row1 The first row of cues (will apply cols_to_fit for you, based on
 #'   object).

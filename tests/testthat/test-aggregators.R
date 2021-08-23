@@ -246,7 +246,7 @@ test_that("percentCorrectList vs percentCorrectListNonSymmetric", {
 
   # percentCorrectList incorrectly says this gets it all right.
   # It is incorrect because it assumes the heuristic makes symmetric
-  # decisions: if it chooses A > B, it wil chose B < A, so the function
+  # decisions: if it chooses A > B, it will chose B < A, so the function
   # only checks the former of those two cases.
   pct_correct_df <- percentCorrectList(data, list(fitted_always_1))
   expect_equal(100, pct_correct_df$all1Model, tolerance=0.001)

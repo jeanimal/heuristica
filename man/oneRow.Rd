@@ -7,7 +7,7 @@
 oneRow(matrix_or_data_frame, row_index)
 }
 \arguments{
-\item{matrix_or_data_frame}{A matrix or data frome from which you want one
+\item{matrix_or_data_frame}{A matrix or data frame from which you want one
 row.}
 
 \item{row_index}{The integer index of the row}

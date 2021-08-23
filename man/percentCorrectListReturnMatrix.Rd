@@ -14,7 +14,7 @@ and cols_to_fit as the data heuristics were fit to.}
 data, e.g. the output of ttbModel.}
 }
 \value{
-A one-row matrix of numbers from 0 to 100, the percent correc
+A one-row matrix of numbers from 0 to 100, the percent correct
   of each heuristic.  Each column is named with the heuristic's class or
   the fit name.
 }

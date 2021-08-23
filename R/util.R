@@ -7,7 +7,7 @@
 #' for drop=FALSE when selecting just one row is explained here:
 #' http://www.hep.by/gnu/r-patched/r-faq/R-FAQ_56.html
 #'
-#' @param matrix_or_data_frame A matrix or data frome from which you want one
+#' @param matrix_or_data_frame A matrix or data frame from which you want one
 #'   row.
 #' @param row_index The integer index of the row
 #' @return The selected row of the data frame.
