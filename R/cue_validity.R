@@ -68,7 +68,6 @@ cueValidity <- function(criterion, cue, replaceNanWith=0.5) {
 #'   validity for.
 #' @param replaceNanWith The value to return as cue validity in case it
 #'         cannot be calculated.
-#' @inheritParams zzDocumentationStubReverseCues
 #' @return A list where $cue_validities has a vector of validities for
 #'   each of the columns in cols_to_fit.
 #'
