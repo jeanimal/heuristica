@@ -6,10 +6,16 @@
 ## R CMD check results
 ERRORs: 0
 WARNINGS: 0
-NOTES: 0 
-* Maintainer: 'Jean Whitmore Ortega <jeanimal@gmail.com>'
-
-Package was previously archived on CRAN
+NOTES: 1 
+  New submission
+  
+  
+  Package was archived on CRAN
+  
+  CRAN repository db overrides:
+    X-CRAN-Comment: Archived on 2021-06-06 as check problems were not
+      corrected in time.
+  Maintainer: 'Jean Whitmore <jeanimal@gmail.com>'
 
 ## Downstream dependencies
 None.
