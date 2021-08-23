@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![](https://cranlogs.r-pkg.org/badges/heuristica)](https://cran.rstudio.com/web/packages/heuristica/index.html)
+[![](https://cranlogs.r-pkg.org/badges/heuristica)](https://cran.r-project.org/package=heuristica)
 
 The `heuristica` R package implements [heuristic](https://en.wikipedia.org/wiki/Heuristic) decision models, such as [Take The Best](https://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and a [unit-weighted linear model](https://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
 
