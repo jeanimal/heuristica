@@ -1,6 +1,6 @@
-# heuristica 1.0.2.9000
+# heuristica 1.0.3
 
-(placeholder)
+Version update only.  No functionality updates.
 
 # heuristica 1.0.2
 

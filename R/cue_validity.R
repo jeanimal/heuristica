@@ -2,6 +2,7 @@
 # library("Hmisc")
 
 #' Documentation stub.
+#'
 #' @param reverse_cues Optional parameter to reverse cues as needed.  By
 #' default, the model will reverse the cue values for cues with cue validity
 #' < 0.5, so a cue with validity 0 becomes a cue with validity 1.
