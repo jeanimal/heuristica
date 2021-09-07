@@ -790,6 +790,9 @@ predictProbInternal.logRegModel <- function(object, row1, row2) {
 #' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name.
+#' @return An object of \code{\link[base]{class}} singleCueModel, which can be
+#' passed to a variety of functions to make predictions, e.g.
+#' \code{\link{predictPair}} and \code{\link{percentCorrectList}}.
 #'
 #' @examples
 #' ##Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
@@ -840,6 +843,9 @@ predictPairInternal.singleCueModel <- function(object, row1, row2) {
 #' @inheritParams zzDocumentationStubReverseCues
 #' @param fit_name Optional The name other functions can use to label output.
 #'   It defaults to the class name. 
+#' @return An object of \code{\link[base]{class}} minModel, which can be
+#' passed to a variety of functions to make predictions, e.g.
+#' \code{\link{predictPair}} and \code{\link{percentCorrectList}}.
 #' @examples
 #' ## Fit column (5,4) to column (1,0), having validity 1.0, and column (0,1),
 #' ## validity 0.

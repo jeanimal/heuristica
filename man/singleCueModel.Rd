@@ -29,6 +29,11 @@ Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 \item{fit_name}{Optional The name other functions can use to label output.
 It defaults to the class name.}
 }
+\value{
+An object of \code{\link[base]{class}} singleCueModel, which can be
+passed to a variety of functions to make predictions, e.g.
+\code{\link{predictPair}} and \code{\link{percentCorrectList}}.
+}
 \description{
 Create a single cue model by specifying columns and a dataset.  It sorts
 cues in order of cueValidity and uses the cue with the highest cueValidity.

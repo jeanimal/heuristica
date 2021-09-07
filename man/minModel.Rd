@@ -29,6 +29,11 @@ Set this to FALSE if you do not want that, i.e. the cue stays validity 0.}
 \item{fit_name}{Optional The name other functions can use to label output.
 It defaults to the class name.}
 }
+\value{
+An object of \code{\link[base]{class}} minModel, which can be
+passed to a variety of functions to make predictions, e.g.
+\code{\link{predictPair}} and \code{\link{percentCorrectList}}.
+}
 \description{
 Fit the Minimalist heuristic by specifying columns and a dataset. It
 searches cues in a random order, making a decision based on the first cue
