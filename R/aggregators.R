@@ -249,7 +249,7 @@ percentCorrect <- function(test_data, ...) {
 #'   the fit name.
 #'
 #' @seealso
-#' \code{\link{percentCorrectList}} which is faster but wil only be accurate
+#' \code{\link{percentCorrectList}} which is faster but will only be accurate
 #'   for symmetric heuristics.  (percentCorrectListNonSymmetric will be
 #'   accurate for both symmetric and non-symmetric heuristics, but it's slower.)
 #' @export
