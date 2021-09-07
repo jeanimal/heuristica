@@ -18,9 +18,15 @@ NOTES: 1
       corrected in time.
   Maintainer: 'Jean Whitmore <jeanimal@gmail.com>'
 
-  Package problem was corrected by using correct number of arguments to
-  matrix constructor (which went from warning to error on some OS).
-  https://github.com/jeanimal/heuristica/commit/ad9e6f6a70538321a6dc4ead1409d32d00f72a1b
+  > Package problem was corrected by using correct number of arguments to
+  > matrix constructor (which went from warning to error on some OS).
+  > https://github.com/jeanimal/heuristica/commit/ad9e6f6a70538321a6dc4ead1409d32d00f72a1b
+
+   Possibly misspelled words in DESCRIPTION:
+     Gigerenzer (16:58, 19:5)
+     Goldstein (17:7)
+
+  > These are not misspelled.
 
 ## Downstream dependencies
 None.
