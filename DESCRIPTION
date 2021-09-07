@@ -13,7 +13,11 @@ Description: Implements various heuristics like Take The Best and
     to assess performance, e.g. percent correct across all row pairs
     in a data set and finding row pairs where models disagree.
     New models can be added by implementing a fit and predict function--
-    see vignette.
+    see vignette.  Take The Best was first described in: Gigerenzer, G.
+    & Goldstein, D. G. (1996) <doi:10.1037/0033-295X.103.4.650>.  All
+    of these heuristics were run on many data sets and analyzed in:
+    Gigerenzer, G., Todd, P. M., & the ABC Group (1999).
+    <ISBN:978-0195143812>.
 Depends: 
     R (>= 3.1.0)
 License: MIT + file LICENSE
