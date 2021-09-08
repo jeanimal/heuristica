@@ -1,3 +1,7 @@
+# heuristica 1.0.3.9000
+
+* In development.
+
 # heuristica 1.0.3
 
 * Fixed a unit test that had warning turned to error.  
