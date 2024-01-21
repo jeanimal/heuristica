@@ -10,6 +10,8 @@ output: github_document
 
 [![](https://cranlogs.r-pkg.org/badges/heuristica)](https://cran.r-project.org/package=heuristica)
 
+Also available on CRAN: https://cran.r-project.org/web/packages/heuristica/index.html
+
 The `heuristica` R package implements [heuristic](https://en.wikipedia.org/wiki/Heuristic) decision models, such as [Take The Best](https://en.wikipedia.org/wiki/Take-the-best_heuristic) (TTB) and a [unit-weighted linear model](https://en.wikipedia.org/wiki/Unit-weighted_regression).  The models are designed for two-alternative choice tasks, such as which of two schools has a higher drop-out rate.  The package also wraps more well-known models like regression and logistic regression into the two-alternative choice framework so all these models can be assessed side-by-side.  It provides functions to measure accuracy, such as an overall `percentCorrect` and, for advanced users, some [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix) functions.  These measures can be applied in-sample or out-of-sample.
 
 The goal is to make it easy to explore the range of conditions in which simple heuristics are better than more complex models.  Optimizing is not always better!
@@ -188,13 +190,17 @@ The package comes with two data sets used by many heuristic researchers.
 * `highschool_dropout`: Drop-out rates for all 63 Chicago public high schools plus associated variables like average students per teacher and percent low income students.  The data is
 from 1995.  All cues are real-valued but some have N/A values.  (This data set does not exactly match that used in Simple Heuristics That Make Us Smart.)
 
+# See also
+
+The original C version of the code, used to produce the results in the book chapter, is also available in github: https://github.com/jeanimal/legacy_code_for_SHTMUS/blob/master/README.md
+
 # Citations
 
 Take The Best was first described in:
 Gigerenzer, G. & Goldstein, D. G. (1996). "Reasoning the fast and frugal way: Models of bounded rationality". Psychological Review, 103, 650-669.
 
 All of these heuristics were run on many data sets and analyzed in:
-Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](https://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. 
+Gigerenzer, G., Todd, P. M., & the ABC Group (1999). [Simple heuristics that make us smart.](https://www.amazon.com/Simple-Heuristics-That-Make-Smart/dp/0195143817) New York: Oxford University Press. [code for this chapter](https://github.com/jeanimal/legacy_code_for_SHTMUS/blob/master/README.md)
 
 The research was also inspired by:
 Dawes, Robyn M. (1979). "The robust beauty of improper linear models in decision making". American Psychologist, volume 34, pages 571-582. [archived pdf](https://www.cmu.edu/dietrich/sds/docs/dawes/the-robust-beauty-of-improper-linear-models-in-decision-making.pdf)
